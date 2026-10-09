@@ -32,7 +32,7 @@ describe('App integración general', () => {
     expect(await screen.findByText(/¡hola, ignacio!/i)).toBeInTheDocument();
 
     // Cambiar perfil bloquea sesion
-    const lockBtn = screen.getByRole('button', { name: /cambiar perfil/i });
+    const lockBtn = screen.getAllByRole('button', { name: /cambiar perfil/i })[0];
     await user.click(lockBtn);
 
     expect(await screen.findByText(/selecciona tu perfil/i)).toBeInTheDocument();
