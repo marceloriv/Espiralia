@@ -1,0 +1,180 @@
+.plannerContainer {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.headingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.pageTitle {
+  font-size: var(--text-title-lg);
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.periodToggle {
+  display: flex;
+  background-color: var(--color-surface-soft);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+}
+
+.toggleBtn {
+  padding: 6px 16px;
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toggleBtnActive {
+  background-color: var(--color-surface-card);
+  color: var(--color-primary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.createCard {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  margin-bottom: 28px;
+}
+
+.createForm {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.inputTitle {
+  flex: 1;
+  height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  font-size: var(--text-body-sm);
+  outline: none;
+}
+
+.selectSlot,
+.selectPriority {
+  height: 40px;
+  padding: 0 10px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  font-size: var(--text-body-sm);
+  background-color: #fff;
+  outline: none;
+}
+
+.btnAdd {
+  height: 40px;
+  padding: 0 18px;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-button);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.btnAdd:hover {
+  background-color: var(--color-primary-active);
+}
+
+.slotsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .slotsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.slotColumn {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.slotTitle {
+  font-family: var(--font-primary);
+  font-size: var(--text-title-sm);
+  color: var(--color-ink);
+  margin-bottom: 16px;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.blocksList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.blockItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-hairline);
+  background-color: #fdfafc;
+}
+
+.blockCheckbox {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.blockTitle {
+  flex: 1;
+  font-size: var(--text-body-sm);
+  color: var(--color-ink);
+}
+
+.blockCompleted {
+  text-decoration: line-through;
+  color: var(--color-muted);
+}
+
+.btnDelete {
+  background: transparent;
+  border: none;
+  color: var(--color-muted-soft);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.btnDelete:hover {
+  color: var(--color-error);
+}
+
+.emptySlot {
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+  font-style: italic;
+  padding: 8px 0;
+}
