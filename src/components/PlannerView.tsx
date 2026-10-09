@@ -138,7 +138,9 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
               </h3>
 
               {slotBlocks.length === 0 ? (
-                <div className={styles.emptySlot}>Sin bloques programados</div>
+                <div className={styles.emptySlot}>
+                  Sin bloques para {slot}. Agrega un objetivo de enfoque arriba.
+                </div>
               ) : (
                 <div className={styles.blocksList}>
                   {slotBlocks.map(block => (

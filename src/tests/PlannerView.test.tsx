@@ -54,4 +54,19 @@ describe('PlannerView', () => {
 
     expect(screen.queryByText('Bloque a eliminar')).not.toBeInTheDocument();
   });
+
+  it('muestra estados vacios informativos por franja y permite alternar periodos', async () => {
+    const user = userEvent.setup();
+    render(<PlannerView profileId={profileId} />);
+
+    // Verifica mensaje contextual en la franja mañana
+    expect(screen.getByText(/sin bloques para mañana\. agrega un objetivo/i)).toBeInTheDocument();
+
+    // Alternar a periodo mensual
+    const mensualBtn = screen.getByRole('button', { name: /mensual/i });
+    await user.click(mensualBtn);
+
+    // Debe seguir mostrando el estado explicativo
+    expect(screen.getByText(/sin bloques para mañana\. agrega un objetivo/i)).toBeInTheDocument();
+  });
 });
