@@ -1,0 +1,25 @@
+# SDD ledger — plan: docs/superpowers/plans/2026-10-09-mvp-pages.md
+
+Pre-flight scan:
+- Task 1: Setup Vitest + lucide-react (Independent)
+- Task 2: Types & Design Tokens (Consumed by Tasks 3-10)
+- Task 3: StorageService (Consumes Task 2, Consumed by Tasks 4, 6, 7, 8, 9, 10)
+- Task 4: ProfileGateView (Consumes Tasks 2, 3)
+- Task 5: AppLayout (Consumes Tasks 2, 4)
+- Task 6: TodoView (Consumes Tasks 2, 3)
+- Task 7: AgendaView (Consumes Tasks 2, 3)
+- Task 8: PlannerView (Consumes Tasks 2, 3)
+- Task 9: DashboardView (Consumes Tasks 2, 3, 6, 7, 8)
+- Task 10: App.tsx integration (Consumes all components)
+No interface conflicts detected.
+Task 1: complete (commit a88c76c, tests: vitest smoke.test.ts -> 1/1 pass)
+Task 2: complete (commit f6f59f6, tests: vitest types.test.ts -> 5/5 pass, tsc -b clean)
+Task 3: complete (commit f6fab3b, tests: vitest storage.test.ts -> 5/5 pass)
+Task 4: complete (commit e97f1b8, tests: vitest ProfileGateView.test.tsx -> 2/2 pass)
+Task 5: complete (commit 5cb0efd, tests: vitest AppLayout.test.tsx -> 1/1 pass)
+Task 6: complete (commit 4ee6ae8, tests: vitest TodoView.test.tsx -> 2/2 pass)
+Task 7: complete (commit ea7bedd, tests: vitest AgendaView.test.tsx -> 2/2 pass)
+Task 8: complete (commit 5bedbe8, tests: vitest PlannerView.test.tsx -> 2/2 pass)
+Task 9: complete (commit d32f4c6, tests: vitest DashboardView.test.tsx -> 2/2 pass)
+Task 10: complete (commits 242c880 & ea7bedd, tests: 11 suites, 27/27 pass, pnpm build clean)
+Final review: clean (suite 27/27 green, tsc -b clean, vite build clean)

@@ -1,11 +1,8 @@
-# Claude — Style Reference
+# Espiralia — Style Reference
 >
-> A warm-canvas editorial interface for Anthropic's Claude product. The system anchors on a tinted cream canvas with serif display headlines, warm coral CTAs, and dark navy product surfaces (code editor mockups, model showcase cards). Brand voltage comes from the cream/coral pairing — deliberately warm and humanist where most AI brands use cool blue + slate. Type voice runs a slab-serif display ("Copernicus" / Tiempos Headline) for h1/h2 and a humanist sans for body. The signature Anthropic black-radial-spike mark anchors the wordmark.
+> Interfaz editorial para Espiralia con tipografía y ritmo visual inspirados en Claude. El sistema se apoya en un canvas cálido (`#faf9f5`), titulares display con serif ("Copernicus" / Tiempos Headline) y cuerpo sans humanista (StyreneB / Inter). La identidad de marca utiliza la paleta magenta/púrpura (#8E1EA2, #C654C3, #ED96D7, #FFC0DE) para botones, acentos e interacciones clave.
 
 **Theme:** light
-
-**Source website:** [https://claude.ai/](https://claude.ai/)
-Use the live official website to compare and validate this extracted snapshot. The current source website remains authoritative.
 
 ## Tokens — Colors
 
@@ -283,9 +280,9 @@ Use the live official website to compare and validate this extracted snapshot. T
 - **rounded:** `{rounded.lg}`
 - **padding:** `32px`
 
-### callout card coral
+### callout card primary
 
-**Role:** callout card coral component
+**Role:** callout card primary component
 
 - **backgroundColor:** `{colors.primary}`
 - **textColor:** `{colors.on-primary}`
@@ -361,9 +358,9 @@ Use the live official website to compare and validate this extracted snapshot. T
 - **rounded:** `{rounded.pill}`
 - **padding:** `4px 12px`
 
-### badge coral
+### badge primary
 
-**Role:** badge coral component
+**Role:** badge primary component
 
 - **backgroundColor:** `{colors.primary}`
 - **textColor:** `{colors.on-primary}`
@@ -371,9 +368,9 @@ Use the live official website to compare and validate this extracted snapshot. T
 - **rounded:** `{rounded.pill}`
 - **padding:** `4px 12px`
 
-### cta band coral
+### cta band primary
 
-**Role:** cta band coral component
+**Role:** cta band primary component
 
 - **backgroundColor:** `{colors.primary}`
 - **textColor:** `{colors.on-primary}`
