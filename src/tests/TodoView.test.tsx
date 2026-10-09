@@ -62,4 +62,35 @@ describe('TodoView', () => {
     expect(screen.queryByText('Tarea a borrar')).not.toBeInTheDocument();
     expect(StorageService.getTodos(profileId)).toEqual([]);
   });
+
+  it('muestra mensajes explicativos contextuales cuando la lista esta vacia', async () => {
+    const user = userEvent.setup();
+    render(<TodoView profileId={profileId} />);
+
+    // Inicialmente no hay tareas en absoluto
+    expect(screen.getByText(/aún no has agregado tareas/i)).toBeInTheDocument();
+    expect(screen.getByText(/usa el formulario superior para crear tu primera tarea/i)).toBeInTheDocument();
+
+    // Agregamos una tarea pendiente
+    const input = screen.getByPlaceholderText(/¿qué tienes pendiente\?/i);
+    await user.type(input, 'Tarea de prueba{enter}');
+
+    // Ir a filtro completadas cuando ninguna esta completa
+    const completedFilter = screen.getByRole('button', { name: /completadas/i });
+    await user.click(completedFilter);
+
+    expect(screen.getByText(/sin tareas completadas aún/i)).toBeInTheDocument();
+
+    // Completar la tarea y verificar filtro pendientes
+    const allFilter = screen.getByRole('button', { name: /todas/i });
+    await user.click(allFilter);
+
+    const checkbox = screen.getByRole('checkbox', { name: /completar tarea de prueba/i });
+    await user.click(checkbox);
+
+    const pendingFilter = screen.getByRole('button', { name: /pendientes/i });
+    await user.click(pendingFilter);
+
+    expect(screen.getByText(/¡todo al día!/i)).toBeInTheDocument();
+  });
 });

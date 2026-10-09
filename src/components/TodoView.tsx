@@ -66,6 +66,33 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
     return styles.badgePriorityBaja;
   };
 
+  const getEmptyStateContent = () => {
+    if (todos.length === 0) {
+      return {
+        title: 'Aún no has agregado tareas',
+        description: 'Usa el formulario superior para crear tu primera tarea y organizar tu día.',
+      };
+    }
+    if (filterStatus === 'pendientes') {
+      return {
+        title: '¡Todo al día!',
+        description: 'No tienes tareas pendientes por completar. ¡Excelente progreso!',
+      };
+    }
+    if (filterStatus === 'completadas') {
+      return {
+        title: 'Sin tareas completadas aún',
+        description: 'Marca las tareas pendientes a medida que las termines para ver tu avance aquí.',
+      };
+    }
+    return {
+      title: 'No hay tareas',
+      description: 'No se encontraron tareas para el filtro actual.',
+    };
+  };
+
+  const emptyContent = getEmptyStateContent();
+
   return (
     <div className={styles.todoContainer}>
       <div className={styles.headingRow}>
@@ -128,7 +155,8 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
       {filteredTodos.length === 0 ? (
         <div className={styles.emptyState}>
           <CheckCircle2 size={36} color="var(--color-primary-soft)" style={{ marginBottom: 12 }} />
-          <p>No hay tareas en esta sección.</p>
+          <h3 className={styles.emptyTitle}>{emptyContent.title}</h3>
+          <p className={styles.emptySubtitle}>{emptyContent.description}</p>
         </div>
       ) : (
         <div className={styles.todoList}>
