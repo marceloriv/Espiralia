@@ -72,7 +72,19 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       <div className={styles.mainWrapper}>
         <header className={styles.topHeader}>
           <h2 className={styles.headerTitle}>{currentView}</h2>
-          <div className={styles.headerDate}>{currentDate}</div>
+          <div className={styles.headerRight}>
+            <span className={styles.headerDate}>{currentDate}</span>
+            <button
+              type="button"
+              className={styles.mobileProfileBtn}
+              onClick={onLockProfile}
+              aria-label={`Cambiar perfil (${profile.name})`}
+              title="Cambiar perfil"
+            >
+              <div className={styles.userAvatarSm}>{profile.avatar}</div>
+              <LogOut size={16} />
+            </button>
+          </div>
         </header>
 
         <main className={styles.contentArea}>{children}</main>
