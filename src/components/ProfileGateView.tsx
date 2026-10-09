@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Lock, Plus, ArrowRight } from 'lucide-react';
+import { Lock, Plus, ArrowRight } from 'lucide-react';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
 import styles from './ProfileGateView.module.css';

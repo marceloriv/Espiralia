@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Compass, CheckSquare, ArrowRight, Clock } from 'lucide-react';
+import { Calendar, Compass, CheckSquare, Clock } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import styles from './DashboardView.module.css';

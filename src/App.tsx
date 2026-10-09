@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { HashRouter } from 'react-router-dom';
 import { StorageService } from './services/storage';
 import { AppRoutes } from './routes';

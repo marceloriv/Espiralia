@@ -1,9 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { AppRoutes } from '../routes';
-import { StorageService } from '../services/storage';
 import type { Profile } from '../types';
 
 describe('AppRoutes con rutas protegidas', () => {
