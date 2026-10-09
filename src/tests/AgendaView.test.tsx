@@ -49,4 +49,21 @@ describe('AgendaView', () => {
 
     expect(screen.queryByText('Almuerzo de trabajo')).not.toBeInTheDocument();
   });
+
+  it('proporciona botones de navegacion accesibles y seleccion de dia con aria-label', async () => {
+    const user = userEvent.setup();
+    render(<AgendaView profileId={profileId} />);
+
+    const prevMonthBtn = screen.getByRole('button', { name: /mes anterior/i });
+    const nextMonthBtn = screen.getByRole('button', { name: /mes siguiente/i });
+    expect(prevMonthBtn).toBeInTheDocument();
+    expect(nextMonthBtn).toBeInTheDocument();
+
+    // Seleccionar día 15
+    const day15Btn = screen.getByRole('button', { name: /día 15/i });
+    expect(day15Btn).toBeInTheDocument();
+    await user.click(day15Btn);
+
+    expect(screen.getByText(/nuevo evento para.*-15/i)).toBeInTheDocument();
+  });
 });

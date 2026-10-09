@@ -117,6 +117,8 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
                   type="button"
                   className={`${styles.dayCell} ${isSelected ? styles.daySelected : ''} ${isToday ? styles.dayToday : ''}`}
                   onClick={() => handleSelectDay(day)}
+                  aria-label={`Día ${day}`}
+                  aria-pressed={isSelected}
                 >
                   <span>{day}</span>
                   {hasEvents && <div className={styles.hasEventDot} />}
