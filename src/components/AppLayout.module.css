@@ -4,6 +4,29 @@
   background-color: var(--color-canvas);
 }
 
+.skipLink {
+  position: absolute;
+  top: -9999px;
+  left: 16px;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--text-button);
+  text-decoration: none;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: top 0.15s ease;
+}
+
+.skipLink:focus-visible {
+  top: 16px;
+  outline: 2px solid var(--color-canvas);
+  outline-offset: 2px;
+}
+
+
 .sidebar {
   width: 260px;
   background-color: var(--color-surface-card);

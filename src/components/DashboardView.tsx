@@ -69,7 +69,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
         <div className={styles.widgetCard}>
           <div className={styles.widgetHeader}>
             <h3 className={styles.widgetTitle}>
-              <Calendar size={18} color="var(--color-primary)" />
+              <Calendar size={18} color="var(--color-primary)" aria-hidden="true" />
               <span>Agenda de hoy</span>
             </h3>
             <span style={{ fontSize: 'var(--text-caption)', color: 'var(--color-muted)' }}>
@@ -83,7 +83,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
             ) : (
               todayEvents.slice(0, 4).map(e => (
                 <div key={e.id} className={styles.widgetItem}>
-                  <Clock size={14} color="var(--color-muted)" />
+                  <Clock size={14} color="var(--color-muted)" aria-hidden="true" />
                   <span className={styles.widgetItemTitle}>{e.title}</span>
                   <span className={styles.widgetItemTime}>{e.startTime || 'Todo el día'}</span>
                 </div>
@@ -106,7 +106,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
         <div className={styles.widgetCard}>
           <div className={styles.widgetHeader}>
             <h3 className={styles.widgetTitle}>
-              <Compass size={18} color="var(--color-primary-active)" />
+              <Compass size={18} color="var(--color-primary-active)" aria-hidden="true" />
               <span>Planner semanal</span>
             </h3>
             <span style={{ fontSize: 'var(--text-caption)', color: 'var(--color-muted)' }}>
@@ -148,7 +148,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
         <div className={styles.widgetCard}>
           <div className={styles.widgetHeader}>
             <h3 className={styles.widgetTitle}>
-              <CheckSquare size={18} color="var(--color-primary)" />
+              <CheckSquare size={18} color="var(--color-primary)" aria-hidden="true" />
               <span>Tareas principales</span>
             </h3>
             <span style={{ fontSize: 'var(--text-caption)', color: 'var(--color-muted)' }}>
@@ -196,7 +196,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
       <section className={styles.metricsSection} aria-label="Métricas y Rendimiento">
         <div className={styles.metricsHeader}>
           <h3 className={styles.metricsTitle}>
-            <BarChart2 size={18} color="var(--color-primary)" />
+            <BarChart2 size={18} color="var(--color-primary)" aria-hidden="true" />
             <span>Métricas y Rendimiento</span>
           </h3>
         </div>

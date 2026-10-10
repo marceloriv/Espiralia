@@ -57,7 +57,7 @@ export const CategoryDistributionChart: React.FC<CategoryDistributionChartProps>
       <div className={styles.chartCard}>
         <div className={styles.chartHeader}>
           <h3 className={styles.chartTitle}>
-            <BarChart3 size={16} color="var(--color-primary-active)" />
+            <BarChart3 size={16} color="var(--color-primary-active)" aria-hidden="true" />
             <span>Distribución por Categoría</span>
           </h3>
           <span className={styles.chartSubtitle}>0 actividades</span>
@@ -74,7 +74,7 @@ export const CategoryDistributionChart: React.FC<CategoryDistributionChartProps>
     >
       <div className={styles.chartHeader}>
         <h3 className={styles.chartTitle}>
-          <BarChart3 size={16} color="var(--color-primary-active)" />
+          <BarChart3 size={16} color="var(--color-primary-active)" aria-hidden="true" />
           <span>Distribución por Categoría</span>
         </h3>
         <span className={styles.chartSubtitle}>

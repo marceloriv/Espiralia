@@ -77,11 +77,12 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
         <div className={styles.profileList}>
           {profiles.map(profile => (
             <button
+              type="button"
               key={profile.id}
               className={styles.profileItem}
               onClick={() => handleProfileClick(profile)}
             >
-              <div className={styles.avatarBadge}>{profile.avatar}</div>
+              <div className={styles.avatarBadge} aria-hidden="true">{profile.avatar}</div>
               <div className={styles.profileInfo}>
                 <div className={styles.profileName}>{profile.name}</div>
                 <div className={styles.profileMeta}>
@@ -89,15 +90,16 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
                 </div>
               </div>
               {profile.pin ? (
-                <Lock size={18} color="var(--color-muted)" />
+                <Lock size={18} color="var(--color-muted)" aria-hidden="true" />
               ) : (
-                <ArrowRight size={18} color="var(--color-primary)" />
+                <ArrowRight size={18} color="var(--color-primary)" aria-hidden="true" />
               )}
             </button>
           ))}
         </div>
 
         <button
+          type="button"
           className={styles.btnPrimary}
           onClick={() => {
             setIsCreating(true);
@@ -105,16 +107,21 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
             setPin('');
           }}
         >
-          <Plus size={18} />
+          <Plus size={18} aria-hidden="true" />
           <span>Nuevo perfil</span>
         </button>
       </div>
 
       {/* Modal crear perfil */}
       {isCreating && (
-        <div className={styles.modalBackdrop}>
+        <div
+          className={styles.modalBackdrop}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="create-profile-title"
+        >
           <div className={styles.modalBox}>
-            <h3 className={styles.cardHeading}>Crear perfil</h3>
+            <h3 id="create-profile-title" className={styles.cardHeading}>Crear perfil</h3>
             <form onSubmit={handleCreateProfile}>
               <div className={styles.formGroup}>
                 <label htmlFor="create-profile-name" className={styles.formLabel}>
@@ -166,9 +173,14 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
 
       {/* Modal PIN */}
       {selectedProfileForPin && (
-        <div className={styles.modalBackdrop}>
+        <div
+          className={styles.modalBackdrop}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="verify-pin-title"
+        >
           <div className={styles.modalBox}>
-            <h3 className={styles.cardHeading}>Ingresa tu PIN</h3>
+            <h3 id="verify-pin-title" className={styles.cardHeading}>Ingresa tu PIN</h3>
             <p className={styles.brandSubtitle} style={{ textAlign: 'center', marginBottom: 16 }}>
               Perfil: {selectedProfileForPin.name}
             </p>
@@ -186,10 +198,16 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
                     setPinInput(e.target.value);
                     setPinError(false);
                   }}
+                  aria-invalid={pinError ? 'true' : 'false'}
+                  aria-describedby={pinError ? 'pin-error-alert' : undefined}
                   autoFocus
                   required
                 />
-                {pinError && <p className={styles.errorMessage}>PIN incorrecto. Inténtalo de nuevo.</p>}
+                {pinError && (
+                  <p id="pin-error-alert" className={styles.errorMessage} role="alert">
+                    PIN incorrecto. Inténtalo de nuevo.
+                  </p>
+                )}
               </div>
 
               <div className={styles.modalActions}>

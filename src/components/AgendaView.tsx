@@ -96,11 +96,11 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
         <div className={styles.calendarCard}>
           <div className={styles.calendarNav}>
             <button type="button" className={styles.navBtn} onClick={handlePrevMonth} aria-label="mes anterior">
-              <ChevronLeft size={18} />
+              <ChevronLeft size={18} aria-hidden="true" />
             </button>
             <h3 className={styles.monthLabel}>{monthName}</h3>
             <button type="button" className={styles.navBtn} onClick={handleNextMonth} aria-label="mes siguiente">
-              <ChevronRight size={18} />
+              <ChevronRight size={18} aria-hidden="true" />
             </button>
           </div>
 
@@ -197,7 +197,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
                     <div className={styles.eventInfo}>
                       <span className={styles.eventTitle}>{ev.title}</span>
                       <span className={styles.eventTime}>
-                        <Clock size={12} style={{ display: 'inline', marginRight: 4 }} />
+                        <Clock size={12} aria-hidden="true" style={{ display: 'inline', marginRight: 4 }} />
                         {ev.startTime || 'Todo el día'} · {ev.category}
                       </span>
                     </div>
@@ -207,7 +207,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
                       aria-label={`eliminar ${ev.title}`}
                       onClick={() => handleDeleteEvent(ev.id)}
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={16} aria-hidden="true" />
                     </button>
                   </div>
                 ))}

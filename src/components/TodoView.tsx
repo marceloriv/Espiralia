@@ -147,7 +147,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
           </select>
 
           <button type="submit" className={styles.btnAdd}>
-            <Plus size={18} />
+            <Plus size={18} aria-hidden="true" />
             <span>Añadir</span>
           </button>
         </form>
@@ -158,8 +158,10 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
         {(['todas', 'pendientes', 'completadas'] as FilterStatus[]).map(status => (
           <button
             key={status}
+            type="button"
             className={`${styles.filterBtn} ${filterStatus === status ? styles.filterBtnActive : ''}`}
             onClick={() => setFilterStatus(status)}
+            aria-pressed={filterStatus === status}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
           </button>
@@ -169,7 +171,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
       {/* Lista de tareas */}
       {filteredTodos.length === 0 ? (
         <div className={styles.emptyState}>
-          <CheckCircle2 size={36} color="var(--color-primary-soft)" style={{ marginBottom: 12 }} />
+          <CheckCircle2 size={36} color="var(--color-primary-soft)" aria-hidden="true" style={{ marginBottom: 12 }} />
           <h3 className={styles.emptyTitle}>{emptyContent.title}</h3>
           <p className={styles.emptySubtitle}>{emptyContent.description}</p>
         </div>
@@ -203,7 +205,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
                 aria-label={`eliminar ${todo.title}`}
                 onClick={() => handleDeleteTodo(todo.id)}
               >
-                <Trash2 size={16} />
+                <Trash2 size={16} aria-hidden="true" />
               </button>
             </div>
           ))}

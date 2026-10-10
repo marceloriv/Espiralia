@@ -54,7 +54,7 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({ todos 
       <div className={styles.chartCard}>
         <div className={styles.chartHeader}>
           <h3 className={styles.chartTitle}>
-            <CheckCircle2 size={16} color="var(--color-success)" />
+            <CheckCircle2 size={16} color="var(--color-success)" aria-hidden="true" />
             <span>Progreso de Tareas</span>
           </h3>
           <span className={styles.chartSubtitle}>0 tareas</span>
@@ -71,7 +71,7 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({ todos 
     >
       <div className={styles.chartHeader}>
         <h3 className={styles.chartTitle}>
-          <CheckCircle2 size={16} color="var(--color-success)" />
+          <CheckCircle2 size={16} color="var(--color-success)" aria-hidden="true" />
           <span>Progreso de Tareas</span>
         </h3>
         <span className={styles.chartSubtitle}>

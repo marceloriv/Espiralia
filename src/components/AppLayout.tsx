@@ -34,28 +34,35 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   };
 
   const navItems: { view: ViewType; label: string; icon: React.ReactNode }[] = [
-    { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { view: 'agenda', label: 'Agenda', icon: <Calendar size={20} /> },
-    { view: 'planner', label: 'Planner', icon: <Compass size={20} /> },
-    { view: 'todo', label: 'To-Do', icon: <CheckSquare size={20} /> },
+    { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} aria-hidden="true" /> },
+    { view: 'agenda', label: 'Agenda', icon: <Calendar size={20} aria-hidden="true" /> },
+    { view: 'planner', label: 'Planner', icon: <Compass size={20} aria-hidden="true" /> },
+    { view: 'todo', label: 'To-Do', icon: <CheckSquare size={20} aria-hidden="true" /> },
   ];
 
   return (
     <div className={styles.appContainer}>
+      {/* Enlace para saltar navegación (WCAG 2.4.1) */}
+      <a href="#main-content" className={styles.skipLink}>
+        Saltar al contenido principal
+      </a>
+
       {/* Sidebar persistente */}
-      <aside className={styles.sidebar}>
+      <aside className={styles.sidebar} aria-label="Barra lateral">
         <div className={styles.brand}>
           <h1 className={styles.brandLogo}>Espiralia</h1>
         </div>
 
-        <nav className={styles.navMenu}>
+        <nav className={styles.navMenu} aria-label="Navegación principal">
           {navItems.map(item => {
             const isActive = currentView === item.view;
             return (
               <button
+                type="button"
                 key={item.view}
                 className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
                 onClick={() => onViewChange(item.view)}
+                aria-current={isActive ? 'page' : undefined}
               >
                 {item.icon}
                 <span>{item.label}</span>
@@ -66,11 +73,11 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
         <div className={styles.sidebarFooter}>
           <div className={styles.userCard}>
-            <div className={styles.userAvatar}>{profile.avatar}</div>
+            <div className={styles.userAvatar} aria-hidden="true">{profile.avatar}</div>
             <div className={styles.userName}>{profile.name}</div>
           </div>
-          <button className={styles.lockButton} onClick={handleLock}>
-            <LogOut size={16} />
+          <button type="button" className={styles.lockButton} onClick={handleLock}>
+            <LogOut size={16} aria-hidden="true" />
             <span>Cambiar perfil</span>
           </button>
         </div>
@@ -89,13 +96,15 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               aria-label={`Cambiar perfil (${profile.name})`}
               title="Cambiar perfil"
             >
-              <div className={styles.userAvatarSm}>{profile.avatar}</div>
-              <LogOut size={16} />
+              <div className={styles.userAvatarSm} aria-hidden="true">{profile.avatar}</div>
+              <LogOut size={16} aria-hidden="true" />
             </button>
           </div>
         </header>
 
-        <main className={styles.contentArea}>{children}</main>
+        <main id="main-content" className={styles.contentArea} tabIndex={-1}>
+          {children}
+        </main>
       </div>
     </div>
   );
