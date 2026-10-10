@@ -216,6 +216,8 @@
   border-radius: var(--radius-md);
   border-left: 3px solid var(--color-primary);
   background-color: #faf5fa;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 44px;
 }
 
 .eventInfo {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Calendar, Compass, CheckSquare, Clock, BarChart2 } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, ViewType } from '../types';
 import { StorageService } from '../services/storage';
@@ -15,6 +15,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
   const [planner, setPlanner] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profile.id));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profile.id));
+  const isFirstMount = useRef(true);
 
   const loadData = useCallback(() => {
     setEvents(StorageService.getEvents(profile.id));
@@ -23,10 +24,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   }, [profile.id]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadData();
   }, [loadData]);
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const [todayStr] = useState(() => new Date().toISOString().split('T')[0]);
   const todayEvents = events.filter(e => e.date === todayStr);
   const pendingTodos = todos.filter(t => !t.completed);
   const completedTodosCount = todos.filter(t => t.completed).length;
@@ -64,7 +69,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
         <div className={styles.widgetCard}>
           <div className={styles.widgetHeader}>
             <h3 className={styles.widgetTitle}>
-              <Calendar size={18} color="var(--color-primary)" />
+              <Calendar size={18} color="var(--color-primary)" aria-hidden="true" />
               <span>Agenda de hoy</span>
             </h3>
             <span style={{ fontSize: 'var(--text-caption)', color: 'var(--color-muted)' }}>
@@ -78,7 +83,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
             ) : (
               todayEvents.slice(0, 4).map(e => (
                 <div key={e.id} className={styles.widgetItem}>
-                  <Clock size={14} color="var(--color-muted)" />
+                  <Clock size={14} color="var(--color-muted)" aria-hidden="true" />
                   <span className={styles.widgetItemTitle}>{e.title}</span>
                   <span className={styles.widgetItemTime}>{e.startTime || 'Todo el día'}</span>
                 </div>
@@ -101,7 +106,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
         <div className={styles.widgetCard}>
           <div className={styles.widgetHeader}>
             <h3 className={styles.widgetTitle}>
-              <Compass size={18} color="var(--color-primary-active)" />
+              <Compass size={18} color="var(--color-primary-active)" aria-hidden="true" />
               <span>Planner semanal</span>
             </h3>
             <span style={{ fontSize: 'var(--text-caption)', color: 'var(--color-muted)' }}>
@@ -143,7 +148,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
         <div className={styles.widgetCard}>
           <div className={styles.widgetHeader}>
             <h3 className={styles.widgetTitle}>
-              <CheckSquare size={18} color="var(--color-primary)" />
+              <CheckSquare size={18} color="var(--color-primary)" aria-hidden="true" />
               <span>Tareas principales</span>
             </h3>
             <span style={{ fontSize: 'var(--text-caption)', color: 'var(--color-muted)' }}>
@@ -187,11 +192,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
         </div>
       </div>
 
-      {/* Sección de Métricas y Rendimiento con Chart.js */}
+      {/* Sección de Métricas y Rendimiento con TanStack Charts */}
       <section className={styles.metricsSection} aria-label="Métricas y Rendimiento">
         <div className={styles.metricsHeader}>
           <h3 className={styles.metricsTitle}>
-            <BarChart2 size={18} color="var(--color-primary)" />
+            <BarChart2 size={18} color="var(--color-primary)" aria-hidden="true" />
             <span>Métricas y Rendimiento</span>
           </h3>
         </div>

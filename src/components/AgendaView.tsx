@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Clock, Trash2 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { AgendaEvent, EventCategory } from '../types';
@@ -12,9 +12,11 @@ interface AgendaViewProps {
 const agendaMonthFormatter = new Intl.DateTimeFormat('es-CL', { month: 'long', year: 'numeric' });
 
 export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(() => new Date());
+  const [todayStr] = useState(() => new Date().toISOString().split('T')[0]);
   const [selectedDateStr, setSelectedDateStr] = useState(() => new Date().toISOString().split('T')[0]);
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
+  const isFirstMount = useRef(true);
 
   // Form states
   const [title, setTitle] = useState('');
@@ -26,6 +28,10 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
   }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadEvents();
   }, [loadEvents]);
 
@@ -90,11 +96,11 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
         <div className={styles.calendarCard}>
           <div className={styles.calendarNav}>
             <button type="button" className={styles.navBtn} onClick={handlePrevMonth} aria-label="mes anterior">
-              <ChevronLeft size={18} />
+              <ChevronLeft size={18} aria-hidden="true" />
             </button>
             <h3 className={styles.monthLabel}>{monthName}</h3>
             <button type="button" className={styles.navBtn} onClick={handleNextMonth} aria-label="mes siguiente">
-              <ChevronRight size={18} />
+              <ChevronRight size={18} aria-hidden="true" />
             </button>
           </div>
 
@@ -113,7 +119,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
               const day = i + 1;
               const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
               const isSelected = dateStr === selectedDateStr;
-              const isToday = dateStr === new Date().toISOString().split('T')[0];
+              const isToday = dateStr === todayStr;
               const hasEvents = events.some(e => e.date === dateStr);
 
               return (
@@ -191,7 +197,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
                     <div className={styles.eventInfo}>
                       <span className={styles.eventTitle}>{ev.title}</span>
                       <span className={styles.eventTime}>
-                        <Clock size={12} style={{ display: 'inline', marginRight: 4 }} />
+                        <Clock size={12} aria-hidden="true" style={{ display: 'inline', marginRight: 4 }} />
                         {ev.startTime || 'Todo el día'} · {ev.category}
                       </span>
                     </div>
@@ -201,7 +207,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
                       aria-label={`eliminar ${ev.title}`}
                       onClick={() => handleDeleteEvent(ev.id)}
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={16} aria-hidden="true" />
                     </button>
                   </div>
                 ))}

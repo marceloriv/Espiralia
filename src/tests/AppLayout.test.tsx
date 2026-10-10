@@ -66,4 +66,27 @@ describe('AppLayout', () => {
     expect(infoSpy).toHaveBeenCalledWith({ title: 'Sesión cerrada' });
     expect(onLockProfile).toHaveBeenCalledTimes(1);
   });
+
+  it('proporciona enlace de salto de navegación (skip link) y landmarks accesibles', () => {
+    render(
+      <AppLayout
+        profile={mockProfile}
+        currentView="dashboard"
+        onViewChange={vi.fn()}
+        onLockProfile={vi.fn()}
+      >
+        <div>Contenido Principal</div>
+      </AppLayout>
+    );
+
+    const skipLink = screen.getByRole('link', { name: /saltar al contenido principal/i });
+    expect(skipLink).toBeInTheDocument();
+    expect(skipLink).toHaveAttribute('href', '#main-content');
+
+    const nav = screen.getByRole('navigation', { name: /navegación principal/i });
+    expect(nav).toBeInTheDocument();
+
+    const activeBtn = screen.getByRole('button', { name: /dashboard/i });
+    expect(activeBtn).toHaveAttribute('aria-current', 'page');
+  });
 });

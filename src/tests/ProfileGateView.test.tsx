@@ -23,6 +23,8 @@ describe('ProfileGateView', () => {
     const openCreateBtn = screen.getByRole('button', { name: /nuevo perfil/i });
     await user.click(openCreateBtn);
 
+    expect(screen.getByRole('dialog', { name: /crear perfil/i })).toBeInTheDocument();
+
     const nameInput = screen.getByLabelText(/nombre/i);
     await user.type(nameInput, 'Valentina');
 
@@ -52,7 +54,7 @@ describe('ProfileGateView', () => {
     const profileCard = screen.getByText('Carlos');
     await user.click(profileCard);
 
-    expect(screen.getByText(/ingresa tu pin/i)).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: /ingresa tu pin/i })).toBeInTheDocument();
 
     const pinInput = screen.getByLabelText(/pin de acceso/i);
     await user.type(pinInput, '0000');
@@ -60,7 +62,8 @@ describe('ProfileGateView', () => {
     const verifyBtn = screen.getByRole('button', { name: /desbloquear/i });
     await user.click(verifyBtn);
 
-    expect(screen.getByText(/pin incorrecto/i)).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent(/pin incorrecto/i);
+    expect(pinInput).toHaveAttribute('aria-invalid', 'true');
     expect(errorSpy).toHaveBeenCalledWith({ title: 'PIN incorrecto' });
     expect(onSelectProfile).not.toHaveBeenCalled();
 

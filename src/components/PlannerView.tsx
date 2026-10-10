@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Trash2, Sun, Sunset, Moon, Target } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { PlannerBlock, PlannerPeriod, TimeSlot, Priority } from '../types';
@@ -15,12 +15,17 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
   const [title, setTitle] = useState('');
   const [timeSlot, setTimeSlot] = useState<TimeSlot>('mañana');
   const [priority, setPriority] = useState<Priority>('alta');
+  const isFirstMount = useRef(true);
 
   const loadBlocks = useCallback(() => {
     setBlocks(StorageService.getPlanner(profileId));
   }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadBlocks();
   }, [loadBlocks]);
 
@@ -62,10 +67,10 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
   const currentPeriodBlocks = blocks.filter(b => b.period === period);
 
   const slotIcons: Record<TimeSlot, React.ReactNode> = {
-    mañana: <Sun size={18} color="var(--color-primary)" />,
-    tarde: <Sunset size={18} color="var(--color-primary-active)" />,
-    noche: <Moon size={18} color="var(--color-ink)" />,
-    meta: <Target size={18} color="var(--color-primary-soft)" />,
+    mañana: <Sun size={18} color="var(--color-primary)" aria-hidden="true" />,
+    tarde: <Sunset size={18} color="var(--color-primary-active)" aria-hidden="true" />,
+    noche: <Moon size={18} color="var(--color-ink)" aria-hidden="true" />,
+    meta: <Target size={18} color="var(--color-primary-soft)" aria-hidden="true" />,
   };
 
   const slots: TimeSlot[] = ['mañana', 'tarde', 'noche', 'meta'];
@@ -80,6 +85,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
             type="button"
             className={`${styles.toggleBtn} ${period === 'semanal' ? styles.toggleBtnActive : ''}`}
             onClick={() => setPeriod('semanal')}
+            aria-pressed={period === 'semanal'}
           >
             Semanal
           </button>
@@ -87,6 +93,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
             type="button"
             className={`${styles.toggleBtn} ${period === 'mensual' ? styles.toggleBtnActive : ''}`}
             onClick={() => setPeriod('mensual')}
+            aria-pressed={period === 'mensual'}
           >
             Mensual
           </button>
@@ -128,7 +135,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
           </select>
 
           <button type="submit" className={styles.btnAdd}>
-            <Plus size={18} />
+            <Plus size={18} aria-hidden="true" />
             <span>Agregar bloque</span>
           </button>
         </form>
@@ -169,7 +176,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
                         aria-label={`eliminar ${block.title}`}
                         onClick={() => handleDeleteBlock(block.id)}
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={16} aria-hidden="true" />
                       </button>
                     </div>
                   ))}

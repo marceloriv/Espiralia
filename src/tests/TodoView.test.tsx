@@ -38,11 +38,14 @@ describe('TodoView', () => {
     // Filter pendientes -> no debe aparecer
     const pendingFilter = screen.getByRole('button', { name: /pendientes/i });
     await user.click(pendingFilter);
+    expect(pendingFilter).toHaveAttribute('aria-pressed', 'true');
     expect(screen.queryByText('Comprar insumos')).not.toBeInTheDocument();
 
     // Filter completadas -> sí debe aparecer
     const completedFilter = screen.getByRole('button', { name: /completadas/i });
     await user.click(completedFilter);
+    expect(completedFilter).toHaveAttribute('aria-pressed', 'true');
+    expect(pendingFilter).toHaveAttribute('aria-pressed', 'false');
     expect(screen.getByText('Comprar insumos')).toBeInTheDocument();
   });
 

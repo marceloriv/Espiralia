@@ -17,6 +17,7 @@ describe('TaskCompletionChart', () => {
     render(<TaskCompletionChart todos={mockTodos} />);
     expect(screen.getByLabelText(/cumplimiento de tareas: 1 de 2 completadas \(50%\)/i)).toBeInTheDocument();
     expect(screen.getByText('50%')).toBeInTheDocument();
+    expect(document.querySelector('svg.ts-chart')).toBeInTheDocument();
   });
 
   it('muestra 100% de cumplimiento cuando todas están completadas', () => {

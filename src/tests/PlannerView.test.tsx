@@ -67,12 +67,18 @@ describe('PlannerView', () => {
     const user = userEvent.setup();
     render(<PlannerView profileId={profileId} />);
 
+    const semanalBtn = screen.getByRole('button', { name: /semanal/i });
+    const mensualBtn = screen.getByRole('button', { name: /mensual/i });
+    expect(semanalBtn).toHaveAttribute('aria-pressed', 'true');
+    expect(mensualBtn).toHaveAttribute('aria-pressed', 'false');
+
     // Verifica mensaje contextual en la franja mañana
     expect(screen.getByText(/sin bloques para mañana\. agrega un objetivo/i)).toBeInTheDocument();
 
     // Alternar a periodo mensual
-    const mensualBtn = screen.getByRole('button', { name: /mensual/i });
     await user.click(mensualBtn);
+    expect(mensualBtn).toHaveAttribute('aria-pressed', 'true');
+    expect(semanalBtn).toHaveAttribute('aria-pressed', 'false');
 
     // Debe seguir mostrando el estado explicativo
     expect(screen.getByText(/sin bloques para mañana\. agrega un objetivo/i)).toBeInTheDocument();

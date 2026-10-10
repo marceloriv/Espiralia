@@ -101,6 +101,8 @@
   border-radius: var(--radius-md);
   background-color: #faf6fa;
   font-size: var(--text-body-sm);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 36px;
 }
 
 .widgetItemCheckbox {

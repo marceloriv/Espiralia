@@ -21,6 +21,7 @@ describe('CategoryDistributionChart', () => {
     render(<CategoryDistributionChart todos={todos} planner={planner} />);
     expect(screen.getByLabelText(/distribución de actividades por categoría/i)).toBeInTheDocument();
     expect(screen.getByText(/3 actividades/i)).toBeInTheDocument();
+    expect(document.querySelector('svg.ts-chart')).toBeInTheDocument();
   });
 
   it('muestra desglose cuando solo hay tareas', () => {
