@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { HashRouter } from 'react-router-dom';
+import { Toaster, sileo } from 'sileo';
+import 'sileo/styles.css';
 import { StorageService } from './services/storage';
 import { AppRoutes } from './routes';
 import type { Profile } from './types';
@@ -14,6 +16,7 @@ export function App() {
   const handleSelectProfile = (profile: Profile) => {
     StorageService.setActiveProfileId(profile.id);
     setActiveProfile(profile);
+    sileo.success(`Sesión iniciada: ¡Hola, ${profile.name}!`);
   };
 
   const handleLockProfile = () => {
@@ -23,6 +26,7 @@ export function App() {
 
   return (
     <HashRouter>
+      <Toaster position="top-right" />
       <AppRoutes
         activeProfile={activeProfile}
         onSelectProfile={handleSelectProfile}
