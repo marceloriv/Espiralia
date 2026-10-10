@@ -42,15 +42,21 @@ describe('todayEventsSorted', () => {
   });
 });
 
-const todo = (patch: Partial<TodoItem> & Pick<TodoItem, 'id'>): TodoItem => ({
-  profileId: 'p',
-  title: patch.id,
-  category: 'General',
-  priority: 'alta',
-  completed: false,
-  createdAt: '2026-10-01',
-  ...patch,
-});
+const todo = (patch: Partial<TodoItem> & Pick<TodoItem, 'id'>): TodoItem => {
+  const statusDefault = patch.completed ? 'completada' : 'pendiente';
+  const { areaId = 'area-1', status = statusDefault, ...rest } = patch;
+  return {
+    profileId: 'p',
+    title: patch.id,
+    areaId,
+    category: 'General',
+    priority: 'alta',
+    status,
+    completed: patch.completed ?? (status === 'completada'),
+    createdAt: '2026-10-01',
+    ...rest,
+  };
+};
 
 describe('criticalTodos', () => {
   // Técnica: tabla de decisión (completada × prioridad × fecha).
@@ -63,6 +69,13 @@ describe('criticalTodos', () => {
     expect(criticalTodos(todos).map(t => t.id)).toEqual(['alta']);
     expect(isCritical(todos[0])).toBe(true);
     expect(isCritical(todos[2])).toBe(false);
+  });
+
+  it('considera tareas en_progreso de prioridad alta como críticas y excluye completadas con status', () => {
+    const enProg = todo({ id: 'prog', status: 'en_progreso', completed: false });
+    const comp = todo({ id: 'comp', status: 'completada', completed: true });
+    expect(isCritical(enProg)).toBe(true);
+    expect(isCritical(comp)).toBe(false);
   });
 
   it('ordena por dueDate ascendente y deja sin fecha al final', () => {

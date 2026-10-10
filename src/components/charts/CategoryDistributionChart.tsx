@@ -5,6 +5,7 @@ import { scaleBand } from '@tanstack/charts/scales/band';
 import { scaleLinear } from '@tanstack/charts/scales/linear';
 import { BarChart3 } from 'lucide-react';
 import type { TodoItem, PlannerBlock } from '../../types';
+import { StorageService } from '../../services/storage';
 import styles from './CategoryDistributionChart.module.css';
 
 interface CategoryDistributionChartProps {
@@ -24,7 +25,12 @@ export const CategoryDistributionChart: React.FC<CategoryDistributionChartProps>
     const categoryMap: Record<string, { category: string; todos: number; planner: number }> = {};
 
     todos.forEach(t => {
-      const cat = t.category?.trim() || 'General';
+      let cat = t.category?.trim();
+      if (!cat && t.areaId && t.profileId) {
+        const area = StorageService.getAreas(t.profileId).find(a => a.id === t.areaId);
+        cat = area?.name;
+      }
+      cat = cat || 'General';
       if (!categoryMap[cat]) {
         categoryMap[cat] = { category: cat, todos: 0, planner: 0 };
       }

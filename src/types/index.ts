@@ -47,13 +47,25 @@ export interface PlannerBlock {
   completed: boolean;
 }
 
+export type TaskStatus = 'pendiente' | 'en_progreso' | 'completada';
+
+export interface Area {
+  id: string;
+  profileId: string;
+  name: string;
+  color: string;
+  createdAt: string;
+}
+
 export interface TodoItem {
   id: string;
   profileId: string;
   title: string;
-  category: string;
+  areaId: string;
+  category?: string;
   priority: Priority;
-  completed: boolean;
+  status: TaskStatus;
+  completed?: boolean;
   dueDate?: string; // YYYY-MM-DD hora local
   createdAt: string;
 }

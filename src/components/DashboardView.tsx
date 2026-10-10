@@ -18,6 +18,11 @@ const longDateFormatter = new Intl.DateTimeFormat('es-CL', { weekday: 'long', da
 
 const countLabel = (n: number, singular: string, plural: string) => `${n} ${n === 1 ? singular : plural}`;
 
+const formatHeroDate = (date: Date): string => {
+  const formatted = longDateFormatter.format(date);
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+};
+
 export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigate }) => {
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
   const [planner, setPlanner] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profile.id));
@@ -42,7 +47,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   const todayStr = toLocalDateStr(now);
   const todayEvents = todayEventsSorted(events, todayStr);
   const todayEventsTotal = events.filter(e => occursOn(e, todayStr)).length;
-  const pendingCount = todos.filter(t => !t.completed).length;
+  const pendingCount = todos.filter(t => (t.status ? t.status !== 'completada' : !t.completed)).length;
   const criticalCount = todos.filter(isCritical).length;
   const critical = criticalTodos(todos);
   const allWeekBlocks = planner.filter(b => b.period === 'semanal');
@@ -56,7 +61,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   return (
     <div className={styles.dashboardContainer}>
       <section className={styles.hero} aria-labelledby="dash-greeting">
-        <p className={styles.heroDate}>{longDateFormatter.format(now)}</p>
+        <p className={styles.heroDate}>{formatHeroDate(now)}</p>
         <h2 id="dash-greeting" className={styles.heroTitle}>
           {greetingFor(now)}, {profile.name}.
         </h2>
