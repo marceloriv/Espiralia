@@ -202,9 +202,11 @@ export const StorageService = {
 
   saveTodo(todo: TodoItem): void {
     const list = this.getTodos(todo.profileId);
+    const status: TaskStatus = todo.status ?? (todo.completed ? 'completada' : 'pendiente');
     const normalized: TodoItem = {
       ...todo,
-      completed: todo.status === 'completada',
+      status,
+      completed: status === 'completada',
     };
     const existingIndex = list.findIndex(t => t.id === todo.id);
     if (existingIndex >= 0) {

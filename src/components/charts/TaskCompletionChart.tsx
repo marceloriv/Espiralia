@@ -12,7 +12,7 @@ interface TaskCompletionChartProps {
 
 export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({ todos }) => {
   const total = todos.length;
-  const completedCount = todos.filter(t => t.completed).length;
+  const completedCount = todos.filter(t => (t.status ? t.status === 'completada' : t.completed)).length;
   const pendingCount = total - completedCount;
   const percentage = total > 0 ? Math.round((completedCount / total) * 100) : 0;
 

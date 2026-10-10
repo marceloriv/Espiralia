@@ -44,6 +44,8 @@ describe('DashboardView', () => {
     renderDashboard();
 
     expect(screen.getByRole('heading', { level: 2, name: 'Buen día, Andrés.' })).toBeInTheDocument();
+    const heroDate = screen.getByText(/octubre/i);
+    expect(heroDate.textContent).not.toMatch(/De Octubre/);
     const chips = within(screen.getByRole('list', { name: /resumen/i }));
     expect(chips.getByText('3 pendientes')).toBeInTheDocument();
     expect(chips.getByText('2 críticos')).toBeInTheDocument();

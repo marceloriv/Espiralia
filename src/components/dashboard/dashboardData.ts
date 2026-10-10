@@ -18,7 +18,8 @@ export const todayEventsSorted = (events: AgendaEvent[], todayStr: string, limit
     .sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? ''))
     .slice(0, limit);
 
-export const isCritical = (todo: TodoItem): boolean => !todo.completed && todo.priority === 'alta';
+export const isCritical = (todo: TodoItem): boolean =>
+  (todo.status !== undefined ? todo.status !== 'completada' : !todo.completed) && todo.priority === 'alta';
 
 /** Críticos por vencimiento ascendente; sin fecha al final, en orden de inserción (sort estable). */
 export const criticalTodos = (todos: TodoItem[], limit = 4): TodoItem[] =>

@@ -19,7 +19,6 @@
   font-family: var(--font-family-3);
   font-size: var(--text-caption);
   color: var(--color-muted);
-  text-transform: capitalize;
 }
 
 .heroTitle {
@@ -277,7 +276,11 @@
   flex-shrink: 0;
   width: 20px;
   height: 20px;
+  padding: 12px;
+  margin: -12px;
+  box-sizing: content-box;
   accent-color: var(--color-primary);
+  cursor: pointer;
 }
 
 .emptyNotice {
