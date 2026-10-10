@@ -1,7 +1,6 @@
 import React from 'react';
 import { Chart } from '@tanstack/charts/react';
 import { defineChart, barY } from '@tanstack/charts';
-import { svgChartRenderer } from '@tanstack/charts/svg/renderer';
 import { scaleBand } from '@tanstack/charts/scales/band';
 import { scaleLinear } from '@tanstack/charts/scales/linear';
 import { BarChart3 } from 'lucide-react';
@@ -85,7 +84,6 @@ export const CategoryDistributionChart: React.FC<CategoryDistributionChartProps>
 
       <div className={styles.chartWrapper}>
         <Chart
-          renderer={svgChartRenderer}
           definition={chart}
           ariaLabel="Gráfico de barras de actividades"
           aspectRatio={1.6}

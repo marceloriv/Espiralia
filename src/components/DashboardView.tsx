@@ -192,7 +192,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
         </div>
       </div>
 
-      {/* Sección de Métricas y Rendimiento con Chart.js */}
+      {/* Sección de Métricas y Rendimiento con TanStack Charts */}
       <section className={styles.metricsSection} aria-label="Métricas y Rendimiento">
         <div className={styles.metricsHeader}>
           <h3 className={styles.metricsTitle}>

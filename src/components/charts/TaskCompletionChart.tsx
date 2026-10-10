@@ -2,7 +2,6 @@ import React from 'react';
 import { Chart } from '@tanstack/charts/react';
 import { defineChart } from '@tanstack/charts';
 import { pie, polar, radialArc } from '@tanstack/charts/polar';
-import { svgChartRenderer } from '@tanstack/charts/svg/renderer';
 import { CheckCircle2 } from 'lucide-react';
 import type { TodoItem } from '../../types';
 import styles from './TaskCompletionChart.module.css';
@@ -82,7 +81,6 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({ todos 
 
       <div className={styles.chartWrapper}>
         <Chart
-          renderer={svgChartRenderer}
           definition={chart}
           ariaLabel={`Progreso: ${percentage}%`}
           aspectRatio={1}
