@@ -3,7 +3,7 @@ import { Lock, Plus, ArrowRight } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
-import { PIN_PATTERN, hashPin, isPinProtected, migrateLegacyPins, verifyPin } from '../services/pinHash';
+import { PIN_PATTERN, hashPin, isPinProtected, migrateStoredPins, verifyPin } from '../services/pinHash';
 import styles from './ProfileGateView.module.css';
 
 interface ProfileGateViewProps {
@@ -26,12 +26,9 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
   // Migra PIN en texto plano a hash apenas se abre la pantalla (§10 A04).
   useEffect(() => {
     let cancelled = false;
-    const stored = StorageService.getProfiles();
-    if (!stored.some(p => p.pin !== undefined && !p.pinHash)) return;
-    migrateLegacyPins(stored)
-      .then(migrated => {
-        migrated.forEach(p => StorageService.saveProfile(p));
-        if (!cancelled) setProfiles(StorageService.getProfiles());
+    migrateStoredPins()
+      .then(changed => {
+        if (changed && !cancelled) setProfiles(StorageService.getProfiles());
       })
       .catch(() => {
         // ponytail: sin Web Crypto (contexto no seguro) el PIN legado queda intacto y se reintenta en la próxima carga.

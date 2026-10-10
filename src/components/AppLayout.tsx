@@ -43,6 +43,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 }) => {
   const [currentDate] = useState(() => layoutDateFormatter.format(new Date()));
   const isProtected = isPinProtected(profile);
+  const lockText = isProtected ? 'Bloquear perfil' : 'Cambiar perfil';
 
   const handleLock = () => {
     sileo.info({ title: 'Sesión cerrada' });
@@ -98,9 +99,17 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           <span className={styles.headerTitle}>{VIEW_TITLES[currentView]}</span>
           <div className={styles.headerRight}>
             <span className={styles.headerDate}>{currentDate}</span>
-            <button type="button" className={styles.lockButton} onClick={handleLock}>
+            <button
+              type="button"
+              className={styles.lockButton}
+              onClick={handleLock}
+              aria-label={`${lockText} (${profile.name})`}
+            >
+              <span className={styles.headerAvatar} aria-hidden="true">
+                {profile.avatar}
+              </span>
               {isProtected ? <Lock size={16} aria-hidden="true" /> : <LogOut size={16} aria-hidden="true" />}
-              <span className={styles.lockLabel}>{isProtected ? 'Bloquear perfil' : 'Cambiar perfil'}</span>
+              <span className={styles.lockLabel}>{lockText}</span>
             </button>
           </div>
         </header>

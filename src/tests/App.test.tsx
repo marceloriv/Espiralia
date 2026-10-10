@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { App } from '../App';
@@ -9,6 +9,22 @@ describe('App integración general', () => {
     localStorage.clear();
     window.location.hash = '';
     vi.clearAllMocks();
+  });
+
+  // Revisión final, Important 2: la sesión activa salta la pantalla de perfiles; el PIN se migra igual al arrancar.
+  it('migra a hash el PIN en texto plano al arrancar con una sesión activa', async () => {
+    localStorage.setItem(
+      'espiralia_profiles',
+      JSON.stringify([{ id: 'p-legacy', name: 'Rosa', avatar: 'R', pin: '4321', createdAt: '2026-10-09' }]),
+    );
+    localStorage.setItem('espiralia_active_profile_id', 'p-legacy');
+
+    render(<App />);
+
+    await waitFor(() => expect(localStorage.getItem('espiralia_profiles')).not.toContain('4321'));
+    const [stored] = JSON.parse(localStorage.getItem('espiralia_profiles')!);
+    expect(stored.pin).toBeUndefined();
+    expect(stored.pinHash).toMatch(/^[0-9a-f]{64}$/);
   });
 
   it('inicia en el selector de perfiles si no hay sesion activa', () => {

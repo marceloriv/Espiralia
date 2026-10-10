@@ -214,6 +214,11 @@
   color: var(--color-primary);
 }
 
+/* Avatar del perfil activo: solo en móvil, donde la tarjeta del sidebar está oculta. */
+.headerAvatar {
+  display: none;
+}
+
 .navItem:focus-visible,
 .lockButton:focus-visible {
   outline: 2px solid var(--color-primary);
@@ -336,8 +341,22 @@
   /* Solo ícono en móvil: la etiqueta queda para lectores de pantalla y el título no se trunca. */
   .lockButton {
     justify-content: center;
+    gap: 6px;
     min-width: 44px;
-    padding: 0;
+    padding: 0 8px;
+  }
+
+  .headerAvatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-size: 12px;
+    font-weight: 600;
   }
 
   .lockLabel {

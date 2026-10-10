@@ -70,11 +70,25 @@ describe('AppLayout', () => {
     expect(within(screen.getByRole('banner')).getByText(title)).toBeInTheDocument();
   });
 
+  // Guarda de la deuda técnica del roadmap: el layout expone exactamente estos controles y ningún campo de búsqueda.
   it('no muestra controles de features que todavía no existen', () => {
     renderLayout();
-    for (const label of [/buscar/i, /nueva nota/i, /acción rápida/i, /bóveda/i, /ajustes/i, /indexeddb/i, /cifrad/i]) {
+    const names = screen.getAllByRole('button').map(b => b.getAttribute('aria-label') ?? b.textContent?.trim());
+    expect(names).toEqual(['Dashboard', 'Agenda', 'Planner', 'To-Do', 'Cambiar perfil (Francisca)']);
+    expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+    const forbidden = [/buscar/i, /nueva nota/i, /acción rápida/i, /bóveda/i, /ajustes/i, /notas rápidas/i, /carpetas/i, /indexeddb/i, /cifrad/i, /\bAES\b/];
+    for (const label of forbidden) {
       expect(screen.queryByText(label)).not.toBeInTheDocument();
     }
+  });
+
+  // Revisión final (Minor 6 re-graduado): en móvil la tarjeta del sidebar se oculta; el perfil activo sigue identificable.
+  it('identifica el perfil activo en el botón de sesión de la barra superior', () => {
+    renderLayout(protectedProfile);
+    const banner = screen.getByRole('banner');
+    expect(within(banner).getByRole('button', { name: 'Bloquear perfil (Francisca)' })).toBeInTheDocument();
+    expect(within(banner).getByText('F')).toBeInTheDocument();
   });
 
   it('proporciona enlace de salto de navegación (skip link) y landmarks accesibles', () => {

@@ -187,3 +187,15 @@ h1, h2, h3, h4 {
   border: 0;
 }
 
+
+/* La barra superior es sticky (y en móvil la navegación es fija abajo): el foco nunca queda oculto bajo ellas (WCAG 2.2 SC 2.4.11). */
+html {
+  scroll-padding-top: 72px;
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 64px;
+    scroll-padding-bottom: 72px;
+  }
+}
