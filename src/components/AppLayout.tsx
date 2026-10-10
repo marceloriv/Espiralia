@@ -100,7 +100,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             <span className={styles.headerDate}>{currentDate}</span>
             <button type="button" className={styles.lockButton} onClick={handleLock}>
               {isProtected ? <Lock size={16} aria-hidden="true" /> : <LogOut size={16} aria-hidden="true" />}
-              <span>{isProtected ? 'Bloquear perfil' : 'Cambiar perfil'}</span>
+              <span className={styles.lockLabel}>{isProtected ? 'Bloquear perfil' : 'Cambiar perfil'}</span>
             </button>
           </div>
         </header>

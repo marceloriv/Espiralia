@@ -333,6 +333,25 @@
     display: none;
   }
 
+  /* Solo ícono en móvil: la etiqueta queda para lectores de pantalla y el título no se trunca. */
+  .lockButton {
+    justify-content: center;
+    min-width: 44px;
+    padding: 0;
+  }
+
+  .lockLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .contentArea {
     padding: 16px;
     padding-bottom: 84px;
