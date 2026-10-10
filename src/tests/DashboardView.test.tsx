@@ -8,15 +8,20 @@ import type { Profile, TodoItem } from '../types';
 
 const profile: Profile = { id: 'p-dash', name: 'Andrés', avatar: 'A', createdAt: '2026-10-09' };
 
-const saveTodo = (patch: Partial<TodoItem> & Pick<TodoItem, 'id' | 'title'>) =>
-  StorageService.saveTodo({
+const saveTodo = (patch: Partial<TodoItem> & Pick<TodoItem, 'id' | 'title'>) => {
+  const statusDefault = patch.completed ? 'completada' : 'pendiente';
+  const { areaId = 'area-1', status = statusDefault, ...rest } = patch;
+  return StorageService.saveTodo({
     profileId: profile.id,
+    areaId,
     category: 'General',
     priority: 'alta',
-    completed: false,
+    status,
+    completed: patch.completed ?? (status === 'completada'),
     createdAt: '2026-10-09',
-    ...patch,
+    ...rest,
   });
+};
 
 const renderDashboard = (onNavigate = vi.fn()) => {
   render(<DashboardView profile={profile} onNavigate={onNavigate} />);

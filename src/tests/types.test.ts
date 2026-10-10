@@ -71,5 +71,7 @@ describe('Domain types contract', () => {
   it('supports allowed ViewType values', () => {
     const views: ViewType[] = ['dashboard', 'agenda', 'planner', 'todo'];
     expect(views).toHaveLength(4);
+    const statuses: TaskStatus[] = ['pendiente', 'en_progreso', 'completada'];
+    expect(statuses).toHaveLength(3);
   });
 });

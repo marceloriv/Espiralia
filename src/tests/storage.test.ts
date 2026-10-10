@@ -35,8 +35,10 @@ describe('StorageService', () => {
         id: 't-1',
         profileId: 'p-1',
         title: 'Task 1',
+        areaId: 'area-1',
         category: 'Work',
         priority: 'alta',
+        status: 'pendiente',
         completed: false,
         createdAt: '2026-10-09',
       });

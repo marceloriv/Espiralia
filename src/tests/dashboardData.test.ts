@@ -42,15 +42,21 @@ describe('todayEventsSorted', () => {
   });
 });
 
-const todo = (patch: Partial<TodoItem> & Pick<TodoItem, 'id'>): TodoItem => ({
-  profileId: 'p',
-  title: patch.id,
-  category: 'General',
-  priority: 'alta',
-  completed: false,
-  createdAt: '2026-10-01',
-  ...patch,
-});
+const todo = (patch: Partial<TodoItem> & Pick<TodoItem, 'id'>): TodoItem => {
+  const statusDefault = patch.completed ? 'completada' : 'pendiente';
+  const { areaId = 'area-1', status = statusDefault, ...rest } = patch;
+  return {
+    profileId: 'p',
+    title: patch.id,
+    areaId,
+    category: 'General',
+    priority: 'alta',
+    status,
+    completed: patch.completed ?? (status === 'completada'),
+    createdAt: '2026-10-01',
+    ...rest,
+  };
+};
 
 describe('criticalTodos', () => {
   // Técnica: tabla de decisión (completada × prioridad × fecha).

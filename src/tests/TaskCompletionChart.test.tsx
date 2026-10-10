@@ -11,8 +11,8 @@ describe('TaskCompletionChart', () => {
 
   it('renderiza canvas y ratio de tareas cuando existen tareas registradas', () => {
     const mockTodos: TodoItem[] = [
-      { id: '1', profileId: 'p1', title: 'T1', category: 'General', priority: 'media', completed: true, createdAt: '2026-10-09' },
-      { id: '2', profileId: 'p1', title: 'T2', category: 'General', priority: 'alta', completed: false, createdAt: '2026-10-09' },
+      { id: '1', profileId: 'p1', title: 'T1', areaId: 'area-1', category: 'General', priority: 'media', status: 'completada', completed: true, createdAt: '2026-10-09' },
+      { id: '2', profileId: 'p1', title: 'T2', areaId: 'area-1', category: 'General', priority: 'alta', status: 'pendiente', completed: false, createdAt: '2026-10-09' },
     ];
     render(<TaskCompletionChart todos={mockTodos} />);
     expect(screen.getByLabelText(/cumplimiento de tareas: 1 de 2 completadas \(50%\)/i)).toBeInTheDocument();
@@ -22,7 +22,7 @@ describe('TaskCompletionChart', () => {
 
   it('muestra 100% de cumplimiento cuando todas están completadas', () => {
     const mockTodos: TodoItem[] = [
-      { id: '1', profileId: 'p1', title: 'T1', category: 'General', priority: 'media', completed: true, createdAt: '2026-10-09' },
+      { id: '1', profileId: 'p1', title: 'T1', areaId: 'area-1', category: 'General', priority: 'media', status: 'completada', completed: true, createdAt: '2026-10-09' },
     ];
     render(<TaskCompletionChart todos={mockTodos} />);
     expect(screen.getByText('100%')).toBeInTheDocument();
