@@ -31,7 +31,8 @@ describe('App integración general', () => {
     await user.click(submitBtn);
 
     // Debe mostrar dashboard
-    expect(await screen.findByRole('heading', { name: /¡hola, ignacio!/i })).toBeInTheDocument();
+    // El Dashboard (con gráficos) es un chunk diferido: su import() en frío supera 1 s en jsdom.
+    expect(await screen.findByRole('heading', { name: /¡hola, ignacio!/i }, { timeout: 10000 })).toBeInTheDocument();
 
     // Cambiar perfil bloquea sesion
     const lockBtn = screen.getAllByRole('button', { name: /cambiar perfil/i })[0];

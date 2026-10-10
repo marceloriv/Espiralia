@@ -30,7 +30,8 @@ describe('AppRoutes con rutas protegidas', () => {
     expect(screen.getByText(/selecciona tu perfil/i)).toBeInTheDocument();
   });
 
-  it('permite acceder al dashboard si hay perfil autenticado', () => {
+  // Técnica: partición de equivalencia (vista diferida: fallback primero, contenido después).
+  it('permite acceder al dashboard si hay perfil autenticado', async () => {
     render(
       <MemoryRouter initialEntries={['/dashboard']}>
         <AppRoutes
@@ -41,7 +42,9 @@ describe('AppRoutes con rutas protegidas', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/¡hola, carolina!/i)).toBeInTheDocument();
+    // El Dashboard es diferido: primero se ve el fallback de Suspense.
+    expect(screen.getByRole('status')).toHaveTextContent(/cargando espacio/i);
+    expect(await screen.findByText(/¡hola, carolina!/i, {}, { timeout: 10000 })).toBeInTheDocument();
   });
 
   it('navega a /todo correctamente dentro de la ruta protegida cargando vista lazy', async () => {
