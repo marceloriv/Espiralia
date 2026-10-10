@@ -1,12 +1,14 @@
 .agendaContainer {
-  max-width: 900px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
 .headingRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   margin-bottom: 24px;
 }
 
@@ -16,246 +18,297 @@
   margin: 0;
 }
 
-.layoutGrid {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 24px;
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-@media (max-width: 768px) {
+.filterBtn {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-soft);
+  color: var(--color-body);
+  font-size: var(--text-body-sm);
+  cursor: pointer;
+}
+
+.filterBtn:hover {
+  border-color: var(--color-primary-soft);
+}
+
+.filterBtnActive {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1023px) {
   .layoutGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 .calendarCard {
+  min-width: 0;
+  padding: 16px;
   background-color: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
-  padding: 24px;
 }
 
-.calendarNav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.monthLabel {
-  font-family: var(--font-primary);
-  font-size: var(--text-title-md);
-  color: var(--color-ink);
-  margin: 0;
-  text-transform: capitalize;
-}
-
-.navBtn {
-  background: transparent;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-sm);
+/* Objetivo táctil mínimo de 44 px para los botones de FullCalendar (clases internas con hash). */
+.calendarCard button {
   min-height: 44px;
-  min-width: 44px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-body);
-}
-
-.navBtn:hover {
-  background-color: var(--color-surface-soft);
-  color: var(--color-primary);
-}
-
-.weekdaysGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-  font-size: var(--text-caption);
-  color: var(--color-muted);
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.daysGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
-
-.dayCell {
-  aspect-ratio: 1;
-  min-height: 44px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  background: transparent;
-  font-size: var(--text-body-sm);
-  cursor: pointer;
-  color: var(--color-ink);
-  transition: all 0.15s ease;
-  position: relative;
-  touch-action: manipulation;
-}
-
-.dayCell:hover {
-  background-color: var(--color-surface-soft);
-}
-
-.dayEmpty {
-  cursor: default;
-}
-
-.dayToday {
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.daySelected {
-  background-color: var(--color-primary-soft) !important;
-  color: #fff !important;
-  font-weight: 700;
-}
-
-.hasEventDot {
-  width: 5px;
-  height: 5px;
-  background-color: var(--color-primary);
-  border-radius: var(--radius-pill);
-  position: absolute;
-  bottom: 4px;
 }
 
 .eventsPanel {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
+  min-width: 0;
 }
 
-.formCard {
+.panelCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
   background-color: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
-  padding: 20px;
 }
 
-.formTitle {
+.panelTitle {
+  margin: 0;
+  font-family: var(--font-primary);
   font-size: var(--text-title-sm);
-  margin-bottom: 14px;
   color: var(--color-ink);
+}
+
+.fieldLabel {
+  font-size: var(--text-caption);
+  font-weight: 500;
+  color: var(--color-body);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--text-caption);
+  color: var(--color-muted);
 }
 
 .formGroup {
-  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.inputField,
-.selectField {
+.inputField {
   width: 100%;
-  height: 44px;
+  min-height: 44px;
   padding: 8px 12px;
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md);
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
   font-size: var(--text-body-sm);
-  background-color: #fff;
-  outline: none;
 }
 
-.inputField:focus,
-.selectField:focus {
-  border-color: var(--color-primary);
+.timeRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-.btnAddEvent {
-  width: 100%;
-  height: 44px;
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   min-height: 44px;
+  font-size: var(--text-body-sm);
+  color: var(--color-body);
+  cursor: pointer;
+}
+
+.checkRow input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+}
+
+.repeatFieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+}
+
+.daysRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dayChip {
+  position: relative;
+  display: inline-flex;
+}
+
+.dayChip input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.dayChip span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-canvas);
+  color: var(--color-body);
+  font-size: var(--text-body-sm);
+}
+
+.dayChip input:checked + span {
   background-color: var(--color-primary);
+  border-color: var(--color-primary);
   color: var(--color-on-primary);
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btnPrimary {
+  flex: 1;
+  min-height: 44px;
   border: none;
   border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   font-size: var(--text-button);
-  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.15s ease;
 }
 
-.btnAddEvent:hover {
+.btnPrimary:hover {
   background-color: var(--color-primary-active);
 }
 
-.eventsListCard {
-  background-color: var(--color-surface-card);
+.btnSecondary {
+  min-height: 44px;
+  padding: 0 16px;
   border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  flex: 1;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  color: var(--color-body);
+  font-size: var(--text-button);
+  cursor: pointer;
 }
 
-.eventsListTitle {
-  font-size: var(--text-title-sm);
-  margin-bottom: 12px;
-  color: var(--color-ink);
+.noEvents {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  color: var(--color-muted);
 }
 
 .eventsList {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .eventItem {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--color-hairline-soft);
   border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-primary);
-  background-color: #faf5fa;
-  content-visibility: auto;
-  contain-intrinsic-size: 0 44px;
+  background-color: var(--color-canvas);
+}
+
+.eventSwatch {
+  flex-shrink: 0;
+  align-self: stretch;
+  width: 4px;
+  border-radius: var(--radius-pill);
 }
 
 .eventInfo {
   display: flex;
+  flex: 1;
   flex-direction: column;
+  min-width: 0;
 }
 
 .eventTitle {
-  font-weight: 500;
   font-size: var(--text-body-sm);
+  font-weight: 500;
   color: var(--color-ink);
+  overflow-wrap: anywhere;
 }
 
-.eventTime {
+.eventMeta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-family-3);
   font-size: var(--text-caption);
   color: var(--color-muted);
 }
 
-.btnDeleteEvent {
-  background: transparent;
-  border: none;
-  color: var(--color-muted);
-  cursor: pointer;
-  padding: 4px;
-  min-height: 44px;
-  min-width: 44px;
+.iconBtn {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-}
-
-.btnDeleteEvent:hover {
-  color: var(--color-error);
-}
-
-.noEvents {
-  font-size: var(--text-body-sm);
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: transparent;
   color: var(--color-muted);
-  text-align: center;
-  padding: 16px;
+  cursor: pointer;
+}
+
+.iconBtn:hover {
+  background-color: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.inputField:focus-visible,
+.filterBtn:focus-visible,
+.iconBtn:focus-visible,
+.btnPrimary:focus-visible,
+.btnSecondary:focus-visible,
+.dayChip input:focus-visible + span {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }

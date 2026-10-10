@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Calendar, Compass, CheckSquare, Clock, BarChart2 } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, ViewType } from '../types';
 import { StorageService } from '../services/storage';
+import { toLocalDateStr } from '../utils/localDate';
+import { occursOn } from './agenda/eventMapping';
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
 import styles from './DashboardView.module.css';
@@ -31,8 +33,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
     loadData();
   }, [loadData]);
 
-  const [todayStr] = useState(() => new Date().toISOString().split('T')[0]);
-  const todayEvents = events.filter(e => e.date === todayStr);
+  const [todayStr] = useState(() => toLocalDateStr(new Date()));
+  const todayEvents = events.filter(e => occursOn(e, todayStr));
   const pendingTodos = todos.filter(t => !t.completed);
   const completedTodosCount = todos.filter(t => t.completed).length;
 
