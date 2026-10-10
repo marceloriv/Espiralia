@@ -10,9 +10,9 @@ interface DashboardViewProps {
 }
 
 export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigate }) => {
-  const [events, setEvents] = useState<AgendaEvent[]>([]);
-  const [planner, setPlanner] = useState<PlannerBlock[]>([]);
-  const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
+  const [planner, setPlanner] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profile.id));
+  const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profile.id));
 
   const loadData = () => {
     setEvents(StorageService.getEvents(profile.id));

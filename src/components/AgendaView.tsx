@@ -11,7 +11,7 @@ interface AgendaViewProps {
 export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDateStr, setSelectedDateStr] = useState(new Date().toISOString().split('T')[0]);
-  const [events, setEvents] = useState<AgendaEvent[]>([]);
+  const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
 
   // Form states
   const [title, setTitle] = useState('');

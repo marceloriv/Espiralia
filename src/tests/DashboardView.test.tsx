@@ -74,4 +74,20 @@ describe('DashboardView', () => {
     expect(checkbox).toBeChecked();
     expect(StorageService.getTodos(mockProfile.id)[0].completed).toBe(true);
   });
+
+  it('hidrata los datos de almacenamiento sincronicamente en el render inicial sin flash vacio', () => {
+    StorageService.saveTodo({
+      id: 't-sync',
+      profileId: mockProfile.id,
+      title: 'Verificacion sincrona CLS',
+      category: 'General',
+      priority: 'alta',
+      completed: false,
+      createdAt: '2026-10-09',
+    });
+
+    const { container } = render(<DashboardView profile={mockProfile} onNavigate={vi.fn()} />);
+    // La tarea debe estar inmediatamente presente en el DOM
+    expect(container.textContent).toContain('Verificacion sincrona CLS');
+  });
 });

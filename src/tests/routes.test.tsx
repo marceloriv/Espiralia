@@ -44,7 +44,7 @@ describe('AppRoutes con rutas protegidas', () => {
     expect(screen.getByText(/¡hola, carolina!/i)).toBeInTheDocument();
   });
 
-  it('navega a /todo correctamente dentro de la ruta protegida', () => {
+  it('navega a /todo correctamente dentro de la ruta protegida cargando vista lazy', async () => {
     render(
       <MemoryRouter initialEntries={['/todo']}>
         <AppRoutes
@@ -55,6 +55,20 @@ describe('AppRoutes con rutas protegidas', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/mis tareas/i)).toBeInTheDocument();
+    expect(await screen.findByText(/mis tareas/i)).toBeInTheDocument();
+  });
+
+  it('navega a /agenda y resuelve componente diferido con Suspense', async () => {
+    render(
+      <MemoryRouter initialEntries={['/agenda']}>
+        <AppRoutes
+          activeProfile={mockProfile}
+          onSelectProfile={vi.fn()}
+          onLockProfile={vi.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByPlaceholderText(/título del evento/i)).toBeInTheDocument();
   });
 });

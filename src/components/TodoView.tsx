@@ -11,7 +11,7 @@ interface TodoViewProps {
 type FilterStatus = 'todas' | 'pendientes' | 'completadas';
 
 export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
-  const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profileId));
   const [inputTitle, setInputTitle] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('General');
   const [selectedPriority, setSelectedPriority] = useState<Priority>('media');
