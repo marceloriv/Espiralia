@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - Versión fija: `v0.11.0`. No usar `latest` en ninguna URL.
-- Asset: `codebase-memory-mcp-windows-amd64.zip` (sin variante `-ui`).
+- Asset: `codebase-memory-mcp-ui-windows-amd64.zip` (variante `-ui`: es la única build que embebe la visualización 3D).
 - Prohibido ejecutar `install.ps1`, `scripts/setup.ps1` o `codebase-memory-mcp install`: configuran 45 superficies de cliente globales (AGENTS.md §12, "preguntar primero").
 - Scope MCP: `local`. Nunca `user` ni `project`: `project` crearía `.mcp.json` en el repo con una ruta absoluta de esta máquina.
 - `CBM_ALLOWED_ROOT=C:\Users\Marcelo-HP\Desktop\Espiralia`: confina `index_repository` a este repo.
@@ -57,7 +57,7 @@ Expected: un número > 0 (archivos registrados).
 
 ```powershell
 $base = "https://github.com/DeusData/codebase-memory-mcp/releases/download/v0.11.0"
-Invoke-WebRequest "$base/codebase-memory-mcp-windows-amd64.zip" -OutFile "$snap\cbm.zip"
+Invoke-WebRequest "$base/codebase-memory-mcp-ui-windows-amd64.zip" -OutFile "$snap\cbm.zip"
 Invoke-WebRequest "$base/checksums.txt" -OutFile "$snap\checksums.txt"
 ```
 
@@ -66,7 +66,7 @@ Expected: los dos archivos existen y `cbm.zip` pesa > 1 MB.
 - [ ] **Step 3: Verificar SHA-256 (falla primero si no coincide)**
 
 ```powershell
-$expected = (Select-String -Path "$snap\checksums.txt" -Pattern 'codebase-memory-mcp-windows-amd64\.zip$').Line.Split(' ')[0].ToLower()
+$expected = ((Select-String -Path "$snap\checksums.txt" -Pattern 'codebase-memory-mcp-ui-windows-amd64\.zip$').Line -split '\s+')[0].ToLower()
 $actual = (Get-FileHash "$snap\cbm.zip" -Algorithm SHA256).Hash.ToLower()
 if ($expected -ne $actual) { throw "SHA-256 no coincide: esperado $expected, obtenido $actual" }
 "OK $actual"
@@ -119,8 +119,10 @@ Expected: error o "not found".
 
 ```powershell
 Set-Location C:\Users\Marcelo-HP\Desktop\Espiralia
-claude mcp add --scope local -e CBM_ALLOWED_ROOT=C:\Users\Marcelo-HP\Desktop\Espiralia codebase-memory-mcp -- "$env:LOCALAPPDATA\Programs\codebase-memory-mcp\codebase-memory-mcp.exe"
+claude mcp add --scope local codebase-memory-mcp -e CBM_ALLOWED_ROOT=C:\Users\Marcelo-HP\Desktop\Espiralia -- "$env:LOCALAPPDATA\Programs\codebase-memory-mcp\codebase-memory-mcp.exe" --ui=true --port=9749
 ```
+
+El nombre va antes de `-e`: `-e` es variádico y, si va primero, se traga el nombre. Los args `--ui=true --port=9749` levantan la UI 3D en `http://127.0.0.1:9749` mientras la sesión esté abierta.
 
 - [ ] **Step 3: Verificar registro y que no apareció `.mcp.json`**
 
