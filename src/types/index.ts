@@ -12,7 +12,10 @@ export interface Profile {
   id: string;
   name: string;
   avatar: string;
+  /** Legado: PIN en texto plano. Se migra a pinHash/pinSalt al abrir la pantalla de perfiles. */
   pin?: string;
+  pinHash?: string; // PBKDF2-SHA-256, hex de 32 bytes
+  pinSalt?: string; // hex de 16 bytes
   createdAt: string;
 }
 

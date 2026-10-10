@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Lock, Plus, ArrowRight } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
+import { PIN_PATTERN, hashPin, isPinProtected, migrateLegacyPins, verifyPin } from '../services/pinHash';
 import styles from './ProfileGateView.module.css';
 
 interface ProfileGateViewProps {
@@ -19,9 +20,29 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
   const [pin, setPin] = useState('');
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
+  const [createPinError, setCreatePinError] = useState(false);
+  const [busy, setBusy] = useState(false);
+
+  // Migra PIN en texto plano a hash apenas se abre la pantalla (§10 A04).
+  useEffect(() => {
+    let cancelled = false;
+    const stored = StorageService.getProfiles();
+    if (!stored.some(p => p.pin !== undefined && !p.pinHash)) return;
+    migrateLegacyPins(stored)
+      .then(migrated => {
+        migrated.forEach(p => StorageService.saveProfile(p));
+        if (!cancelled) setProfiles(StorageService.getProfiles());
+      })
+      .catch(() => {
+        // ponytail: sin Web Crypto (contexto no seguro) el PIN legado queda intacto y se reintenta en la próxima carga.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleProfileClick = (profile: Profile) => {
-    if (profile.pin) {
+    if (isPinProtected(profile)) {
       setSelectedProfileForPin(profile);
       setPinInput('');
       setPinError(false);
@@ -31,11 +52,14 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
     }
   };
 
-  const handleVerifyPin = (e: React.FormEvent) => {
+  const handleVerifyPin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedProfileForPin) return;
+    if (!selectedProfileForPin || busy) return;
+    setBusy(true);
+    const ok = await verifyPin(selectedProfileForPin, pinInput).catch(() => false);
+    setBusy(false);
 
-    if (pinInput === selectedProfileForPin.pin) {
+    if (ok) {
       StorageService.setActiveProfileId(selectedProfileForPin.id);
       onSelectProfile(selectedProfileForPin);
     } else {
@@ -44,24 +68,38 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
     }
   };
 
-  const handleCreateProfile = (e: React.FormEvent) => {
+  const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    const trimmedName = name.trim();
+    const trimmedPin = pin.trim();
+    if (!trimmedName || busy) return;
+    if (trimmedPin && !PIN_PATTERN.test(trimmedPin)) {
+      setCreatePinError(true);
+      sileo.error({ title: 'El PIN debe tener entre 4 y 6 dígitos' });
+      return;
+    }
 
-    const newProfile: Profile = {
-      id: `p-${Date.now()}`,
-      name: name.trim(),
-      avatar: name.trim().charAt(0).toUpperCase(),
-      pin: pin.trim() ? pin.trim() : undefined,
-      createdAt: new Date().toISOString(),
-    };
+    setBusy(true);
+    try {
+      const newProfile: Profile = {
+        id: `p-${Date.now()}`,
+        name: trimmedName,
+        avatar: trimmedName.charAt(0).toUpperCase(),
+        createdAt: new Date().toISOString(),
+        ...(trimmedPin ? await hashPin(trimmedPin) : {}),
+      };
 
-    StorageService.saveProfile(newProfile);
-    StorageService.setActiveProfileId(newProfile.id);
-    setProfiles(StorageService.getProfiles());
-    setIsCreating(false);
-    sileo.success({ title: `Perfil "${newProfile.name}" creado` });
-    onSelectProfile(newProfile);
+      StorageService.saveProfile(newProfile);
+      StorageService.setActiveProfileId(newProfile.id);
+      setProfiles(StorageService.getProfiles());
+      setIsCreating(false);
+      sileo.success({ title: `Perfil "${newProfile.name}" creado` });
+      onSelectProfile(newProfile);
+    } catch {
+      sileo.error({ title: 'No se pudo crear el perfil' });
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -86,10 +124,10 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
               <div className={styles.profileInfo}>
                 <div className={styles.profileName}>{profile.name}</div>
                 <div className={styles.profileMeta}>
-                  {profile.pin ? 'Protegido por PIN' : 'Acceso libre'}
+                  {isPinProtected(profile) ? 'Protegido por PIN' : 'Acceso libre'}
                 </div>
               </div>
-              {profile.pin ? (
+              {isPinProtected(profile) ? (
                 <Lock size={18} color="var(--color-muted)" aria-hidden="true" />
               ) : (
                 <ArrowRight size={18} color="var(--color-primary)" aria-hidden="true" />
@@ -105,6 +143,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
             setIsCreating(true);
             setName('');
             setPin('');
+            setCreatePinError(false);
           }}
         >
           <Plus size={18} aria-hidden="true" />
@@ -141,17 +180,28 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
 
               <div className={styles.formGroup}>
                 <label htmlFor="create-profile-pin" className={styles.formLabel}>
-                  PIN opcional (4 dígitos)
+                  PIN opcional (4 a 6 dígitos)
                 </label>
                 <input
                   id="create-profile-pin"
                   type="password"
+                  inputMode="numeric"
                   maxLength={6}
                   className={styles.formInput}
                   value={pin}
-                  onChange={e => setPin(e.target.value)}
+                  onChange={e => {
+                    setPin(e.target.value);
+                    setCreatePinError(false);
+                  }}
+                  aria-invalid={createPinError ? 'true' : 'false'}
+                  aria-describedby={createPinError ? 'create-pin-error' : undefined}
                   placeholder="Dejar vacío si no requieres PIN"
                 />
+                {createPinError && (
+                  <p id="create-pin-error" className={styles.errorMessage} role="alert">
+                    El PIN debe tener entre 4 y 6 dígitos.
+                  </p>
+                )}
               </div>
 
               <div className={styles.modalActions}>
@@ -162,7 +212,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
                 >
                   Cancelar
                 </button>
-                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }}>
+                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }} disabled={busy}>
                   Crear perfil
                 </button>
               </div>
@@ -192,6 +242,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
                 <input
                   id="verify-pin-input"
                   type="password"
+                  inputMode="numeric"
                   className={styles.formInput}
                   value={pinInput}
                   onChange={e => {
@@ -218,7 +269,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
                 >
                   Cancelar
                 </button>
-                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }}>
+                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }} disabled={busy}>
                   Desbloquear
                 </button>
               </div>
