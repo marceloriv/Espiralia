@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { DashboardView } from '../components/DashboardView';
 import { StorageService } from '../services/storage';
 import type { Profile } from '../types';
+import { toLocalDateStr } from '../utils/localDate';
 
 describe('DashboardView', () => {
   const mockProfile: Profile = {
@@ -20,7 +21,7 @@ describe('DashboardView', () => {
   it('muestra saludo y widgets de resumen con navegacion rapida', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = toLocalDateStr(new Date());
 
     StorageService.saveEvent({
       id: 'e-1',
