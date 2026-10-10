@@ -4,6 +4,12 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.1.2] - 2026-10-09
+
+### Changed
+
+- Actualización de entorno de ejecución a Node.js 24 en workflow de GitHub Actions y especificación del proyecto.
+
 ## [0.1.1] - 2026-10-09
 
 ### Fixed
