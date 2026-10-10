@@ -1,11 +1,11 @@
 import React from 'react';
-import { Doughnut } from 'react-chartjs-2';
+import { Chart } from '@tanstack/charts/react';
+import { defineChart } from '@tanstack/charts';
+import { pie, polar, radialArc } from '@tanstack/charts/polar';
+import { svgChartRenderer } from '@tanstack/charts/svg/renderer';
 import { CheckCircle2 } from 'lucide-react';
 import type { TodoItem } from '../../types';
-import { ensureChartRegistered } from './chartSetup';
 import styles from './TaskCompletionChart.module.css';
-
-ensureChartRegistered();
 
 interface TaskCompletionChartProps {
   todos: TodoItem[];
@@ -17,7 +17,40 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({ todos 
   const pendingCount = total - completedCount;
   const percentage = total > 0 ? Math.round((completedCount / total) * 100) : 0;
 
-  if (total === 0) {
+  const chart = React.useMemo(() => {
+    if (total === 0) return null;
+
+    const chartData = [
+      { label: 'Completadas', count: completedCount, color: '#5db872' },
+      { label: 'Pendientes', count: pendingCount, color: '#e8a55a' },
+    ];
+
+    const slices = pie(chartData, { value: d => d.count });
+
+    return defineChart({
+      marks: [
+        polar({
+          marks: [
+            radialArc(slices, {
+              innerRadius: ctx => ctx.radius * 0.72,
+              outerRadius: ctx => ctx.radius,
+              fill: d => d.color,
+            }),
+          ],
+          scales: {
+            angle: null,
+            radius: null,
+          },
+        }),
+      ],
+      scales: {
+        x: null,
+        y: null,
+      },
+    });
+  }, [total, completedCount, pendingCount]);
+
+  if (total === 0 || !chart) {
     return (
       <div className={styles.chartCard}>
         <div className={styles.chartHeader}>
@@ -31,46 +64,6 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({ todos 
       </div>
     );
   }
-
-  const chartData = {
-    labels: ['Completadas', 'Pendientes'],
-    datasets: [
-      {
-        data: [completedCount, pendingCount],
-        backgroundColor: ['#5db872', '#e8a55a'],
-        hoverBackgroundColor: ['#4ea462', '#d59449'],
-        borderWidth: 0,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: '72%',
-    plugins: {
-      legend: {
-        position: 'bottom' as const,
-        labels: {
-          boxWidth: 12,
-          padding: 10,
-          font: {
-            size: 11,
-          },
-          color: '#6c6a64',
-        },
-      },
-      tooltip: {
-        callbacks: {
-          label: (context: { label: string; parsed: number }) => {
-            const count = context.parsed;
-            const pct = Math.round((count / total) * 100);
-            return ` ${context.label}: ${count} (${pct}%)`;
-          },
-        },
-      },
-    },
-  };
 
   return (
     <div
@@ -88,7 +81,12 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({ todos 
       </div>
 
       <div className={styles.chartWrapper}>
-        <Doughnut data={chartData} options={chartOptions} />
+        <Chart
+          renderer={svgChartRenderer}
+          definition={chart}
+          ariaLabel={`Progreso: ${percentage}%`}
+          aspectRatio={1}
+        />
         <div className={styles.percentageBadge} aria-hidden="true">
           <span className={styles.percentageNumber}>{percentage}%</span>
           <span className={styles.percentageLabel}>Éxito</span>
