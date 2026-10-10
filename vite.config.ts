@@ -9,7 +9,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules/chart.js') || id.includes('node_modules/react-chartjs-2')) {
+          if (id.includes('node_modules/@tanstack/charts') || id.includes('node_modules/d3-')) {
             return 'vendor-charts';
           }
           if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/') || id.includes('node_modules/react-router') || id.includes('node_modules/@remix-run/router')) {
