@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Lock, Plus, ArrowRight } from 'lucide-react';
+import { sileo } from 'sileo';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
 import styles from './ProfileGateView.module.css';
@@ -39,6 +40,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
       onSelectProfile(selectedProfileForPin);
     } else {
       setPinError(true);
+      sileo.error('PIN incorrecto');
     }
   };
 
@@ -58,6 +60,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
     StorageService.setActiveProfileId(newProfile.id);
     setProfiles(StorageService.getProfiles());
     setIsCreating(false);
+    sileo.success(`Perfil "${newProfile.name}" creado`);
     onSelectProfile(newProfile);
   };
 

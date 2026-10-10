@@ -1,15 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { sileo } from 'sileo';
 import { ProfileGateView } from '../components/ProfileGateView';
 import { StorageService } from '../services/storage';
 
 describe('ProfileGateView', () => {
   beforeEach(() => {
     localStorage.clear();
+    vi.clearAllMocks();
   });
 
   it('permite crear un nuevo perfil sin PIN y seleccionarlo', async () => {
+    const successSpy = vi.spyOn(sileo, 'success');
     const user = userEvent.setup();
     const onSelectProfile = vi.fn();
 
@@ -28,9 +31,11 @@ describe('ProfileGateView', () => {
 
     expect(onSelectProfile).toHaveBeenCalledTimes(1);
     expect(onSelectProfile.mock.calls[0][0].name).toBe('Valentina');
+    expect(successSpy).toHaveBeenCalledWith('Perfil "Valentina" creado');
   });
 
   it('solicita PIN si el perfil tiene PIN y rechaza PIN incorrecto', async () => {
+    const errorSpy = vi.spyOn(sileo, 'error');
     const user = userEvent.setup();
     const onSelectProfile = vi.fn();
 
@@ -56,6 +61,7 @@ describe('ProfileGateView', () => {
     await user.click(verifyBtn);
 
     expect(screen.getByText(/pin incorrecto/i)).toBeInTheDocument();
+    expect(errorSpy).toHaveBeenCalledWith('PIN incorrecto');
     expect(onSelectProfile).not.toHaveBeenCalled();
 
     await user.clear(pinInput);
