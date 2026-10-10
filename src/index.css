@@ -38,8 +38,8 @@
   --sileo-state-action: var(--color-primary-active);
 
   /* Sileo dimensions & animation */
-  --sileo-width: 350px;
-  --sileo-height: 40px;
+  --sileo-width: 400px;
+  --sileo-height: 48px;
   --sileo-duration: 600ms;
 
   /* Typography */

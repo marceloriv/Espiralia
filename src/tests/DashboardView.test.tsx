@@ -90,4 +90,23 @@ describe('DashboardView', () => {
     // La tarea debe estar inmediatamente presente en el DOM
     expect(container.textContent).toContain('Verificacion sincrona CLS');
   });
+
+  it('renderiza la sección de métricas visuales con ambos gráficos en el dashboard', () => {
+    StorageService.saveTodo({
+      id: 't-chart',
+      profileId: mockProfile.id,
+      title: 'Tarea con métrica',
+      category: 'Trabajo',
+      priority: 'alta',
+      completed: true,
+      createdAt: '2026-10-09',
+    });
+
+    render(<DashboardView profile={mockProfile} onNavigate={vi.fn()} />);
+
+    expect(screen.getByRole('heading', { name: /métricas y rendimiento/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/cumplimiento de tareas: 1 de 1 completadas \(100%\)/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/distribución de actividades por categoría/i)).toBeInTheDocument();
+  });
 });
+

@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Calendar, Compass, CheckSquare, Clock } from 'lucide-react';
+import { Calendar, Compass, CheckSquare, Clock, BarChart2 } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, ViewType } from '../types';
 import { StorageService } from '../services/storage';
+import { TaskCompletionChart } from './charts/TaskCompletionChart';
+import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
 import styles from './DashboardView.module.css';
 
 interface DashboardViewProps {
@@ -184,6 +186,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
           </div>
         </div>
       </div>
+
+      {/* Sección de Métricas y Rendimiento con Chart.js */}
+      <section className={styles.metricsSection} aria-label="Métricas y Rendimiento">
+        <div className={styles.metricsHeader}>
+          <h3 className={styles.metricsTitle}>
+            <BarChart2 size={18} color="var(--color-primary)" />
+            <span>Métricas y Rendimiento</span>
+          </h3>
+        </div>
+        <div className={styles.metricsGrid}>
+          <TaskCompletionChart todos={todos} />
+          <CategoryDistributionChart todos={todos} planner={planner} />
+        </div>
+      </section>
     </div>
   );
 };
