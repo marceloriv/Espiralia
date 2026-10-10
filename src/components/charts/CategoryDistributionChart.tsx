@@ -68,7 +68,10 @@ export const CategoryDistributionChart: React.FC<CategoryDistributionChartProps>
           </h3>
           <span className={styles.chartSubtitle}>0 actividades</span>
         </div>
-        <p className={styles.emptyNotice}>Sin actividades categorizadas</p>
+        <div className={styles.emptyStateContainer}>
+          <p className={styles.emptyNotice}>Sin actividades categorizadas</p>
+          <p className={styles.emptyHint}>Crea tareas o bloques en el Planner para visualizar la distribución aquí.</p>
+        </div>
       </div>
     );
   }

@@ -7,6 +7,7 @@ describe('TaskCompletionChart', () => {
   it('muestra estado vacío si no hay tareas registradas', () => {
     render(<TaskCompletionChart todos={[]} />);
     expect(screen.getByText(/sin tareas para graficar/i)).toBeInTheDocument();
+    expect(screen.getByText(/agrega tareas en to-do para visualizar tu progreso/i)).toBeInTheDocument();
   });
 
   it('renderiza canvas y ratio de tareas cuando existen tareas registradas', () => {

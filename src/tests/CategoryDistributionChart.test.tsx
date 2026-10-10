@@ -7,6 +7,7 @@ describe('CategoryDistributionChart', () => {
   it('muestra estado vacío cuando no hay tareas ni bloques en el planner', () => {
     render(<CategoryDistributionChart todos={[]} planner={[]} />);
     expect(screen.getByText(/sin actividades categorizadas/i)).toBeInTheDocument();
+    expect(screen.getByText(/crea tareas o bloques en el planner/i)).toBeInTheDocument();
   });
 
   it('calcula y renderiza el gráfico de barras por categoría', () => {

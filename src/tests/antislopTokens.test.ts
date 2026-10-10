@@ -32,4 +32,10 @@ describe('Antislop UI design tokens contract', () => {
       expect(content).not.toMatch(/box-shadow:\s*0\s+\d+px\s+\d+px\s+rgba/);
     }
   });
+
+  it('RouteLoadingFallback.module.css respeta prefers-reduced-motion', () => {
+    const cssPath = path.resolve(__dirname, '../components/RouteLoadingFallback.module.css');
+    const content = fs.readFileSync(cssPath, 'utf-8');
+    expect(content).toContain('prefers-reduced-motion');
+  });
 });
