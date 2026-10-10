@@ -180,6 +180,66 @@ describe('AgendaView', () => {
     expect(screen.getByText(/sin eventos programados/i)).toBeInTheDocument();
   });
 
+  // Revisión final, Important #1. Técnica: tabla de decisión (único/serie × confirma/cancela).
+  it('pide confirmación antes de borrar una serie y no borra si se cancela', async () => {
+    seed({ id: 'r-del', title: 'Gimnasio', startTime: '20:00', recurrence: { daysOfWeek: [new Date().getDay()] } });
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const user = userEvent.setup();
+    render(<AgendaView profileId={profileId} />);
+
+    await user.click(screen.getByRole('button', { name: /eliminar serie gimnasio/i }));
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(StorageService.getEvents(profileId)).toHaveLength(1);
+
+    confirm.mockReturnValue(true);
+    await user.click(screen.getByRole('button', { name: /eliminar serie gimnasio/i }));
+    expect(StorageService.getEvents(profileId)).toEqual([]);
+  });
+
+  it('no pide confirmación para borrar un evento único', async () => {
+    seed({ id: 'e-one', title: 'Único', startTime: '09:00' });
+    const confirm = vi.spyOn(window, 'confirm');
+    const user = userEvent.setup();
+    render(<AgendaView profileId={profileId} />);
+
+    await user.click(screen.getByRole('button', { name: /eliminar único/i }));
+    expect(confirm).not.toHaveBeenCalled();
+    expect(StorageService.getEvents(profileId)).toEqual([]);
+  });
+
+  // Revisión final, Important #3. Técnica: partición de equivalencia (formulario nuevo / en edición / fecha incompleta).
+  it('cambiar de día conserva lo escrito en un formulario nuevo', async () => {
+    const user = userEvent.setup();
+    render(<AgendaView profileId={profileId} />);
+
+    await user.type(screen.getByPlaceholderText(/título del evento/i), 'Mi borrador');
+    fireEvent.change(screen.getByLabelText(/ir a fecha/i), { target: { value: '2026-12-25' } });
+
+    expect(screen.getByRole('heading', { name: /nuevo evento para 2026-12-25/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/título del evento/i)).toHaveValue('Mi borrador');
+  });
+
+  it('cambiar de día no descarta una edición en curso', async () => {
+    seed({ id: 'e-keep', title: 'Borrador', startTime: '09:00', endTime: '10:00' });
+    const user = userEvent.setup();
+    render(<AgendaView profileId={profileId} />);
+
+    await user.click(screen.getByRole('button', { name: /editar borrador/i }));
+    fireEvent.change(screen.getByLabelText(/ir a fecha/i), { target: { value: '2026-12-25' } });
+
+    expect(screen.getByRole('heading', { name: /eventos del 2026-12-25/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /guardar cambios/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/título del evento/i)).toHaveValue('Borrador');
+  });
+
+  it('ignora fechas con año incompleto mientras se escribe en ir a fecha', () => {
+    render(<AgendaView profileId={profileId} />);
+
+    fireEvent.change(screen.getByLabelText(/ir a fecha/i), { target: { value: '0002-12-25' } });
+
+    expect(screen.getByRole('heading', { name: new RegExp(`eventos del ${today}`, 'i') })).toBeInTheDocument();
+  });
+
   it('ir a fecha cambia el día del panel y del formulario', () => {
     render(<AgendaView profileId={profileId} />);
 

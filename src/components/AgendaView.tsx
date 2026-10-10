@@ -55,6 +55,8 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
   const [filter, setFilter] = useState<CategoryFilter>('todas');
   const [selectedDate, setSelectedDate] = useState(() => toLocalDateStr(new Date()));
+  // Valor crudo de "Ir a fecha": Chrome emite fechas parciales ('0002-…') mientras se tipea el año.
+  const [gotoValue, setGotoValue] = useState(selectedDate);
   const [form, setForm] = useState<EventFormState>(() => emptyEventForm(toLocalDateStr(new Date())));
   // ponytail: se evalúa al montar; si se rota el dispositivo, la barra se ajusta al recargar la vista.
   const [isNarrow] = useState(() => window.matchMedia(NARROW_QUERY).matches);
@@ -68,9 +70,13 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     .filter(ev => occursOn(ev, selectedDate))
     .sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? ''));
 
+  const resetForm = (date: string) => setForm(emptyEventForm(date));
+
+  // Cambiar de día no descarta lo escrito: en edición conserva el formulario; si no, solo mueve fecha y horas.
   const selectDay = (date: string, patch: Partial<EventFormState> = {}) => {
     setSelectedDate(date);
-    setForm({ ...emptyEventForm(date), ...patch });
+    setGotoValue(date);
+    setForm(f => (f.editingId ? f : { ...f, date, ...patch }));
   };
 
   const handleDateClick = (info: DateClickInfo) => {
@@ -95,7 +101,9 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   const handleEventClick = (info: EventClickInfo) => {
     const ev = events.find(e => e.id === info.event.id);
     if (!ev) return;
-    setSelectedDate(info.event.start ? toLocalDateStr(info.event.start) : ev.date);
+    const date = info.event.start ? toLocalDateStr(info.event.start) : ev.date;
+    setSelectedDate(date);
+    setGotoValue(date);
     setForm(eventFormFromEvent(ev));
   };
 
@@ -121,19 +129,24 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
       return;
     }
     sileo.success({ title: form.editingId ? 'Evento actualizado' : 'Evento agendado con éxito' });
-    selectDay(selectedDate);
+    resetForm(selectedDate);
     reload();
   };
 
   const handleDelete = (ev: AgendaEvent) => {
+    // Borrar una serie elimina todas sus repeticiones, pasadas incluidas: se confirma antes.
+    if (ev.recurrence && !window.confirm(`Se eliminará la serie "${ev.title}" con todas sus repeticiones. ¿Continuar?`)) {
+      return;
+    }
     if (!safeDeleteEvent(profileId, ev.id)) return;
     sileo.success({ title: 'Evento eliminado' });
-    if (form.editingId === ev.id) selectDay(selectedDate);
+    if (form.editingId === ev.id) resetForm(selectedDate);
     reload();
   };
 
   const handleGoToDate = (value: string) => {
-    if (!value) return;
+    setGotoValue(value);
+    if (!value || value < '1000') return;
     selectDay(value);
     calendarRef.current?.getApi().gotoDate(value);
   };
@@ -198,7 +211,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 id="agenda-goto"
                 type="date"
                 className={styles.inputField}
-                value={selectedDate}
+                value={gotoValue}
                 onChange={e => handleGoToDate(e.target.value)}
               />
             </div>
@@ -236,7 +249,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                     <button
                       type="button"
                       className={styles.iconBtn}
-                      aria-label={`eliminar ${ev.title}`}
+                      aria-label={ev.recurrence ? `eliminar serie ${ev.title}` : `eliminar ${ev.title}`}
                       onClick={() => handleDelete(ev)}
                     >
                       <Trash2 size={16} aria-hidden="true" />
@@ -385,7 +398,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 {form.editingId ? 'Guardar cambios' : 'Agregar evento'}
               </button>
               {form.editingId && (
-                <button type="button" className={styles.btnSecondary} onClick={() => selectDay(selectedDate)}>
+                <button type="button" className={styles.btnSecondary} onClick={() => resetForm(selectedDate)}>
                   Cancelar edición
                 </button>
               )}
