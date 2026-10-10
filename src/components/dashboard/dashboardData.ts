@@ -1,6 +1,6 @@
 import type { AgendaEvent, TodoItem } from '../../types';
 import { occursOn } from '../agenda/eventMapping';
-import { addDaysToDateStr } from '../../utils/localDate';
+import { addDaysToDateStr, toLocalDateStr } from '../../utils/localDate';
 
 export type Greeting = 'Buen día' | 'Buenas tardes' | 'Buenas noches';
 
@@ -36,9 +36,12 @@ const shortDateFormatter = new Intl.DateTimeFormat('es-CL', { day: 'numeric', mo
 
 export const dueLabel = (dueDate: string | undefined, todayStr: string): string | null => {
   if (!dueDate) return null;
+  const [y, m, d] = dueDate.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+  // Solo YYYY-MM-DD de calendario real: lo demás no se compara como texto ni rompe el formateador.
+  if (Number.isNaN(date.getTime()) || toLocalDateStr(date) !== dueDate) return null;
   if (dueDate < todayStr) return 'Vencida';
   if (dueDate === todayStr) return 'Hoy';
   if (dueDate === addDaysToDateStr(todayStr, 1)) return 'Mañana';
-  const [y, m, d] = dueDate.split('-').map(Number);
-  return shortDateFormatter.format(new Date(y, m - 1, d));
+  return shortDateFormatter.format(date);
 };

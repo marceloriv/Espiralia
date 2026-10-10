@@ -100,4 +100,10 @@ describe('dueLabel', () => {
   it('formatea fechas lejanas en corto es-CL', () => {
     expect(dueLabel('2026-10-17', '2026-10-10')).toMatch(/^17 oct/);
   });
+
+  // Revisión final, Important 2: una fecha mal formada no debe romper la vista (RangeError) ni marcarse "Vencida".
+  // Técnica: partición de equivalencia sobre formatos inválidos.
+  it.each(['2026-10-18T03:00:00.000Z', '2026-1-5', 'mañana', '2026-13-40'])('devuelve null para la fecha mal formada %s', due => {
+    expect(dueLabel(due, '2026-10-10')).toBeNull();
+  });
 });
