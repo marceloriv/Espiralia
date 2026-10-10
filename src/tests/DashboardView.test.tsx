@@ -1,142 +1,170 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DashboardView } from '../components/DashboardView';
 import { StorageService } from '../services/storage';
-import type { Profile } from '../types';
-import { addDaysToDateStr, toLocalDateStr } from '../utils/localDate';
+import { toLocalDateStr } from '../utils/localDate';
+import type { Profile, TodoItem } from '../types';
+
+const profile: Profile = { id: 'p-dash', name: 'Andrés', avatar: 'A', createdAt: '2026-10-09' };
+
+const saveTodo = (patch: Partial<TodoItem> & Pick<TodoItem, 'id' | 'title'>) =>
+  StorageService.saveTodo({
+    profileId: profile.id,
+    category: 'General',
+    priority: 'alta',
+    completed: false,
+    createdAt: '2026-10-09',
+    ...patch,
+  });
+
+const renderDashboard = (onNavigate = vi.fn()) => {
+  render(<DashboardView profile={profile} onNavigate={onNavigate} />);
+  return onNavigate;
+};
 
 describe('DashboardView', () => {
-  const mockProfile: Profile = {
-    id: 'p-dash',
-    name: 'Andrés',
-    avatar: 'A',
-    createdAt: '2026-10-09',
-  };
-
   beforeEach(() => {
     localStorage.clear();
   });
 
-  it('muestra saludo y widgets de resumen con navegacion rapida', async () => {
-    const user = userEvent.setup();
-    const onNavigate = vi.fn();
-    const todayStr = toLocalDateStr(new Date());
-
-    StorageService.saveEvent({
-      id: 'e-1',
-      profileId: mockProfile.id,
-      title: 'Revisión trimestral',
-      date: todayStr,
-      startTime: '11:00',
-    });
-
-    StorageService.saveTodo({
-      id: 't-1',
-      profileId: mockProfile.id,
-      title: 'Comprar suministros',
-      category: 'General',
-      priority: 'alta',
-      completed: false,
-      createdAt: '2026-10-09',
-    });
-
-    render(<DashboardView profile={mockProfile} onNavigate={onNavigate} />);
-
-    expect(screen.getByText(/¡hola, andrés!/i)).toBeInTheDocument();
-    expect(screen.getByText('Revisión trimestral')).toBeInTheDocument();
-    expect(screen.getByText('Comprar suministros')).toBeInTheDocument();
-
-    const goToAgendaBtn = screen.getByRole('button', { name: /ver agenda completa/i });
-    await user.click(goToAgendaBtn);
-    expect(onNavigate).toHaveBeenCalledWith('agenda');
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  it('permite completar tarea pendiente desde el dashboard', async () => {
-    const user = userEvent.setup();
-    const onNavigate = vi.fn();
+  // Técnica: valor límite representativo (09:00 cae en "Buen día").
+  it('saluda según la hora y muestra los chips de resumen', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 9, 10, 9, 0));
+    saveTodo({ id: 't1', title: 'Crítica uno' });
+    saveTodo({ id: 't2', title: 'Crítica dos' });
+    saveTodo({ id: 't3', title: 'Normal', priority: 'media' });
+    saveTodo({ id: 't4', title: 'Hecha', completed: true });
 
-    StorageService.saveTodo({
-      id: 't-quick',
-      profileId: mockProfile.id,
-      title: 'Tarea rapida',
-      category: 'General',
-      priority: 'media',
+    renderDashboard();
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Buen día, Andrés.' })).toBeInTheDocument();
+    const chips = within(screen.getByRole('list', { name: /resumen/i }));
+    expect(chips.getByText('3 pendientes')).toBeInTheDocument();
+    expect(chips.getByText('2 críticos')).toBeInTheDocument();
+  });
+
+  it('los atajos llevan a To-Do y a Agenda', async () => {
+    const user = userEvent.setup();
+    const onNavigate = renderDashboard();
+
+    await user.click(screen.getByRole('button', { name: /nueva tarea/i }));
+    await user.click(screen.getByRole('button', { name: /nuevo evento/i }));
+
+    expect(onNavigate).toHaveBeenNthCalledWith(1, 'todo');
+    expect(onNavigate).toHaveBeenNthCalledWith(2, 'agenda');
+  });
+
+  // Técnica: partición de equivalencia (con hora, serie de hoy, otro perfil).
+  it('lista los eventos de hoy ordenados, con badge de categoría e incluyendo series', () => {
+    const today = toLocalDateStr(new Date());
+    StorageService.saveEvent({ id: 'e2', profileId: profile.id, title: 'Reunión', date: today, startTime: '11:00', category: 'trabajo' });
+    StorageService.saveEvent({ id: 'e1', profileId: profile.id, title: 'Clase', date: today, startTime: '09:00', category: 'estudio' });
+    StorageService.saveEvent({
+      id: 's1',
+      profileId: profile.id,
+      title: 'Gimnasio',
+      date: today,
+      startTime: '20:00',
+      recurrence: { daysOfWeek: [new Date().getDay()] },
+    });
+    StorageService.saveEvent({ id: 'o1', profileId: 'p-otro', title: 'Ajeno', date: today, startTime: '10:00' });
+
+    renderDashboard();
+
+    const list = within(screen.getByRole('list', { name: /eventos de hoy/i }));
+    expect(list.getAllByRole('listitem').map(li => li.textContent)).toEqual([
+      expect.stringContaining('Clase'),
+      expect.stringContaining('Reunión'),
+      expect.stringContaining('Gimnasio'),
+    ]);
+    expect(list.getByText('Estudio')).toBeInTheDocument();
+    expect(screen.queryByText('Ajeno')).not.toBeInTheDocument();
+  });
+
+  // Review Focus 5.
+  it('muestra solo críticos y completar uno lo persiste y lo saca de la lista', async () => {
+    const user = userEvent.setup();
+    saveTodo({ id: 'c1', title: 'Pagar arriendo' });
+    saveTodo({ id: 'n1', title: 'Leer', priority: 'media' });
+
+    renderDashboard();
+
+    const critical = within(screen.getByRole('list', { name: /no olvidar/i }));
+    expect(critical.getByText('Pagar arriendo')).toBeInTheDocument();
+    expect(critical.queryByText('Leer')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('checkbox', { name: /completar pagar arriendo/i }));
+
+    expect(StorageService.getTodos(profile.id).find(t => t.id === 'c1')?.completed).toBe(true);
+    expect(screen.getByText('Nada crítico pendiente')).toBeInTheDocument();
+    expect(within(screen.getByRole('list', { name: /resumen/i })).getByText('0 críticos')).toBeInTheDocument();
+  });
+
+  it('muestra el planner semanal y los empty states', () => {
+    StorageService.savePlanner({
+      id: 'b1',
+      profileId: profile.id,
+      period: 'semanal',
+      timeSlot: 'mañana',
+      title: 'Bloque de foco',
+      priority: 'alta',
       completed: false,
-      createdAt: '2026-10-09',
     });
 
-    render(<DashboardView profile={mockProfile} onNavigate={onNavigate} />);
+    renderDashboard();
 
-    const checkbox = screen.getByRole('checkbox', { name: /completar tarea rapida/i });
-    expect(checkbox).not.toBeChecked();
+    expect(within(screen.getByRole('list', { name: /planner/i })).getByText('Bloque de foco')).toBeInTheDocument();
+    expect(screen.getByText('No hay eventos para hoy')).toBeInTheDocument();
+    expect(screen.getByText('Nada crítico pendiente')).toBeInTheDocument();
+  });
 
-    await user.click(checkbox);
-    expect(checkbox).toBeChecked();
-    expect(StorageService.getTodos(mockProfile.id)[0].completed).toBe(true);
+  // Revisión final, Minor 1 re-graduado: el contador cuenta todos los bloques semanales, la lista muestra 4.
+  // Técnica: valor límite (6 > tope de 4).
+  it('cuenta todos los bloques semanales aunque liste solo 4', () => {
+    for (let i = 1; i <= 6; i++) {
+      StorageService.savePlanner({
+        id: `b${i}`,
+        profileId: profile.id,
+        period: 'semanal',
+        timeSlot: 'mañana',
+        title: `Bloque ${i}`,
+        priority: 'media',
+        completed: false,
+      });
+    }
+
+    renderDashboard();
+
+    expect(screen.getByText('6 bloques')).toBeInTheDocument();
+    expect(within(screen.getByRole('list', { name: /planner/i })).getAllByRole('listitem')).toHaveLength(4);
   });
 
   it('hidrata los datos de almacenamiento sincronicamente en el render inicial sin flash vacio', () => {
-    StorageService.saveTodo({
-      id: 't-sync',
-      profileId: mockProfile.id,
-      title: 'Verificacion sincrona CLS',
-      category: 'General',
-      priority: 'alta',
-      completed: false,
-      createdAt: '2026-10-09',
-    });
-
-    const { container } = render(<DashboardView profile={mockProfile} onNavigate={vi.fn()} />);
-    // La tarea debe estar inmediatamente presente en el DOM
+    saveTodo({ id: 't-sync', title: 'Verificacion sincrona CLS' });
+    const { container } = render(<DashboardView profile={profile} onNavigate={vi.fn()} />);
     expect(container.textContent).toContain('Verificacion sincrona CLS');
   });
 
-  it('renderiza la sección de métricas visuales con ambos gráficos en el dashboard', () => {
-    StorageService.saveTodo({
-      id: 't-chart',
-      profileId: mockProfile.id,
-      title: 'Tarea con métrica',
-      category: 'Trabajo',
-      priority: 'alta',
-      completed: true,
-      createdAt: '2026-10-09',
-    });
+  it('conserva la sección de métricas con ambos gráficos', () => {
+    saveTodo({ id: 't-chart', title: 'Tarea con métrica', category: 'Trabajo', completed: true });
 
-    render(<DashboardView profile={mockProfile} onNavigate={vi.fn()} />);
+    renderDashboard();
 
     expect(screen.getByRole('heading', { name: /métricas y rendimiento/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/cumplimiento de tareas: 1 de 1 completadas \(100%\)/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/distribución de actividades por categoría/i)).toBeInTheDocument();
   });
 
-  // Técnica: partición de equivalencia (serie que cae hoy vs. serie que no cae hoy).
-  it('incluye en eventos de hoy las series semanales que caen hoy', () => {
-    const today = toLocalDateStr(new Date());
-    const todayDow = new Date().getDay();
-
-    StorageService.saveEvent({
-      id: 'r-hoy',
-      profileId: mockProfile.id,
-      title: 'Serie de hoy',
-      date: addDaysToDateStr(today, -7),
-      startTime: '18:00',
-      endTime: '19:00',
-      recurrence: { daysOfWeek: [todayDow] },
-    });
-    StorageService.saveEvent({
-      id: 'r-otro',
-      profileId: mockProfile.id,
-      title: 'Serie de otro día',
-      date: addDaysToDateStr(today, -7),
-      startTime: '18:00',
-      recurrence: { daysOfWeek: [(todayDow + 1) % 7] },
-    });
-
-    render(<DashboardView profile={mockProfile} onNavigate={vi.fn()} />);
-
-    expect(screen.getByText('Serie de hoy')).toBeInTheDocument();
-    expect(screen.queryByText('Serie de otro día')).not.toBeInTheDocument();
+  it('no muestra bloques de features que todavía no existen', () => {
+    renderDashboard();
+    for (const label of [/aforismo/i, /áreas temáticas/i, /documentos/i, /reflexión/i, /enlace/i, /indexeddb/i, /cifrad/i]) {
+      expect(screen.queryByText(label)).not.toBeInTheDocument();
+    }
   });
 });
-

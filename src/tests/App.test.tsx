@@ -48,7 +48,7 @@ describe('App integración general', () => {
 
     // Debe mostrar dashboard
     // El Dashboard (con gráficos) es un chunk diferido: su import() en frío supera 1 s en jsdom.
-    expect(await screen.findByRole('heading', { name: /¡hola, ignacio!/i }, { timeout: 10000 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /ignacio/i }, { timeout: 10000 })).toBeInTheDocument();
 
     // Cambiar perfil bloquea sesion
     const lockBtn = screen.getAllByRole('button', { name: /cambiar perfil/i })[0];

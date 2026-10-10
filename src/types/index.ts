@@ -54,6 +54,6 @@ export interface TodoItem {
   category: string;
   priority: Priority;
   completed: boolean;
-  dueDate?: string;
+  dueDate?: string; // YYYY-MM-DD hora local
   createdAt: string;
 }
