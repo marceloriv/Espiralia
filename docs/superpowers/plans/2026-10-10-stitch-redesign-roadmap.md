@@ -133,12 +133,12 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 - **Fuera del alcance:** "Áreas temáticas" con progreso (requiere el modelo de áreas de F4); "Documentos & Vínculos" (F6); aforismo del día (contenido sin fuente: preguntar antes de incluirlo).
 - **Aceptación:** los datos vienen solo de `StorageService` del perfil activo; los empty states tienen mensaje contextual; los gráficos de `@tanstack/charts` existentes se conservan o se reubican explícitamente.
 
-### F4 — To-Do con estados y áreas
+### F4 — To-Do con estados y áreas (Completada — 2026-10-10)
 
-- **Objetivo:** estados `pendiente | en_progreso | completada` y áreas temáticas como entidad, con filtros por estado y contador.
-- **Modelo:** `TodoItem.completed: boolean` pasa a `status`. Migración en lectura: `true` → `completada`, `false` → `pendiente`. Áreas nuevas con su clave `espiralia_${profileId}_areas` y su cascada en `deleteProfile`.
-- **Fuera del alcance:** editor de notas y "Carpetas & Vínculos" (F6).
-- **Aceptación:** las tareas viejas se migran sin pérdida; `deleteProfile` borra las áreas; el test con dos perfiles pasa.
+- **Objetivo:** estados `pendiente | en_progreso | completada` y áreas temáticas como entidad con colores y persistencia, filtros por área y por estado, modal de gestión de áreas, fecha de vencimiento editable en tarjeta y en formulario.
+- **Modelo:** `TodoItem.completed` + `TodoItem.status`. Migración transparente en lectura y en guardado. Áreas en `espiralia_${profileId}_areas` sembradas por defecto (`Trabajo`, `Personal`, `Estudio`, `General`) con cascada en `deleteProfile`.
+- **Menores de F1–F3 resueltos:** touch target ≥ 44 px en checkboxes de tareas (To-Do y Dashboard), contraste de texto secundario ≥ 4.5:1, formato gramatical de fecha en minúsculas en el saludo del Dashboard ("sábado, 10 de octubre").
+- **Aceptación:** 193/193 tests en verde, migración de esquemas legados verificada, build de producción limpio sin errores. Fusionada en `develop`.
 
 ### F5 — Planner en grilla semanal + metas
 
@@ -191,5 +191,6 @@ Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porq
 
 ## Siguiente paso
 
-1. F0 a F3 completadas y fusionadas en `develop`.
-2. Escribir `docs/superpowers/specs/2026-10-10-todo-areas-design.md` (F4: To-Do con estados, áreas temáticas y fecha de vencimiento editable) y luego su plan de implementación TDD.
+1. F0 a F4 completadas y fusionadas en `develop`.
+2. F5: Corregir pantalla defectuosa de Planner en Stitch (`101cab70f79e45a192ef8069fada0140`) vía `edit_screens` o rediseño directo (D6).
+3. Redactar spec `docs/superpowers/specs/2026-10-10-planner-weekly-design.md` (grilla semanal Lunes–Domingo con bloques y metas) y su plan TDD.
