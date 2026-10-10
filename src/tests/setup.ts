@@ -24,16 +24,20 @@ const mockResizeObserver = class ResizeObserver {
 window.ResizeObserver = mockResizeObserver;
 globalThis.ResizeObserver = mockResizeObserver;
 
-HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation((contextId: string) => {
+HTMLCanvasElement.prototype.getContext = vi.fn().mockImplementation(function (this: HTMLCanvasElement, contextId: string) {
   if (contextId === '2d') {
     return {
-      canvas: document.createElement('canvas'),
+      canvas: this,
       fillRect: vi.fn(),
       clearRect: vi.fn(),
+      strokeRect: vi.fn(),
       getImageData: vi.fn(() => ({ data: new Array(4) })),
       putImageData: vi.fn(),
       createImageData: vi.fn(() => []),
       setTransform: vi.fn(),
+      resetTransform: vi.fn(),
+      setLineDash: vi.fn(),
+      getLineDash: vi.fn(() => []),
       drawImage: vi.fn(),
       save: vi.fn(),
       fillText: vi.fn(),
