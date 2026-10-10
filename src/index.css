@@ -43,9 +43,10 @@
   --sileo-duration: 600ms;
 
   /* Typography */
-  --font-primary: "Copernicus", "Tiempos Headline", serif;
-  --font-family-2: "StyreneB", Inter, sans-serif;
-  --font-family-3: "JetBrains Mono", ui-monospace, monospace;
+  /* Copernicus/StyreneB son comerciales y no se cargan aún (sin @font-face): los fallbacks definen lo que se ve hoy. */
+  --font-primary: "Copernicus", "Tiempos Headline", Georgia, "Times New Roman", serif;
+  --font-family-2: "StyreneB", Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-family-3: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 
   /* Type scale & metrics */
   --text-display-xl: 64px;
