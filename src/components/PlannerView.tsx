@@ -10,7 +10,7 @@ interface PlannerViewProps {
 
 export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
   const [period, setPeriod] = useState<PlannerPeriod>('semanal');
-  const [blocks, setBlocks] = useState<PlannerBlock[]>([]);
+  const [blocks, setBlocks] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profileId));
   const [title, setTitle] = useState('');
   const [timeSlot, setTimeSlot] = useState<TimeSlot>('mañana');
   const [priority, setPriority] = useState<Priority>('alta');
