@@ -347,19 +347,24 @@ Este bloque es el que un agente debe poder aplicar sin interpretar: si una acci�
 
 ## 13. Deploy (GitHub Pages)
 
-Espiralia es una SPA puramente cliente servida como sitio estático a través de GitHub Pages:
+Espiralia es una SPA puramente cliente servida como sitio estático a través de GitHub Pages. El despliegue está automatizado mediante GitHub Actions en `.github/workflows/deploy.yml`, activándose ante cada push a la rama `main` o ejecución manual (`workflow_dispatch`).
+
+El workflow ejecuta:
+1. `pnpm install --frozen-lockfile`
+2. `pnpm exec vitest run` (quality gate bloqueante)
+3. `pnpm build` (con `base: './'` en `vite.config.ts`)
+4. Publicación en entorno `github-pages` vía `actions/deploy-pages@v4`
+
+Verificación local y rollback:
 
 ```bash
-# compilación limpia de producción
+# verificación local previa de pruebas y compilación
+pnpm exec vitest run
 pnpm build
 
-# despliegue hacia GitHub Pages (rama gh-pages)
-pnpm exec gh-pages -d dist
-
-# rollback en caso de emergencia
+# rollback en caso de emergencia (revertir commit en main y pushear)
 git revert HEAD
-pnpm build
-pnpm exec gh-pages -d dist
+git push origin main
 ```
 
 ## 14. Monorepo (opcional)
