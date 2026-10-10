@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Trash2, CheckCircle2 } from 'lucide-react';
+import { sileo } from 'sileo';
 import type { TodoItem, Priority } from '../types';
 import { StorageService } from '../services/storage';
 import styles from './TodoView.module.css';
@@ -41,16 +42,22 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
 
     StorageService.saveTodo(newTodo);
     setInputTitle('');
+    sileo.success('Tarea agregada exitosamente');
     loadTodos();
   };
 
   const handleToggleTodo = (id: string) => {
+    const target = todos.find(t => t.id === id);
     StorageService.toggleTodo(profileId, id);
+    if (target) {
+      sileo.info(target.completed ? 'Tarea reabierta' : 'Tarea completada');
+    }
     loadTodos();
   };
 
   const handleDeleteTodo = (id: string) => {
     StorageService.deleteTodo(profileId, id);
+    sileo.success('Tarea eliminada');
     loadTodos();
   };
 

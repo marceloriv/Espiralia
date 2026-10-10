@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { sileo } from 'sileo';
 import { TodoView } from '../components/TodoView';
 import { StorageService } from '../services/storage';
 
@@ -9,9 +10,12 @@ describe('TodoView', () => {
 
   beforeEach(() => {
     localStorage.clear();
+    vi.clearAllMocks();
   });
 
   it('permite agregar, alternar y filtrar tareas', async () => {
+    const successSpy = vi.spyOn(sileo, 'success');
+    const infoSpy = vi.spyOn(sileo, 'info');
     const user = userEvent.setup();
 
     render(<TodoView profileId={profileId} />);
@@ -22,12 +26,14 @@ describe('TodoView', () => {
     await user.type(input, 'Comprar insumos{enter}');
 
     expect(screen.getByText('Comprar insumos')).toBeInTheDocument();
+    expect(successSpy).toHaveBeenCalledWith('Tarea agregada exitosamente');
 
     // Toggle completed
     const checkbox = screen.getByRole('checkbox', { name: /completar comprar insumos/i });
     expect(checkbox).not.toBeChecked();
     await user.click(checkbox);
     expect(checkbox).toBeChecked();
+    expect(infoSpy).toHaveBeenCalledWith('Tarea completada');
 
     // Filter pendientes -> no debe aparecer
     const pendingFilter = screen.getByRole('button', { name: /pendientes/i });
@@ -41,6 +47,7 @@ describe('TodoView', () => {
   });
 
   it('permite eliminar una tarea', async () => {
+    const successSpy = vi.spyOn(sileo, 'success');
     const user = userEvent.setup();
     StorageService.saveTodo({
       id: 't-del',
@@ -60,6 +67,7 @@ describe('TodoView', () => {
     await user.click(deleteBtn);
 
     expect(screen.queryByText('Tarea a borrar')).not.toBeInTheDocument();
+    expect(successSpy).toHaveBeenCalledWith('Tarea eliminada');
     expect(StorageService.getTodos(profileId)).toEqual([]);
   });
 
