@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Trash2, Sun, Sunset, Moon, Target } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { PlannerBlock, PlannerPeriod, TimeSlot, Priority } from '../types';
@@ -15,12 +15,17 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
   const [title, setTitle] = useState('');
   const [timeSlot, setTimeSlot] = useState<TimeSlot>('mañana');
   const [priority, setPriority] = useState<Priority>('alta');
+  const isFirstMount = useRef(true);
 
   const loadBlocks = useCallback(() => {
     setBlocks(StorageService.getPlanner(profileId));
   }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadBlocks();
   }, [loadBlocks]);
 

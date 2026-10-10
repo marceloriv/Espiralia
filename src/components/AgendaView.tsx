@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Clock, Trash2 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { AgendaEvent, EventCategory } from '../types';
@@ -15,6 +15,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDateStr, setSelectedDateStr] = useState(() => new Date().toISOString().split('T')[0]);
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
+  const isFirstMount = useRef(true);
 
   // Form states
   const [title, setTitle] = useState('');
@@ -26,6 +27,10 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
   }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadEvents();
   }, [loadEvents]);
 
