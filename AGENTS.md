@@ -30,7 +30,7 @@ Espiralia es una SPA (Single Page Application) de productividad personal en clie
 
 ## 2. Stack técnico
 
-- Lenguaje: TypeScript 5.8 / Node 22.x LTS
+- Lenguaje: TypeScript 5.8 / Node 24.x
 - Framework: React 19.2 (Vite 6.4)
 - Gestor de paquetes: pnpm 10.x
 - Enrutamiento: React Router 7 (`react-router-dom` con `HashRouter` en `src/routes/`)
