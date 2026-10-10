@@ -12,7 +12,8 @@ interface AgendaViewProps {
 const agendaMonthFormatter = new Intl.DateTimeFormat('es-CL', { month: 'long', year: 'numeric' });
 
 export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(() => new Date());
+  const [todayStr] = useState(() => new Date().toISOString().split('T')[0]);
   const [selectedDateStr, setSelectedDateStr] = useState(() => new Date().toISOString().split('T')[0]);
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
   const isFirstMount = useRef(true);
@@ -118,7 +119,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
               const day = i + 1;
               const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
               const isSelected = dateStr === selectedDateStr;
-              const isToday = dateStr === new Date().toISOString().split('T')[0];
+              const isToday = dateStr === todayStr;
               const hasEvents = events.some(e => e.date === dateStr);
 
               return (

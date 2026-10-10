@@ -31,7 +31,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
     loadData();
   }, [loadData]);
 
-  const todayStr = new Date().toISOString().split('T')[0];
+  const [todayStr] = useState(() => new Date().toISOString().split('T')[0]);
   const todayEvents = events.filter(e => e.date === todayStr);
   const pendingTodos = todos.filter(t => !t.completed);
   const completedTodosCount = todos.filter(t => t.completed).length;

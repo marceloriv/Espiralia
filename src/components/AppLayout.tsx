@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { LayoutDashboard, Calendar, Compass, CheckSquare, LogOut } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
@@ -26,7 +26,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   onLockProfile,
   children,
 }) => {
-  const currentDate = layoutDateFormatter.format(new Date());
+  const [currentDate] = useState(() => layoutDateFormatter.format(new Date()));
 
   const handleLock = () => {
     sileo.info({ title: 'Sesión cerrada' });
