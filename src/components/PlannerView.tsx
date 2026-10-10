@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Trash2, Sun, Sunset, Moon, Target } from 'lucide-react';
 import type { PlannerBlock, PlannerPeriod, TimeSlot, Priority } from '../types';
 import { StorageService } from '../services/storage';
@@ -15,13 +15,13 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
   const [timeSlot, setTimeSlot] = useState<TimeSlot>('mañana');
   const [priority, setPriority] = useState<Priority>('alta');
 
-  const loadBlocks = () => {
+  const loadBlocks = useCallback(() => {
     setBlocks(StorageService.getPlanner(profileId));
-  };
+  }, [profileId]);
 
   useEffect(() => {
     loadBlocks();
-  }, [profileId]);
+  }, [loadBlocks]);
 
   const handleAddBlock = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,12 +95,14 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
             type="text"
             className={styles.inputTitle}
             placeholder="Objetivo o bloque de enfoque"
+            aria-label="Objetivo o bloque de enfoque"
             value={title}
             onChange={e => setTitle(e.target.value)}
           />
 
           <select
             className={styles.selectSlot}
+            aria-label="Momento del día o meta"
             value={timeSlot}
             onChange={e => setTimeSlot(e.target.value as TimeSlot)}
           >
@@ -112,6 +114,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
 
           <select
             className={styles.selectPriority}
+            aria-label="Prioridad del bloque"
             value={priority}
             onChange={e => setPriority(e.target.value as Priority)}
           >

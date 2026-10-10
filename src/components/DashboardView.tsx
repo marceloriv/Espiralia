@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Calendar, Compass, CheckSquare, Clock } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, ViewType } from '../types';
 import { StorageService } from '../services/storage';
@@ -14,15 +14,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   const [planner, setPlanner] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profile.id));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profile.id));
 
-  const loadData = () => {
+  const loadData = useCallback(() => {
     setEvents(StorageService.getEvents(profile.id));
     setPlanner(StorageService.getPlanner(profile.id));
     setTodos(StorageService.getTodos(profile.id));
-  };
+  }, [profile.id]);
 
   useEffect(() => {
     loadData();
-  }, [profile.id]);
+  }, [loadData]);
 
   const todayStr = new Date().toISOString().split('T')[0];
   const todayEvents = events.filter(e => e.date === todayStr);

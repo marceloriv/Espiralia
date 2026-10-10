@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Plus, Trash2, CheckCircle2 } from 'lucide-react';
 import type { TodoItem, Priority } from '../types';
 import { StorageService } from '../services/storage';
@@ -17,13 +17,13 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
   const [selectedPriority, setSelectedPriority] = useState<Priority>('media');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('todas');
 
-  const loadTodos = () => {
+  const loadTodos = useCallback(() => {
     setTodos(StorageService.getTodos(profileId));
-  };
+  }, [profileId]);
 
   useEffect(() => {
     loadTodos();
-  }, [profileId]);
+  }, [loadTodos]);
 
   const handleAddTodo = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,12 +106,14 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
             type="text"
             className={styles.inputTask}
             placeholder="¿Qué tienes pendiente?"
+            aria-label="¿Qué tienes pendiente?"
             value={inputTitle}
             onChange={e => setInputTitle(e.target.value)}
           />
 
           <select
             className={styles.selectCategory}
+            aria-label="Categoría de la tarea"
             value={selectedCategory}
             onChange={e => setSelectedCategory(e.target.value)}
           >
@@ -123,6 +125,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
 
           <select
             className={styles.selectPriority}
+            aria-label="Prioridad de la tarea"
             value={selectedPriority}
             onChange={e => setSelectedPriority(e.target.value as Priority)}
           >
