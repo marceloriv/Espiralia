@@ -16,15 +16,21 @@ export interface Profile {
   createdAt: string;
 }
 
+export interface EventRecurrence {
+  daysOfWeek: number[]; // 0 = domingo … 6 = sábado
+  until?: string; // YYYY-MM-DD inclusive
+}
+
 export interface AgendaEvent {
   id: string;
   profileId: string;
   title: string;
-  date: string; // YYYY-MM-DD
-  startTime?: string; // HH:mm
-  endTime?: string; // HH:mm
+  date: string; // YYYY-MM-DD hora local; en recurrentes = inicio de la serie
+  startTime?: string; // HH:mm; ausente = todo el día
+  endTime?: string; // HH:mm; ausente con startTime = 1 h
   category?: EventCategory;
   notes?: string;
+  recurrence?: EventRecurrence;
 }
 
 export interface PlannerBlock {
