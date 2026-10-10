@@ -11,6 +11,13 @@ interface AppLayoutProps {
   children: React.ReactNode;
 }
 
+const layoutDateFormatter = new Intl.DateTimeFormat('es-CL', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
 export const AppLayout: React.FC<AppLayoutProps> = ({
   profile,
   currentView,
@@ -18,12 +25,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   onLockProfile,
   children,
 }) => {
-  const currentDate = new Intl.DateTimeFormat('es-CL', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date());
+  const currentDate = layoutDateFormatter.format(new Date());
 
   const navItems: { view: ViewType; label: string; icon: React.ReactNode }[] = [
     { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },

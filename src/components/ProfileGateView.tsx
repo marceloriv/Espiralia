@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Lock, Plus, ArrowRight } from 'lucide-react';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
@@ -9,7 +9,7 @@ interface ProfileGateViewProps {
 }
 
 export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfile }) => {
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>(() => StorageService.getProfiles());
   const [isCreating, setIsCreating] = useState(false);
   const [selectedProfileForPin, setSelectedProfileForPin] = useState<Profile | null>(null);
 
@@ -18,10 +18,6 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
   const [pin, setPin] = useState('');
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
-
-  useEffect(() => {
-    setProfiles(StorageService.getProfiles());
-  }, []);
 
   const handleProfileClick = (profile: Profile) => {
     if (profile.pin) {

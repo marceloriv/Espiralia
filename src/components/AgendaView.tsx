@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Clock, Trash2 } from 'lucide-react';
 import type { AgendaEvent, EventCategory } from '../types';
 import { StorageService } from '../services/storage';
@@ -8,9 +8,11 @@ interface AgendaViewProps {
   profileId: string;
 }
 
+const agendaMonthFormatter = new Intl.DateTimeFormat('es-CL', { month: 'long', year: 'numeric' });
+
 export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDateStr, setSelectedDateStr] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDateStr, setSelectedDateStr] = useState(() => new Date().toISOString().split('T')[0]);
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
 
   // Form states
@@ -18,13 +20,13 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
   const [startTime, setStartTime] = useState('09:00');
   const [category, setCategory] = useState<EventCategory>('personal');
 
-  const loadEvents = () => {
+  const loadEvents = useCallback(() => {
     setEvents(StorageService.getEvents(profileId));
-  };
+  }, [profileId]);
 
   useEffect(() => {
     loadEvents();
-  }, [profileId]);
+  }, [loadEvents]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -32,7 +34,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
   const firstDayIndex = new Date(year, month, 1).getDay(); // 0 is Sunday
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  const monthName = new Intl.DateTimeFormat('es-CL', { month: 'long', year: 'numeric' }).format(currentDate);
+  const monthName = agendaMonthFormatter.format(currentDate);
 
   const handlePrevMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
@@ -138,6 +140,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
                   type="text"
                   className={styles.inputField}
                   placeholder="Título del evento"
+                  aria-label="Título del evento"
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   required
@@ -148,6 +151,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
                 <input
                   type="time"
                   className={styles.inputField}
+                  aria-label="Hora de inicio"
                   value={startTime}
                   onChange={e => setStartTime(e.target.value)}
                 />
@@ -156,6 +160,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
               <div className={styles.formGroup}>
                 <select
                   className={styles.selectField}
+                  aria-label="Categoría del evento"
                   value={category}
                   onChange={e => setCategory(e.target.value as EventCategory)}
                 >
