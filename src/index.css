@@ -140,3 +140,7 @@ h1, h2, h3, h4 {
   color: var(--color-ink);
   margin-top: 0;
 }
+
+@view-transition {
+  navigation: auto;
+}
