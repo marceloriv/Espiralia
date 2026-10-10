@@ -1,9 +1,16 @@
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus } from '../types';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
 
 const getScopedKey = (profileId: string, domain: string) => `espiralia_${profileId}_${domain}`;
+
+const DEFAULT_AREAS = [
+  { name: 'Trabajo', color: '#3b82f6' },
+  { name: 'Personal', color: '#10b981' },
+  { name: 'Estudio', color: '#8b5cf6' },
+  { name: 'General', color: '#6b7280' },
+];
 
 export const StorageService = {
   // Profiles
@@ -35,6 +42,7 @@ export const StorageService = {
     localStorage.removeItem(getScopedKey(id, 'events'));
     localStorage.removeItem(getScopedKey(id, 'planner'));
     localStorage.removeItem(getScopedKey(id, 'todos'));
+    localStorage.removeItem(getScopedKey(id, 'areas'));
 
     if (this.getActiveProfileId() === id) {
       this.clearActiveProfileId();
@@ -105,11 +113,88 @@ export const StorageService = {
     localStorage.setItem(getScopedKey(profileId, 'planner'), JSON.stringify(list));
   },
 
+  // Areas
+  getAreas(profileId: string): Area[] {
+    try {
+      const data = localStorage.getItem(getScopedKey(profileId, 'areas'));
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      const seeded: Area[] = DEFAULT_AREAS.map((def, idx) => ({
+        id: `area-${idx + 1}-${Date.now()}`,
+        profileId,
+        name: def.name,
+        color: def.color,
+        createdAt: new Date().toISOString(),
+      }));
+      localStorage.setItem(getScopedKey(profileId, 'areas'), JSON.stringify(seeded));
+      return seeded;
+    } catch {
+      return [];
+    }
+  },
+
+  saveArea(area: Area): void {
+    const list = this.getAreas(area.profileId);
+    const existingIndex = list.findIndex(a => a.id === area.id);
+    if (existingIndex >= 0) {
+      list[existingIndex] = area;
+    } else {
+      list.push(area);
+    }
+    localStorage.setItem(getScopedKey(area.profileId, 'areas'), JSON.stringify(list));
+  },
+
+  deleteArea(profileId: string, areaId: string): void {
+    const list = this.getAreas(profileId).filter(a => a.id !== areaId);
+    localStorage.setItem(getScopedKey(profileId, 'areas'), JSON.stringify(list));
+
+    // Reasignar tareas huérfanas al área General o la primera disponible
+    const fallbackArea = list.find(a => a.name.toLowerCase() === 'general') ?? list[0];
+    if (fallbackArea) {
+      const todos = this.getTodos(profileId);
+      let changed = false;
+      for (const t of todos) {
+        if (t.areaId === areaId) {
+          t.areaId = fallbackArea.id;
+          changed = true;
+        }
+      }
+      if (changed) {
+        localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(todos));
+      }
+    }
+  },
+
   // Todos
   getTodos(profileId: string): TodoItem[] {
     try {
       const data = localStorage.getItem(getScopedKey(profileId, 'todos'));
-      return data ? JSON.parse(data) : [];
+      const rawList: any[] = data ? JSON.parse(data) : [];
+      if (!Array.isArray(rawList)) return [];
+
+      const areas = this.getAreas(profileId);
+      const defaultArea = areas.find(a => a.name.toLowerCase() === 'general') ?? areas[0];
+
+      return rawList.map(raw => {
+        const status: TaskStatus = raw.status ?? (raw.completed ? 'completada' : 'pendiente');
+        let areaId = raw.areaId;
+        if (!areaId && raw.category) {
+          const match = areas.find(a => a.name.toLowerCase() === String(raw.category).toLowerCase());
+          areaId = match ? match.id : defaultArea?.id;
+        }
+        if (!areaId && defaultArea) {
+          areaId = defaultArea.id;
+        }
+
+        return {
+          ...raw,
+          status,
+          completed: status === 'completada',
+          areaId: areaId ?? 'default',
+        };
+      });
     } catch {
       return [];
     }
@@ -117,11 +202,15 @@ export const StorageService = {
 
   saveTodo(todo: TodoItem): void {
     const list = this.getTodos(todo.profileId);
+    const normalized: TodoItem = {
+      ...todo,
+      completed: todo.status === 'completada',
+    };
     const existingIndex = list.findIndex(t => t.id === todo.id);
     if (existingIndex >= 0) {
-      list[existingIndex] = todo;
+      list[existingIndex] = normalized;
     } else {
-      list.push(todo);
+      list.push(normalized);
     }
     localStorage.setItem(getScopedKey(todo.profileId, 'todos'), JSON.stringify(list));
   },
@@ -135,8 +224,25 @@ export const StorageService = {
     const list = this.getTodos(profileId);
     const todo = list.find(t => t.id === todoId);
     if (todo) {
-      todo.completed = !todo.completed;
+      if (todo.status === 'completada') {
+        todo.status = 'pendiente';
+        todo.completed = false;
+      } else {
+        todo.status = 'completada';
+        todo.completed = true;
+      }
+      localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
+    }
+  },
+
+  setTodoStatus(profileId: string, todoId: string, status: TaskStatus): void {
+    const list = this.getTodos(profileId);
+    const todo = list.find(t => t.id === todoId);
+    if (todo) {
+      todo.status = status;
+      todo.completed = status === 'completada';
       localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
     }
   },
 };
+

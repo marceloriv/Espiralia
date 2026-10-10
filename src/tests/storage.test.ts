@@ -90,26 +90,141 @@ describe('StorageService', () => {
     });
   });
 
-  describe('Todos', () => {
-    it('toggles and deletes todos per profile', () => {
+  describe('Areas', () => {
+    it('siembra áreas por defecto cuando el perfil no tiene áreas', () => {
+      const areas = StorageService.getAreas('p-1');
+      expect(areas).toHaveLength(4);
+      expect(areas.map(a => a.name)).toEqual(['Trabajo', 'Personal', 'Estudio', 'General']);
+      expect(areas[0].profileId).toBe('p-1');
+    });
+
+    it('aísla áreas entre diferentes perfiles', () => {
+      StorageService.getAreas('p-1');
+      StorageService.saveArea({
+        id: 'a-custom-1',
+        profileId: 'p-1',
+        name: 'Proyectos P1',
+        color: '#4f46e5',
+        createdAt: '2026-10-10',
+      });
+
+      const areasP2 = StorageService.getAreas('p-2');
+      expect(areasP2.find(a => a.name === 'Proyectos P1')).toBeUndefined();
+    });
+
+    it('guarda y actualiza un área', () => {
+      const area = {
+        id: 'a-nueva',
+        profileId: 'p-1',
+        name: 'Salud',
+        color: '#10b981',
+        createdAt: '2026-10-10',
+      };
+      StorageService.saveArea(area);
+      const list = StorageService.getAreas('p-1');
+      expect(list.find(a => a.id === 'a-nueva')?.name).toBe('Salud');
+
+      StorageService.saveArea({ ...area, name: 'Salud y Bienestar' });
+      expect(StorageService.getAreas('p-1').find(a => a.id === 'a-nueva')?.name).toBe('Salud y Bienestar');
+    });
+
+    it('elimina un área y reasigna tareas huérfanas al área General', () => {
+      const areas = StorageService.getAreas('p-1');
+      const trabajoArea = areas.find(a => a.name === 'Trabajo')!;
+      const generalArea = areas.find(a => a.name === 'General')!;
+
+      StorageService.saveTodo({
+        id: 't-1',
+        profileId: 'p-1',
+        title: 'Informe mensual',
+        areaId: trabajoArea.id,
+        priority: 'alta',
+        status: 'pendiente',
+        createdAt: '2026-10-10',
+      });
+
+      StorageService.deleteArea('p-1', trabajoArea.id);
+      expect(StorageService.getAreas('p-1').find(a => a.id === trabajoArea.id)).toBeUndefined();
+
+      const todos = StorageService.getTodos('p-1');
+      expect(todos[0].areaId).toBe(generalArea.id);
+    });
+  });
+
+  describe('Todos con estados y migración', () => {
+    it('toggles y deletes todos con status y compatibilidad de completed', () => {
+      const areas = StorageService.getAreas('p-1');
+      const generalArea = areas.find(a => a.name === 'General')!;
+
       const todo: TodoItem = {
         id: 't-1',
         profileId: 'p-1',
         title: 'Limpiar código',
-        category: 'Dev',
+        areaId: generalArea.id,
         priority: 'alta',
+        status: 'pendiente',
         completed: false,
         createdAt: '2026-10-09',
       };
 
       StorageService.saveTodo(todo);
+      expect(StorageService.getTodos('p-1')[0].status).toBe('pendiente');
       expect(StorageService.getTodos('p-1')[0].completed).toBe(false);
 
       StorageService.toggleTodo('p-1', 't-1');
+      expect(StorageService.getTodos('p-1')[0].status).toBe('completada');
       expect(StorageService.getTodos('p-1')[0].completed).toBe(true);
+
+      StorageService.toggleTodo('p-1', 't-1');
+      expect(StorageService.getTodos('p-1')[0].status).toBe('pendiente');
+      expect(StorageService.getTodos('p-1')[0].completed).toBe(false);
 
       StorageService.deleteTodo('p-1', 't-1');
       expect(StorageService.getTodos('p-1')).toEqual([]);
+    });
+
+    it('migra tareas legadas con completed boolean y category string sin perder datos', () => {
+      // Simular almacenamiento legado directo sin status ni areaId
+      const legacyTodos = [
+        {
+          id: 'leg-1',
+          profileId: 'p-1',
+          title: 'Tarea completada vieja',
+          category: 'Trabajo',
+          priority: 'media',
+          completed: true,
+          createdAt: '2026-10-08',
+        },
+        {
+          id: 'leg-2',
+          profileId: 'p-1',
+          title: 'Tarea pendiente vieja',
+          category: 'Personal',
+          priority: 'alta',
+          completed: false,
+          createdAt: '2026-10-08',
+        },
+      ];
+      localStorage.setItem('espiralia_p-1_todos', JSON.stringify(legacyTodos));
+
+      const migrated = StorageService.getTodos('p-1');
+      expect(migrated).toHaveLength(2);
+      expect(migrated[0].status).toBe('completada');
+      expect(migrated[0].completed).toBe(true);
+      expect(migrated[0].areaId).toBeDefined();
+
+      expect(migrated[1].status).toBe('pendiente');
+      expect(migrated[1].completed).toBe(false);
+      expect(migrated[1].areaId).toBeDefined();
+    });
+
+    it('borrado de perfil en cascada elimina también espiralia_{profileId}_areas', () => {
+      StorageService.saveProfile({ id: 'p-del', name: 'User', avatar: 'U', createdAt: '2026-10-10' });
+      StorageService.getAreas('p-del');
+      expect(localStorage.getItem('espiralia_p-del_areas')).not.toBeNull();
+
+      StorageService.deleteProfile('p-del');
+      expect(localStorage.getItem('espiralia_p-del_areas')).toBeNull();
     });
   });
 });
