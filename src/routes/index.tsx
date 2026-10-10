@@ -2,10 +2,10 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
 import { ProfileGateView } from '../components/ProfileGateView';
-import { DashboardView } from '../components/DashboardView';
 import { RouteLoadingFallback } from '../components/RouteLoadingFallback';
 import type { Profile } from '../types';
 
+const DashboardView = lazy(() => import('../components/DashboardView').then(m => ({ default: m.DashboardView })));
 const AgendaView = lazy(() => import('../components/AgendaView').then(m => ({ default: m.AgendaView })));
 const PlannerView = lazy(() => import('../components/PlannerView').then(m => ({ default: m.PlannerView })));
 const TodoView = lazy(() => import('../components/TodoView').then(m => ({ default: m.TodoView })));
@@ -50,10 +50,12 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           path="/dashboard"
           element={
             activeProfile ? (
-              <DashboardView
-                profile={activeProfile}
-                onNavigate={view => navigate(`/${view}`)}
-              />
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <DashboardView
+                  profile={activeProfile}
+                  onNavigate={view => navigate(`/${view}`)}
+                />
+              </Suspense>
             ) : null
           }
         />
