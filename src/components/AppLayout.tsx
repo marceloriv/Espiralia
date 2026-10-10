@@ -1,5 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, Calendar, Compass, CheckSquare, LogOut } from 'lucide-react';
+import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
 import styles from './AppLayout.module.css';
 
@@ -26,6 +27,11 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   children,
 }) => {
   const currentDate = layoutDateFormatter.format(new Date());
+
+  const handleLock = () => {
+    sileo.info('Sesión cerrada');
+    onLockProfile();
+  };
 
   const navItems: { view: ViewType; label: string; icon: React.ReactNode }[] = [
     { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -63,7 +69,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             <div className={styles.userAvatar}>{profile.avatar}</div>
             <div className={styles.userName}>{profile.name}</div>
           </div>
-          <button className={styles.lockButton} onClick={onLockProfile}>
+          <button className={styles.lockButton} onClick={handleLock}>
             <LogOut size={16} />
             <span>Cambiar perfil</span>
           </button>
@@ -79,7 +85,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             <button
               type="button"
               className={styles.mobileProfileBtn}
-              onClick={onLockProfile}
+              onClick={handleLock}
               aria-label={`Cambiar perfil (${profile.name})`}
               title="Cambiar perfil"
             >
