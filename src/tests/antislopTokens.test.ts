@@ -17,4 +17,19 @@ describe('Antislop UI design tokens contract', () => {
     const appCssPath = path.resolve(__dirname, '../App.css');
     expect(fs.existsSync(appCssPath)).toBe(false);
   });
+
+  it('componentes principales consumen tokens de elevación en vez de sombras arbitrarias', () => {
+    const modules = [
+      '../components/AppLayout.module.css',
+      '../components/ProfileGateView.module.css',
+      '../components/PlannerView.module.css',
+      '../components/TodoView.module.css',
+    ];
+
+    for (const relPath of modules) {
+      const fullPath = path.resolve(__dirname, relPath);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      expect(content).not.toMatch(/box-shadow:\s*0\s+\d+px\s+\d+px\s+rgba/);
+    }
+  });
 });

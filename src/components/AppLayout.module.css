@@ -16,7 +16,7 @@
   font-size: var(--text-button);
   font-weight: 600;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-md);
   transition: top 0.15s ease;
 }
 
