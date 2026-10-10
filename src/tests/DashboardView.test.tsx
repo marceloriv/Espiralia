@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { DashboardView } from '../components/DashboardView';
 import { StorageService } from '../services/storage';
 import type { Profile } from '../types';
-import { toLocalDateStr } from '../utils/localDate';
+import { addDaysToDateStr, toLocalDateStr } from '../utils/localDate';
 
 describe('DashboardView', () => {
   const mockProfile: Profile = {
@@ -108,6 +108,35 @@ describe('DashboardView', () => {
     expect(screen.getByRole('heading', { name: /métricas y rendimiento/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/cumplimiento de tareas: 1 de 1 completadas \(100%\)/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/distribución de actividades por categoría/i)).toBeInTheDocument();
+  });
+
+  // Técnica: partición de equivalencia (serie que cae hoy vs. serie que no cae hoy).
+  it('incluye en eventos de hoy las series semanales que caen hoy', () => {
+    const today = toLocalDateStr(new Date());
+    const todayDow = new Date().getDay();
+
+    StorageService.saveEvent({
+      id: 'r-hoy',
+      profileId: mockProfile.id,
+      title: 'Serie de hoy',
+      date: addDaysToDateStr(today, -7),
+      startTime: '18:00',
+      endTime: '19:00',
+      recurrence: { daysOfWeek: [todayDow] },
+    });
+    StorageService.saveEvent({
+      id: 'r-otro',
+      profileId: mockProfile.id,
+      title: 'Serie de otro día',
+      date: addDaysToDateStr(today, -7),
+      startTime: '18:00',
+      recurrence: { daysOfWeek: [(todayDow + 1) % 7] },
+    });
+
+    render(<DashboardView profile={mockProfile} onNavigate={vi.fn()} />);
+
+    expect(screen.getByText('Serie de hoy')).toBeInTheDocument();
+    expect(screen.queryByText('Serie de otro día')).not.toBeInTheDocument();
   });
 });
 
