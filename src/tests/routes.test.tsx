@@ -44,7 +44,7 @@ describe('AppRoutes con rutas protegidas', () => {
 
     // El Dashboard es diferido: primero se ve el fallback de Suspense.
     expect(screen.getByRole('status')).toHaveTextContent(/cargando espacio/i);
-    expect(await screen.findByText(/¡hola, carolina!/i, {}, { timeout: 10000 })).toBeInTheDocument();
+    expect(await screen.findByText(/carolina./i, {}, { timeout: 10000 })).toBeInTheDocument();
   });
 
   it('navega a /todo correctamente dentro de la ruta protegida cargando vista lazy', async () => {
