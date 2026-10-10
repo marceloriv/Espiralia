@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, Clock, Trash2 } from 'lucide-react';
+import { sileo } from 'sileo';
 import type { AgendaEvent, EventCategory } from '../types';
 import { StorageService } from '../services/storage';
 import styles from './AgendaView.module.css';
@@ -64,11 +65,13 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
 
     StorageService.saveEvent(newEvent);
     setTitle('');
+    sileo.success({ title: 'Evento agendado con éxito' });
     loadEvents();
   };
 
   const handleDeleteEvent = (id: string) => {
     StorageService.deleteEvent(profileId, id);
+    sileo.success({ title: 'Evento eliminado' });
     loadEvents();
   };
 

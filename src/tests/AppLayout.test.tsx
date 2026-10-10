@@ -1,10 +1,14 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { sileo } from 'sileo';
 import { AppLayout } from '../components/AppLayout';
 import type { Profile } from '../types';
 
 describe('AppLayout', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   const mockProfile: Profile = {
     id: 'p-1',
     name: 'Francisca',
@@ -38,6 +42,7 @@ describe('AppLayout', () => {
   });
 
   it('permite cambiar de perfil tanto desde el sidebar como desde el acceso rapido de cabecera', async () => {
+    const infoSpy = vi.spyOn(sileo, 'info');
     const user = userEvent.setup();
     const onViewChange = vi.fn();
     const onLockProfile = vi.fn();
@@ -58,6 +63,7 @@ describe('AppLayout', () => {
     expect(lockButtons.length).toBeGreaterThanOrEqual(1);
 
     await user.click(lockButtons[0]);
+    expect(infoSpy).toHaveBeenCalledWith({ title: 'Sesión cerrada' });
     expect(onLockProfile).toHaveBeenCalledTimes(1);
   });
 });

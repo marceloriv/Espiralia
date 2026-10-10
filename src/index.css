@@ -29,6 +29,19 @@
   --color-warning: #d4a017;
   --color-error: #c64545;
 
+  /* Sileo Toast Design Tokens */
+  --sileo-state-success: var(--color-success);
+  --sileo-state-loading: var(--color-muted);
+  --sileo-state-error: var(--color-error);
+  --sileo-state-warning: var(--color-warning);
+  --sileo-state-info: var(--color-primary);
+  --sileo-state-action: var(--color-primary-active);
+
+  /* Sileo dimensions & animation */
+  --sileo-width: 350px;
+  --sileo-height: 40px;
+  --sileo-duration: 600ms;
+
   /* Typography */
   --font-primary: "Copernicus", "Tiempos Headline", serif;
   --font-family-2: "StyreneB", Inter, sans-serif;

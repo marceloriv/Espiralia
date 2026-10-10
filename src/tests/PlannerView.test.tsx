@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { sileo } from 'sileo';
 import { PlannerView } from '../components/PlannerView';
 import { StorageService } from '../services/storage';
 
@@ -9,9 +10,12 @@ describe('PlannerView', () => {
 
   beforeEach(() => {
     localStorage.clear();
+    vi.clearAllMocks();
   });
 
   it('permite agregar bloque de planificacion y alternar completado', async () => {
+    const successSpy = vi.spyOn(sileo, 'success');
+    const infoSpy = vi.spyOn(sileo, 'info');
     const user = userEvent.setup();
 
     render(<PlannerView profileId={profileId} />);
@@ -25,14 +29,17 @@ describe('PlannerView', () => {
     await user.click(addBtn);
 
     expect(screen.getByText('Planificar sprint')).toBeInTheDocument();
+    expect(successSpy).toHaveBeenCalledWith({ title: 'Bloque de enfoque guardado' });
 
     const checkbox = screen.getByRole('checkbox', { name: /completar planificar sprint/i });
     expect(checkbox).not.toBeChecked();
     await user.click(checkbox);
     expect(checkbox).toBeChecked();
+    expect(infoSpy).toHaveBeenCalledWith({ title: 'Bloque completado' });
   });
 
   it('permite eliminar un bloque', async () => {
+    const successSpy = vi.spyOn(sileo, 'success');
     const user = userEvent.setup();
 
     StorageService.savePlanner({
@@ -53,6 +60,7 @@ describe('PlannerView', () => {
     await user.click(deleteBtn);
 
     expect(screen.queryByText('Bloque a eliminar')).not.toBeInTheDocument();
+    expect(successSpy).toHaveBeenCalledWith({ title: 'Bloque eliminado' });
   });
 
   it('muestra estados vacios informativos por franja y permite alternar periodos', async () => {
