@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Calendar, Compass, CheckSquare, LogOut } from 'lucide-react';
+import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
+import { isPinProtected } from '../services/pinHash';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -19,6 +20,20 @@ const layoutDateFormatter = new Intl.DateTimeFormat('es-CL', {
   day: 'numeric',
 });
 
+const VIEW_TITLES: Record<ViewType, string> = {
+  dashboard: 'Dashboard',
+  agenda: 'Agenda',
+  planner: 'Planner',
+  todo: 'To-Do',
+};
+
+const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode }[] = [
+  { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} aria-hidden="true" /> },
+  { view: 'agenda', label: 'Agenda', icon: <Calendar size={20} aria-hidden="true" /> },
+  { view: 'planner', label: 'Planner', icon: <Compass size={20} aria-hidden="true" /> },
+  { view: 'todo', label: 'To-Do', icon: <CheckSquare size={20} aria-hidden="true" /> },
+];
+
 export const AppLayout: React.FC<AppLayoutProps> = ({
   profile,
   currentView,
@@ -27,18 +42,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   children,
 }) => {
   const [currentDate] = useState(() => layoutDateFormatter.format(new Date()));
+  const isProtected = isPinProtected(profile);
+  const lockText = isProtected ? 'Bloquear perfil' : 'Cambiar perfil';
 
   const handleLock = () => {
     sileo.info({ title: 'Sesión cerrada' });
     onLockProfile();
   };
-
-  const navItems: { view: ViewType; label: string; icon: React.ReactNode }[] = [
-    { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} aria-hidden="true" /> },
-    { view: 'agenda', label: 'Agenda', icon: <Calendar size={20} aria-hidden="true" /> },
-    { view: 'planner', label: 'Planner', icon: <Compass size={20} aria-hidden="true" /> },
-    { view: 'todo', label: 'To-Do', icon: <CheckSquare size={20} aria-hidden="true" /> },
-  ];
 
   return (
     <div className={styles.appContainer}>
@@ -47,14 +57,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         Saltar al contenido principal
       </a>
 
-      {/* Sidebar persistente */}
       <aside className={styles.sidebar} aria-label="Barra lateral">
         <div className={styles.brand}>
           <h1 className={styles.brandLogo}>Espiralia</h1>
+          <p className={styles.brandCaption}>Cuaderno personal</p>
         </div>
 
         <nav className={styles.navMenu} aria-label="Navegación principal">
-          {navItems.map(item => {
+          {NAV_ITEMS.map(item => {
             const isActive = currentView === item.view;
             return (
               <button
@@ -65,7 +75,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
                 aria-current={isActive ? 'page' : undefined}
               >
                 {item.icon}
-                <span>{item.label}</span>
+                <span className={styles.navLabel}>{item.label}</span>
               </button>
             );
           })}
@@ -73,31 +83,33 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
         <div className={styles.sidebarFooter}>
           <div className={styles.userCard}>
-            <div className={styles.userAvatar} aria-hidden="true">{profile.avatar}</div>
-            <div className={styles.userName}>{profile.name}</div>
+            <div className={styles.userAvatar} aria-hidden="true">
+              {profile.avatar}
+            </div>
+            <div className={styles.userInfo}>
+              <span className={styles.userName}>{profile.name}</span>
+              <span className={styles.userMeta}>{isProtected ? 'Protegido por PIN' : 'Acceso libre'}</span>
+            </div>
           </div>
-          <button type="button" className={styles.lockButton} onClick={handleLock}>
-            <LogOut size={16} aria-hidden="true" />
-            <span>Cambiar perfil</span>
-          </button>
         </div>
       </aside>
 
-      {/* Área principal */}
       <div className={styles.mainWrapper}>
         <header className={styles.topHeader}>
-          <h2 className={styles.headerTitle}>{currentView}</h2>
+          <span className={styles.headerTitle}>{VIEW_TITLES[currentView]}</span>
           <div className={styles.headerRight}>
             <span className={styles.headerDate}>{currentDate}</span>
             <button
               type="button"
-              className={styles.mobileProfileBtn}
+              className={styles.lockButton}
               onClick={handleLock}
-              aria-label={`Cambiar perfil (${profile.name})`}
-              title="Cambiar perfil"
+              aria-label={`${lockText} (${profile.name})`}
             >
-              <div className={styles.userAvatarSm} aria-hidden="true">{profile.avatar}</div>
-              <LogOut size={16} aria-hidden="true" />
+              <span className={styles.headerAvatar} aria-hidden="true">
+                {profile.avatar}
+              </span>
+              {isProtected ? <Lock size={16} aria-hidden="true" /> : <LogOut size={16} aria-hidden="true" />}
+              <span className={styles.lockLabel}>{lockText}</span>
             </button>
           </div>
         </header>

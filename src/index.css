@@ -43,9 +43,10 @@
   --sileo-duration: 600ms;
 
   /* Typography */
-  --font-primary: "Copernicus", "Tiempos Headline", serif;
-  --font-family-2: "StyreneB", Inter, sans-serif;
-  --font-family-3: "JetBrains Mono", ui-monospace, monospace;
+  /* Copernicus/StyreneB son comerciales y no se cargan aún (sin @font-face): los fallbacks definen lo que se ve hoy. */
+  --font-primary: "Copernicus", "Tiempos Headline", Georgia, "Times New Roman", serif;
+  --font-family-2: "StyreneB", Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-family-3: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 
   /* Type scale & metrics */
   --text-display-xl: 64px;
@@ -186,3 +187,15 @@ h1, h2, h3, h4 {
   border: 0;
 }
 
+
+/* La barra superior es sticky (y en móvil la navegación es fija abajo): el foco nunca queda oculto bajo ellas (WCAG 2.2 SC 2.4.11). */
+html {
+  scroll-padding-top: 72px;
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 64px;
+    scroll-padding-bottom: 72px;
+  }
+}

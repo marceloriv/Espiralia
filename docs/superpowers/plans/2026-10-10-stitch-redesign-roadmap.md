@@ -174,6 +174,21 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 - **codebase-memory-mcp:** instalado en prueba (scope local); recomendación: no adoptarlo (ver `2026-10-10-codebase-memory-mcp-trial.md`).
 - **Git Flow (decidido 2026-10-10):** `feature/tanstack-charts-migration` se integra a `develop` con `--no-ff` (local, sin push). Cada fase abre su propia `feature/*` desde `develop` y vuelve a `develop`. Nada pasa a `main` sin un `release/*` pedido explícitamente.
 
+## Deuda técnica registrada
+
+Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porque la feature que los respalda todavía no existe. Un test de `src/tests/AppLayout.test.tsx` ("no muestra controles de features que todavía no existen") verifica que no aparezcan. Cuando la fase indicada los implemente, ese test se actualiza junto con el control.
+
+| Control de Stitch | Ubicación en el diseño | Se resuelve en | Nota |
+|---|---|---|---|
+| Buscador global | Barra superior | F8 | Requiere el índice de F6 para incluir notas |
+| "Nueva Nota" | Barra superior | F6 | Depende del modelo de notas |
+| "Acción Rápida" | Sidebar | F3 / F6 | Atajos de creación; en F3 solo para features existentes |
+| "Ajustes & PIN" | Sidebar (pie) | Fase nueva (sin asignar) | Cambiar o quitar el PIN de un perfil existente; hoy solo se fija al crear |
+| "Bóveda Offline" | Sidebar (pie) | F7 | Exportar/importar y cifrado |
+| "Notas Rápidas" | Sidebar | F6 | |
+| "Carpetas & Vínculos" | Sidebar | F6 | |
+| Pestañas de navegación duplicadas | Barra superior | No se implementan | Decisión de accesibilidad: un solo `<nav>` |
+
 ## Siguiente paso
 
 1. Cerrar D1 y D5 con el spike de F1.

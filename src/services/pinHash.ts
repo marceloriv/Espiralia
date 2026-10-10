@@ -1,4 +1,5 @@
 import type { Profile } from '../types';
+import { StorageService } from './storage';
 
 export const PIN_PATTERN = /^\d{4,6}$/;
 export const PBKDF2_ITERATIONS = 100000;
@@ -31,8 +32,9 @@ const constantTimeEqual = (a: string, b: string): boolean => {
 export const isPinProtected = (profile: Profile): boolean => Boolean(profile.pinHash || profile.pin);
 
 export const verifyPin = async (profile: Profile, pin: string): Promise<boolean> => {
-  if (profile.pinHash && profile.pinSalt) {
-    const { pinHash } = await hashPin(pin, profile.pinSalt);
+  if (profile.pinHash) {
+    // Sin sal válida hashPin usa una aleatoria: la comparación falla cerrada en vez de aceptar cualquier PIN.
+    const { pinHash } = await hashPin(pin, profile.pinSalt || undefined);
     return constantTimeEqual(pinHash, profile.pinHash);
   }
   if (profile.pin !== undefined) return constantTimeEqual(pin, profile.pin);
@@ -49,3 +51,12 @@ export const migrateLegacyPins = (profiles: Profile[]): Promise<Profile[]> =>
       return migrated;
     }),
   );
+
+/** Migra y persiste los PIN legados guardados. Devuelve true si hubo cambios; rechaza si Web Crypto no está disponible. */
+export const migrateStoredPins = async (): Promise<boolean> => {
+  const stored = StorageService.getProfiles();
+  if (!stored.some(p => p.pin !== undefined && !p.pinHash)) return false;
+  const migrated = await migrateLegacyPins(stored);
+  migrated.forEach(p => StorageService.saveProfile(p));
+  return true;
+};

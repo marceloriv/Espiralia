@@ -54,6 +54,12 @@ describe('verifyPin', () => {
     expect(await verifyPin(profile, '0000')).toBe(false);
   });
 
+  // Revisión final, Important 1: un hash sin sal debe fallar cerrado, nunca aceptar cualquier PIN.
+  it.each([undefined, ''])('rechaza cualquier PIN si hay hash pero la sal es %j', async pinSalt => {
+    const profile: Profile = { ...base, pinHash: 'a'.repeat(64), pinSalt };
+    expect(await verifyPin(profile, '1234')).toBe(false);
+  });
+
   it('acepta cualquier entrada en un perfil sin PIN', async () => {
     expect(await verifyPin(base, '')).toBe(true);
   });

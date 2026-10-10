@@ -37,16 +37,16 @@
 
 ## Tokens — Typography
 
-### Copernicus, Tiempos Headline, serif · `--font-primary`
+### Copernicus, Tiempos Headline, Georgia, serif · `--font-primary`
 
-- **Substitute:** Inter, system-ui, sans-serif
+- **Substitute:** Georgia, Times New Roman, serif (Copernicus es comercial; sin archivos con licencia se usa el fallback)
 - **Weights:** 400
 - **Sizes:** 64px, 48px, 36px, 28px
 - **Line height:** 1.05, 1.1, 1.15, 1.2
 - **Letter spacing:** -1.5px, -1px, -0.5px, -0.3px
 - **Role:** Brand typography family observed across the documented type scale.
 
-### StyreneB, Inter, sans-serif · `--font-family-2`
+### StyreneB, Inter, system-ui, sans-serif · `--font-family-2`
 
 - **Substitute:** Inter, system-ui, sans-serif
 - **Weights:** 500, 400
@@ -55,7 +55,7 @@
 - **Letter spacing:** 0, 1.5px
 - **Role:** Brand typography family observed across the documented type scale.
 
-### JetBrains Mono, ui-monospace, monospace · `--font-family-3`
+### JetBrains Mono, ui-monospace, Consolas, monospace · `--font-family-3`
 
 - **Substitute:** Inter, system-ui, sans-serif
 - **Weights:** 400
