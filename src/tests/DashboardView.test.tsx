@@ -124,6 +124,27 @@ describe('DashboardView', () => {
     expect(screen.getByText('Nada crítico pendiente')).toBeInTheDocument();
   });
 
+  // Revisión final, Minor 1 re-graduado: el contador cuenta todos los bloques semanales, la lista muestra 4.
+  // Técnica: valor límite (6 > tope de 4).
+  it('cuenta todos los bloques semanales aunque liste solo 4', () => {
+    for (let i = 1; i <= 6; i++) {
+      StorageService.savePlanner({
+        id: `b${i}`,
+        profileId: profile.id,
+        period: 'semanal',
+        timeSlot: 'mañana',
+        title: `Bloque ${i}`,
+        priority: 'media',
+        completed: false,
+      });
+    }
+
+    renderDashboard();
+
+    expect(screen.getByText('6 bloques')).toBeInTheDocument();
+    expect(within(screen.getByRole('list', { name: /planner/i })).getAllByRole('listitem')).toHaveLength(4);
+  });
+
   it('hidrata los datos de almacenamiento sincronicamente en el render inicial sin flash vacio', () => {
     saveTodo({ id: 't-sync', title: 'Verificacion sincrona CLS' });
     const { container } = render(<DashboardView profile={profile} onNavigate={vi.fn()} />);

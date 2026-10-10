@@ -45,7 +45,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   const pendingCount = todos.filter(t => !t.completed).length;
   const criticalCount = todos.filter(isCritical).length;
   const critical = criticalTodos(todos);
-  const weekBlocks = planner.filter(b => b.period === 'semanal').slice(0, 4);
+  const allWeekBlocks = planner.filter(b => b.period === 'semanal');
+  const weekBlocks = allWeekBlocks.slice(0, 4);
 
   const handleToggleTodo = (id: string) => {
     StorageService.toggleTodo(profile.id, id);
@@ -171,7 +172,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
               <Compass size={18} aria-hidden="true" />
               <span>Planner de la semana</span>
             </h3>
-            <span className={styles.cardMeta}>{countLabel(weekBlocks.length, 'bloque', 'bloques')}</span>
+            <span className={styles.cardMeta}>{countLabel(allWeekBlocks.length, 'bloque', 'bloques')}</span>
           </div>
           {weekBlocks.length === 0 ? (
             <p className={styles.emptyNotice}>Sin bloques esta semana</p>
