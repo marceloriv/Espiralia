@@ -80,7 +80,7 @@ Cada una se resuelve con el usuario antes de abrir la fase que la necesita.
 | # | Decisión | Opciones | Recomendación | La necesita |
 |---|---|---|---|---|
 | D1 | Presupuesto de bundle (§17.1 dice < 150 KB y hoy son ~195 KB) | (a) mantener el tope y recortar; (b) redefinirlo como "chunk inicial < 150 KB" con las vistas cargadas perezosamente | **Decidido 2026-10-10: sin tope por ahora.** Cada fase mide y reporta la carga inicial y su chunk, sin bloquear el merge | F1 |
-| D2 | Fuente serif | Copernicus/Tiempos (actual) vs Newsreader (Stitch) | Newsreader autoalojada (libre; Copernicus es propietaria) | F2 |
+| D2 | Fuente serif | Copernicus/Tiempos (actual) vs Newsreader (Stitch) | **Decidido 2026-10-10: Copernicus** con Georgia como respaldo (no Newsreader) | F2 |
 | D3 | Persistencia | seguir en `localStorage` vs migrar a IndexedDB | `localStorage` hasta F5; IndexedDB en F6, que la exige por los adjuntos | F6 |
 | D4 | Recurrencia en la Agenda | recurrencia simple nativa de FullCalendar (`daysOfWeek`, `startRecur`, `endRecur`) vs plugin `rrule` | **Decidido 2026-10-10: nativa simple** (`daysOfWeek`, `startRecur`, `endRecur`); `rrule` solo si se piden reglas RFC 5545 | F1 |
 | D5 | Tema base de FullCalendar | tema propio con class names vs partir de `themes/forma` | **Decidido 2026-10-10: `forma` + paleta mapeada a tokens** (resultado del spike: ~15 líneas de CSS vs ~90 props); class props solo donde forma no alcance | F1 |
@@ -170,7 +170,7 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 
 ## Estado de herramientas al 2026-10-10
 
-- **Stitch MCP:** registrado con scope user y funcionando. **Pendiente urgente:** rotar la API key, que quedó expuesta en el transcript de la sesión del 2026-10-10.
+- **Stitch MCP:** registrado con scope user y funcionando. API key rotada tras la sesión del 2026-10-10.
 - **codebase-memory-mcp:** instalado en prueba (scope local); recomendación: no adoptarlo (ver `2026-10-10-codebase-memory-mcp-trial.md`).
 - **Git Flow (decidido 2026-10-10):** `feature/tanstack-charts-migration` se integra a `develop` con `--no-ff` (local, sin push). Cada fase abre su propia `feature/*` desde `develop` y vuelve a `develop`. Nada pasa a `main` sin un `release/*` pedido explícitamente.
 
@@ -191,5 +191,5 @@ Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porq
 
 ## Siguiente paso
 
-1. Cerrar D1 y D5 con el spike de F1.
-2. Escribir `docs/superpowers/specs/<fecha>-agenda-fullcalendar-design.md`, con la fecha del día en que se redacte, y luego su plan detallado con tareas TDD.
+1. F0 a F3 completadas y fusionadas en `develop`.
+2. Escribir `docs/superpowers/specs/2026-10-10-todo-areas-design.md` (F4: To-Do con estados, áreas temáticas y fecha de vencimiento editable) y luego su plan de implementación TDD.
