@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Trash2, CheckCircle2 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { TodoItem, Priority } from '../types';
@@ -17,12 +17,17 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
   const [selectedCategory, setSelectedCategory] = useState('General');
   const [selectedPriority, setSelectedPriority] = useState<Priority>('media');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('todas');
+  const isFirstMount = useRef(true);
 
   const loadTodos = useCallback(() => {
     setTodos(StorageService.getTodos(profileId));
   }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadTodos();
   }, [loadTodos]);
 

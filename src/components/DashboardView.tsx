@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Calendar, Compass, CheckSquare, Clock, BarChart2 } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, ViewType } from '../types';
 import { StorageService } from '../services/storage';
@@ -15,6 +15,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
   const [planner, setPlanner] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profile.id));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profile.id));
+  const isFirstMount = useRef(true);
 
   const loadData = useCallback(() => {
     setEvents(StorageService.getEvents(profile.id));
@@ -23,6 +24,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   }, [profile.id]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadData();
   }, [loadData]);
 
