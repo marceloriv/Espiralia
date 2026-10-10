@@ -28,7 +28,7 @@ describe('AgendaView', () => {
     await user.click(addBtn);
 
     expect(screen.getByText('Reunión de coordinación')).toBeInTheDocument();
-    expect(successSpy).toHaveBeenCalledWith('Evento agendado con éxito');
+    expect(successSpy).toHaveBeenCalledWith({ title: 'Evento agendado con éxito' });
   });
 
   it('permite eliminar un evento existente', async () => {
@@ -53,7 +53,7 @@ describe('AgendaView', () => {
     await user.click(deleteBtn);
 
     expect(screen.queryByText('Almuerzo de trabajo')).not.toBeInTheDocument();
-    expect(successSpy).toHaveBeenCalledWith('Evento eliminado');
+    expect(successSpy).toHaveBeenCalledWith({ title: 'Evento eliminado' });
   });
 
   it('proporciona botones de navegacion accesibles y seleccion de dia con aria-label', async () => {

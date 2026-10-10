@@ -29,7 +29,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const currentDate = layoutDateFormatter.format(new Date());
 
   const handleLock = () => {
-    sileo.info('Sesión cerrada');
+    sileo.info({ title: 'Sesión cerrada' });
     onLockProfile();
   };
 

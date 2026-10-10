@@ -31,7 +31,7 @@ describe('ProfileGateView', () => {
 
     expect(onSelectProfile).toHaveBeenCalledTimes(1);
     expect(onSelectProfile.mock.calls[0][0].name).toBe('Valentina');
-    expect(successSpy).toHaveBeenCalledWith('Perfil "Valentina" creado');
+    expect(successSpy).toHaveBeenCalledWith({ title: 'Perfil "Valentina" creado' });
   });
 
   it('solicita PIN si el perfil tiene PIN y rechaza PIN incorrecto', async () => {
@@ -61,7 +61,7 @@ describe('ProfileGateView', () => {
     await user.click(verifyBtn);
 
     expect(screen.getByText(/pin incorrecto/i)).toBeInTheDocument();
-    expect(errorSpy).toHaveBeenCalledWith('PIN incorrecto');
+    expect(errorSpy).toHaveBeenCalledWith({ title: 'PIN incorrecto' });
     expect(onSelectProfile).not.toHaveBeenCalled();
 
     await user.clear(pinInput);

@@ -15,9 +15,13 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-global.ResizeObserver = class ResizeObserver {
+const mockResizeObserver = class ResizeObserver {
   observe = vi.fn();
   unobserve = vi.fn();
   disconnect = vi.fn();
 };
+
+window.ResizeObserver = mockResizeObserver;
+globalThis.ResizeObserver = mockResizeObserver;
+
 

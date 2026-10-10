@@ -16,7 +16,7 @@ export function App() {
   const handleSelectProfile = (profile: Profile) => {
     StorageService.setActiveProfileId(profile.id);
     setActiveProfile(profile);
-    sileo.success(`Sesión iniciada: ¡Hola, ${profile.name}!`);
+    sileo.success({ title: `Sesión iniciada: ¡Hola, ${profile.name}!` });
   };
 
   const handleLockProfile = () => {

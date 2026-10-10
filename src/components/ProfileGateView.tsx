@@ -40,7 +40,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
       onSelectProfile(selectedProfileForPin);
     } else {
       setPinError(true);
-      sileo.error('PIN incorrecto');
+      sileo.error({ title: 'PIN incorrecto' });
     }
   };
 
@@ -60,7 +60,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
     StorageService.setActiveProfileId(newProfile.id);
     setProfiles(StorageService.getProfiles());
     setIsCreating(false);
-    sileo.success(`Perfil "${newProfile.name}" creado`);
+    sileo.success({ title: `Perfil "${newProfile.name}" creado` });
     onSelectProfile(newProfile);
   };
 

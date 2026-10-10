@@ -42,7 +42,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
 
     StorageService.saveTodo(newTodo);
     setInputTitle('');
-    sileo.success('Tarea agregada exitosamente');
+    sileo.success({ title: 'Tarea agregada exitosamente' });
     loadTodos();
   };
 
@@ -50,14 +50,14 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
     const target = todos.find(t => t.id === id);
     StorageService.toggleTodo(profileId, id);
     if (target) {
-      sileo.info(target.completed ? 'Tarea reabierta' : 'Tarea completada');
+      sileo.info({ title: target.completed ? 'Tarea reabierta' : 'Tarea completada' });
     }
     loadTodos();
   };
 
   const handleDeleteTodo = (id: string) => {
     StorageService.deleteTodo(profileId, id);
-    sileo.success('Tarea eliminada');
+    sileo.success({ title: 'Tarea eliminada' });
     loadTodos();
   };
 

@@ -31,7 +31,7 @@ describe('App integración general', () => {
     await user.click(submitBtn);
 
     // Debe mostrar dashboard
-    expect(await screen.findByText(/¡hola, ignacio!/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /¡hola, ignacio!/i })).toBeInTheDocument();
 
     // Cambiar perfil bloquea sesion
     const lockBtn = screen.getAllByRole('button', { name: /cambiar perfil/i })[0];
@@ -55,6 +55,8 @@ describe('App integración general', () => {
     const submitBtn = screen.getByRole('button', { name: /crear perfil/i });
     await user.click(submitBtn);
 
-    expect(successSpy).toHaveBeenCalledWith(expect.stringContaining('Valentina'));
+    expect(successSpy).toHaveBeenCalledWith(expect.objectContaining({
+      title: expect.stringContaining('Valentina'),
+    }));
   });
 });

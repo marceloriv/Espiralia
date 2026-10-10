@@ -26,14 +26,14 @@ describe('TodoView', () => {
     await user.type(input, 'Comprar insumos{enter}');
 
     expect(screen.getByText('Comprar insumos')).toBeInTheDocument();
-    expect(successSpy).toHaveBeenCalledWith('Tarea agregada exitosamente');
+    expect(successSpy).toHaveBeenCalledWith({ title: 'Tarea agregada exitosamente' });
 
     // Toggle completed
     const checkbox = screen.getByRole('checkbox', { name: /completar comprar insumos/i });
     expect(checkbox).not.toBeChecked();
     await user.click(checkbox);
     expect(checkbox).toBeChecked();
-    expect(infoSpy).toHaveBeenCalledWith('Tarea completada');
+    expect(infoSpy).toHaveBeenCalledWith({ title: 'Tarea completada' });
 
     // Filter pendientes -> no debe aparecer
     const pendingFilter = screen.getByRole('button', { name: /pendientes/i });
@@ -67,7 +67,7 @@ describe('TodoView', () => {
     await user.click(deleteBtn);
 
     expect(screen.queryByText('Tarea a borrar')).not.toBeInTheDocument();
-    expect(successSpy).toHaveBeenCalledWith('Tarea eliminada');
+    expect(successSpy).toHaveBeenCalledWith({ title: 'Tarea eliminada' });
     expect(StorageService.getTodos(profileId)).toEqual([]);
   });
 

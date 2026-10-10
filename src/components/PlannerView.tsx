@@ -40,7 +40,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
 
     StorageService.savePlanner(newBlock);
     setTitle('');
-    sileo.success('Bloque de enfoque guardado');
+    sileo.success({ title: 'Bloque de enfoque guardado' });
     loadBlocks();
   };
 
@@ -49,13 +49,13 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
       ...block,
       completed: !block.completed,
     });
-    sileo.info(block.completed ? 'Bloque reabierto' : 'Bloque completado');
+    sileo.info({ title: block.completed ? 'Bloque reabierto' : 'Bloque completado' });
     loadBlocks();
   };
 
   const handleDeleteBlock = (id: string) => {
     StorageService.deletePlanner(profileId, id);
-    sileo.success('Bloque eliminado');
+    sileo.success({ title: 'Bloque eliminado' });
     loadBlocks();
   };
 

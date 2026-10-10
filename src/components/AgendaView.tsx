@@ -65,13 +65,13 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => {
 
     StorageService.saveEvent(newEvent);
     setTitle('');
-    sileo.success('Evento agendado con éxito');
+    sileo.success({ title: 'Evento agendado con éxito' });
     loadEvents();
   };
 
   const handleDeleteEvent = (id: string) => {
     StorageService.deleteEvent(profileId, id);
-    sileo.success('Evento eliminado');
+    sileo.success({ title: 'Evento eliminado' });
     loadEvents();
   };
 

@@ -29,13 +29,13 @@ describe('PlannerView', () => {
     await user.click(addBtn);
 
     expect(screen.getByText('Planificar sprint')).toBeInTheDocument();
-    expect(successSpy).toHaveBeenCalledWith('Bloque de enfoque guardado');
+    expect(successSpy).toHaveBeenCalledWith({ title: 'Bloque de enfoque guardado' });
 
     const checkbox = screen.getByRole('checkbox', { name: /completar planificar sprint/i });
     expect(checkbox).not.toBeChecked();
     await user.click(checkbox);
     expect(checkbox).toBeChecked();
-    expect(infoSpy).toHaveBeenCalledWith('Bloque completado');
+    expect(infoSpy).toHaveBeenCalledWith({ title: 'Bloque completado' });
   });
 
   it('permite eliminar un bloque', async () => {
@@ -60,7 +60,7 @@ describe('PlannerView', () => {
     await user.click(deleteBtn);
 
     expect(screen.queryByText('Bloque a eliminar')).not.toBeInTheDocument();
-    expect(successSpy).toHaveBeenCalledWith('Bloque eliminado');
+    expect(successSpy).toHaveBeenCalledWith({ title: 'Bloque eliminado' });
   });
 
   it('muestra estados vacios informativos por franja y permite alternar periodos', async () => {

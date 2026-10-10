@@ -63,7 +63,7 @@ describe('AppLayout', () => {
     expect(lockButtons.length).toBeGreaterThanOrEqual(1);
 
     await user.click(lockButtons[0]);
-    expect(infoSpy).toHaveBeenCalledWith('Sesión cerrada');
+    expect(infoSpy).toHaveBeenCalledWith({ title: 'Sesión cerrada' });
     expect(onLockProfile).toHaveBeenCalledTimes(1);
   });
 });
