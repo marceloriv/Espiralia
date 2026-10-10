@@ -58,6 +58,8 @@
 
 .chipCritical {
   border-color: var(--color-error);
+  /* Error sobre canvas = 4.59:1; sobre surface-card quedaba en 4.01:1 (WCAG 1.4.3). */
+  background-color: var(--color-canvas);
   color: var(--color-error);
 }
 
