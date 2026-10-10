@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { sileo } from 'sileo';
 import { AgendaView } from '../components/AgendaView';
 import { StorageService } from '../services/storage';
 
@@ -9,9 +10,11 @@ describe('AgendaView', () => {
 
   beforeEach(() => {
     localStorage.clear();
+    vi.clearAllMocks();
   });
 
   it('permite ver calendario y agregar evento para la fecha seleccionada', async () => {
+    const successSpy = vi.spyOn(sileo, 'success');
     const user = userEvent.setup();
 
     render(<AgendaView profileId={profileId} />);
@@ -25,9 +28,11 @@ describe('AgendaView', () => {
     await user.click(addBtn);
 
     expect(screen.getByText('Reunión de coordinación')).toBeInTheDocument();
+    expect(successSpy).toHaveBeenCalledWith('Evento agendado con éxito');
   });
 
   it('permite eliminar un evento existente', async () => {
+    const successSpy = vi.spyOn(sileo, 'success');
     const user = userEvent.setup();
     const todayStr = new Date().toISOString().split('T')[0];
 
@@ -48,6 +53,7 @@ describe('AgendaView', () => {
     await user.click(deleteBtn);
 
     expect(screen.queryByText('Almuerzo de trabajo')).not.toBeInTheDocument();
+    expect(successSpy).toHaveBeenCalledWith('Evento eliminado');
   });
 
   it('proporciona botones de navegacion accesibles y seleccion de dia con aria-label', async () => {
