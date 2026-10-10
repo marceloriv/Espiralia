@@ -280,50 +280,57 @@ Formato con Gitmoji: `:emoji: <tipo>(<alcance>)?(!)?: <sujeto>`.
 - Excepción: merge commits y bots automáticos no se reescriben a este formato.
 - No contradice la regla de firma de agente arriba: el emoji es semántico (tipo de cambio), no atribución de autoría — sigue sin ir `Co-Authored-By` ni equivalentes.
 
-### 11.3 Ramas (GitHub Flow — modelo adoptado para Espiralia)
+### 11.3 Ramas (Git Flow — modelo adoptado para Espiralia)
 
-Dado que Espiralia es una SPA cliente con entrega continua hacia GitHub Pages, se adopta **GitHub Flow** (conforme a la recomendación de Vincent Driessen para aplicaciones web sin versiones legacy simultáneas).
+Espiralia adopta el modelo **Git Flow** clásico para estructurar el desarrollo continuo, preparación de versiones estables y lanzamientos a producción.
 
 ```
-main      ●───────────────●──────────────────●───────► (desplegable a producción)
-           \             /                  /
-            ●───●───────● (PR merge)       /
-             feature/login                /
-                                  ●──────● (PR merge)
-                                   fix/calendario
+main       ●────────────────────────────────● (tag v0.1.0)
+            \                              /
+release      \              ●─────────────● (release/v0.1.0)
+              \            /             /
+develop        ●──────────●─────────────●────────────────►
+                \        /
+feature          ●──────● (feature/login)
 ```
 
 **Estructura de ramas:**
 
 | Rama | Rol | Convención |
 | --- | --- | --- |
-| `main` | Rama permanente de producción. Siempre verde y lista para deploy. | Protegida; solo recibe merges vía PR o commits directos tras suite completa en verde. |
-| `feature/*` | Ramas temporales de nuevas funcionalidades o mejoras UI. Nace de `main` y mergea a `main`. | `feature/descripcion-corta` |
-| `fix/*` | Ramas temporales de corrección de bugs. Nace de `main` y mergea a `main`. | `fix/descripcion-corta` |
+| `main` | Rama permanente de producción. Siempre verde, etiquetada con tags semánticos (`vX.Y.Z`). | Protegida; solo recibe merges desde `release/*` o `hotfix/*`. |
+| `develop` | Rama permanente de integración y desarrollo activo. Base para nuevas características. | Protegida; recibe merges desde `feature/*`, `release/*` y `hotfix/*`. |
+| `feature/*` | Ramas temporales de nueva funcionalidad. Nace de `develop` y mergea a `develop`. | `feature/descripcion-corta` |
+| `release/*` | Ramas temporales de preparación de release (bump de versión y CHANGELOG). Nace de `develop`, mergea a `main` y a `develop`. | `release/vX.Y.Z` |
+| `hotfix/*` | Ramas temporales de corrección crítica en producción. Nace de `main`, mergea a `main` y a `develop`. | `hotfix/descripcion-corta` |
 
-**Flujo de trabajo:**
+**Flujo de trabajo para Releases:**
 
 ```bash
-# 1. Crear rama desde main actualizada
-git checkout main
-git pull origin main
-git checkout -b feature/descripcion-corta
+# 1. Crear rama de release desde develop
+git checkout develop
+git checkout -b release/v0.1.0
 
-# 2. Desarrollo, tests en verde y commits con Gitmoji (§11.2)
+# 2. Bump de versión, actualización de CHANGELOG.md y pruebas en verde
 pnpm exec vitest run
-git add .
-git commit -m ":sparkles: feat(alcance): descripcion imperativa en espanol"
+git add package.json CHANGELOG.md
+git commit -m ":memo: docs(changelog): preparar release v0.1.0"
 
-# 3. Integración en main
+# 3. Integración en main y etiquetado
 git checkout main
-git merge --no-ff feature/descripcion-corta
-git branch -d feature/descripcion-corta
+git merge --no-ff release/v0.1.0 -m ":bookmark: chore(release): fusionar release v0.1.0 en main"
+git tag -a v0.1.0 -m ":bookmark: release v0.1.0"
+
+# 4. Sincronización en develop y limpieza
+git checkout develop
+git merge --no-ff release/v0.1.0 -m ":recycle: chore(release): sincronizar release v0.1.0 en develop"
+git branch -d release/v0.1.0
 ```
 
 **Reglas nunca:**
 - Nunca commit directo en `main` si los tests no están verificados en verde.
-- Nunca force-push sobre `main` (`--force`).
-- Nunca dejar ramas de feature acumulándose tras el merge.
+- Nunca force-push sobre `main` ni `develop` (`--force`).
+- Nunca dejar ramas de feature o release acumulándose tras el merge.
 
 ## 12. Límites del agente
 
