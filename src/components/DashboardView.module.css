@@ -234,7 +234,8 @@
 }
 
 .rowTitle {
-  flex: 1;
+  /* Base 8rem: en filas angostas el badge baja de línea en vez de aplastar el título. */
+  flex: 1 1 8rem;
   min-width: 0;
   font-size: var(--text-body-sm);
   font-weight: 500;
