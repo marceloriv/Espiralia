@@ -111,6 +111,12 @@
   --radius-pill: 9999px;
   --radius-full: 9999px;
 
+  /* Elevación y sombras antislop (R-12) */
+  --shadow-sm: 0 1px 3px rgba(20, 20, 19, 0.06);
+  --shadow-md: 0 4px 12px rgba(20, 20, 19, 0.08);
+  --shadow-lg: 0 12px 32px rgba(20, 20, 19, 0.14);
+  --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-primary);
+
   font-family: var(--font-family-2);
   color: var(--color-body);
   background-color: var(--color-canvas);
