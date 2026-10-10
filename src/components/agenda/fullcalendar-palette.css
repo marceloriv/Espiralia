@@ -1,0 +1,17 @@
+/* Paleta del tema forma de FullCalendar mapeada a tokens de src/index.css. */
+:root {
+  --fc-forma-primary: var(--color-primary);
+  --fc-forma-primary-over: var(--color-primary-active);
+  --fc-forma-primary-down: var(--color-primary-active);
+  --fc-forma-primary-foreground: var(--color-on-primary);
+  --fc-forma-event: var(--color-primary);
+  --fc-forma-event-contrast: var(--color-on-primary);
+  --fc-forma-highlight: color-mix(in srgb, var(--color-primary-soft) 35%, transparent);
+  --fc-forma-background: var(--color-canvas);
+  --fc-forma-foreground: var(--color-ink);
+  --fc-forma-faint-foreground: var(--color-muted-soft);
+  --fc-forma-muted-foreground: var(--color-muted);
+  --fc-forma-border: var(--color-hairline);
+  --fc-forma-muted-border: var(--color-hairline-soft);
+  --fc-forma-strong-border: var(--color-muted-soft);
+}

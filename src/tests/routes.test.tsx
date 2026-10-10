@@ -69,6 +69,7 @@ describe('AppRoutes con rutas protegidas', () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByPlaceholderText(/título del evento/i)).toBeInTheDocument();
+    // El chunk diferido de la Agenda incluye FullCalendar: su import() tarda más que el default de 1 s en jsdom.
+    expect(await screen.findByPlaceholderText(/título del evento/i, {}, { timeout: 10000 })).toBeInTheDocument();
   });
 });
