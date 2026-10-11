@@ -59,7 +59,10 @@ export const TaskCompletionChart: React.FC<TaskCompletionChartProps> = ({ todos 
           </h3>
           <span className={styles.chartSubtitle}>0 tareas</span>
         </div>
-        <p className={styles.emptyNotice}>Sin tareas para graficar</p>
+        <div className={styles.emptyStateContainer}>
+          <p className={styles.emptyNotice}>Sin tareas para graficar</p>
+          <p className={styles.emptyHint}>Agrega tareas en To-Do para visualizar tu progreso diario.</p>
+        </div>
       </div>
     );
   }

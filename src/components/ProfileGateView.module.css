@@ -32,7 +32,7 @@
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-xl);
   padding: 32px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .cardHeading {
@@ -134,7 +134,7 @@
   background-color: var(--color-surface-card);
   border-radius: var(--radius-lg);
   padding: 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .formGroup {
