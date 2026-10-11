@@ -34,7 +34,7 @@ export function App() {
 
   return (
     <HashRouter>
-      <Toaster position="top-right" />
+      <Toaster position="top-center" />
       <AppRoutes
         activeProfile={activeProfile}
         onSelectProfile={handleSelectProfile}

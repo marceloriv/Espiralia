@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { App } from '../App';
@@ -76,4 +76,17 @@ describe('App integración general', () => {
       title: expect.stringContaining('Valentina'),
     }));
   });
+
+  it('configura el contenedor de notificaciones Sileo en posicion top-center', async () => {
+    render(<App />);
+    act(() => {
+      sileo.info({ title: 'Test toast' });
+    });
+    await waitFor(() => {
+      const viewport = document.querySelector('[data-sileo-viewport]');
+      expect(viewport).not.toBeNull();
+      expect(viewport?.getAttribute('data-position')).toBe('top-center');
+    });
+  });
 });
+
