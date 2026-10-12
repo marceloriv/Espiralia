@@ -70,17 +70,37 @@ describe('AppLayout', () => {
     expect(within(screen.getByRole('banner')).getByText(title)).toBeInTheDocument();
   });
 
-  // Guarda de la deuda técnica del roadmap: el layout expone exactamente estos controles y ningún campo de búsqueda.
+  // Guarda de la deuda técnica del roadmap: el layout expone los controles reales y ningún campo de búsqueda.
   it('no muestra controles de features que todavía no existen', () => {
     renderLayout();
     const names = screen.getAllByRole('button').map(b => b.getAttribute('aria-label') ?? b.textContent?.trim());
-    expect(names).toEqual(['Dashboard', 'Agenda', 'Planner', 'To-Do', 'Cambiar perfil (Francisca)']);
+    expect(names).toEqual(['+ Acción Rápida', 'Dashboard', 'Agenda', 'Planner', 'To-Do', 'Ajustes & PIN', 'Cambiar perfil (Francisca)']);
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
-    const forbidden = [/buscar/i, /nueva nota/i, /acción rápida/i, /bóveda/i, /ajustes/i, /notas rápidas/i, /carpetas/i, /indexeddb/i, /cifrad/i, /\bAES\b/];
+    const forbidden = [/buscar/i, /nueva nota/i, /bóveda/i, /notas rápidas/i, /carpetas/i, /indexeddb/i, /cifrad/i, /\bAES\b/];
     for (const label of forbidden) {
       expect(screen.queryByText(label)).not.toBeInTheDocument();
     }
+  });
+
+  it('abre el modal de Accion Rapida al hacer click en el boton de la barra lateral', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const quickActionBtn = screen.getByRole('button', { name: /\+ acción rápida/i });
+    await user.click(quickActionBtn);
+
+    expect(screen.getByRole('dialog', { name: /acción rápida/i })).toBeInTheDocument();
+  });
+
+  it('abre el modal de Ajustes & PIN al hacer click en el boton del footer del sidebar', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const settingsBtn = screen.getByRole('button', { name: /ajustes & pin/i });
+    await user.click(settingsBtn);
+
+    expect(screen.getByRole('dialog', { name: /ajustes de perfil/i })).toBeInTheDocument();
   });
 
   // Revisión final (Minor 6 re-graduado): en móvil la tarjeta del sidebar se oculta; el perfil activo sigue identificable.
