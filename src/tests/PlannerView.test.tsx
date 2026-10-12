@@ -83,4 +83,25 @@ describe('PlannerView', () => {
     // Debe seguir mostrando el estado explicativo
     expect(screen.getByText(/sin bloques para mañana\. agrega un objetivo/i)).toBeInTheDocument();
   });
+
+  it('asigna nombres accesibles con titulo o contenido sin valor undefined', () => {
+    // Partición de equivalencia: bloque legado con content en lugar de title
+    StorageService.savePlanner({
+      id: 'pb-legacy',
+      profileId,
+      period: 'semanal',
+      timeSlot: 'mañana',
+      title: '',
+      content: 'Bloque legado',
+      priority: 'alta',
+      completed: false,
+    } as unknown as any);
+
+    render(<PlannerView profileId={profileId} />);
+
+    expect(screen.queryByLabelText(/completar undefined/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/eliminar undefined/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: /completar bloque legado/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /eliminar bloque legado/i })).toBeInTheDocument();
+  });
 });
