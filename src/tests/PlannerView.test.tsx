@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { PlannerView } from '../components/PlannerView';
 import { StorageService } from '../services/storage';
+import type { PlannerBlock } from '../types';
 
 describe('PlannerView', () => {
   const profileId = 'p-planner';
@@ -95,7 +96,7 @@ describe('PlannerView', () => {
       content: 'Bloque legado',
       priority: 'alta',
       completed: false,
-    } as unknown as any);
+    } as unknown as PlannerBlock);
 
     render(<PlannerView profileId={profileId} />);
 

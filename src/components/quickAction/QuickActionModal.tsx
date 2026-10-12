@@ -35,7 +35,7 @@ export const QuickActionModal: React.FC<QuickActionModalProps> = ({
   const [eventDate, setEventDate] = useState(() => toLocalDateStr(new Date()));
   const [eventStartTime, setEventStartTime] = useState('');
   const [eventEndTime, setEventEndTime] = useState('');
-  const [eventCategory, setEventCategory] = useState<EventCategory>('general');
+  const [eventCategory, setEventCategory] = useState<EventCategory>('personal');
 
   const modalRef = useRef<HTMLDivElement>(null);
 
