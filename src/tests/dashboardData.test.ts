@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { criticalTodos, dueLabel, greetingFor, isCritical, todayEventsSorted } from '../components/dashboard/dashboardData';
+import { criticalTodos, dueLabel, greetingFor, isCritical, todayEventsSorted, computeAreaSummaries } from '../components/dashboard/dashboardData';
 import type { AgendaEvent, TodoItem } from '../types';
 
 describe('greetingFor', () => {
@@ -118,5 +118,41 @@ describe('dueLabel', () => {
   // Técnica: partición de equivalencia sobre formatos inválidos.
   it.each(['2026-10-18T03:00:00.000Z', '2026-1-5', 'mañana', '2026-13-40'])('devuelve null para la fecha mal formada %s', due => {
     expect(dueLabel(due, '2026-10-10')).toBeNull();
+  });
+});
+
+describe('computeAreaSummaries', () => {
+  it('calcula totales, pendientes y porcentaje de completitud por area', () => {
+    const areas = [
+      { id: 'a1', profileId: 'p1', name: 'Estudios', color: '#8b5cf6', createdAt: '' },
+      { id: 'a2', profileId: 'p1', name: 'Personal', color: '#10b981', createdAt: '' },
+      { id: 'a3', profileId: 'p1', name: 'Vacia', color: '#6b7280', createdAt: '' },
+    ];
+    const todos = [
+      todo({ id: 't1', areaId: 'a1', priority: 'alta', status: 'completada', completed: true }),
+      todo({ id: 't2', areaId: 'a1', priority: 'media', status: 'pendiente', completed: false }),
+      todo({ id: 't3', areaId: 'a2', priority: 'baja', status: 'en_progreso', completed: false }),
+    ];
+
+    const summaries = computeAreaSummaries(areas, todos);
+
+    expect(summaries).toHaveLength(3);
+    // a1: 2 total, 1 pendiente, 50%
+    expect(summaries[0].area.name).toBe('Estudios');
+    expect(summaries[0].totalTodos).toBe(2);
+    expect(summaries[0].pendingTodos).toBe(1);
+    expect(summaries[0].completionPercentage).toBe(50);
+
+    // a2: 1 total, 1 pendiente (en_progreso cuenta como no completada), 0%
+    expect(summaries[1].area.name).toBe('Personal');
+    expect(summaries[1].totalTodos).toBe(1);
+    expect(summaries[1].pendingTodos).toBe(1);
+    expect(summaries[1].completionPercentage).toBe(0);
+
+    // a3: 0 total, 0 pendiente, 0% sin NaN
+    expect(summaries[2].area.name).toBe('Vacia');
+    expect(summaries[2].totalTodos).toBe(0);
+    expect(summaries[2].pendingTodos).toBe(0);
+    expect(summaries[2].completionPercentage).toBe(0);
   });
 });

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { BarChart2, Calendar, CalendarPlus, Compass, Flag, ListPlus } from 'lucide-react';
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, ViewType } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
 import { CATEGORY_COLORS, FILTER_LABELS, categoryOf, occursOn } from './agenda/eventMapping';
-import { criticalTodos, dueLabel, greetingFor, isCritical, todayEventsSorted } from './dashboard/dashboardData';
+import { criticalTodos, dueLabel, greetingFor, isCritical, todayEventsSorted, computeAreaSummaries } from './dashboard/dashboardData';
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
 import styles from './DashboardView.module.css';
@@ -27,6 +27,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
   const [planner, setPlanner] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profile.id));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profile.id));
+  const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profile.id));
   const [now] = useState(() => new Date());
   const isFirstMount = useRef(true);
 
@@ -34,6 +35,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
     setEvents(StorageService.getEvents(profile.id));
     setPlanner(StorageService.getPlanner(profile.id));
     setTodos(StorageService.getTodos(profile.id));
+    setAreas(StorageService.getAreas(profile.id));
   }, [profile.id]);
 
   useEffect(() => {
@@ -52,6 +54,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
   const critical = criticalTodos(todos);
   const allWeekBlocks = planner.filter(b => b.period === 'semanal');
   const weekBlocks = allWeekBlocks.slice(0, 4);
+  const areaSummaries = computeAreaSummaries(areas, todos);
 
   const handleToggleTodo = (id: string) => {
     StorageService.toggleTodo(profile.id, id);
@@ -97,6 +100,51 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
           </button>
         </div>
       </section>
+
+      {areas.length > 0 && (
+        <section className={styles.areasSection} aria-labelledby="dash-areas">
+          <div className={styles.areasHeader}>
+            <h3 id="dash-areas" className={styles.sectionLabel}>
+              Áreas temáticas clave
+            </h3>
+            <span className={styles.areasMeta}>
+              {countLabel(areas.length, 'área en seguimiento', 'áreas en seguimiento')}
+            </span>
+          </div>
+          <div className={styles.areasGrid}>
+            {areaSummaries.map(s => (
+              <div key={s.area.id} className={styles.areaCard}>
+                <div className={styles.areaTop}>
+                  <div className={styles.areaIdentity}>
+                    <span className={styles.areaDot} style={{ backgroundColor: s.area.color }} aria-hidden="true" />
+                    <h4 className={styles.areaName}>{s.area.name}</h4>
+                  </div>
+                  <span className={styles.areaPercent}>{s.completionPercentage}%</span>
+                </div>
+                <div className={styles.progressBarBg} aria-hidden="true">
+                  <div
+                    className={styles.progressBarFill}
+                    style={{ width: `${s.completionPercentage}%`, backgroundColor: s.area.color }}
+                  />
+                </div>
+                <div className={styles.areaBottom}>
+                  <span className={styles.areaPendingCount}>
+                    {countLabel(s.pendingTodos, 'pendiente', 'pendientes')}
+                  </span>
+                  <button
+                    type="button"
+                    className={styles.areaActionBtn}
+                    onClick={() => onNavigate('todo')}
+                    aria-label={`Ver tareas del área ${s.area.name}`}
+                  >
+                    Ver área →
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className={styles.cardsGrid}>
         <section className={styles.card} aria-labelledby="dash-events">
