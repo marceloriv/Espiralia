@@ -30,7 +30,8 @@ describe('AppRoutes con rutas protegidas', () => {
     expect(screen.getByText(/selecciona tu perfil/i)).toBeInTheDocument();
   });
 
-  it('permite acceder al dashboard si hay perfil autenticado', () => {
+  // Técnica: partición de equivalencia (vista diferida: fallback primero, contenido después).
+  it('permite acceder al dashboard si hay perfil autenticado', async () => {
     render(
       <MemoryRouter initialEntries={['/dashboard']}>
         <AppRoutes
@@ -41,10 +42,12 @@ describe('AppRoutes con rutas protegidas', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/¡hola, carolina!/i)).toBeInTheDocument();
+    // El Dashboard es diferido: primero se ve el fallback de Suspense.
+    expect(screen.getByRole('status')).toHaveTextContent(/cargando espacio/i);
+    expect(await screen.findByText(/carolina./i, {}, { timeout: 10000 })).toBeInTheDocument();
   });
 
-  it('navega a /todo correctamente dentro de la ruta protegida', () => {
+  it('navega a /todo correctamente dentro de la ruta protegida cargando vista lazy', async () => {
     render(
       <MemoryRouter initialEntries={['/todo']}>
         <AppRoutes
@@ -55,6 +58,21 @@ describe('AppRoutes con rutas protegidas', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText(/mis tareas/i)).toBeInTheDocument();
+    expect(await screen.findByText(/mis tareas/i)).toBeInTheDocument();
+  });
+
+  it('navega a /agenda y resuelve componente diferido con Suspense', async () => {
+    render(
+      <MemoryRouter initialEntries={['/agenda']}>
+        <AppRoutes
+          activeProfile={mockProfile}
+          onSelectProfile={vi.fn()}
+          onLockProfile={vi.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    // El chunk diferido de la Agenda incluye FullCalendar: su import() tarda más que el default de 1 s en jsdom.
+    expect(await screen.findByPlaceholderText(/título del evento/i, {}, { timeout: 10000 })).toBeInTheDocument();
   });
 });

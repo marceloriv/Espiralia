@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Trash2, Sun, Sunset, Moon, Target } from 'lucide-react';
+import { sileo } from 'sileo';
 import type { PlannerBlock, PlannerPeriod, TimeSlot, Priority } from '../types';
 import { StorageService } from '../services/storage';
 import styles from './PlannerView.module.css';
@@ -10,18 +11,23 @@ interface PlannerViewProps {
 
 export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
   const [period, setPeriod] = useState<PlannerPeriod>('semanal');
-  const [blocks, setBlocks] = useState<PlannerBlock[]>([]);
+  const [blocks, setBlocks] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profileId));
   const [title, setTitle] = useState('');
   const [timeSlot, setTimeSlot] = useState<TimeSlot>('mañana');
   const [priority, setPriority] = useState<Priority>('alta');
+  const isFirstMount = useRef(true);
 
-  const loadBlocks = () => {
+  const loadBlocks = useCallback(() => {
     setBlocks(StorageService.getPlanner(profileId));
-  };
+  }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadBlocks();
-  }, [profileId]);
+  }, [loadBlocks]);
 
   const handleAddBlock = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +45,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
 
     StorageService.savePlanner(newBlock);
     setTitle('');
+    sileo.success({ title: 'Bloque de enfoque guardado' });
     loadBlocks();
   };
 
@@ -47,21 +54,23 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
       ...block,
       completed: !block.completed,
     });
+    sileo.info({ title: block.completed ? 'Bloque reabierto' : 'Bloque completado' });
     loadBlocks();
   };
 
   const handleDeleteBlock = (id: string) => {
     StorageService.deletePlanner(profileId, id);
+    sileo.success({ title: 'Bloque eliminado' });
     loadBlocks();
   };
 
   const currentPeriodBlocks = blocks.filter(b => b.period === period);
 
   const slotIcons: Record<TimeSlot, React.ReactNode> = {
-    mañana: <Sun size={18} color="var(--color-primary)" />,
-    tarde: <Sunset size={18} color="var(--color-primary-active)" />,
-    noche: <Moon size={18} color="var(--color-ink)" />,
-    meta: <Target size={18} color="var(--color-primary-soft)" />,
+    mañana: <Sun size={18} color="var(--color-primary)" aria-hidden="true" />,
+    tarde: <Sunset size={18} color="var(--color-primary-active)" aria-hidden="true" />,
+    noche: <Moon size={18} color="var(--color-ink)" aria-hidden="true" />,
+    meta: <Target size={18} color="var(--color-primary-soft)" aria-hidden="true" />,
   };
 
   const slots: TimeSlot[] = ['mañana', 'tarde', 'noche', 'meta'];
@@ -76,6 +85,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
             type="button"
             className={`${styles.toggleBtn} ${period === 'semanal' ? styles.toggleBtnActive : ''}`}
             onClick={() => setPeriod('semanal')}
+            aria-pressed={period === 'semanal'}
           >
             Semanal
           </button>
@@ -83,6 +93,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
             type="button"
             className={`${styles.toggleBtn} ${period === 'mensual' ? styles.toggleBtnActive : ''}`}
             onClick={() => setPeriod('mensual')}
+            aria-pressed={period === 'mensual'}
           >
             Mensual
           </button>
@@ -93,14 +104,20 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
         <form onSubmit={handleAddBlock} className={styles.createForm}>
           <input
             type="text"
+            id="planner-title-input"
+            name="plannerTitle"
             className={styles.inputTitle}
             placeholder="Objetivo o bloque de enfoque"
+            aria-label="Objetivo o bloque de enfoque"
             value={title}
             onChange={e => setTitle(e.target.value)}
           />
 
           <select
+            id="planner-slot-select"
+            name="plannerSlot"
             className={styles.selectSlot}
+            aria-label="Momento del día o meta"
             value={timeSlot}
             onChange={e => setTimeSlot(e.target.value as TimeSlot)}
           >
@@ -111,7 +128,10 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
           </select>
 
           <select
+            id="planner-priority-select"
+            name="plannerPriority"
             className={styles.selectPriority}
+            aria-label="Prioridad del bloque"
             value={priority}
             onChange={e => setPriority(e.target.value as Priority)}
           >
@@ -121,7 +141,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
           </select>
 
           <button type="submit" className={styles.btnAdd}>
-            <Plus size={18} />
+            <Plus size={18} aria-hidden="true" />
             <span>Agregar bloque</span>
           </button>
         </form>
@@ -143,29 +163,32 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
                 </div>
               ) : (
                 <div className={styles.blocksList}>
-                  {slotBlocks.map(block => (
-                    <div key={block.id} className={styles.blockItem}>
-                      <input
-                        type="checkbox"
-                        id={`block-${block.id}`}
-                        aria-label={`completar ${block.title}`}
-                        className={styles.blockCheckbox}
-                        checked={block.completed}
-                        onChange={() => handleToggleBlock(block)}
-                      />
-                      <span className={`${styles.blockTitle} ${block.completed ? styles.blockCompleted : ''}`}>
-                        {block.title}
-                      </span>
-                      <button
-                        type="button"
-                        className={styles.btnDelete}
-                        aria-label={`eliminar ${block.title}`}
-                        onClick={() => handleDeleteBlock(block.id)}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  ))}
+                  {slotBlocks.map(block => {
+                    const blockText = block.title || (block as unknown as { content?: string }).content || 'bloque';
+                    return (
+                      <div key={block.id} className={styles.blockItem}>
+                        <input
+                          type="checkbox"
+                          id={`block-${block.id}`}
+                          aria-label={`completar ${blockText}`}
+                          className={styles.blockCheckbox}
+                          checked={block.completed}
+                          onChange={() => handleToggleBlock(block)}
+                        />
+                        <span className={`${styles.blockTitle} ${block.completed ? styles.blockCompleted : ''}`}>
+                          {blockText}
+                        </span>
+                        <button
+                          type="button"
+                          className={styles.btnDelete}
+                          aria-label={`eliminar ${blockText}`}
+                          onClick={() => handleDeleteBlock(block.id)}
+                        >
+                          <Trash2 size={16} aria-hidden="true" />
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

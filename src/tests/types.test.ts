@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, ViewType } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, ViewType, Area, TaskStatus } from '../types';
 
 describe('Domain types contract', () => {
   it('instantiates valid Profile', () => {
@@ -40,21 +40,38 @@ describe('Domain types contract', () => {
     expect(block.priority).toBe('alta');
   });
 
-  it('instantiates valid TodoItem', () => {
+  it('instantiates valid Area', () => {
+    const area: Area = {
+      id: 'a-1',
+      profileId: 'p-1',
+      name: 'Trabajo',
+      color: '#4f46e5',
+      createdAt: new Date().toISOString(),
+    };
+    expect(area.name).toBe('Trabajo');
+    expect(area.color).toBe('#4f46e5');
+  });
+
+  it('instantiates valid TodoItem con status y areaId', () => {
     const todo: TodoItem = {
       id: 't-1',
       profileId: 'p-1',
       title: 'Comprar café',
-      category: 'Personal',
+      areaId: 'a-1',
       priority: 'media',
+      status: 'en_progreso',
       completed: false,
+      dueDate: '2026-10-15',
       createdAt: new Date().toISOString(),
     };
-    expect(todo.completed).toBe(false);
+    expect(todo.status).toBe('en_progreso');
+    expect(todo.areaId).toBe('a-1');
   });
 
   it('supports allowed ViewType values', () => {
     const views: ViewType[] = ['dashboard', 'agenda', 'planner', 'todo'];
     expect(views).toHaveLength(4);
+    const statuses: TaskStatus[] = ['pendiente', 'en_progreso', 'completada'];
+    expect(statuses).toHaveLength(3);
   });
 });

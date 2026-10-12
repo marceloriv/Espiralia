@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Lock, Plus, ArrowRight } from 'lucide-react';
+import { sileo } from 'sileo';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
+import { PIN_PATTERN, hashPin, isPinProtected, migrateStoredPins, verifyPin } from '../services/pinHash';
 import styles from './ProfileGateView.module.css';
 
 interface ProfileGateViewProps {
@@ -9,7 +11,7 @@ interface ProfileGateViewProps {
 }
 
 export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfile }) => {
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>(() => StorageService.getProfiles());
   const [isCreating, setIsCreating] = useState(false);
   const [selectedProfileForPin, setSelectedProfileForPin] = useState<Profile | null>(null);
 
@@ -18,13 +20,26 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
   const [pin, setPin] = useState('');
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
+  const [createPinError, setCreatePinError] = useState(false);
+  const [busy, setBusy] = useState(false);
 
+  // Migra PIN en texto plano a hash apenas se abre la pantalla (§10 A04).
   useEffect(() => {
-    setProfiles(StorageService.getProfiles());
+    let cancelled = false;
+    migrateStoredPins()
+      .then(changed => {
+        if (changed && !cancelled) setProfiles(StorageService.getProfiles());
+      })
+      .catch(() => {
+        // ponytail: sin Web Crypto (contexto no seguro) el PIN legado queda intacto y se reintenta en la próxima carga.
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleProfileClick = (profile: Profile) => {
-    if (profile.pin) {
+    if (isPinProtected(profile)) {
       setSelectedProfileForPin(profile);
       setPinInput('');
       setPinError(false);
@@ -34,35 +49,54 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
     }
   };
 
-  const handleVerifyPin = (e: React.FormEvent) => {
+  const handleVerifyPin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedProfileForPin) return;
+    if (!selectedProfileForPin || busy) return;
+    setBusy(true);
+    const ok = await verifyPin(selectedProfileForPin, pinInput).catch(() => false);
+    setBusy(false);
 
-    if (pinInput === selectedProfileForPin.pin) {
+    if (ok) {
       StorageService.setActiveProfileId(selectedProfileForPin.id);
       onSelectProfile(selectedProfileForPin);
     } else {
       setPinError(true);
+      sileo.error({ title: 'PIN incorrecto' });
     }
   };
 
-  const handleCreateProfile = (e: React.FormEvent) => {
+  const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    const trimmedName = name.trim();
+    const trimmedPin = pin.trim();
+    if (!trimmedName || busy) return;
+    if (trimmedPin && !PIN_PATTERN.test(trimmedPin)) {
+      setCreatePinError(true);
+      sileo.error({ title: 'El PIN debe tener entre 4 y 6 dígitos' });
+      return;
+    }
 
-    const newProfile: Profile = {
-      id: `p-${Date.now()}`,
-      name: name.trim(),
-      avatar: name.trim().charAt(0).toUpperCase(),
-      pin: pin.trim() ? pin.trim() : undefined,
-      createdAt: new Date().toISOString(),
-    };
+    setBusy(true);
+    try {
+      const newProfile: Profile = {
+        id: `p-${Date.now()}`,
+        name: trimmedName,
+        avatar: trimmedName.charAt(0).toUpperCase(),
+        createdAt: new Date().toISOString(),
+        ...(trimmedPin ? await hashPin(trimmedPin) : {}),
+      };
 
-    StorageService.saveProfile(newProfile);
-    StorageService.setActiveProfileId(newProfile.id);
-    setProfiles(StorageService.getProfiles());
-    setIsCreating(false);
-    onSelectProfile(newProfile);
+      StorageService.saveProfile(newProfile);
+      StorageService.setActiveProfileId(newProfile.id);
+      setProfiles(StorageService.getProfiles());
+      setIsCreating(false);
+      sileo.success({ title: `Perfil "${newProfile.name}" creado` });
+      onSelectProfile(newProfile);
+    } catch {
+      sileo.error({ title: 'No se pudo crear el perfil' });
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -78,44 +112,52 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
         <div className={styles.profileList}>
           {profiles.map(profile => (
             <button
+              type="button"
               key={profile.id}
               className={styles.profileItem}
               onClick={() => handleProfileClick(profile)}
             >
-              <div className={styles.avatarBadge}>{profile.avatar}</div>
+              <div className={styles.avatarBadge} aria-hidden="true">{profile.avatar}</div>
               <div className={styles.profileInfo}>
                 <div className={styles.profileName}>{profile.name}</div>
                 <div className={styles.profileMeta}>
-                  {profile.pin ? 'Protegido por PIN' : 'Acceso libre'}
+                  {isPinProtected(profile) ? 'Protegido por PIN' : 'Acceso libre'}
                 </div>
               </div>
-              {profile.pin ? (
-                <Lock size={18} color="var(--color-muted)" />
+              {isPinProtected(profile) ? (
+                <Lock size={18} color="var(--color-muted)" aria-hidden="true" />
               ) : (
-                <ArrowRight size={18} color="var(--color-primary)" />
+                <ArrowRight size={18} color="var(--color-primary)" aria-hidden="true" />
               )}
             </button>
           ))}
         </div>
 
         <button
+          type="button"
           className={styles.btnPrimary}
           onClick={() => {
             setIsCreating(true);
             setName('');
             setPin('');
+            setCreatePinError(false);
           }}
         >
-          <Plus size={18} />
+          <Plus size={18} aria-hidden="true" />
           <span>Nuevo perfil</span>
         </button>
       </div>
 
       {/* Modal crear perfil */}
       {isCreating && (
-        <div className={styles.modalBackdrop}>
+        <div
+          className={styles.modalBackdrop}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="create-profile-title"
+        >
           <div className={styles.modalBox}>
-            <h3 className={styles.cardHeading}>Crear perfil</h3>
+            <h3 id="create-profile-title" className={styles.cardHeading}>Crear perfil</h3>
             <form onSubmit={handleCreateProfile}>
               <div className={styles.formGroup}>
                 <label htmlFor="create-profile-name" className={styles.formLabel}>
@@ -135,17 +177,28 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
 
               <div className={styles.formGroup}>
                 <label htmlFor="create-profile-pin" className={styles.formLabel}>
-                  PIN opcional (4 dígitos)
+                  PIN opcional (4 a 6 dígitos)
                 </label>
                 <input
                   id="create-profile-pin"
                   type="password"
+                  inputMode="numeric"
                   maxLength={6}
                   className={styles.formInput}
                   value={pin}
-                  onChange={e => setPin(e.target.value)}
+                  onChange={e => {
+                    setPin(e.target.value);
+                    setCreatePinError(false);
+                  }}
+                  aria-invalid={createPinError ? 'true' : 'false'}
+                  aria-describedby={createPinError ? 'create-pin-error' : undefined}
                   placeholder="Dejar vacío si no requieres PIN"
                 />
+                {createPinError && (
+                  <p id="create-pin-error" className={styles.errorMessage} role="alert">
+                    El PIN debe tener entre 4 y 6 dígitos.
+                  </p>
+                )}
               </div>
 
               <div className={styles.modalActions}>
@@ -156,7 +209,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
                 >
                   Cancelar
                 </button>
-                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }}>
+                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }} disabled={busy}>
                   Crear perfil
                 </button>
               </div>
@@ -167,9 +220,14 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
 
       {/* Modal PIN */}
       {selectedProfileForPin && (
-        <div className={styles.modalBackdrop}>
+        <div
+          className={styles.modalBackdrop}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="verify-pin-title"
+        >
           <div className={styles.modalBox}>
-            <h3 className={styles.cardHeading}>Ingresa tu PIN</h3>
+            <h3 id="verify-pin-title" className={styles.cardHeading}>Ingresa tu PIN</h3>
             <p className={styles.brandSubtitle} style={{ textAlign: 'center', marginBottom: 16 }}>
               Perfil: {selectedProfileForPin.name}
             </p>
@@ -181,16 +239,23 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
                 <input
                   id="verify-pin-input"
                   type="password"
+                  inputMode="numeric"
                   className={styles.formInput}
                   value={pinInput}
                   onChange={e => {
                     setPinInput(e.target.value);
                     setPinError(false);
                   }}
+                  aria-invalid={pinError ? 'true' : 'false'}
+                  aria-describedby={pinError ? 'pin-error-alert' : undefined}
                   autoFocus
                   required
                 />
-                {pinError && <p className={styles.errorMessage}>PIN incorrecto. Inténtalo de nuevo.</p>}
+                {pinError && (
+                  <p id="pin-error-alert" className={styles.errorMessage} role="alert">
+                    PIN incorrecto. Inténtalo de nuevo.
+                  </p>
+                )}
               </div>
 
               <div className={styles.modalActions}>
@@ -201,7 +266,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
                 >
                   Cancelar
                 </button>
-                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }}>
+                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }} disabled={busy}>
                   Desbloquear
                 </button>
               </div>

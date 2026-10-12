@@ -1,12 +1,14 @@
-import React from 'react';
+import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
 import { ProfileGateView } from '../components/ProfileGateView';
-import { DashboardView } from '../components/DashboardView';
-import { AgendaView } from '../components/AgendaView';
-import { PlannerView } from '../components/PlannerView';
-import { TodoView } from '../components/TodoView';
+import { RouteLoadingFallback } from '../components/RouteLoadingFallback';
 import type { Profile } from '../types';
+
+const DashboardView = lazy(() => import('../components/DashboardView').then(m => ({ default: m.DashboardView })));
+const AgendaView = lazy(() => import('../components/AgendaView').then(m => ({ default: m.AgendaView })));
+const PlannerView = lazy(() => import('../components/PlannerView').then(m => ({ default: m.PlannerView })));
+const TodoView = lazy(() => import('../components/TodoView').then(m => ({ default: m.TodoView })));
 
 interface AppRoutesProps {
   activeProfile: Profile | null;
@@ -48,24 +50,44 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           path="/dashboard"
           element={
             activeProfile ? (
-              <DashboardView
-                profile={activeProfile}
-                onNavigate={view => navigate(`/${view}`)}
-              />
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <DashboardView
+                  profile={activeProfile}
+                  onNavigate={view => navigate(`/${view}`)}
+                />
+              </Suspense>
             ) : null
           }
         />
         <Route
           path="/agenda"
-          element={activeProfile ? <AgendaView profileId={activeProfile.id} /> : null}
+          element={
+            activeProfile ? (
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <AgendaView profileId={activeProfile.id} />
+              </Suspense>
+            ) : null
+          }
         />
         <Route
           path="/planner"
-          element={activeProfile ? <PlannerView profileId={activeProfile.id} /> : null}
+          element={
+            activeProfile ? (
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <PlannerView profileId={activeProfile.id} />
+              </Suspense>
+            ) : null
+          }
         />
         <Route
           path="/todo"
-          element={activeProfile ? <TodoView profileId={activeProfile.id} /> : null}
+          element={
+            activeProfile ? (
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <TodoView profileId={activeProfile.id} />
+              </Suspense>
+            ) : null
+          }
         />
       </Route>
 
