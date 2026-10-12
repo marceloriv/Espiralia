@@ -182,8 +182,8 @@ Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porq
 |---|---|---|---|
 | Buscador global | Barra superior | F8 | Requiere el índice de F6 para incluir notas |
 | "Nueva Nota" | Barra superior | F6 | Depende del modelo de notas |
-| "Acción Rápida" | Sidebar | F3 / F6 | Atajos de creación; en F3 solo para features existentes |
-| "Ajustes & PIN" | Sidebar (pie) | Fase nueva (sin asignar) | Cambiar o quitar el PIN de un perfil existente; hoy solo se fija al crear |
+| "Acción Rápida" | Sidebar | **Resuelto (2026-10-12)** | Modal rápido de tareas y eventos conectado en layout |
+| "Ajustes & PIN" | Sidebar (pie) | **Resuelto (2026-10-12)** | Modal de gestión de PIN y acceso libre con Web Crypto PBKDF2 |
 | "Bóveda Offline" | Sidebar (pie) | F7 | Exportar/importar y cifrado |
 | "Notas Rápidas" | Sidebar | F6 | |
 | "Carpetas & Vínculos" | Sidebar | F6 | |
