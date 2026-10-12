@@ -1,4 +1,4 @@
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority } from '../types';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
@@ -171,15 +171,15 @@ export const StorageService = {
   getTodos(profileId: string): TodoItem[] {
     try {
       const data = localStorage.getItem(getScopedKey(profileId, 'todos'));
-      const rawList: any[] = data ? JSON.parse(data) : [];
+      const rawList: Array<Record<string, unknown>> = data ? JSON.parse(data) : [];
       if (!Array.isArray(rawList)) return [];
 
       const areas = this.getAreas(profileId);
       const defaultArea = areas.find(a => a.name.toLowerCase() === 'general') ?? areas[0];
 
       return rawList.map(raw => {
-        const status: TaskStatus = raw.status ?? (raw.completed ? 'completada' : 'pendiente');
-        let areaId = raw.areaId;
+        const status: TaskStatus = (raw.status as TaskStatus) ?? (raw.completed ? 'completada' : 'pendiente');
+        let areaId = typeof raw.areaId === 'string' ? raw.areaId : undefined;
         if (!areaId && raw.category) {
           const match = areas.find(a => a.name.toLowerCase() === String(raw.category).toLowerCase());
           areaId = match ? match.id : defaultArea?.id;
@@ -189,7 +189,12 @@ export const StorageService = {
         }
 
         return {
-          ...raw,
+          id: String(raw.id ?? `todo-${Date.now()}`),
+          profileId: String(raw.profileId ?? profileId),
+          title: String(raw.title ?? ''),
+          priority: (raw.priority as Priority) ?? 'media',
+          createdAt: String(raw.createdAt ?? new Date().toISOString()),
+          dueDate: typeof raw.dueDate === 'string' ? raw.dueDate : undefined,
           status,
           completed: status === 'completada',
           areaId: areaId ?? 'default',

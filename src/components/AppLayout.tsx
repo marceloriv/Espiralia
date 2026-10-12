@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
 import { isPinProtected } from '../services/pinHash';
+import { QuickActionModal } from './quickAction/QuickActionModal';
+import { ProfileSettingsModal } from './profile/ProfileSettingsModal';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -10,6 +12,7 @@ interface AppLayoutProps {
   currentView: ViewType;
   onViewChange: (view: ViewType) => void;
   onLockProfile: () => void;
+  onProfileUpdated?: (updatedProfile: Profile) => void;
   children: React.ReactNode;
 }
 
@@ -39,10 +42,19 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   currentView,
   onViewChange,
   onLockProfile,
+  onProfileUpdated,
   children,
 }) => {
   const [currentDate] = useState(() => layoutDateFormatter.format(new Date()));
-  const isProtected = isPinProtected(profile);
+  const [currentProfile, setCurrentProfile] = useState<Profile>(profile);
+  const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  useEffect(() => {
+    setCurrentProfile(profile);
+  }, [profile]);
+
+  const isProtected = isPinProtected(currentProfile);
   const lockText = isProtected ? 'Bloquear perfil' : 'Cambiar perfil';
 
   const handleLock = () => {
@@ -61,6 +73,17 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         <div className={styles.brand}>
           <h1 className={styles.brandLogo}>Espiralia</h1>
           <p className={styles.brandCaption}>Cuaderno personal</p>
+        </div>
+
+        <div className={styles.quickActionWrapper}>
+          <button
+            type="button"
+            className={styles.quickActionButton}
+            onClick={() => setIsQuickActionOpen(true)}
+          >
+            <Plus size={18} aria-hidden="true" />
+            <span>+ Acción Rápida</span>
+          </button>
         </div>
 
         <nav className={styles.navMenu} aria-label="Navegación principal">
@@ -82,12 +105,23 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         </nav>
 
         <div className={styles.sidebarFooter}>
+          <div className={styles.sidebarFooterActions}>
+            <button
+              type="button"
+              className={styles.settingsButton}
+              onClick={() => setIsSettingsOpen(true)}
+            >
+              <Settings size={16} aria-hidden="true" />
+              <span>Ajustes & PIN</span>
+            </button>
+          </div>
+
           <div className={styles.userCard}>
             <div className={styles.userAvatar} aria-hidden="true">
-              {profile.avatar}
+              {currentProfile.avatar}
             </div>
             <div className={styles.userInfo}>
-              <span className={styles.userName}>{profile.name}</span>
+              <span className={styles.userName}>{currentProfile.name}</span>
               <span className={styles.userMeta}>{isProtected ? 'Protegido por PIN' : 'Acceso libre'}</span>
             </div>
           </div>
@@ -103,10 +137,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               type="button"
               className={styles.lockButton}
               onClick={handleLock}
-              aria-label={`${lockText} (${profile.name})`}
+              aria-label={`${lockText} (${currentProfile.name})`}
             >
               <span className={styles.headerAvatar} aria-hidden="true">
-                {profile.avatar}
+                {currentProfile.avatar}
               </span>
               {isProtected ? <Lock size={16} aria-hidden="true" /> : <LogOut size={16} aria-hidden="true" />}
               <span className={styles.lockLabel}>{lockText}</span>
@@ -118,6 +152,22 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           {children}
         </main>
       </div>
+
+      <QuickActionModal
+        isOpen={isQuickActionOpen}
+        onClose={() => setIsQuickActionOpen(false)}
+        profileId={currentProfile.id}
+      />
+
+      <ProfileSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        profile={currentProfile}
+        onProfileUpdated={(updated) => {
+          setCurrentProfile(updated);
+          onProfileUpdated?.(updated);
+        }}
+      />
     </div>
   );
 };

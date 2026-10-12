@@ -1,4 +1,4 @@
-import type { AgendaEvent, TodoItem } from '../../types';
+import type { AgendaEvent, TodoItem, Area } from '../../types';
 import { occursOn } from '../agenda/eventMapping';
 import { addDaysToDateStr, toLocalDateStr } from '../../utils/localDate';
 
@@ -46,3 +46,26 @@ export const dueLabel = (dueDate: string | undefined, todayStr: string): string 
   if (dueDate === addDaysToDateStr(todayStr, 1)) return 'Mañana';
   return shortDateFormatter.format(date);
 };
+
+export interface AreaSummary {
+  area: Area;
+  totalTodos: number;
+  pendingTodos: number;
+  completionPercentage: number;
+}
+
+export const computeAreaSummaries = (areas: Area[], todos: TodoItem[]): AreaSummary[] =>
+  areas.map(area => {
+    const areaTodos = todos.filter(t => t.areaId === area.id);
+    const totalTodos = areaTodos.length;
+    const completedTodos = areaTodos.filter(t => t.completed || t.status === 'completada').length;
+    const pendingTodos = totalTodos - completedTodos;
+    const completionPercentage = totalTodos === 0 ? 0 : Math.round((completedTodos / totalTodos) * 100);
+    return {
+      area,
+      totalTodos,
+      pendingTodos,
+      completionPercentage,
+    };
+  });
+

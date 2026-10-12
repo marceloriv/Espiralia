@@ -168,9 +168,28 @@ describe('DashboardView', () => {
     expect(screen.getByLabelText(/distribución de actividades por categoría/i)).toBeInTheDocument();
   });
 
+  it('muestra la sección de áreas temáticas clave con sus tarjetas y progreso', () => {
+    StorageService.saveArea({
+      id: 'area-e1',
+      profileId: profile.id,
+      name: 'Estudios',
+      color: '#8b5cf6',
+      createdAt: '2026-10-09',
+    });
+    saveTodo({ id: 't-area-1', title: 'Tarea de estudio', areaId: 'area-e1', completed: false });
+    saveTodo({ id: 't-area-2', title: 'Tarea completada', areaId: 'area-e1', completed: true });
+
+    renderDashboard();
+
+    const areasSection = screen.getByRole('region', { name: /áreas temáticas clave/i });
+    expect(within(areasSection).getByText('Estudios')).toBeInTheDocument();
+    expect(within(areasSection).getByText('50%')).toBeInTheDocument();
+    expect(within(areasSection).getByText('1 pendiente')).toBeInTheDocument();
+  });
+
   it('no muestra bloques de features que todavía no existen', () => {
     renderDashboard();
-    for (const label of [/aforismo/i, /áreas temáticas/i, /documentos/i, /reflexión/i, /enlace/i, /indexeddb/i, /cifrad/i]) {
+    for (const label of [/aforismo/i, /documentos/i, /reflexión/i, /enlace/i, /indexeddb/i, /cifrad/i]) {
       expect(screen.queryByText(label)).not.toBeInTheDocument();
     }
   });

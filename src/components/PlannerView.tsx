@@ -104,6 +104,8 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
         <form onSubmit={handleAddBlock} className={styles.createForm}>
           <input
             type="text"
+            id="planner-title-input"
+            name="plannerTitle"
             className={styles.inputTitle}
             placeholder="Objetivo o bloque de enfoque"
             aria-label="Objetivo o bloque de enfoque"
@@ -112,6 +114,8 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
           />
 
           <select
+            id="planner-slot-select"
+            name="plannerSlot"
             className={styles.selectSlot}
             aria-label="Momento del día o meta"
             value={timeSlot}
@@ -124,6 +128,8 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
           </select>
 
           <select
+            id="planner-priority-select"
+            name="plannerPriority"
             className={styles.selectPriority}
             aria-label="Prioridad del bloque"
             value={priority}
@@ -157,29 +163,32 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
                 </div>
               ) : (
                 <div className={styles.blocksList}>
-                  {slotBlocks.map(block => (
-                    <div key={block.id} className={styles.blockItem}>
-                      <input
-                        type="checkbox"
-                        id={`block-${block.id}`}
-                        aria-label={`completar ${block.title}`}
-                        className={styles.blockCheckbox}
-                        checked={block.completed}
-                        onChange={() => handleToggleBlock(block)}
-                      />
-                      <span className={`${styles.blockTitle} ${block.completed ? styles.blockCompleted : ''}`}>
-                        {block.title}
-                      </span>
-                      <button
-                        type="button"
-                        className={styles.btnDelete}
-                        aria-label={`eliminar ${block.title}`}
-                        onClick={() => handleDeleteBlock(block.id)}
-                      >
-                        <Trash2 size={16} aria-hidden="true" />
-                      </button>
-                    </div>
-                  ))}
+                  {slotBlocks.map(block => {
+                    const blockText = block.title || (block as unknown as { content?: string }).content || 'bloque';
+                    return (
+                      <div key={block.id} className={styles.blockItem}>
+                        <input
+                          type="checkbox"
+                          id={`block-${block.id}`}
+                          aria-label={`completar ${blockText}`}
+                          className={styles.blockCheckbox}
+                          checked={block.completed}
+                          onChange={() => handleToggleBlock(block)}
+                        />
+                        <span className={`${styles.blockTitle} ${block.completed ? styles.blockCompleted : ''}`}>
+                          {blockText}
+                        </span>
+                        <button
+                          type="button"
+                          className={styles.btnDelete}
+                          aria-label={`eliminar ${blockText}`}
+                          onClick={() => handleDeleteBlock(block.id)}
+                        >
+                          <Trash2 size={16} aria-hidden="true" />
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

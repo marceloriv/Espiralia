@@ -327,6 +327,138 @@
   gap: 20px;
 }
 
+/* ---------- Áreas Temáticas Clave ---------- */
+
+.areasSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.areasHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.areasMeta {
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+}
+
+.areasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.areaCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-card);
+  box-shadow: var(--elevation-sm);
+  transition: border-color 0.15s ease;
+}
+
+.areaCard:hover {
+  border-color: var(--color-primary-soft);
+}
+
+.areaTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.areaIdentity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.areaDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.areaName {
+  margin: 0;
+  font-size: var(--text-body-md);
+  font-weight: 600;
+  color: var(--color-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.areaPercent {
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.progressBarBg {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-hairline);
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width 0.3s ease;
+}
+
+.areaBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.areaPendingCount {
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+}
+
+.areaActionBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-primary);
+  font-family: var(--font-family-2);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.areaActionBtn:hover {
+  text-decoration: underline;
+}
+
+.areaActionBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 /* ---------- Responsive ---------- */
 
 @media (min-width: 769px) and (max-width: 1023px) {
@@ -338,7 +470,8 @@
 @media (max-width: 768px) {
   .quickGrid,
   .cardsGrid,
-  .metricsGrid {
+  .metricsGrid,
+  .areasGrid {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -346,3 +479,4 @@
     font-size: var(--text-display-sm);
   }
 }
+
