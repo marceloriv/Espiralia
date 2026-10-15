@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield } from 'lucide-react';
+import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
 import { isPinProtected } from '../services/pinHash';
@@ -8,6 +8,7 @@ import { QuickActionModal } from './quickAction/QuickActionModal';
 import { ProfileSettingsModal } from './profile/ProfileSettingsModal';
 import { NoteModal } from './notes/NoteModal';
 import { VaultModal } from './vault/VaultModal';
+import { GlobalSearchModal } from './search/GlobalSearchModal';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -58,10 +59,34 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNewNoteOpen, setIsNewNoteOpen] = useState(false);
   const [isVaultOpen, setIsVaultOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     setCurrentProfile(profile);
   }, [profile]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(prev => !prev);
+        return;
+      }
+
+      if (e.key === '/') {
+        const target = e.target as HTMLElement | null;
+        const tagName = target?.tagName;
+        const isEditable = target?.isContentEditable;
+        if (tagName !== 'INPUT' && tagName !== 'TEXTAREA' && !isEditable) {
+          e.preventDefault();
+          setIsSearchOpen(true);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const isProtected = isPinProtected(currentProfile);
   const lockText = isProtected ? 'Bloquear perfil' : 'Cambiar perfil';
@@ -172,6 +197,16 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         <header className={styles.topHeader}>
           <span className={styles.headerTitle}>{VIEW_TITLES[currentView]}</span>
           <div className={styles.headerRight}>
+            <button
+              type="button"
+              className={styles.searchTrigger}
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Buscar en Espiralia (Ctrl+K)"
+            >
+              <Search size={15} aria-hidden="true" />
+              <span className={styles.searchPlaceholder}>Buscar en Espiralia...</span>
+              <kbd className={styles.searchShortcut}>Ctrl+K</kbd>
+            </button>
             <span className={styles.headerDate}>{currentDate}</span>
             <button
               type="button"
@@ -233,6 +268,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           setCurrentProfile(restored);
           onProfileUpdated?.(restored);
         }}
+      />
+
+      <GlobalSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onNavigate={(view) => onViewChange(view)}
+        profileId={currentProfile.id}
       />
     </div>
   );

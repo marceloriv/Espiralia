@@ -72,17 +72,43 @@ describe('AppLayout', () => {
     expect(within(screen.getByRole('banner')).getByText(title)).toBeInTheDocument();
   });
 
-  // Guarda de la deuda técnica del roadmap: el layout expone los controles reales y ningún campo de búsqueda.
-  it('no muestra controles de features que todavía no existen', () => {
+  // Con F8 completada, todas las features del rediseño Stitch están implementadas.
+  it('expone todos los controles de navegación, búsqueda y acciones del layout', () => {
     renderLayout();
     const names = screen.getAllByRole('button').map(b => b.getAttribute('aria-label') ?? b.textContent?.trim());
-    expect(names).toEqual(['+ Acción Rápida', 'Dashboard', 'Agenda', 'Planner', 'To-Do', 'Notas', 'Carpetas', 'Ajustes & PIN', 'Bóveda Offline', '+ Nueva Nota', 'Cambiar perfil (Francisca)']);
-    expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
-    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
-    const forbidden = [/buscar/i];
-    for (const label of forbidden) {
-      expect(screen.queryByText(label)).not.toBeInTheDocument();
-    }
+    expect(names).toEqual([
+      '+ Acción Rápida',
+      'Dashboard',
+      'Agenda',
+      'Planner',
+      'To-Do',
+      'Notas',
+      'Carpetas',
+      'Ajustes & PIN',
+      'Bóveda Offline',
+      'Buscar en Espiralia (Ctrl+K)',
+      '+ Nueva Nota',
+      'Cambiar perfil (Francisca)',
+    ]);
+  });
+
+  it('abre el modal de Búsqueda Global al hacer click en el disparador de la cabecera', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const searchBtn = screen.getByRole('button', { name: /buscar en espiralia/i });
+    await user.click(searchBtn);
+
+    expect(screen.getByRole('dialog', { name: /búsqueda global/i })).toBeInTheDocument();
+  });
+
+  it('abre el modal de Búsqueda Global al pulsar el atajo Ctrl+K', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    await user.keyboard('{Control>}k{/Control}');
+
+    expect(screen.getByRole('dialog', { name: /búsqueda global/i })).toBeInTheDocument();
   });
 
   it('abre el modal de Bóveda Offline al hacer click en el botón del sidebar', async () => {
