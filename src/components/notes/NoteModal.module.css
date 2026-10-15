@@ -89,8 +89,15 @@
 .input:focus,
 .select:focus,
 .textarea:focus {
-  outline: none;
   border-color: var(--color-accent, #c96442);
+}
+
+.input:focus-visible,
+.select:focus-visible,
+.textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+  border-color: var(--color-primary);
 }
 
 .modalActions {

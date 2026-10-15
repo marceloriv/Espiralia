@@ -178,11 +178,16 @@
   background-color: var(--color-canvas);
   font-size: var(--text-body-md);
   color: var(--color-ink);
-  outline: none;
   transition: border-color 0.15s ease;
 }
 
 .inputTask:focus {
+  border-color: var(--color-primary);
+}
+
+.inputTask:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
   border-color: var(--color-primary);
 }
 
@@ -203,7 +208,6 @@
   background-color: var(--color-canvas);
   font-size: var(--text-body-sm);
   color: var(--color-ink);
-  outline: none;
   cursor: pointer;
 }
 
@@ -214,6 +218,14 @@
 .selectArea:focus,
 .selectPriority:focus,
 .inputDate:focus {
+  border-color: var(--color-primary);
+}
+
+.selectArea:focus-visible,
+.selectPriority:focus-visible,
+.inputDate:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
   border-color: var(--color-primary);
 }
 
@@ -632,10 +644,15 @@
   background-color: var(--color-canvas);
   font-size: var(--text-body-md);
   color: var(--color-ink);
-  outline: none;
 }
 
 .formInput:focus {
+  border-color: var(--color-primary);
+}
+
+.formInput:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
   border-color: var(--color-primary);
 }
 
