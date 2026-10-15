@@ -94,7 +94,7 @@ export class VaultService {
       existingEvents.forEach((e) => StorageService.deleteEvent(destProfileId, e.id));
 
       const existingPlanner = StorageService.getPlanner(destProfileId);
-      existingPlanner.forEach((p) => StorageService.deletePlannerBlock(destProfileId, p.id));
+      existingPlanner.forEach((p) => StorageService.deletePlanner(destProfileId, p.id));
 
       const existingGoals = StorageService.getGoals(destProfileId);
       existingGoals.forEach((g) => StorageService.deleteGoal(destProfileId, g.id));
@@ -126,7 +126,7 @@ export class VaultService {
 
     // Insertar planner
     backup.planner.forEach((p) => {
-      StorageService.savePlannerBlock({ ...p, profileId: destProfileId });
+      StorageService.savePlanner({ ...p, profileId: destProfileId });
     });
 
     // Insertar goals

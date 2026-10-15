@@ -9,7 +9,7 @@ describe('Vault Crypto (AES-GCM & PBKDF2)', () => {
     events: [],
     planner: [],
     goals: [],
-    todos: [{ id: 't-1', profileId: 'p-test', title: 'Tarea confidencial', priority: 'alta', status: 'pendiente', createdAt: '2026-10-15' }],
+    todos: [{ id: 't-1', profileId: 'p-test', areaId: 'area-1', title: 'Tarea confidencial', priority: 'alta', status: 'pendiente', createdAt: '2026-10-15' }],
     areas: [],
     notes: [{ id: 'n-1', profileId: 'p-test', title: 'Reflexión secreta', content: 'Contenido privado', createdAt: '2026-10-15', updatedAt: '2026-10-15' }],
     folders: [],

@@ -8,7 +8,7 @@ describe('VaultService', () => {
   beforeEach(() => {
     localStorage.clear();
     StorageService.saveProfile({ id: profileId, name: 'Perfil Origen', avatar: 'O', createdAt: '2026-10-15' });
-    StorageService.saveTodo({ id: 't-src', profileId, title: 'Comprar libro', priority: 'media', status: 'pendiente', createdAt: '2026-10-15' });
+    StorageService.saveTodo({ id: 't-src', profileId, areaId: 'area-1', title: 'Comprar libro', priority: 'media', status: 'pendiente', createdAt: '2026-10-15' });
     StorageService.saveNote({ id: 'n-src', profileId, title: 'Nota fuente', content: 'Info', createdAt: '2026-10-15', updatedAt: '2026-10-15' });
   });
 
@@ -33,7 +33,7 @@ describe('VaultService', () => {
   it('restaura sobrescribiendo el perfil existente', () => {
     const backup = VaultService.exportProfile(profileId);
     // Cambiar datos en el respaldo
-    backup.todos = [{ id: 't-new', profileId, title: 'Tarea restaurada', priority: 'alta', status: 'completada', createdAt: '2026-10-15' }];
+    backup.todos = [{ id: 't-new', profileId, areaId: 'area-1', title: 'Tarea restaurada', priority: 'alta', status: 'completada', createdAt: '2026-10-15' }];
 
     const result = VaultService.restoreProfile(backup, 'overwrite', profileId);
     expect(result.profile.id).toBe(profileId);

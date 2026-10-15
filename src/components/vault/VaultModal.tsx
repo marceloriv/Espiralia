@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Upload, Shield, X, Lock, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Download, Upload, X, Lock, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../../types';
 import { VaultService } from '../../services/vaultService';

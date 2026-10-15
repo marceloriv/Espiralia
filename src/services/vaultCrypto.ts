@@ -56,7 +56,7 @@ const deriveKey = async (passphrase: string, salt: Uint8Array, iterations: numbe
   return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt,
+      salt: salt as BufferSource,
       iterations,
       hash: 'SHA-256',
     },
@@ -78,7 +78,7 @@ export const encryptBackup = async (
   const key = await deriveKey(passphrase, salt, iterations);
   const plaintext = new TextEncoder().encode(JSON.stringify(backup));
   const encryptedBuf = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
+    { name: 'AES-GCM', iv: iv as BufferSource },
     key,
     plaintext,
   );
@@ -107,9 +107,9 @@ export const decryptBackup = async (
 
     const key = await deriveKey(passphrase, salt, envelope.iterations || 100000);
     const decryptedBuf = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv },
+      { name: 'AES-GCM', iv: iv as BufferSource },
       key,
-      ciphertext,
+      ciphertext as BufferSource,
     );
 
     const jsonStr = new TextDecoder().decode(decryptedBuf);
