@@ -37,7 +37,7 @@
 **Interfaces:**
 - Produces: `ProfileBackup`, `EncryptedVaultEnvelope`, `encryptBackup(backup, passphrase)`, `decryptBackup(envelope, passphrase)`, `isVaultEnvelope(data)`.
 
-- [ ] **Step 1: Escribir pruebas unitarias para cifrado, descifrado y validación criptográfica**
+- [x] **Step 1: Escribir pruebas unitarias para cifrado, descifrado y validación criptográfica**
 
 Crear `src/tests/vaultCrypto.test.ts`:
 ```typescript
@@ -91,21 +91,21 @@ describe('Vault Crypto (AES-GCM & PBKDF2)', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/vaultCrypto.test.ts`  
 Resultado esperado: FAIL por módulo inexistente.
 
-- [ ] **Step 3: Implementar `src/services/vaultCrypto.ts`**
+- [x] **Step 3: Implementar `src/services/vaultCrypto.ts`**
 
 Implementar interfaces `ProfileBackup`, `EncryptedVaultEnvelope` y funciones `encryptBackup`, `decryptBackup`, `isVaultEnvelope` usando `window.crypto.subtle`.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/vaultCrypto.test.ts`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/services/vaultCrypto.ts src/tests/vaultCrypto.test.ts
@@ -124,7 +124,7 @@ git commit -m ":sparkles: feat(vault): implementar motor criptografico AES-GCM y
 - Consumes: `StorageService`, `ProfileBackup`.
 - Produces: `VaultService.exportProfile`, `VaultService.validateBackup`, `VaultService.restoreProfile`.
 
-- [ ] **Step 1: Escribir pruebas unitarias de exportación, validación y restauración**
+- [x] **Step 1: Escribir pruebas unitarias de exportación, validación y restauración**
 
 Crear `src/tests/vaultService.test.ts`:
 ```typescript
@@ -191,24 +191,24 @@ describe('VaultService', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/vaultService.test.ts`  
 Resultado esperado: FAIL por módulo inexistente.
 
-- [ ] **Step 3: Implementar `src/services/vaultService.ts`**
+- [x] **Step 3: Implementar `src/services/vaultService.ts`**
 
 Implementar métodos:
 - `exportProfile(profileId: string): ProfileBackup`
 - `validateBackup(data: unknown): data is ProfileBackup`
 - `restoreProfile(backup: ProfileBackup, mode: 'overwrite' | 'new_profile', targetProfileId?: string): { profile: Profile; counts: Record<string, number> }`
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/vaultService.test.ts`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/services/vaultService.ts src/tests/vaultService.test.ts
@@ -228,7 +228,7 @@ git commit -m ":sparkles: feat(vault): implementar servicio de exportacion, vali
 - Consumes: `VaultService`, `vaultCrypto`, `Profile`.
 - Produces: `VaultModal` con pestañas para exportar (plano / cifrado) e importar (archivo, preview, estrategia).
 
-- [ ] **Step 1: Escribir pruebas unitarias e interacción de `VaultModal`**
+- [x] **Step 1: Escribir pruebas unitarias e interacción de `VaultModal`**
 
 Crear `src/tests/VaultModal.test.tsx`:
 ```typescript
@@ -275,12 +275,12 @@ describe('VaultModal', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/VaultModal.test.tsx`  
 Resultado esperado: FAIL por componente inexistente.
 
-- [ ] **Step 3: Implementar `VaultModal.module.css` y `VaultModal.tsx`**
+- [x] **Step 3: Implementar `VaultModal.module.css` y `VaultModal.tsx`**
 
 Implementar modal accesible con:
 - Pestaña Exportar:
@@ -294,12 +294,12 @@ Implementar modal accesible con:
   - Selección de estrategia de restauración ("Sobrescribir en perfil actual" o "Crear nuevo perfil").
   - Confirmación y cierre.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/VaultModal.test.tsx`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/vault/* src/tests/VaultModal.test.tsx
@@ -319,7 +319,7 @@ git commit -m ":sparkles: feat(vault): implementar componente accesible VaultMod
 - Consumes: `VaultModal`, `Shield` icon de `lucide-react`.
 - Produces: Botón "Bóveda Offline" accesible en pie de barra lateral, apertura de modal y actualización de tests de deuda técnica.
 
-- [ ] **Step 1: Actualizar `src/tests/AppLayout.test.tsx` para verificar el botón "Bóveda Offline"**
+- [x] **Step 1: Actualizar `src/tests/AppLayout.test.tsx` para verificar el botón "Bóveda Offline"**
 
 Actualizar lista esperada de botones en `it('no muestra controles de features que todavía no existen')`:
 - Agregar `'Bóveda Offline'`.
@@ -337,12 +337,12 @@ it('abre el modal de Bóveda Offline al hacer click en el botón del sidebar', a
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/AppLayout.test.tsx`  
 Resultado esperado: FAIL por ausencia de botón "Bóveda Offline".
 
-- [ ] **Step 3: Implementar botón y modal en `src/components/AppLayout.tsx` y estilos en `AppLayout.module.css`**
+- [x] **Step 3: Implementar botón y modal en `src/components/AppLayout.tsx` y estilos en `AppLayout.module.css`**
 
 - Agregar botón en `sidebarFooterActions`:
 ```tsx
@@ -357,12 +357,12 @@ Resultado esperado: FAIL por ausencia de botón "Bóveda Offline".
 ```
 - Renderizar `<VaultModal isOpen={isVaultOpen} onClose={() => setIsVaultOpen(false)} profile={currentProfile} onProfileRestored={...} />`.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/AppLayout.test.tsx`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/AppLayout* src/tests/AppLayout.test.tsx
@@ -377,21 +377,21 @@ git commit -m ":sparkles: feat(layout): conectar boton Boveda Offline y modal en
 - Test: Toda la suite en `src/tests/`
 - Modify: `docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md`
 
-- [ ] **Step 1: Ejecutar suite completa de pruebas unitarias y de integración**
+- [x] **Step 1: Ejecutar suite completa de pruebas unitarias y de integración**
 
 Ejecutar: `corepack pnpm exec vitest run`  
 Resultado esperado: Todos los tests pasan sin regresiones.
 
-- [ ] **Step 2: Ejecutar compilación de producción para validar tipos y bundle**
+- [x] **Step 2: Ejecutar compilación de producción para validar tipos y bundle**
 
 Ejecutar: `corepack pnpm build`  
 Resultado esperado: Build exitoso sin errores de TypeScript ni advertencias.
 
-- [ ] **Step 3: Actualizar roadmap en `docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md`**
+- [x] **Step 3: Actualizar roadmap en `docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md`**
 
 Marcar la fase F7 como completada en la documentación del roadmap maestro y registrar el estado de la siguiente fase (F8 Búsqueda Global).
 
-- [ ] **Step 4: Commit de documentación de release F7**
+- [x] **Step 4: Commit de documentación de release F7**
 
 ```bash
 git add docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md
