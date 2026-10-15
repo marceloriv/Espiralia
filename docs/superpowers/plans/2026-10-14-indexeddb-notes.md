@@ -1,6 +1,6 @@
 # IndexedDB + Notas, Reflexiones, Carpetas y Vínculos — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Implementar la persistencia nativa con IndexedDB y dotar a Espiralia de un Cuaderno digital de Reflexiones (para proceso terapéutico y notas de estudio extensas), sistema de Carpetas temáticas y guardado de Vínculos/documentos web, integrados en la navegación principal.
 
@@ -39,7 +39,7 @@
 **Interfaces:**
 - Produces: `Folder`, `Note`, `LinkItem`, actualización de `ViewType` (`'notes' | 'folders'`).
 
-- [ ] **Step 1: Escribir prueba de validación de tipos para notas, carpetas y links**
+- [x] **Step 1: Escribir prueba de validación de tipos para notas, carpetas y links**
 
 Crear `src/tests/notesTypes.test.ts`:
 ```typescript
@@ -94,12 +94,12 @@ describe('Notes, Folders and Links Types', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar compilación**
+- [x] **Step 2: Ejecutar prueba para verificar compilación**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/notesTypes.test.ts`  
 Resultado esperado: Error de TypeScript por tipos no exportados aún.
 
-- [ ] **Step 3: Actualizar `src/types/index.ts` con `Folder`, `Note`, `LinkItem` y `ViewType` ampliado**
+- [x] **Step 3: Actualizar `src/types/index.ts` con `Folder`, `Note`, `LinkItem` y `ViewType` ampliado**
 
 En `src/types/index.ts`:
 ```typescript
@@ -137,12 +137,12 @@ export interface LinkItem {
 }
 ```
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/notesTypes.test.ts`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/types/index.ts src/tests/notesTypes.test.ts
@@ -160,7 +160,7 @@ git commit -m ":sparkles: feat(types): definir entidades Note, Folder y LinkItem
 **Interfaces:**
 - Produces: `EspiraliaIDB.isAvailable()`, `EspiraliaIDB.getStore<T>(storeName, profileId)`, `EspiraliaIDB.put<T>(storeName, item)`, `EspiraliaIDB.delete(storeName, id)`, `EspiraliaIDB.clearProfile(profileId)`.
 
-- [ ] **Step 1: Escribir prueba unitaria para la capa IndexedDB y su resiliencia**
+- [x] **Step 1: Escribir prueba unitaria para la capa IndexedDB y su resiliencia**
 
 Crear `src/tests/idb.test.ts`:
 ```typescript
@@ -200,12 +200,12 @@ describe('EspiraliaIDB Core Storage', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/idb.test.ts`  
 Resultado esperado: FAIL por módulo `src/services/idb.ts` no encontrado.
 
-- [ ] **Step 3: Implementar `src/services/idb.ts` con detección y fallback**
+- [x] **Step 3: Implementar `src/services/idb.ts` con detección y fallback**
 
 - Crear `EspiraliaIDB`:
   - Detecta si `typeof window !== 'undefined' && 'indexedDB' in window && window.indexedDB !== undefined`.
@@ -213,12 +213,12 @@ Resultado esperado: FAIL por módulo `src/services/idb.ts` no encontrado.
   - Si no está disponible, mantiene un `Map<string, Map<string, any>>` en memoria con espejo en `localStorage` usando prefijo `idb_fallback_`.
   - Expone API async unificada: `getAll<T>(store, profileId)`, `getById<T>(store, id)`, `put<T>(store, item)`, `delete(store, id)`, `clearProfile(profileId)`.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/idb.test.ts`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/services/idb.ts src/tests/idb.test.ts
@@ -237,7 +237,7 @@ git commit -m ":sparkles: feat(storage): implementar motor de persistencia nativ
 - Consumes: `Note`, `Folder`, `LinkItem`, `EspiraliaIDB`.
 - Produces: CRUD para `notes`, `folders` y `links` en `StorageService`, y cascada en `deleteProfile`.
 
-- [ ] **Step 1: Escribir pruebas unitarias de persistencia y cascada**
+- [x] **Step 1: Escribir pruebas unitarias de persistencia y cascada**
 
 Crear `src/tests/notesStorage.test.ts`:
 ```typescript
@@ -313,12 +313,12 @@ describe('StorageService - Notes, Folders & Links', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/notesStorage.test.ts`  
 Resultado esperado: FAIL por métodos `getNotes`, `saveNote`, etc., inexistentes.
 
-- [ ] **Step 3: Implementar métodos en `src/services/storage.ts` y sincronización con IDB**
+- [x] **Step 3: Implementar métodos en `src/services/storage.ts` y sincronización con IDB**
 
 - Importar `Note`, `Folder`, `LinkItem` de `../types`.
 - Agregar `getNotes`, `saveNote`, `deleteNote`.
@@ -328,12 +328,12 @@ Resultado esperado: FAIL por métodos `getNotes`, `saveNote`, etc., inexistentes
   - Eliminar de `localStorage`: `notes`, `folders`, `links`.
   - Disparar `EspiraliaIDB.clearProfile(id)`.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/notesStorage.test.ts`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/services/storage.ts src/tests/notesStorage.test.ts
@@ -355,7 +355,7 @@ git commit -m ":sparkles: feat(storage): incorporar CRUD y cascada para notas, c
 - Consumes: `Note`, `Folder`, `StorageService`.
 - Produces: `NotesView` con filtrado por pestaña ("Reflexiones & Diario", "Notas Rápidas", "Todas"), búsqueda por texto y creación/edición de notas extensas.
 
-- [ ] **Step 1: Escribir pruebas unitarias e integración de `NotesView`**
+- [x] **Step 1: Escribir pruebas unitarias e integración de `NotesView`**
 
 Crear `src/tests/NotesView.test.tsx`:
 ```typescript
@@ -432,12 +432,12 @@ describe('NotesView', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/NotesView.test.tsx`  
 Resultado esperado: FAIL por componente inexistente.
 
-- [ ] **Step 3: Implementar `NotesView`, `NoteModal` y sus estilos**
+- [x] **Step 3: Implementar `NotesView`, `NoteModal` y sus estilos**
 
 - `NoteModal`:
   - Diálogo accesible (`role="dialog"`, `aria-modal="true"`, foco en título).
@@ -448,12 +448,12 @@ Resultado esperado: FAIL por componente inexistente.
   - Grilla de tarjetas estilo editorial con tokens de `src/index.css`.
   - Acciones en tarjeta: editar, eliminar con confirmación y toast con `sileo`.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/NotesView.test.tsx`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/NotesView* src/components/notes/* src/tests/NotesView.test.tsx
@@ -475,7 +475,7 @@ git commit -m ":sparkles: feat(notes): implementar vista NotesView y editor de r
 - Consumes: `Folder`, `LinkItem`, `Note`, `StorageService`.
 - Produces: `FoldersView` con navegación de carpetas temáticas, agrupación de notas asociadas y catálogo de vínculos web con validación de URL y apertura segura.
 
-- [ ] **Step 1: Escribir pruebas unitarias para `FoldersView`**
+- [x] **Step 1: Escribir pruebas unitarias para `FoldersView`**
 
 Crear `src/tests/FoldersView.test.tsx`:
 ```typescript
@@ -531,12 +531,12 @@ describe('FoldersView', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/FoldersView.test.tsx`  
 Resultado esperado: FAIL por componente inexistente.
 
-- [ ] **Step 3: Implementar `FoldersView`, `FolderModal`, `LinkModal` y sus estilos**
+- [x] **Step 3: Implementar `FoldersView`, `FolderModal`, `LinkModal` y sus estilos**
 
 - `FolderModal`: formulario accesible para crear carpetas con nombre y color personalizado.
 - `LinkModal`: formulario accesible con título, URL (validada contra `^https?://`), descripción opcional.
@@ -545,12 +545,12 @@ Resultado esperado: FAIL por componente inexistente.
   - Vista del contenido de la carpeta activa con dos secciones: "Vínculos & Documentos Web" y "Notas de la Carpeta".
   - Apertura segura de URLs con `target="_blank"` y `rel="noopener noreferrer"`.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/FoldersView.test.tsx`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/FoldersView* src/components/folders/* src/tests/FoldersView.test.tsx
@@ -571,7 +571,7 @@ git commit -m ":sparkles: feat(folders): implementar vista de carpetas tematicas
 - Consumes: `NotesView`, `FoldersView`, `NoteModal`, `NAV_ITEMS`.
 - Produces: Rutas `/notes` y `/folders` protegidas y lazy-loaded, enlaces activos en sidebar y modal global "+ Nueva Nota" en cabecera.
 
-- [ ] **Step 1: Escribir pruebas para las nuevas rutas y acciones en `AppLayout.test.tsx` y `routes.test.tsx`**
+- [x] **Step 1: Escribir pruebas para las nuevas rutas y acciones en `AppLayout.test.tsx` y `routes.test.tsx`**
 
 En `src/tests/routes.test.tsx`:
 - Verificar navegación a `/notes` y `/folders`.
@@ -580,12 +580,12 @@ En `src/tests/AppLayout.test.tsx`:
 - Verificar que el sidebar contiene los enlaces "Notas" y "Carpetas".
 - Verificar que el botón "+ Nueva Nota" en la cabecera abre el modal de nota.
 
-- [ ] **Step 2: Ejecutar pruebas para verificar fallos**
+- [x] **Step 2: Ejecutar pruebas para verificar fallos**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/AppLayout.test.tsx src/tests/routes.test.tsx`  
 Resultado esperado: FAIL en los nuevos asertos.
 
-- [ ] **Step 3: Actualizar `src/routes/index.tsx` y `src/components/AppLayout.tsx`**
+- [x] **Step 3: Actualizar `src/routes/index.tsx` y `src/components/AppLayout.tsx`**
 
 - En `src/routes/index.tsx`:
   - `const NotesView = lazy(...)` y `const FoldersView = lazy(...)`.
@@ -594,12 +594,12 @@ Resultado esperado: FAIL en los nuevos asertos.
   - Agregar `notes` (`BookOpen`) y `folders` (`Folder`) a `NAV_ITEMS`.
   - Conectar botón "Nueva Nota" en `headerRight` que abre `NoteModal`.
 
-- [ ] **Step 4: Ejecutar pruebas para verificar que pasan**
+- [x] **Step 4: Ejecutar pruebas para verificar que pasan**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/AppLayout.test.tsx src/tests/routes.test.tsx`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/routes/index.tsx src/components/AppLayout.tsx src/tests/AppLayout.test.tsx src/tests/routes.test.tsx
@@ -614,21 +614,21 @@ git commit -m ":sparkles: feat(layout): conectar rutas de notas y carpetas y bot
 - Test: Toda la suite en `src/tests/`
 - Modify: `docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md`
 
-- [ ] **Step 1: Ejecutar suite completa de pruebas unitarias y de integración**
+- [x] **Step 1: Ejecutar suite completa de pruebas unitarias y de integración**
 
 Ejecutar: `corepack pnpm exec vitest run`  
 Resultado esperado: Todos los tests pasan sin regresiones.
 
-- [ ] **Step 2: Ejecutar compilación de producción para validar tipos y bundle**
+- [x] **Step 2: Ejecutar compilación de producción para validar tipos y bundle**
 
 Ejecutar: `corepack pnpm build`  
 Resultado esperado: Build exitoso sin errores de TypeScript ni advertencias de importación.
 
-- [ ] **Step 3: Actualizar roadmap en `docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md`**
+- [x] **Step 3: Actualizar roadmap en `docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md`**
 
 Marcar la fase F6 como completada en la documentación del roadmap maestro y actualizar el siguiente paso (F7 Bóveda).
 
-- [ ] **Step 4: Commit de documentación de release F6**
+- [x] **Step 4: Commit de documentación de release F6**
 
 ```bash
 git add docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md
