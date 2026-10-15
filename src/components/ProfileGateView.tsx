@@ -3,7 +3,8 @@ import { Lock, Plus, ArrowRight } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
-import { PIN_PATTERN, hashPin, isPinProtected, migrateStoredPins, verifyPin } from '../services/pinHash';
+import { PIN_PATTERN, isPinProtected, migrateStoredPins, verifyPin } from '../services/pinHash';
+import { createNewProfile } from '../services/profileOperations';
 import styles from './ProfileGateView.module.css';
 
 interface ProfileGateViewProps {
@@ -78,22 +79,16 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
 
     setBusy(true);
     try {
-      const newProfile: Profile = {
-        id: `p-${Date.now()}`,
-        name: trimmedName,
-        avatar: trimmedName.charAt(0).toUpperCase(),
-        createdAt: new Date().toISOString(),
-        ...(trimmedPin ? await hashPin(trimmedPin) : {}),
-      };
+      const res = await createNewProfile(trimmedName, trimmedPin);
+      if (!res.success || !res.profile) {
+        sileo.error({ title: res.error || 'No se pudo crear el perfil' });
+        return;
+      }
 
-      StorageService.saveProfile(newProfile);
-      StorageService.setActiveProfileId(newProfile.id);
       setProfiles(StorageService.getProfiles());
       setIsCreating(false);
-      sileo.success({ title: `Perfil "${newProfile.name}" creado` });
-      onSelectProfile(newProfile);
-    } catch {
-      sileo.error({ title: 'No se pudo crear el perfil' });
+      sileo.success({ title: `Perfil "${res.profile.name}" creado` });
+      onSelectProfile(res.profile);
     } finally {
       setBusy(false);
     }
