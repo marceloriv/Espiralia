@@ -1,10 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { PlannerView } from '../components/PlannerView';
 import { StorageService } from '../services/storage';
-import type { PlannerBlock } from '../types';
 
 describe('PlannerView integración semanal y metas', () => {
   const profileId = 'p-planner';

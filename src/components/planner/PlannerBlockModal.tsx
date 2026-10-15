@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { DayOfWeek, TimeSlot, Priority, PlannerBlock } from '../../types';
+import type { DayOfWeek, TimeSlot, Priority } from '../../types';
 import styles from './PlannerBlockModal.module.css';
 
 interface PlannerBlockModalProps {
