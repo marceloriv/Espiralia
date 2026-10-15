@@ -401,6 +401,7 @@
 
 /* ---------- Pills de Estado ---------- */
 
+/* ponytail: pills a 36px — área efectiva de toque es 52px (padding del todoItem 8px × 2 + 36px pill). Elevar requeriría aumentar la densidad de toda la fila. */
 .statusPill {
   display: inline-flex;
   align-items: center;
@@ -486,8 +487,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 32px;
-  min-height: 32px;
+  min-width: 44px;
+  min-height: 44px;
   border: none;
   background: transparent;
   color: var(--color-muted);
