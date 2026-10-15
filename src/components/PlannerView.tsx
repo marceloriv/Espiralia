@@ -15,6 +15,7 @@ interface PlannerViewProps {
 export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
   const [blocks, setBlocks] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profileId));
   const [weekOffset, setWeekOffset] = useState(0);
+  const [priorityFilter, setPriorityFilter] = useState<'todas' | Priority>('todas');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<DayOfWeek | undefined>(1);
 
@@ -105,7 +106,11 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
     loadBlocks();
   };
 
-  const legacyBlocks = blocks.filter(b => b.dayOfWeek === undefined);
+  const filteredBlocks = priorityFilter === 'todas'
+    ? blocks
+    : blocks.filter(b => b.priority === priorityFilter);
+
+  const legacyBlocks = filteredBlocks.filter(b => b.dayOfWeek === undefined);
 
   return (
     <div className={styles.plannerWrapper}>
@@ -122,6 +127,14 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
             >
               <ChevronLeft size={18} aria-hidden="true" />
             </button>
+            <button
+              type="button"
+              className={styles.todayBtn}
+              onClick={() => setWeekOffset(0)}
+              aria-label="Hoy"
+            >
+              Hoy
+            </button>
             <span className={styles.weekLabel}>{weekLabel}</span>
             <button
               type="button"
@@ -130,6 +143,45 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
               aria-label="Semana siguiente"
             >
               <ChevronRight size={18} aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className={styles.priorityGroup} role="group" aria-label="Filtro de prioridades">
+            <button
+              type="button"
+              className={`${styles.priorityPill} ${priorityFilter === 'todas' ? styles.priorityPillActive : ''}`}
+              onClick={() => setPriorityFilter('todas')}
+              aria-pressed={priorityFilter === 'todas'}
+              aria-label="Todas las prioridades"
+            >
+              Todas
+            </button>
+            <button
+              type="button"
+              className={`${styles.priorityPill} ${priorityFilter === 'alta' ? styles.priorityPillActive : ''}`}
+              onClick={() => setPriorityFilter('alta')}
+              aria-pressed={priorityFilter === 'alta'}
+              aria-label="Prioridad Alta"
+            >
+              Alta
+            </button>
+            <button
+              type="button"
+              className={`${styles.priorityPill} ${priorityFilter === 'media' ? styles.priorityPillActive : ''}`}
+              onClick={() => setPriorityFilter('media')}
+              aria-pressed={priorityFilter === 'media'}
+              aria-label="Prioridad Media"
+            >
+              Media
+            </button>
+            <button
+              type="button"
+              className={`${styles.priorityPill} ${priorityFilter === 'baja' ? styles.priorityPillActive : ''}`}
+              onClick={() => setPriorityFilter('baja')}
+              aria-pressed={priorityFilter === 'baja'}
+              aria-label="Prioridad Baja"
+            >
+              Baja
             </button>
           </div>
         </div>
@@ -165,7 +217,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
                 key={day.dayOfWeek}
                 dayName={day.name}
                 dateLabel={day.dateLabel}
-                blocks={blocks.filter(b => b.dayOfWeek === day.dayOfWeek)}
+                blocks={filteredBlocks.filter(b => b.dayOfWeek === day.dayOfWeek)}
                 onAddBlock={() => handleOpenModal(day.dayOfWeek)}
                 onToggleBlock={handleToggleBlock}
                 onDeleteBlock={handleDeleteBlock}
@@ -179,12 +231,15 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
         </aside>
       </div>
 
-      <PlannerBlockModal
-        isOpen={isModalOpen}
-        initialDay={selectedDay}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveBlock}
-      />
+      {isModalOpen && (
+        <PlannerBlockModal
+          key={`${selectedDay ?? 'none'}`}
+          isOpen={isModalOpen}
+          initialDay={selectedDay}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveBlock}
+        />
+      )}
     </div>
   );
 };

@@ -108,14 +108,88 @@ describe('PlannerView integración semanal y metas', () => {
     expect(screen.getByText(/100%/)).toBeInTheDocument();
   });
 
-  it('permite navegar entre semanas', async () => {
+  it('permite navegar entre semanas y restablecer con el botón Hoy', async () => {
     const user = userEvent.setup();
     render(<PlannerView profileId={profileId} />);
 
-    const prevWeekBtn = screen.getByRole('button', { name: /semana anterior/i });
     const nextWeekBtn = screen.getByRole('button', { name: /semana siguiente/i });
+    const todayBtn = screen.getByRole('button', { name: /hoy/i });
+
+    const initialLabel = screen.getByText(/–/i).textContent;
 
     await user.click(nextWeekBtn);
-    await user.click(prevWeekBtn);
+    expect(screen.getByText(/–/i).textContent).not.toBe(initialLabel);
+
+    await user.click(todayBtn);
+    expect(screen.getByText(/–/i).textContent).toBe(initialLabel);
+  });
+
+  it('inicializa correctamente el día en modal y limpia campos entre aperturas', async () => {
+    const user = userEvent.setup();
+    render(<PlannerView profileId={profileId} />);
+
+    // Abrir desde Miércoles
+    const addMiercolesBtn = screen.getByRole('button', { name: /agregar bloque miércoles/i });
+    await user.click(addMiercolesBtn);
+
+    const daySelect = screen.getByLabelText(/día de la semana/i) as HTMLSelectElement;
+    expect(daySelect.value).toBe('3'); // Miércoles = 3
+
+    const titleInput = screen.getByLabelText(/título del bloque/i);
+    await user.type(titleInput, 'Lectura miércoles');
+
+    const cancelBtn = screen.getByRole('button', { name: /cancelar/i });
+    await user.click(cancelBtn);
+
+    // Abrir ahora desde Jueves
+    const addJuevesBtn = screen.getByRole('button', { name: /agregar bloque jueves/i });
+    await user.click(addJuevesBtn);
+
+    const daySelectJueves = screen.getByLabelText(/día de la semana/i) as HTMLSelectElement;
+    expect(daySelectJueves.value).toBe('4'); // Jueves = 4
+
+    const titleInputJueves = screen.getByLabelText(/título del bloque/i) as HTMLInputElement;
+    expect(titleInputJueves.value).toBe(''); // Limpio
+  });
+
+  it('permite filtrar bloques por prioridad en el sub-header', async () => {
+    const user = userEvent.setup();
+    StorageService.savePlanner({
+      id: 'pb-alta',
+      profileId,
+      period: 'semanal',
+      timeSlot: 'mañana',
+      title: 'Bloque Alta Prioridad',
+      priority: 'alta',
+      completed: false,
+      dayOfWeek: 1,
+    });
+    StorageService.savePlanner({
+      id: 'pb-baja',
+      profileId,
+      period: 'semanal',
+      timeSlot: 'tarde',
+      title: 'Bloque Baja Prioridad',
+      priority: 'baja',
+      completed: false,
+      dayOfWeek: 1,
+    });
+
+    render(<PlannerView profileId={profileId} />);
+
+    expect(screen.getByText('Bloque Alta Prioridad')).toBeInTheDocument();
+    expect(screen.getByText('Bloque Baja Prioridad')).toBeInTheDocument();
+
+    const altaPill = screen.getByRole('button', { name: /prioridad alta/i });
+    await user.click(altaPill);
+
+    expect(screen.getByText('Bloque Alta Prioridad')).toBeInTheDocument();
+    expect(screen.queryByText('Bloque Baja Prioridad')).not.toBeInTheDocument();
+
+    const todasPill = screen.getByRole('button', { name: /todas las prioridades/i });
+    await user.click(todasPill);
+
+    expect(screen.getByText('Bloque Alta Prioridad')).toBeInTheDocument();
+    expect(screen.getByText('Bloque Baja Prioridad')).toBeInTheDocument();
   });
 });

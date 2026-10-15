@@ -70,6 +70,62 @@
   white-space: nowrap;
 }
 
+.todayBtn {
+  background: transparent;
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  border-radius: var(--radius-sm, 0.25rem);
+  font-family: var(--font-family-2, sans-serif);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-ink, #141413);
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.todayBtn:hover {
+  background: var(--color-canvas, #faf9f5);
+  border-color: var(--color-primary-soft, #ed96d7);
+}
+
+.priorityGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.priorityPill {
+  background: var(--color-surface-card, #efe9de);
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  border-radius: var(--radius-sm, 0.25rem);
+  font-family: var(--font-family-3, monospace);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--color-muted, #6c6a64);
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.priorityPill:hover {
+  color: var(--color-ink, #141413);
+  border-color: var(--color-primary-soft, #ed96d7);
+}
+
+.priorityPillActive {
+  background: var(--color-primary, #6e0081);
+  color: #ffffff !important;
+  border-color: var(--color-primary, #6e0081);
+}
+
 .rightGroup {
   display: flex;
   align-items: center;

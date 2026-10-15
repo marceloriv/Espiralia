@@ -24,12 +24,36 @@ export const PlannerBlockModal: React.FC<PlannerBlockModalProps> = ({
 }) => {
   const [title, setTitle] = useState('');
   const [dayOfWeek, setDayOfWeek] = useState<string>(
-    initialDay !== undefined ? String(initialDay) : '1'
+    initialDay !== undefined ? String(initialDay) : 'none'
   );
   const [timeSlot, setTimeSlot] = useState<TimeSlot>('mañana');
   const [priority, setPriority] = useState<Priority>('alta');
   const [time, setTime] = useState('');
   const [notes, setNotes] = useState('');
+
+  // Sincronizar y limpiar estado cuando cambia isOpen o initialDay
+  React.useEffect(() => {
+    if (isOpen) {
+      setDayOfWeek(initialDay !== undefined ? String(initialDay) : 'none');
+      setTitle('');
+      setTimeSlot('mañana');
+      setPriority('alta');
+      setTime('');
+      setNotes('');
+    }
+  }, [isOpen, initialDay]);
+
+  // Manejo de tecla Escape
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
