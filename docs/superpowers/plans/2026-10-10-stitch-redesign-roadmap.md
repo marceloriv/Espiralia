@@ -152,11 +152,11 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 - **Dentro del alcance:** motor `src/services/idb.ts`, extensiones a `StorageService` preservando firmas síncronas con sincronización asíncrona a IDB; vistas `NotesView` y `FoldersView`; modales accesibles `NoteModal`, `FolderModal`, `LinkModal`; rutas `/notes` y `/folders`; integración en `AppLayout` (sidebar y botón "+ Nueva Nota" en cabecera).
 - **Aceptación:** 239/239 tests en verde, resiliencia total ante ausencia de IndexedDB (jsdom/modo incógnito), borrado en cascada consistente, build limpio de producción.
 
-### F7 — Bóveda: exportar/importar y cifrado
+### F7 — Bóveda: exportar/importar y cifrado (Completada — 2026-10-15)
 
 - **Objetivo:** respaldo JSON por perfil (derechos ARCO y portabilidad, Ley 21.719, §17.4) e importación con validación de esquema. Cifrado opcional con Web Crypto (AES-GCM, clave derivada con PBKDF2 desde una contraseña del usuario).
 - **Seguridad:** sin criptografía propia (§17.2 A.8.24); el import valida todo como input no confiable (§10 A08); `security-review` obligatorio. Recién aquí la UI puede mostrar "cifrado", y solo si está activado.
-- **Aceptación:** un export seguido de import reproduce los datos exactamente; un import malformado se rechaza sin tocar los datos existentes; contraseña incorrecta da error claro y no corrompe nada.
+- **Aceptación:** 249/249 tests en verde, cifrado AES-GCM + PBKDF2 sin dependencias externas, validación estricta de esquemas, restauración sin colisiones y build de producción verificado.
 
 ### F8 — Búsqueda global
 
@@ -180,13 +180,13 @@ Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porq
 | "Nueva Nota" | Barra superior | **Resuelto (2026-10-14)** | Botón "+ Nueva Nota" conectado en cabecera con NoteModal |
 | "Acción Rápida" | Sidebar | **Resuelto (2026-10-12)** | Modal rápido de tareas y eventos conectado en layout |
 | "Ajustes & PIN" | Sidebar (pie) | **Resuelto (2026-10-12)** | Modal de gestión de PIN y acceso libre con Web Crypto PBKDF2 |
-| "Bóveda Offline" | Sidebar (pie) | F7 | Exportar/importar y cifrado |
+| "Bóveda Offline" | Sidebar (pie) | **Resuelto (2026-10-15)** | Botón accesible en pie de sidebar conectado a VaultModal |
 | "Notas Rápidas" | Sidebar | **Resuelto (2026-10-14)** | Enlace "Notas" en navegación conectado a NotesView |
 | "Carpetas & Vínculos" | Sidebar | **Resuelto (2026-10-14)** | Enlace "Carpetas" en navegación conectado a FoldersView |
 | Pestañas de navegación duplicadas | Barra superior | No se implementan | Decisión de accesibilidad: un solo `<nav>` |
 
 ## Siguiente paso
 
-1. F0 a F6 completadas y en verde (239/239 tests pasando, build limpio).
-2. Siguiente fase: F7 Bóveda (exportar/importar perfil y cifrado opcional AES-GCM con Web Crypto).
-3. Redactar spec docs/superpowers/specs/2026-10-15-boveda-export-import-design.md y su plan TDD.
+1. F0 a F7 completadas y en verde (249/249 tests pasando, build limpio).
+2. Siguiente fase: F8 Búsqueda global (buscador en barra superior accesible para eventos, tareas, bloques, notas y vínculos del perfil activo).
+3. Redactar spec para F8 y su plan TDD.

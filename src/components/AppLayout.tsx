@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder } from 'lucide-react';
+import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
 import { isPinProtected } from '../services/pinHash';
@@ -7,6 +7,7 @@ import { StorageService } from '../services/storage';
 import { QuickActionModal } from './quickAction/QuickActionModal';
 import { ProfileSettingsModal } from './profile/ProfileSettingsModal';
 import { NoteModal } from './notes/NoteModal';
+import { VaultModal } from './vault/VaultModal';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -56,6 +57,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNewNoteOpen, setIsNewNoteOpen] = useState(false);
+  const [isVaultOpen, setIsVaultOpen] = useState(false);
 
   useEffect(() => {
     setCurrentProfile(profile);
@@ -144,6 +146,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               <Settings size={16} aria-hidden="true" />
               <span>Ajustes & PIN</span>
             </button>
+            <button
+              type="button"
+              className={styles.vaultButton}
+              onClick={() => setIsVaultOpen(true)}
+            >
+              <Shield size={16} aria-hidden="true" />
+              <span>Bóveda Offline</span>
+            </button>
           </div>
 
           <div className={styles.userCard}>
@@ -213,6 +223,16 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         onClose={() => setIsNewNoteOpen(false)}
         onSave={handleSaveNewNote}
         folders={StorageService.getFolders(currentProfile.id)}
+      />
+
+      <VaultModal
+        isOpen={isVaultOpen}
+        onClose={() => setIsVaultOpen(false)}
+        profile={currentProfile}
+        onProfileRestored={(restored) => {
+          setCurrentProfile(restored);
+          onProfileUpdated?.(restored);
+        }}
       />
     </div>
   );

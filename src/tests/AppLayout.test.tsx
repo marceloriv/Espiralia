@@ -76,13 +76,23 @@ describe('AppLayout', () => {
   it('no muestra controles de features que todavía no existen', () => {
     renderLayout();
     const names = screen.getAllByRole('button').map(b => b.getAttribute('aria-label') ?? b.textContent?.trim());
-    expect(names).toEqual(['+ Acción Rápida', 'Dashboard', 'Agenda', 'Planner', 'To-Do', 'Notas', 'Carpetas', 'Ajustes & PIN', '+ Nueva Nota', 'Cambiar perfil (Francisca)']);
+    expect(names).toEqual(['+ Acción Rápida', 'Dashboard', 'Agenda', 'Planner', 'To-Do', 'Notas', 'Carpetas', 'Ajustes & PIN', 'Bóveda Offline', '+ Nueva Nota', 'Cambiar perfil (Francisca)']);
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
-    const forbidden = [/bóveda/i, /cifrad/i, /\bAES\b/];
+    const forbidden = [/buscar/i];
     for (const label of forbidden) {
       expect(screen.queryByText(label)).not.toBeInTheDocument();
     }
+  });
+
+  it('abre el modal de Bóveda Offline al hacer click en el botón del sidebar', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const vaultBtn = screen.getByRole('button', { name: /bóveda offline/i });
+    await user.click(vaultBtn);
+
+    expect(screen.getByRole('dialog', { name: /bóveda offline/i })).toBeInTheDocument();
   });
 
   it('abre el modal de Nueva Nota al hacer click en el boton de la cabecera', async () => {
