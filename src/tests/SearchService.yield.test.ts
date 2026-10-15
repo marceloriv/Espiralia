@@ -7,6 +7,7 @@ import * as SchedulerModule from '../utils/scheduler';
 const makeTodos = (n: number) =>
   Array.from({ length: n }, (_, i) => ({
     id: `t${i}`,
+    profileId: 'p-test',
     title: `tarea de prueba ${i}`,
     priority: 'media' as const,
     status: 'pendiente' as const,

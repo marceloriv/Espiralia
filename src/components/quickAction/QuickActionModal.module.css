@@ -13,10 +13,10 @@
 .modal {
   width: 100%;
   max-width: 520px;
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-card);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-xl);
-  box-shadow: var(--elevation-lg);
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -63,7 +63,7 @@
 .title {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: var(--text-heading-sm);
+  font-size: var(--text-title-sm);
   color: var(--color-ink);
 }
 
@@ -123,7 +123,7 @@
   color: var(--color-primary);
   font-weight: 600;
   border-bottom-color: var(--color-primary);
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-soft);
   border-top-left-radius: var(--radius-md);
   border-top-right-radius: var(--radius-md);
 }
@@ -199,7 +199,7 @@
   padding: 10px 16px;
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-soft);
   color: var(--color-body);
   font-family: var(--font-family-2);
   font-size: var(--text-body-sm);
