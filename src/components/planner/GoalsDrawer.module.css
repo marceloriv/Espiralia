@@ -1,0 +1,184 @@
+.drawerContainer {
+  background: var(--color-surface, #fcf9f6);
+  border-left: 1px solid var(--color-hairline, #e6dfd8);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  margin-bottom: 1rem;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.subHeading {
+  font-family: var(--font-family-3, monospace);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary, #6e0081);
+}
+
+.mainHeading {
+  font-family: var(--font-headline, serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink, #141413);
+  margin: 0.2rem 0 0 0;
+}
+
+.addGoalBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--color-primary, #6e0081);
+  color: var(--color-surface, #ffffff);
+  border: none;
+  border-radius: var(--radius-md, 0.375rem);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  transition: background-color 0.15s ease;
+}
+
+.addGoalBtn:hover {
+  background: var(--color-primary-active, #c654c3);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 19, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+  backdrop-filter: blur(2px);
+}
+
+.modalBox {
+  background: var(--color-surface, #fcf9f6);
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  border-radius: var(--radius-lg, 0.5rem);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.modalTitle {
+  font-family: var(--font-headline, serif);
+  font-size: 1.25rem;
+  margin: 0 0 1rem 0;
+  color: var(--color-ink, #141413);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-ink, #141413);
+}
+
+.input {
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  border-radius: var(--radius-sm, 0.25rem);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  background: var(--color-canvas, #faf9f5);
+  color: var(--color-ink, #141413);
+  min-height: 44px;
+}
+
+.input:focus {
+  outline: 2px solid var(--color-primary-soft, #ed96d7);
+  outline-offset: 1px;
+}
+
+.subItemsContainer {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.subItemChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.6rem;
+  background: var(--color-surface-card, #efe9de);
+  border-radius: var(--radius-sm, 0.25rem);
+  font-size: 0.8125rem;
+}
+
+.removeSubBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-muted, #6c6a64);
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  border-radius: var(--radius-md, 0.375rem);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  min-height: 44px;
+  color: var(--color-ink, #141413);
+}
+
+.saveBtn {
+  background: var(--color-primary, #6e0081);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md, 0.375rem);
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.emptyState {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--color-muted, #6c6a64);
+  font-size: 0.875rem;
+}

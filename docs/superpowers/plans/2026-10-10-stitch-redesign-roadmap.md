@@ -140,13 +140,11 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 - **Menores de F1–F3 resueltos:** touch target ≥ 44 px en checkboxes de tareas (To-Do y Dashboard), contraste de texto secundario ≥ 4.5:1, formato gramatical de fecha en minúsculas en el saludo del Dashboard ("sábado, 10 de octubre").
 - **Aceptación:** 193/193 tests en verde, migración de esquemas legados verificada, build de producción limpio sin errores. Fusionada en `develop`.
 
-### F5 — Planner en grilla semanal + metas
+### F5 — Planner en grilla semanal + metas (Completada — 2026-10-14)
 
 - **Objetivo:** grilla Lunes–Domingo con bloques por franja y un panel de metas semanales con progreso.
-- **Modelo:** `PlannerBlock` gana `dayOfWeek` (o `date`) y las metas pasan a ser entidad con subitems. Migración: los bloques existentes sin día se asignan a una columna "Sin día" y no se descartan.
-- **Precondición:** pantalla de Stitch corregida (D6). La actual tiene columnas superpuestas.
-- **Fuera del alcance:** arrastrar bloques entre días (agregar solo si se pide; si se agrega, con alternativa por formulario).
-- **Aceptación:** grilla legible desde 320 px (scroll horizontal acotado a la grilla, no a la página); bloques viejos visibles.
+- **Modelo:** `PlannerBlock` gana `dayOfWeek` y `time`, preservando bloques legados en columna "Sin día asignado". Se introduce la entidad `Goal` persistida en `localStorage` con sub-items checklist y cálculo de progreso.
+- **Aceptación:** 221/221 tests en verde, scroll horizontal acotado a la grilla semanal, touch targets ≥ 44 px, build limpio en 9.12 KB gzip.
 
 ### F6 — IndexedDB + Notas, Vínculos y Adjuntos
 
@@ -191,6 +189,6 @@ Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porq
 
 ## Siguiente paso
 
-1. F0 a F4 completadas y fusionadas en `develop`.
-2. F5: Corregir pantalla defectuosa de Planner en Stitch (`101cab70f79e45a192ef8069fada0140`) vía `edit_screens` o rediseño directo (D6).
-3. Redactar spec `docs/superpowers/specs/2026-10-10-planner-weekly-design.md` (grilla semanal Lunes–Domingo con bloques y metas) y su plan TDD.
+1. F0 a F5 completadas y en verde.
+2. F6: IndexedDB + Notas, Carpetas, Vínculos y Adjuntos (respondiendo a requisitos de Feedback.txt).
+3. Redactar spec docs/superpowers/specs/2026-10-14-indexeddb-notes-design.md y su plan TDD.
