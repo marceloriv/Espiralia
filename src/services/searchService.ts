@@ -170,17 +170,18 @@ export const SearchService = {
     // 4. Metas
     const matchingGoals: SearchResultItem[] = [];
     for (const goal of goals) {
-      const subItemTitles = goal.items.map(i => i.title).join(' ');
-      const meta = `${goal.period} ${subItemTitles}`;
+      const itemsList = goal.items || [];
+      const subItemTitles = itemsList.map(i => i.title).join(' ');
+      const meta = `${goal.period} ${subItemTitles} ${goal.category || ''}`;
       const content = goal.description || '';
       const score = calculateScore(tokens, normalizedQuery, goal.title, meta, content);
       if (score !== null) {
-        const completedCount = goal.items.filter(i => i.completed).length;
+        const completedCount = itemsList.filter(i => i.completed).length;
         matchingGoals.push({
           id: goal.id,
           type: 'goal',
           title: goal.title,
-          subtitle: goal.description || `${completedCount}/${goal.items.length} sub-tareas completadas`,
+          subtitle: goal.description || `${completedCount}/${itemsList.length} sub-tareas completadas`,
           badge: `Meta ${goal.period}`,
           dateInfo: goal.createdAt,
           targetView: 'planner',
@@ -190,17 +191,19 @@ export const SearchService = {
     }
 
     // 5. Planner
+    const DAYS_MAP = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     const matchingPlanner: SearchResultItem[] = [];
     for (const block of planner) {
-      const meta = `${block.timeSlot} ${block.priority || ''} ${block.period}`;
-      const content = block.time || '';
+      const dayName = block.dayOfWeek !== undefined ? DAYS_MAP[block.dayOfWeek] : '';
+      const meta = `${block.timeSlot} ${block.priority || ''} ${block.period} ${dayName}`;
+      const content = `${block.time || ''} ${block.notes || ''}`;
       const score = calculateScore(tokens, normalizedQuery, block.title, meta, content);
       if (score !== null) {
         matchingPlanner.push({
           id: block.id,
           type: 'planner',
           title: block.title,
-          subtitle: `Franja: ${block.timeSlot}${block.time ? ` (${block.time})` : ''}`,
+          subtitle: `Franja: ${block.timeSlot}${dayName ? ` · ${dayName}` : ''}${block.time ? ` (${block.time})` : ''}`,
           badge: block.priority ? `Prioridad ${block.priority}` : 'Bloque',
           targetView: 'planner',
           score,

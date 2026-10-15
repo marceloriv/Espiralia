@@ -29,14 +29,16 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+  const getItemId = (item: SearchResultItem) => `search-opt-${item.type}-${item.id}`;
 
   useEffect(() => {
     if (isOpen) {
       setQuery('');
       setSelectedIndex(-1);
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         inputRef.current?.focus();
       }, 50);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
@@ -81,6 +83,15 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   useEffect(() => {
     setSelectedIndex(flatResults.length > 0 ? 0 : -1);
   }, [flatResults]);
+
+  useEffect(() => {
+    if (selectedIndex >= 0 && flatResults[selectedIndex]) {
+      const el = document.getElementById(getItemId(flatResults[selectedIndex]));
+      if (typeof el?.scrollIntoView === 'function') {
+        el.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }, [selectedIndex, flatResults]);
 
   if (!isOpen) return null;
 
@@ -135,8 +146,10 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             return (
               <li key={`${item.type}-${item.id}`} role="none">
                 <button
+                  id={getItemId(item)}
                   type="button"
                   role="option"
+                  tabIndex={-1}
                   aria-selected={isSelected}
                   className={`${styles.resultItem} ${isSelected ? styles.resultItemActive : ''}`}
                   onClick={() => handleItemClick(item)}
@@ -201,6 +214,11 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             onChange={(e) => setQuery(e.target.value)}
             aria-label="Buscar en toda la aplicación"
             aria-controls="search-results-region"
+            aria-activedescendant={
+              selectedIndex >= 0 && flatResults[selectedIndex]
+                ? getItemId(flatResults[selectedIndex])
+                : undefined
+            }
           />
           {query.length > 0 && (
             <button

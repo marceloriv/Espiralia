@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
@@ -60,6 +60,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const [isNewNoteOpen, setIsNewNoteOpen] = useState(false);
   const [isVaultOpen, setIsVaultOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setCurrentProfile(profile);
@@ -73,7 +74,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         return;
       }
 
-      if (e.key === '/') {
+      if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
         const target = e.target as HTMLElement | null;
         const tagName = target?.tagName;
         const isEditable = target?.isContentEditable;
@@ -198,6 +199,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           <span className={styles.headerTitle}>{VIEW_TITLES[currentView]}</span>
           <div className={styles.headerRight}>
             <button
+              ref={searchTriggerRef}
               type="button"
               className={styles.searchTrigger}
               onClick={() => setIsSearchOpen(true)}
@@ -272,8 +274,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
       <GlobalSearchModal
         isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onNavigate={(view) => onViewChange(view)}
+        onClose={() => {
+          setIsSearchOpen(false);
+          searchTriggerRef.current?.focus();
+        }}
+        onNavigate={(view) => {
+          onViewChange(view);
+          searchTriggerRef.current?.focus();
+        }}
         profileId={currentProfile.id}
       />
     </div>

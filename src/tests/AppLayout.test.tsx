@@ -8,12 +8,16 @@ import type { Profile, ViewType } from '../types';
 const freeProfile: Profile = { id: 'p-1', name: 'Francisca', avatar: 'F', createdAt: '2026-10-09' };
 const protectedProfile: Profile = { ...freeProfile, pinHash: 'a'.repeat(64), pinSalt: 'b'.repeat(32) };
 
-const renderLayout = (profile: Profile = freeProfile, currentView: ViewType = 'dashboard') => {
+const renderLayout = (
+  profile: Profile = freeProfile,
+  currentView: ViewType = 'dashboard',
+  children: React.ReactNode = <div>Contenido Principal</div>,
+) => {
   const onViewChange = vi.fn();
   const onLockProfile = vi.fn();
   render(
     <AppLayout profile={profile} currentView={currentView} onViewChange={onViewChange} onLockProfile={onLockProfile}>
-      <div>Contenido Principal</div>
+      {children}
     </AppLayout>,
   );
   return { onViewChange, onLockProfile };
@@ -109,6 +113,39 @@ describe('AppLayout', () => {
     await user.keyboard('{Control>}k{/Control}');
 
     expect(screen.getByRole('dialog', { name: /búsqueda global/i })).toBeInTheDocument();
+  });
+
+  it('abre el modal de Búsqueda Global al pulsar la tecla / cuando no se está en un campo editable', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    await user.keyboard('/');
+
+    expect(screen.getByRole('dialog', { name: /búsqueda global/i })).toBeInTheDocument();
+  });
+
+  it('no abre el modal de búsqueda al pulsar / dentro de un input editable', async () => {
+    const user = userEvent.setup();
+    renderLayout(freeProfile, 'dashboard', <input data-testid="test-input" />);
+
+    const input = screen.getByTestId('test-input');
+    await user.click(input);
+    await user.type(input, '/');
+
+    expect(screen.queryByRole('dialog', { name: /búsqueda global/i })).not.toBeInTheDocument();
+  });
+
+  it('restaura el foco en el disparador de búsqueda al cerrar el modal con Escape', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const searchBtn = screen.getByRole('button', { name: /buscar en espiralia/i });
+    await user.click(searchBtn);
+    expect(screen.getByRole('dialog', { name: /búsqueda global/i })).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog', { name: /búsqueda global/i })).not.toBeInTheDocument();
+    expect(searchBtn).toHaveFocus();
   });
 
   it('abre el modal de Bóveda Offline al hacer click en el botón del sidebar', async () => {
