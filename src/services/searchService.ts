@@ -1,5 +1,6 @@
 import type { ViewType } from '../types';
 import { StorageService } from './storage';
+import { yieldNow } from '../utils/scheduler';
 
 export type SearchResultType = 'todo' | 'event' | 'note' | 'goal' | 'planner' | 'link';
 
@@ -71,7 +72,7 @@ function calculateScore(
 }
 
 export const SearchService = {
-  search(profileId: string, rawQuery: string): GroupedSearchResults {
+  async search(profileId: string, rawQuery: string): Promise<GroupedSearchResults> {
     const emptyResult: GroupedSearchResults = {
       todos: [],
       events: [],
@@ -124,6 +125,7 @@ export const SearchService = {
           score,
         });
       }
+      await yieldNow();
     }
 
     // 2. Eventos
@@ -145,6 +147,7 @@ export const SearchService = {
           score,
         });
       }
+      await yieldNow();
     }
 
     // 3. Notas
@@ -165,6 +168,7 @@ export const SearchService = {
           score,
         });
       }
+      await yieldNow();
     }
 
     // 4. Metas
@@ -188,6 +192,7 @@ export const SearchService = {
           score,
         });
       }
+      await yieldNow();
     }
 
     // 5. Planner
@@ -209,6 +214,7 @@ export const SearchService = {
           score,
         });
       }
+      await yieldNow();
     }
 
     // 6. Vínculos
@@ -229,6 +235,7 @@ export const SearchService = {
           score,
         });
       }
+      await yieldNow();
     }
 
     // Ordenar cada grupo por score descendente
