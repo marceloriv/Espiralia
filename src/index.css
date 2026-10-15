@@ -201,6 +201,7 @@ h1, h2, h3, h4 {
 
 /* La barra superior es sticky (y en móvil la navegación es fija abajo): el foco nunca queda oculto bajo ellas (WCAG 2.2 SC 2.4.11). */
 html {
+  scroll-behavior: smooth;
   scroll-padding-top: 72px;
 }
 

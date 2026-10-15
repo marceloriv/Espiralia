@@ -196,7 +196,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
       <div className={styles.mainWrapper}>
         <header className={styles.topHeader}>
-          <span className={styles.headerTitle}>{VIEW_TITLES[currentView]}</span>
+          <h2 className={styles.headerTitle}>{VIEW_TITLES[currentView]}</h2>
           <div className={styles.headerRight}>
             <button
               ref={searchTriggerRef}
