@@ -37,7 +37,7 @@
 **Interfaces:**
 - Produces: `SearchResultType`, `SearchResultItem`, `GroupedSearchResults`, `normalizeSearchText(text)`, `SearchService.search(profileId, query)`.
 
-- [ ] **Step 1: Escribir pruebas unitarias del motor de búsqueda**
+- [x] **Step 1: Escribir pruebas unitarias del motor de búsqueda**
 
 Crear `src/tests/searchService.test.ts`:
 ```typescript
@@ -124,12 +124,12 @@ describe('SearchService (Motor de Búsqueda Local)', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/searchService.test.ts`  
 Resultado esperado: FAIL por módulo inexistente.
 
-- [ ] **Step 3: Implementar `src/services/searchService.ts`**
+- [x] **Step 3: Implementar `src/services/searchService.ts`**
 
 Crear `src/services/searchService.ts`:
 - Exportar `normalizeSearchText(text: string): string`.
@@ -141,12 +141,12 @@ Crear `src/services/searchService.ts`:
   - Calcular puntuación (título exacto/prefijo +10, título parcial +5, metadatos +2, contenido/cuerpo +1).
   - Ordenar descendente por puntuación.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/searchService.test.ts`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/services/searchService.ts src/tests/searchService.test.ts
@@ -166,7 +166,7 @@ git commit -m ":sparkles: feat(search): implementar motor de busqueda local en m
 - Consumes: `SearchService`, `ViewType`, Lucide icons (`Search`, `Calendar`, `CheckSquare`, `FileText`, `Target`, `Clock`, `ExternalLink`, `X`).
 - Produces: `GlobalSearchModal` component con props `{ isOpen, onClose, onNavigate, profileId }`.
 
-- [ ] **Step 1: Escribir pruebas unitarias e interacción accesible de `GlobalSearchModal`**
+- [x] **Step 1: Escribir pruebas unitarias e interacción accesible de `GlobalSearchModal`**
 
 Crear `src/tests/GlobalSearchModal.test.tsx`:
 ```typescript
@@ -230,12 +230,12 @@ describe('GlobalSearchModal', () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/GlobalSearchModal.test.tsx`  
 Resultado esperado: FAIL por componente inexistente.
 
-- [ ] **Step 3: Implementar `GlobalSearchModal.module.css` y `GlobalSearchModal.tsx`**
+- [x] **Step 3: Implementar `GlobalSearchModal.module.css` y `GlobalSearchModal.tsx`**
 
 - Estilos en `GlobalSearchModal.module.css`:
   - Backdrop desenfocado con `backdrop-filter: blur(4px)`.
@@ -249,12 +249,12 @@ Resultado esperado: FAIL por componente inexistente.
   - Manejo de navegación por teclado: flechas `ArrowDown`/`ArrowUp` para mover el índice seleccionado, `Enter` para activar.
   - Región viva `role="status"` con `aria-live="polite"`.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/GlobalSearchModal.test.tsx`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/search/* src/tests/GlobalSearchModal.test.tsx
@@ -274,7 +274,7 @@ git commit -m ":sparkles: feat(search): implementar modal accesible GlobalSearch
 - Consumes: `GlobalSearchModal`, `Search` icon.
 - Produces: Botón disparador en `topHeader`, atajos de teclado globales `Ctrl+K` / `Cmd+K` y `/`, resolución de deuda técnica en tests de layout.
 
-- [ ] **Step 1: Actualizar `src/tests/AppLayout.test.tsx`**
+- [x] **Step 1: Actualizar `src/tests/AppLayout.test.tsx`**
 
 - En `it('no muestra controles de features que todavía no existen')`:
   - Remover la prohibición de controles de búsqueda (el buscador global ya existe en F8).
@@ -301,12 +301,12 @@ it('abre el modal de Búsqueda Global al pulsar el atajo Ctrl+K', async () => {
 });
 ```
 
-- [ ] **Step 2: Ejecutar prueba para verificar fallo**
+- [x] **Step 2: Ejecutar prueba para verificar fallo**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/AppLayout.test.tsx`  
 Resultado esperado: FAIL por ausencia del disparador y modal de búsqueda.
 
-- [ ] **Step 3: Implementar disparador y modal en `src/components/AppLayout.tsx` y estilos en `AppLayout.module.css`**
+- [x] **Step 3: Implementar disparador y modal en `src/components/AppLayout.tsx` y estilos en `AppLayout.module.css`**
 
 - En `AppLayout.module.css`:
   - `.searchTrigger`: botón con aspecto de campo de búsqueda editorial, borde hairline, fondo surface card, icono de lupa, texto placeholder y `<kbd className={styles.searchKbd}>Ctrl+K</kbd>`. Touch target ≥ 44 px.
@@ -328,12 +328,12 @@ Resultado esperado: FAIL por ausencia del disparador y modal de búsqueda.
   ```
   - Renderizar `<GlobalSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onNavigate={(view) => onViewChange(view)} profileId={currentProfile.id} />`.
 
-- [ ] **Step 4: Ejecutar prueba para verificar que pasa**
+- [x] **Step 4: Ejecutar prueba para verificar que pasa**
 
 Ejecutar: `corepack pnpm exec vitest run src/tests/AppLayout.test.tsx`  
 Resultado esperado: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/AppLayout* src/tests/AppLayout.test.tsx
@@ -348,21 +348,21 @@ git commit -m ":sparkles: feat(layout): integrar disparador de busqueda global y
 - Modify: `docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md`
 - Test: Toda la suite en `src/tests/`
 
-- [ ] **Step 1: Ejecutar suite completa de pruebas**
+- [x] **Step 1: Ejecutar suite completa de pruebas**
 
 Ejecutar: `corepack pnpm exec vitest run`  
 Resultado esperado: 37 suites de pruebas y 255+ tests pasando al 100%.
 
-- [ ] **Step 2: Ejecutar compilación de producción**
+- [x] **Step 2: Ejecutar compilación de producción**
 
 Ejecutar: `corepack pnpm build`  
 Resultado esperado: Build exitoso sin errores de TypeScript ni advertencias.
 
-- [ ] **Step 3: Actualizar roadmap en `docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md`**
+- [x] **Step 3: Actualizar roadmap en `docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md`**
 
 Marcar la fase F8 como completada en la documentación del roadmap maestro, resolver "Buscador global" en la tabla de deuda técnica y documentar la culminación del ciclo de fases F1–F8 de Espiralia.
 
-- [ ] **Step 4: Commit de documentación de release F8**
+- [x] **Step 4: Commit de documentación de release F8**
 
 ```bash
 git add docs/superpowers/plans/2026-10-10-stitch-redesign-roadmap.md docs/superpowers/plans/2026-10-15-busqueda-global.md

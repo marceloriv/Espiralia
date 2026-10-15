@@ -158,11 +158,11 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 - **Seguridad:** sin criptografía propia (§17.2 A.8.24); el import valida todo como input no confiable (§10 A08); `security-review` obligatorio. Recién aquí la UI puede mostrar "cifrado", y solo si está activado.
 - **Aceptación:** 249/249 tests en verde, cifrado AES-GCM + PBKDF2 sin dependencias externas, validación estricta de esquemas, restauración sin colisiones y build de producción verificado.
 
-### F8 — Búsqueda global
+### F8 — Búsqueda global (Completada — 2026-10-15)
 
-- **Objetivo:** el buscador de la barra superior busca en eventos, tareas, bloques y notas del perfil activo.
-- **Fuera del alcance:** búsqueda difusa con librería externa; `filter` + normalización de acentos alcanza para volúmenes locales.
-- **Aceptación:** nunca devuelve resultados de otro perfil; accesible con `role="search"` y resultados anunciados.
+- **Objetivo:** el buscador de la barra superior busca en eventos, tareas, bloques, notas y vínculos del perfil activo con coincidencia multi-palabra y normalización de acentos.
+- **Fuera del alcance:** búsqueda difusa con librería externa; `filter` + normalización de acentos nativa alcanza para volúmenes locales.
+- **Aceptación:** 266/266 tests en verde, atajos accesibles `Ctrl+K` / `⌘K` y `/`, buscador local en memoria multientidad y navegación fluida entre vistas. Cierre total de deuda técnica de layout.
 
 ## Estado de herramientas al 2026-10-10
 
@@ -172,11 +172,11 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 
 ## Deuda técnica registrada
 
-Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porque la feature que los respalda todavía no existe. Un test de `src/tests/AppLayout.test.tsx` ("no muestra controles de features que todavía no existen") verifica que no aparezcan. Cuando la fase indicada los implemente, ese test se actualiza junto con el control.
+Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porque la feature que los respalda todavía no existía. **Con la culminación de F8, todos los controles del rediseño editorial han sido completamente implementados y respaldados por tests.**
 
-| Control de Stitch | Ubicación en el diseño | Se resuelve en | Nota |
+| Control de Stitch | Ubicación en el diseño | Estado | Nota |
 |---|---|---|---|
-| Buscador global | Barra superior | F8 | Requiere el índice de F6 para incluir notas |
+| Buscador global | Barra superior | **Resuelto (2026-10-15)** | Disparador en cabecera con atajo Ctrl+K conectado a GlobalSearchModal |
 | "Nueva Nota" | Barra superior | **Resuelto (2026-10-14)** | Botón "+ Nueva Nota" conectado en cabecera con NoteModal |
 | "Acción Rápida" | Sidebar | **Resuelto (2026-10-12)** | Modal rápido de tareas y eventos conectado en layout |
 | "Ajustes & PIN" | Sidebar (pie) | **Resuelto (2026-10-12)** | Modal de gestión de PIN y acceso libre con Web Crypto PBKDF2 |
@@ -187,6 +187,6 @@ Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porq
 
 ## Siguiente paso
 
-1. F0 a F7 completadas y en verde (249/249 tests pasando, build limpio).
-2. Siguiente fase: F8 Búsqueda global (buscador en barra superior accesible para eventos, tareas, bloques, notas y vínculos del perfil activo).
-3. Redactar spec para F8 y su plan TDD.
+1. Ciclo completo de rediseño Stitch F0–F8 finalizado con 38 suites y 266/266 tests en verde.
+2. Build de producción verificado y optimizado.
+3. Fusión de `feature/busqueda-global` en `develop` y preparación de release v0.2.0.
