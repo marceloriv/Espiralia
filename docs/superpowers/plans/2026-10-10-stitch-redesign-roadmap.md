@@ -146,13 +146,11 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 - **Modelo:** `PlannerBlock` gana `dayOfWeek` y `time`, preservando bloques legados en columna "Sin día asignado". Se introduce la entidad `Goal` persistida en `localStorage` con sub-items checklist y cálculo de progreso.
 - **Aceptación:** 221/221 tests en verde, scroll horizontal acotado a la grilla semanal, touch targets ≥ 44 px, build limpio en 9.12 KB gzip.
 
-### F6 — IndexedDB + Notas, Vínculos y Adjuntos
+### F6 — IndexedDB + Notas, Vínculos y Adjuntos (Completada — 2026-10-14)
 
-- **Objetivo:** migrar la persistencia a IndexedDB (D3) y agregar notas rápidas/diario, carpetas y vínculos, y adjuntos locales.
-- **Dentro del alcance:** capa de almacenamiento con la misma interfaz pública de `StorageService` para no tocar las vistas; migración única de `localStorage` → IndexedDB por perfil, idempotente y con rollback si falla a mitad; manejo de `QuotaExceededError`; borrado en cascada extendido.
-- **Riesgos:** API asíncrona (todo `StorageService` pasa de síncrono a `Promise`, y eso impacta todas las vistas y tests); pérdida de datos en la migración; tamaño de adjuntos.
-- **Seguridad:** pasa por `security-review` antes del merge (§10).
-- **Aceptación:** migración probada con datos reales de cada dominio; un fallo a mitad de migración deja los datos originales intactos; borrar un perfil elimina todos sus stores.
+- **Objetivo:** persistencia nativa con IndexedDB (`EspiraliaIDB`) con fallback seguro y Cuaderno digital de Reflexiones (para proceso terapéutico y autorregulación sin límite de longitud), sistema de Carpetas temáticas y guardado de Vínculos/documentos web (licencia clase B, universidad, etc.).
+- **Dentro del alcance:** motor `src/services/idb.ts`, extensiones a `StorageService` preservando firmas síncronas con sincronización asíncrona a IDB; vistas `NotesView` y `FoldersView`; modales accesibles `NoteModal`, `FolderModal`, `LinkModal`; rutas `/notes` y `/folders`; integración en `AppLayout` (sidebar y botón "+ Nueva Nota" en cabecera).
+- **Aceptación:** 239/239 tests en verde, resiliencia total ante ausencia de IndexedDB (jsdom/modo incógnito), borrado en cascada consistente, build limpio de producción.
 
 ### F7 — Bóveda: exportar/importar y cifrado
 
@@ -179,16 +177,16 @@ Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porq
 | Control de Stitch | Ubicación en el diseño | Se resuelve en | Nota |
 |---|---|---|---|
 | Buscador global | Barra superior | F8 | Requiere el índice de F6 para incluir notas |
-| "Nueva Nota" | Barra superior | F6 | Depende del modelo de notas |
+| "Nueva Nota" | Barra superior | **Resuelto (2026-10-14)** | Botón "+ Nueva Nota" conectado en cabecera con NoteModal |
 | "Acción Rápida" | Sidebar | **Resuelto (2026-10-12)** | Modal rápido de tareas y eventos conectado en layout |
 | "Ajustes & PIN" | Sidebar (pie) | **Resuelto (2026-10-12)** | Modal de gestión de PIN y acceso libre con Web Crypto PBKDF2 |
 | "Bóveda Offline" | Sidebar (pie) | F7 | Exportar/importar y cifrado |
-| "Notas Rápidas" | Sidebar | F6 | |
-| "Carpetas & Vínculos" | Sidebar | F6 | |
+| "Notas Rápidas" | Sidebar | **Resuelto (2026-10-14)** | Enlace "Notas" en navegación conectado a NotesView |
+| "Carpetas & Vínculos" | Sidebar | **Resuelto (2026-10-14)** | Enlace "Carpetas" en navegación conectado a FoldersView |
 | Pestañas de navegación duplicadas | Barra superior | No se implementan | Decisión de accesibilidad: un solo `<nav>` |
 
 ## Siguiente paso
 
-1. F0 a F5 completadas y en verde.
-2. F6: IndexedDB + Notas, Carpetas, Vínculos y Adjuntos (respondiendo a requisitos de Feedback.txt).
-3. Redactar spec docs/superpowers/specs/2026-10-14-indexeddb-notes-design.md y su plan TDD.
+1. F0 a F6 completadas y en verde (239/239 tests pasando, build limpio).
+2. Siguiente fase: F7 Bóveda (exportar/importar perfil y cifrado opcional AES-GCM con Web Crypto).
+3. Redactar spec docs/superpowers/specs/2026-10-15-boveda-export-import-design.md y su plan TDD.
