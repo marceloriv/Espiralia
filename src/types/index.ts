@@ -6,7 +6,7 @@ export type PlannerPeriod = 'semanal' | 'mensual';
 
 export type TimeSlot = 'mañana' | 'tarde' | 'noche' | 'meta';
 
-export type ViewType = 'dashboard' | 'agenda' | 'planner' | 'todo';
+export type ViewType = 'dashboard' | 'agenda' | 'planner' | 'todo' | 'notes' | 'folders';
 
 export interface Profile {
   id: string;
@@ -88,5 +88,36 @@ export interface TodoItem {
   status: TaskStatus;
   completed?: boolean;
   dueDate?: string; // YYYY-MM-DD hora local
+  createdAt: string;
+}
+
+export interface Folder {
+  id: string;
+  profileId: string;
+  name: string;
+  color?: string;
+  createdAt: string;
+}
+
+export interface Note {
+  id: string;
+  profileId: string;
+  folderId?: string;
+  areaId?: string;
+  title: string;
+  content: string;
+  isReflection?: boolean;
+  tags?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LinkItem {
+  id: string;
+  profileId: string;
+  folderId?: string;
+  title: string;
+  url: string;
+  description?: string;
   createdAt: string;
 }

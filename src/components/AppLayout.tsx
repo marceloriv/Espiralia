@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings } from 'lucide-react';
+import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
 import { isPinProtected } from '../services/pinHash';
+import { StorageService } from '../services/storage';
 import { QuickActionModal } from './quickAction/QuickActionModal';
 import { ProfileSettingsModal } from './profile/ProfileSettingsModal';
+import { NoteModal } from './notes/NoteModal';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -28,6 +30,8 @@ const VIEW_TITLES: Record<ViewType, string> = {
   agenda: 'Agenda',
   planner: 'Planner',
   todo: 'To-Do',
+  notes: 'Notas',
+  folders: 'Carpetas',
 };
 
 const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode }[] = [
@@ -35,6 +39,8 @@ const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode }[] = [
   { view: 'agenda', label: 'Agenda', icon: <Calendar size={20} aria-hidden="true" /> },
   { view: 'planner', label: 'Planner', icon: <Compass size={20} aria-hidden="true" /> },
   { view: 'todo', label: 'To-Do', icon: <CheckSquare size={20} aria-hidden="true" /> },
+  { view: 'notes', label: 'Notas', icon: <BookOpen size={20} aria-hidden="true" /> },
+  { view: 'folders', label: 'Carpetas', icon: <Folder size={20} aria-hidden="true" /> },
 ];
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
@@ -49,6 +55,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const [currentProfile, setCurrentProfile] = useState<Profile>(profile);
   const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isNewNoteOpen, setIsNewNoteOpen] = useState(false);
 
   useEffect(() => {
     setCurrentProfile(profile);
@@ -60,6 +67,29 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const handleLock = () => {
     sileo.info({ title: 'Sesión cerrada' });
     onLockProfile();
+  };
+
+  const handleSaveNewNote = (noteData: {
+    title: string;
+    content: string;
+    isReflection: boolean;
+    folderId?: string;
+    tags: string[];
+  }) => {
+    const now = new Date().toISOString();
+    const newNote = {
+      id: `note-${Date.now()}`,
+      profileId: currentProfile.id,
+      ...noteData,
+      createdAt: now,
+      updatedAt: now,
+    };
+    StorageService.saveNote(newNote);
+    try {
+      sileo.success({ title: 'Nota creada', description: 'La nota se guardó correctamente.' });
+    } catch {
+      // Ignorar
+    }
   };
 
   return (
@@ -135,6 +165,15 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             <span className={styles.headerDate}>{currentDate}</span>
             <button
               type="button"
+              className={styles.newNoteButton}
+              onClick={() => setIsNewNoteOpen(true)}
+              aria-label="+ Nueva Nota"
+            >
+              <Plus size={16} aria-hidden="true" />
+              <span>+ Nueva Nota</span>
+            </button>
+            <button
+              type="button"
               className={styles.lockButton}
               onClick={handleLock}
               aria-label={`${lockText} (${currentProfile.name})`}
@@ -167,6 +206,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           setCurrentProfile(updated);
           onProfileUpdated?.(updated);
         }}
+      />
+
+      <NoteModal
+        isOpen={isNewNoteOpen}
+        onClose={() => setIsNewNoteOpen(false)}
+        onSave={handleSaveNewNote}
+        folders={StorageService.getFolders(currentProfile.id)}
       />
     </div>
   );

@@ -59,12 +59,14 @@ describe('AppLayout', () => {
     expect(screen.getByText('Protegido por PIN')).toBeInTheDocument();
   });
 
-  // Técnica: partición de equivalencia sobre las cuatro vistas (título con mayúsculas correctas).
+  // Técnica: partición de equivalencia sobre las vistas (título con mayúsculas correctas).
   it.each([
     ['dashboard', 'Dashboard'],
     ['agenda', 'Agenda'],
     ['planner', 'Planner'],
     ['todo', 'To-Do'],
+    ['notes', 'Notas'],
+    ['folders', 'Carpetas'],
   ] as const)('la barra superior titula la vista %s como "%s"', (view, title) => {
     renderLayout(freeProfile, view);
     expect(within(screen.getByRole('banner')).getByText(title)).toBeInTheDocument();
@@ -74,13 +76,23 @@ describe('AppLayout', () => {
   it('no muestra controles de features que todavía no existen', () => {
     renderLayout();
     const names = screen.getAllByRole('button').map(b => b.getAttribute('aria-label') ?? b.textContent?.trim());
-    expect(names).toEqual(['+ Acción Rápida', 'Dashboard', 'Agenda', 'Planner', 'To-Do', 'Ajustes & PIN', 'Cambiar perfil (Francisca)']);
+    expect(names).toEqual(['+ Acción Rápida', 'Dashboard', 'Agenda', 'Planner', 'To-Do', 'Notas', 'Carpetas', 'Ajustes & PIN', '+ Nueva Nota', 'Cambiar perfil (Francisca)']);
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
-    const forbidden = [/buscar/i, /nueva nota/i, /bóveda/i, /notas rápidas/i, /carpetas/i, /indexeddb/i, /cifrad/i, /\bAES\b/];
+    const forbidden = [/bóveda/i, /cifrad/i, /\bAES\b/];
     for (const label of forbidden) {
       expect(screen.queryByText(label)).not.toBeInTheDocument();
     }
+  });
+
+  it('abre el modal de Nueva Nota al hacer click en el boton de la cabecera', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const newNoteBtn = screen.getByRole('button', { name: /\+ nueva nota/i });
+    await user.click(newNoteBtn);
+
+    expect(screen.getByRole('dialog', { name: /nueva nota o reflexión/i })).toBeInTheDocument();
   });
 
   it('abre el modal de Accion Rapida al hacer click en el boton de la barra lateral', async () => {
