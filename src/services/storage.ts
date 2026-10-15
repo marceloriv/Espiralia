@@ -1,4 +1,4 @@
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal } from '../types';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
@@ -41,6 +41,7 @@ export const StorageService = {
     // Cascade delete profile data
     localStorage.removeItem(getScopedKey(id, 'events'));
     localStorage.removeItem(getScopedKey(id, 'planner'));
+    localStorage.removeItem(getScopedKey(id, 'goals'));
     localStorage.removeItem(getScopedKey(id, 'todos'));
     localStorage.removeItem(getScopedKey(id, 'areas'));
 
@@ -111,6 +112,32 @@ export const StorageService = {
   deletePlanner(profileId: string, blockId: string): void {
     const list = this.getPlanner(profileId).filter(b => b.id !== blockId);
     localStorage.setItem(getScopedKey(profileId, 'planner'), JSON.stringify(list));
+  },
+
+  // Goals
+  getGoals(profileId: string): Goal[] {
+    try {
+      const data = localStorage.getItem(getScopedKey(profileId, 'goals'));
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveGoal(goal: Goal): void {
+    const list = this.getGoals(goal.profileId);
+    const existingIndex = list.findIndex(g => g.id === goal.id);
+    if (existingIndex >= 0) {
+      list[existingIndex] = goal;
+    } else {
+      list.push(goal);
+    }
+    localStorage.setItem(getScopedKey(goal.profileId, 'goals'), JSON.stringify(list));
+  },
+
+  deleteGoal(profileId: string, goalId: string): void {
+    const list = this.getGoals(profileId).filter(g => g.id !== goalId);
+    localStorage.setItem(getScopedKey(profileId, 'goals'), JSON.stringify(list));
   },
 
   // Areas
