@@ -75,4 +75,32 @@ describe('AppRoutes con rutas protegidas', () => {
     // El chunk diferido de la Agenda incluye FullCalendar: su import() tarda más que el default de 1 s en jsdom.
     expect(await screen.findByPlaceholderText(/título del evento/i, {}, { timeout: 10000 })).toBeInTheDocument();
   });
+
+  it('navega a /notes y resuelve vista lazy de notas', async () => {
+    render(
+      <MemoryRouter initialEntries={['/notes']}>
+        <AppRoutes
+          activeProfile={mockProfile}
+          onSelectProfile={vi.fn()}
+          onLockProfile={vi.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByRole('heading', { level: 2, name: /notas & reflexiones/i }, { timeout: 10000 })).toBeInTheDocument();
+  });
+
+  it('navega a /folders y resuelve vista lazy de carpetas', async () => {
+    render(
+      <MemoryRouter initialEntries={['/folders']}>
+        <AppRoutes
+          activeProfile={mockProfile}
+          onSelectProfile={vi.fn()}
+          onLockProfile={vi.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByRole('heading', { level: 2, name: /carpetas & vínculos/i }, { timeout: 10000 })).toBeInTheDocument();
+  });
 });
