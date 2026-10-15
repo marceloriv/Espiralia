@@ -110,15 +110,14 @@ export const SearchService = {
     const matchingTodos: SearchResultItem[] = [];
     for (const todo of todos) {
       const areaName = areaMap.get(todo.areaId) || todo.category || 'General';
-      const meta = `${areaName} ${todo.priority} ${todo.status}`;
-      const content = todo.notes || '';
-      const score = calculateScore(tokens, normalizedQuery, todo.title, meta, content);
+      const meta = `${areaName} ${todo.priority} ${todo.status} ${todo.category || ''}`;
+      const score = calculateScore(tokens, normalizedQuery, todo.title, meta, '');
       if (score !== null) {
         matchingTodos.push({
           id: todo.id,
           type: 'todo',
           title: todo.title,
-          subtitle: todo.notes || `Prioridad: ${todo.priority} · Estado: ${todo.status}`,
+          subtitle: `Prioridad: ${todo.priority} · Estado: ${todo.status}`,
           badge: areaName,
           dateInfo: todo.dueDate,
           targetView: 'todo',
@@ -183,7 +182,7 @@ export const SearchService = {
           title: goal.title,
           subtitle: goal.description || `${completedCount}/${goal.items.length} sub-tareas completadas`,
           badge: `Meta ${goal.period}`,
-          dateInfo: goal.deadline,
+          dateInfo: goal.createdAt,
           targetView: 'planner',
           score,
         });

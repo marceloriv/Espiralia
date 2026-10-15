@@ -11,10 +11,10 @@ describe('SearchService (Motor de Búsqueda Local)', () => {
     // Perfil A con datos variados
     StorageService.saveProfile({ id: profileA, name: 'Perfil A', avatar: 'A', createdAt: '2026-10-15' });
     StorageService.saveTodo({ id: 't-1', profileId: profileA, title: 'Revisión médica anual', priority: 'alta', status: 'pendiente', areaId: 'a-1', createdAt: '2026-10-15' });
-    StorageService.saveEvent({ id: 'e-1', profileId: profileA, title: 'Sesión de Terapia', date: '2026-10-20', startTime: '15:00', endTime: '16:00', category: 'salud' });
+    StorageService.saveEvent({ id: 'e-1', profileId: profileA, title: 'Sesión de Terapia', date: '2026-10-20', startTime: '15:00', endTime: '16:00', category: 'personal' });
     StorageService.saveNote({ id: 'n-1', profileId: profileA, title: 'Reflexión sobre el descanso', content: 'Es crucial dormir 8 horas y desconectar pantallas.', createdAt: '2026-10-15', updatedAt: '2026-10-15' });
     StorageService.saveGoal({ id: 'g-1', profileId: profileA, title: 'Aprender TypeScript Avanzado', period: 'semanal', items: [{ id: 'gi-1', title: 'Leer sobre Template Literals', completed: false }], createdAt: '2026-10-15' });
-    StorageService.savePlanner({ id: 'b-1', profileId: profileA, title: 'Bloque de estudio matutino', period: 'semanal', timeSlot: 'mañana', dayOfWeek: 1, completed: false });
+    StorageService.savePlanner({ id: 'b-1', profileId: profileA, title: 'Bloque de estudio matutino', period: 'semanal', timeSlot: 'mañana', priority: 'media', dayOfWeek: 1, completed: false });
     StorageService.saveLink({ id: 'l-1', profileId: profileA, title: 'Portal de Documentación React', url: 'https://react.dev', description: 'Referencia oficial de hooks', createdAt: '2026-10-15' });
 
     // Perfil B para validar aislamiento
