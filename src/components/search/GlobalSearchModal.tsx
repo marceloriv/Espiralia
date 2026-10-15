@@ -10,7 +10,7 @@ import {
   X,
 } from 'lucide-react';
 import type { ViewType } from '../../types';
-import { SearchService, type SearchResultItem } from '../../services/searchService';
+import { SearchService, type SearchResultItem, type GroupedSearchResults } from '../../services/searchService';
 import styles from './GlobalSearchModal.module.css';
 
 interface GlobalSearchModalProps {
@@ -20,6 +20,16 @@ interface GlobalSearchModalProps {
   profileId: string;
 }
 
+const EMPTY_RESULTS: GroupedSearchResults = {
+  todos: [],
+  events: [],
+  notes: [],
+  goals: [],
+  planner: [],
+  links: [],
+  totalCount: 0,
+};
+
 export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   isOpen,
   onClose,
@@ -28,6 +38,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 }) => {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [results, setResults] = useState<GroupedSearchResults>(EMPTY_RESULTS);
   const inputRef = useRef<HTMLInputElement>(null);
   const getItemId = (item: SearchResultItem) => `search-opt-${item.type}-${item.id}`;
 
@@ -54,31 +65,29 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, [isOpen, onClose]);
 
-  const results = useMemo(() => {
+  // Async effect: perform search when open/query/profileId change
+  useEffect(() => {
     if (!isOpen) {
-      return {
-        todos: [],
-        events: [],
-        notes: [],
-        goals: [],
-        planner: [],
-        links: [],
-        totalCount: 0,
-      };
+      setResults(EMPTY_RESULTS);
+      return;
     }
-    return SearchService.search(profileId, query);
+    let cancelled = false;
+    const performSearch = async () => {
+      const res = await SearchService.search(profileId, query);
+      if (!cancelled) setResults(res);
+    };
+    performSearch();
+    return () => { cancelled = true; };
   }, [isOpen, profileId, query]);
 
-  const flatResults = useMemo<SearchResultItem[]>(() => {
-    return [
-      ...results.todos,
-      ...results.events,
-      ...results.notes,
-      ...results.goals,
-      ...results.planner,
-      ...results.links,
-    ];
-  }, [results]);
+  const flatResults = useMemo<SearchResultItem[]>(() => [
+    ...results.todos,
+    ...results.events,
+    ...results.notes,
+    ...results.goals,
+    ...results.planner,
+    ...results.links,
+  ], [results]);
 
   useEffect(() => {
     setSelectedIndex(flatResults.length > 0 ? 0 : -1);
