@@ -486,6 +486,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
                     className={`${styles.colorCircle} ${newAreaColor === color ? styles.colorCircleActive : ''}`}
                     style={{ backgroundColor: color }}
                     aria-label={`color ${color}`}
+                    aria-pressed={newAreaColor === color}
                     onClick={() => setNewAreaColor(color)}
                   />
                 ))}
