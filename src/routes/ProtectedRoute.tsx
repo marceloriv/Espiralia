@@ -6,11 +6,13 @@ import type { ViewType, Profile } from '../types';
 interface ProtectedRouteProps {
   activeProfile: Profile | null;
   onLockProfile: () => void;
+  onProfileUpdated?: (profile: Profile) => void;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   activeProfile,
   onLockProfile,
+  onProfileUpdated,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       currentView={currentView}
       onViewChange={handleViewChange}
       onLockProfile={onLockProfile}
+      onProfileUpdated={onProfileUpdated}
     >
       <Outlet />
     </AppLayout>

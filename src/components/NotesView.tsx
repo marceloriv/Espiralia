@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Plus, BookOpen, FileText, Pencil, Trash2, Folder as FolderIcon } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Note, Folder } from '../types';
@@ -20,14 +20,14 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
 
-  const loadData = () => {
+  const loadData = useCallback(() => {
     setNotes(StorageService.getNotes(profileId));
     setFolders(StorageService.getFolders(profileId));
-  };
+  }, [profileId]);
 
   useEffect(() => {
     loadData();
-  }, [profileId]);
+  }, [loadData]);
 
   const handleOpenNew = () => {
     setEditingNote(null);

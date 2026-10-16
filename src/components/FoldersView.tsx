@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Plus, Folder as FolderIcon, ExternalLink, Pencil, Trash2, Link as LinkIcon, FileText } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Folder, LinkItem, Note } from '../types';
@@ -24,7 +24,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<LinkItem | null>(null);
 
-  const loadData = () => {
+  const loadData = useCallback(() => {
     const fList = StorageService.getFolders(profileId);
     const lList = StorageService.getLinks(profileId);
     const nList = StorageService.getNotes(profileId);
@@ -43,11 +43,11 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
     } else {
       setSelectedFolderId(null);
     }
-  };
+  }, [profileId]);
 
   useEffect(() => {
     loadData();
-  }, [profileId]);
+  }, [loadData]);
 
   const activeFolder = useMemo(() => {
     return folders.find((f) => f.id === selectedFolderId) || null;

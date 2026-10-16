@@ -16,12 +16,14 @@ interface AppRoutesProps {
   activeProfile: Profile | null;
   onSelectProfile: (profile: Profile) => void;
   onLockProfile: () => void;
+  onProfileUpdated?: (profile: Profile) => void;
 }
 
 export const AppRoutes: React.FC<AppRoutesProps> = ({
   activeProfile,
   onSelectProfile,
   onLockProfile,
+  onProfileUpdated,
 }) => {
   const navigate = useNavigate();
 
@@ -44,6 +46,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           <ProtectedRoute
             activeProfile={activeProfile}
             onLockProfile={onLockProfile}
+            onProfileUpdated={onProfileUpdated}
           />
         }
       >
