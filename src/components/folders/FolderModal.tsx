@@ -85,8 +85,8 @@ export const FolderModal: React.FC<FolderModalProps> = ({
             />
           </div>
 
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Color identificador</label>
+          <div className={styles.formGroup} role="group" aria-labelledby="folder-color-label">
+            <span id="folder-color-label" className={styles.label}>Color identificador</span>
             <div className={styles.colorPickerRow}>
               {DEFAULT_COLORS.map((c) => (
                 <button
@@ -96,6 +96,7 @@ export const FolderModal: React.FC<FolderModalProps> = ({
                   style={{ backgroundColor: c }}
                   onClick={() => setColor(c)}
                   aria-label={`Color ${c}`}
+                  aria-pressed={color === c}
                 />
               ))}
             </div>

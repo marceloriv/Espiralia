@@ -226,23 +226,19 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
                 <div
                   key={folder.id}
                   className={`${styles.folderItem} ${isSelected ? styles.folderItemActive : ''}`}
-                  onClick={() => setSelectedFolderId(folder.id)}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={isSelected}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      setSelectedFolderId(folder.id);
-                    }
-                  }}
                 >
-                  <div className={styles.folderItemLeft}>
+                  <button
+                    type="button"
+                    className={styles.folderSelectBtn}
+                    onClick={() => setSelectedFolderId(folder.id)}
+                    aria-pressed={isSelected}
+                  >
                     <span
                       className={styles.colorDot}
                       style={{ backgroundColor: folder.color || '#3b82f6' }}
                     />
                     <span className={styles.folderItemName}>{folder.name}</span>
-                  </div>
+                  </button>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <span className={styles.folderBadgeCount}>{totalItems}</span>
                     <button

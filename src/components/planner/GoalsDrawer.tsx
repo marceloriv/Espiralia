@@ -191,6 +191,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
                     onClick={handleAddSubItem}
                     className={styles.addGoalBtn}
                     style={{ padding: '0.5rem 0.75rem' }}
+                    aria-label="Agregar sub-tarea"
                   >
                     +
                   </button>

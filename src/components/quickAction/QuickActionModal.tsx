@@ -117,7 +117,7 @@ export const QuickActionModal: React.FC<QuickActionModalProps> = ({
   };
 
   return (
-    <div className={styles.backdrop} onClick={e => e.target === e.currentTarget && onClose()}>
+    <div className={styles.backdrop} role="presentation" onClick={e => e.target === e.currentTarget && onClose()}>
       <div
         ref={modalRef}
         className={styles.modal}
