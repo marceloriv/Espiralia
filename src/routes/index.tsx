@@ -11,6 +11,7 @@ const PlannerView = lazy(() => import('../components/PlannerView').then(m => ({ 
 const TodoView = lazy(() => import('../components/TodoView').then(m => ({ default: m.TodoView })));
 const NotesView = lazy(() => import('../components/NotesView').then(m => ({ default: m.NotesView })));
 const FoldersView = lazy(() => import('../components/FoldersView').then(m => ({ default: m.FoldersView })));
+const IntegrationsView = lazy(() => import('../components/IntegrationsView').then(m => ({ default: m.IntegrationsView })));
 
 interface AppRoutesProps {
   activeProfile: Profile | null;
@@ -110,6 +111,16 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
             activeProfile ? (
               <Suspense fallback={<RouteLoadingFallback />}>
                 <FoldersView profileId={activeProfile.id} />
+              </Suspense>
+            ) : null
+          }
+        />
+        <Route
+          path="/integrations"
+          element={
+            activeProfile ? (
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <IntegrationsView profile={activeProfile} />
               </Suspense>
             ) : null
           }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search } from 'lucide-react';
+import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search, Share2 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
 import { isPinProtected } from '../services/pinHash';
@@ -34,6 +34,7 @@ const VIEW_TITLES: Record<ViewType, string> = {
   todo: 'To-Do',
   notes: 'Notas',
   folders: 'Carpetas',
+  integrations: 'Integraciones',
 };
 
 const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode }[] = [
@@ -43,6 +44,7 @@ const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode }[] = [
   { view: 'todo', label: 'To-Do', icon: <CheckSquare size={20} aria-hidden="true" /> },
   { view: 'notes', label: 'Notas', icon: <BookOpen size={20} aria-hidden="true" /> },
   { view: 'folders', label: 'Carpetas', icon: <Folder size={20} aria-hidden="true" /> },
+  { view: 'integrations', label: 'Integraciones', icon: <Share2 size={20} aria-hidden="true" /> },
 ];
 
 export const AppLayout: React.FC<AppLayoutProps> = ({

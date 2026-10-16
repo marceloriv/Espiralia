@@ -88,6 +88,7 @@ describe('AppLayout', () => {
       'To-Do',
       'Notas',
       'Carpetas',
+      'Integraciones',
       'Ajustes & PIN',
       'Bóveda Offline',
       'Buscar en Espiralia (Ctrl+K)',
