@@ -2,8 +2,6 @@ services:
   sonarqube-db:
     image: postgres:15-alpine
     container_name: espiralia-sonarqube-db
-    profiles:
-      - tools
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${SONAR_DB_USER:-sonar}
@@ -22,8 +20,6 @@ services:
   sonarqube:
     image: sonarqube:community
     container_name: espiralia-sonarqube
-    profiles:
-      - tools
     ports:
       - "127.0.0.1:9000:9000"
     environment:

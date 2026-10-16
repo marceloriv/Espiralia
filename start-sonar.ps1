@@ -17,8 +17,8 @@ if (-not (Test-Path (Join-Path $PSScriptRoot ".env"))) {
     }
 }
 
-Write-Host "==> Levantando SonarQube (perfil tools)..." -ForegroundColor Cyan
-docker compose --project-directory $PSScriptRoot --profile tools up -d --wait sonarqube
+Write-Host "==> Levantando SonarQube..." -ForegroundColor Cyan
+docker compose --project-directory $PSScriptRoot up -d --wait sonarqube
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "==> Falló el arranque de SonarQube. Revisar logs con: docker compose logs sonarqube" -ForegroundColor Red
