@@ -15,6 +15,7 @@ describe('LandingDeskPreview', () => {
     render(<LandingDeskPreview />);
     const progressWidget = screen.getByRole('progressbar', { name: /avance semanal/i });
     expect(progressWidget).toHaveAttribute('aria-valuenow', '84');
+    expect(document.querySelector('svg.ts-chart')).toBeInTheDocument();
     expect(screen.getByText(/examen teórico clase b/i)).toBeInTheDocument();
     expect(screen.getByText(/postulación universidad 2026/i)).toBeInTheDocument();
     expect(screen.getByText(/práctica en circuito cerrado/i)).toBeInTheDocument();

@@ -138,53 +138,46 @@
 
 /* Columna 2: Ritmo Semanal */
 .circularProgressWrapper {
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin: var(--spacing-sm) 0;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  margin: var(--spacing-sm) auto var(--spacing-md);
 }
 
-.circularSvg {
-  width: 140px;
-  height: 140px;
-  transform: rotate(-90deg);
-}
-
-.circleBg {
-  fill: none;
-  stroke: var(--color-hairline);
-  stroke-width: 10;
-}
-
-.circleBar {
-  fill: none;
-  stroke: var(--color-primary);
-  stroke-width: 10;
-  stroke-linecap: round;
-  stroke-dasharray: 377;
-  stroke-dashoffset: 60.32; /* 84% de 377 */
-  transition: stroke-dashoffset 0.6s ease;
+.chartWrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .progressLabelGroup {
-  margin-top: -85px;
-  margin-bottom: 40px;
-  text-align: center;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 .progressNumber {
   font-family: var(--font-primary);
-  font-size: var(--text-display-sm);
+  font-size: var(--text-title-lg);
   font-weight: 700;
   color: var(--color-ink);
   line-height: 1;
 }
 
 .progressLabel {
-  font-size: var(--text-caption);
+  font-size: 11px;
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  margin-top: 2px;
 }
 
 .legendList {
@@ -303,10 +296,4 @@
   border-radius: var(--radius-xs);
   padding: 2px 5px;
   color: var(--color-ink);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .circleBar {
-    transition: none;
-  }
 }

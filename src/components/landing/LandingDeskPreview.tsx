@@ -1,8 +1,43 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Chart } from '@tanstack/charts/react';
+import { defineChart } from '@tanstack/charts';
+import { pie, polar, radialArc } from '@tanstack/charts/polar';
 import { BookOpen, Activity, CheckSquare, Lock, CheckCircle2, Circle, Command } from 'lucide-react';
 import styles from './LandingDeskPreview.module.css';
 
 export const LandingDeskPreview: React.FC = () => {
+  const rhythmChart = useMemo(() => {
+    const chartData = [
+      { label: 'Estudio Licencia Clase B', hours: 14, color: '#8E1EA2' },
+      { label: 'Universidad 2026', hours: 9, color: '#5db8a6' },
+      { label: 'Pausa consciente & Diario', hours: 4, color: '#e8a55a' },
+      { label: 'Restante semanal', hours: 5, color: '#e6dfd8' },
+    ];
+
+    const slices = pie(chartData, { value: d => d.hours });
+
+    return defineChart({
+      marks: [
+        polar({
+          marks: [
+            radialArc(slices, {
+              innerRadius: ctx => ctx.radius * 0.72,
+              outerRadius: ctx => ctx.radius,
+              fill: d => d.color,
+            }),
+          ],
+          scales: {
+            angle: null,
+            radius: null,
+          },
+        }),
+      ],
+      scales: {
+        x: null,
+        y: null,
+      },
+    });
+  }, []);
   return (
     <section className={styles.deskContainer} aria-labelledby="desk-preview-heading">
       <div className={styles.deskHeader}>
@@ -66,13 +101,16 @@ export const LandingDeskPreview: React.FC = () => {
               aria-valuemin={0}
               aria-valuemax={100}
             >
-              <svg className={styles.circularSvg} viewBox="0 0 140 140" aria-hidden="true">
-                <circle className={styles.circleBg} cx="70" cy="70" r="60" />
-                <circle className={styles.circleBar} cx="70" cy="70" r="60" />
-              </svg>
-              <div className={styles.progressLabelGroup}>
-                <div className={styles.progressNumber}>84%</div>
-                <div className={styles.progressLabel}>Completado</div>
+              <div className={styles.chartWrapper}>
+                <Chart
+                  definition={rhythmChart}
+                  ariaLabel="Distribución de ritmo semanal: 84% completado"
+                  aspectRatio={1}
+                />
+              </div>
+              <div className={styles.progressLabelGroup} aria-hidden="true">
+                <span className={styles.progressNumber}>84%</span>
+                <span className={styles.progressLabel}>Completado</span>
               </div>
             </div>
 
