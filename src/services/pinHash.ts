@@ -1,14 +1,9 @@
 import type { Profile } from '../types';
 import { StorageService } from './storage';
+import { toHex, fromHex } from '../utils/hex';
 
 export const PIN_PATTERN = /^\d{4,6}$/;
 export const PBKDF2_ITERATIONS = 100000;
-
-const toHex = (bytes: ArrayBuffer | Uint8Array): string =>
-  Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2, '0')).join('');
-
-const fromHex = (hex: string): Uint8Array<ArrayBuffer> =>
-  new Uint8Array((hex.match(/.{2}/g) ?? []).map(h => parseInt(h, 16)));
 
 /** PBKDF2-SHA-256 con Web Crypto. Sin saltHex genera una sal aleatoria de 16 bytes. */
 export const hashPin = async (pin: string, saltHex?: string): Promise<{ pinHash: string; pinSalt: string }> => {
