@@ -41,7 +41,7 @@
 - Consumes: Tipos de intención `'calma' | 'foco' | 'claridad' | 'gratitud'`, Lucide icons (`Sparkles`, `Target`, `Lightbulb`, `Heart`).
 - Produces: `export const LandingIntentionWidget: React.FC`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // src/tests/LandingIntentionWidget.test.tsx
@@ -89,12 +89,12 @@ describe('LandingIntentionWidget', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm exec vitest run src/tests/LandingIntentionWidget.test.tsx`  
 Expected: FAIL with component not found.
 
-- [ ] **Step 3: Implement `LandingIntentionWidget` in `src/components/landing/LandingIntentionWidget.tsx`**
+- [x] **Step 3: Implement `LandingIntentionWidget` in `src/components/landing/LandingIntentionWidget.tsx`**
 
 Implementar el mapa de datos de intenciones (`calma`, `foco`, `claridad`, `gratitud`) con:
 - Estado React `useState<IntentionKey>('calma')`.
@@ -102,12 +102,12 @@ Implementar el mapa de datos de intenciones (`calma`, `foco`, `claridad`, `grati
 - Altura mínima `min-height: 240px` en `LandingIntentionWidget.module.css` para evitar Cumulative Layout Shift (CLS).
 - Botones de intención con touch target mínimo de 44px de altura, feedback de clic activo (`active:scale-98`) y anillo de foco visible (`:focus-visible`).
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm exec vitest run src/tests/LandingIntentionWidget.test.tsx`  
 Expected: PASS (3 tests pass).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/landing/LandingIntentionWidget.tsx src/components/landing/LandingIntentionWidget.module.css src/tests/LandingIntentionWidget.test.tsx
@@ -127,7 +127,7 @@ git commit -m ":sparkles: feat(landing): implementar widget interactivo de inten
 - Consumes: Iconos de Lucide React (`Brain`, `Calendar`, `CheckSquare`, `Sparkles`, `Clock`).
 - Produces: `export const LandingDeskPreview: React.FC`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // src/tests/LandingDeskPreview.test.tsx
@@ -155,12 +155,12 @@ describe('LandingDeskPreview', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm exec vitest run src/tests/LandingDeskPreview.test.tsx`  
 Expected: FAIL with component not found.
 
-- [ ] **Step 3: Implement `LandingDeskPreview` in `src/components/landing/LandingDeskPreview.tsx`**
+- [x] **Step 3: Implement `LandingDeskPreview` in `src/components/landing/LandingDeskPreview.tsx`**
 
 Implementar la composición visual del escritorio en 3 columnas:
 1. Columna Terapéutica con extracto de manuscrito, hallazgo de licencia y contador accesible de 420 palabras.
@@ -168,12 +168,12 @@ Implementar la composición visual del escritorio en 3 columnas:
 3. Columna de Tareas con checkboxes maquetados (Clase B, Universidad, Práctica) y atajo visual accesible `<kbd>⌘N</kbd>`.
 4. Regla CSS responsiva: cuadrícula en 3 columnas en escritorio (`@media (min-width: 1024px)`), apilado a 1 columna en tablet y móvil sin desbordes horizontales.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm exec vitest run src/tests/LandingDeskPreview.test.tsx`  
 Expected: PASS (2 tests pass).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/landing/LandingDeskPreview.tsx src/components/landing/LandingDeskPreview.module.css src/tests/LandingDeskPreview.test.tsx
@@ -193,7 +193,7 @@ git commit -m ":sparkles: feat(landing): maquetar preview de mesa de trabajo edi
 - Consumes: `LandingDeskPreview`, `LandingIntentionWidget`, tokens de `src/index.css`.
 - Produces: `export const LandingView: React.FC<{ onNavigateLogin: () => void; onNavigateDashboard?: () => void; hasActiveProfile?: boolean }>`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // src/tests/LandingView.test.tsx
@@ -235,12 +235,12 @@ describe('LandingView', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm exec vitest run src/tests/LandingView.test.tsx`  
 Expected: FAIL with `LandingView` not defined.
 
-- [ ] **Step 3: Implement `LandingView` in `src/components/LandingView.tsx`**
+- [x] **Step 3: Implement `LandingView` in `src/components/LandingView.tsx`**
 
 Ensamblar las 7 secciones del diseño Stitch con refinamientos de UI/UX Pro Max:
 1. **Top App Bar**: Sticky con `backdrop-filter: blur(12px)`, logo con serif, indicador de *"Bóveda Local"* (con animación de pulso aislada en `@media (prefers-reduced-motion: no-preference)`), y botones con touch targets ≥44px.
@@ -252,12 +252,12 @@ Ensamblar las 7 secciones del diseño Stitch con refinamientos de UI/UX Pro Max:
 7. **Manifiesto y Footer**: Bloque oscuro en `surface-dark` con contraste verificado, CTA de inicio rápido offline y footer con navegación accesible.
 8. **Offset de scroll para navegación ancla**: Añadir clase `.anchorSection { scroll-margin-top: calc(5rem + 1.5rem); }` para que la barra fija no cubra el foco de teclado al hacer clic en los enlaces del menú.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm exec vitest run src/tests/LandingView.test.tsx`  
 Expected: PASS (3 tests pass).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/LandingView.tsx src/components/LandingView.module.css src/tests/LandingView.test.tsx
@@ -277,7 +277,7 @@ git commit -m ":sparkles: feat(landing): ensamblar vista LandingView con diseño
 - Consumes: `LandingView`, React Router `useNavigate`, `Routes`, `Route`.
 - Produces: Rutas `/inicio` pública y `/` redirigiendo a landing si no hay perfil.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // src/tests/routesLanding.test.tsx
@@ -302,7 +302,7 @@ describe('Rutas de Landing e Inicio', () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByText(/tu caos mental transformado en arte cotidiano/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i })).toBeInTheDocument();
   });
 
   it('cuando no hay perfil activo, la raíz / presenta la landing de bienvenida', async () => {
@@ -316,17 +316,17 @@ describe('Rutas de Landing e Inicio', () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByText(/tu caos mental transformado en arte cotidiano/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i })).toBeInTheDocument();
   });
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm exec vitest run src/tests/routesLanding.test.tsx`  
 Expected: FAIL (no route for `/inicio`).
 
-- [ ] **Step 3: Modify `src/routes/index.tsx` and `src/components/ProfileGateView.tsx`**
+- [x] **Step 3: Modify `src/routes/index.tsx` and `src/components/ProfileGateView.tsx`**
 
 1. Cargar lazy `LandingView`:
    ```tsx
@@ -336,12 +336,12 @@ Expected: FAIL (no route for `/inicio`).
 3. Cuando `!activeProfile`, la ruta `/` renderiza `LandingView` (con callbacks `onNavigateLogin={() => navigate('/login')}` y `onNavigateDashboard={() => navigate('/dashboard')}`).
 4. En `ProfileGateView.tsx`, agregar botón secundario accesible en el footer: *"← Conoce más sobre Espiralia"* con touch target adecuado para volver a `/inicio`.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm exec vitest run src/tests/routesLanding.test.tsx`  
 Expected: PASS (2 tests pass).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/routes/index.tsx src/components/ProfileGateView.tsx src/tests/routesLanding.test.tsx
@@ -358,17 +358,17 @@ git commit -m ":sparkles: feat(routes): habilitar ruta /inicio y acceso editoria
 **Interfaces:**
 - Consumes: Toda la suite de pruebas del proyecto (`pnpm exec vitest run`), `tsc -b && vite build`.
 
-- [ ] **Step 1: Run complete test suite**
+- [x] **Step 1: Run complete test suite**
 
 Run: `pnpm exec vitest run`  
 Expected: Todos los tests pasan (321 anteriores + nuevos tests de landing).
 
-- [ ] **Step 2: Run production bundle build**
+- [x] **Step 2: Run production bundle build**
 
 Run: `pnpm build`  
 Expected: Build exitoso sin errores de TypeScript ni advertencias de chunking.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-10-16-landing-inicio-stitch.md
