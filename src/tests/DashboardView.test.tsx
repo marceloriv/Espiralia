@@ -169,15 +169,10 @@ describe('DashboardView', () => {
   });
 
   it('muestra la sección de áreas temáticas clave con sus tarjetas y progreso', () => {
-    StorageService.saveArea({
-      id: 'area-e1',
-      profileId: profile.id,
-      name: 'Estudios',
-      color: '#8b5cf6',
-      createdAt: '2026-10-09',
-    });
-    saveTodo({ id: 't-area-1', title: 'Tarea de estudio', areaId: 'area-e1', completed: false });
-    saveTodo({ id: 't-area-2', title: 'Tarea completada', areaId: 'area-e1', completed: true });
+    const areas = StorageService.getAreas(profile.id);
+    const estudiosArea = areas.find(a => a.name === 'Estudios')!;
+    saveTodo({ id: 't-area-1', title: 'Tarea de estudio', areaId: estudiosArea.id, completed: false });
+    saveTodo({ id: 't-area-2', title: 'Tarea completada', areaId: estudiosArea.id, completed: true });
 
     renderDashboard();
 
@@ -187,9 +182,9 @@ describe('DashboardView', () => {
     expect(within(areasSection).getByText('1 pendiente')).toBeInTheDocument();
   });
 
-  it('no muestra bloques de features que todavía no existen', () => {
+  it('no muestra bloques de features no implementadas', () => {
     renderDashboard();
-    for (const label of [/aforismo/i, /documentos/i, /reflexión/i, /enlace/i, /indexeddb/i, /cifrad/i]) {
+    for (const label of [/documentos confidenciales/i, /cifrado cuántico/i]) {
       expect(screen.queryByText(label)).not.toBeInTheDocument();
     }
   });
