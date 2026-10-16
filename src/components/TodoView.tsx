@@ -5,6 +5,7 @@ import type { TodoItem, Priority, Area, TaskStatus } from '../types';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
 import { dueLabel } from './dashboard/dashboardData';
+import { AreaIntegratedWorkspace } from './todo/AreaIntegratedWorkspace';
 import styles from './TodoView.module.css';
 
 interface TodoViewProps {
@@ -156,6 +157,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
   };
 
   const getAreaById = (id: string): Area | undefined => areas.find(a => a.id === id);
+  const activeArea = areas.find(a => a.id === selectedAreaId);
 
   const getEmptyStateContent = () => {
     if (todos.length === 0) {
@@ -258,8 +260,16 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
         </div>
       </section>
 
-      {/* Formulario de creación rápida */}
-      <div className={styles.createCard}>
+      {activeArea && selectedAreaId !== 'todas' ? (
+        <AreaIntegratedWorkspace
+          area={activeArea}
+          profileId={profileId}
+          onDataChanged={loadData}
+        />
+      ) : (
+        <>
+          {/* Formulario de creación rápida */}
+          <div className={styles.createCard}>
         <form onSubmit={handleAddTodo} className={styles.createForm}>
           <input
             type="text"
@@ -440,6 +450,8 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
             );
           })}
         </div>
+      )}
+        </>
       )}
 
       {/* Modal para Crear Nueva Área Temática */}
