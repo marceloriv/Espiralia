@@ -156,11 +156,16 @@
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md);
   font-size: 15px;
-  outline: none;
   background-color: #fff;
 }
 
 .formInput:focus {
+  border-color: var(--color-primary);
+}
+
+.formInput:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
   border-color: var(--color-primary);
 }
 

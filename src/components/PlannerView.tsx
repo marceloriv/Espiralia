@@ -1,8 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Trash2, Sun, Sunset, Moon, Target } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { PlannerBlock, PlannerPeriod, TimeSlot, Priority } from '../types';
+import type { PlannerBlock, DayOfWeek, TimeSlot, Priority } from '../types';
 import { StorageService } from '../services/storage';
+import { PlannerDayColumn } from './planner/PlannerDayColumn';
+import { PlannerBlockModal } from './planner/PlannerBlockModal';
+import { GoalsDrawer } from './planner/GoalsDrawer';
 import styles from './PlannerView.module.css';
 
 interface PlannerViewProps {
@@ -10,11 +13,11 @@ interface PlannerViewProps {
 }
 
 export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
-  const [period, setPeriod] = useState<PlannerPeriod>('semanal');
   const [blocks, setBlocks] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profileId));
-  const [title, setTitle] = useState('');
-  const [timeSlot, setTimeSlot] = useState<TimeSlot>('mañana');
-  const [priority, setPriority] = useState<Priority>('alta');
+  const [weekOffset, setWeekOffset] = useState(0);
+  const [priorityFilter, setPriorityFilter] = useState<'todas' | Priority>('todas');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDay, setSelectedDay] = useState<DayOfWeek | undefined>(1);
   const isFirstMount = useRef(true);
 
   const loadBlocks = useCallback(() => {
@@ -29,22 +32,66 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
     loadBlocks();
   }, [loadBlocks]);
 
-  const handleAddBlock = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
+  const { weekDays, weekLabel } = useMemo(() => {
+    const now = new Date();
+    const currentDay = now.getDay();
+    const distToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + distToMonday + weekOffset * 7);
 
+    const dayNames = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    const dayNums: DayOfWeek[] = [1, 2, 3, 4, 5, 6, 0];
+
+    const days = dayNums.map((dayOfWeek, idx) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + idx);
+      const dayNum = d.getDate();
+      const monthShort = d.toLocaleString('es-ES', { month: 'short' });
+      return {
+        dayOfWeek,
+        name: dayNames[idx],
+        dateLabel: `${dayNum} ${monthShort}`,
+      };
+    });
+
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    const label = `${monday.getDate()} ${monday.toLocaleString('es-ES', { month: 'short' })} – ${sunday.getDate()} ${sunday.toLocaleString('es-ES', { month: 'short' })} ${sunday.getFullYear()}`;
+
+    return { weekDays: days, weekLabel: label };
+  }, [weekOffset]);
+
+  const totalBlocks = blocks.length;
+  const completedBlocks = blocks.filter(b => b.completed).length;
+  const fulfillment = totalBlocks > 0 ? Math.round((completedBlocks / totalBlocks) * 100) : 0;
+
+  const handleOpenModal = (day?: DayOfWeek) => {
+    setSelectedDay(day);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveBlock = (data: {
+    title: string;
+    dayOfWeek?: DayOfWeek;
+    timeSlot: TimeSlot;
+    priority: Priority;
+    time?: string;
+    notes?: string;
+  }) => {
     const newBlock: PlannerBlock = {
       id: `pb-${Date.now()}`,
       profileId,
-      period,
-      timeSlot,
-      title: title.trim(),
-      priority,
+      period: 'semanal',
+      timeSlot: data.timeSlot,
+      title: data.title,
+      priority: data.priority,
       completed: false,
+      dayOfWeek: data.dayOfWeek,
+      time: data.time,
+      notes: data.notes,
     };
 
     StorageService.savePlanner(newBlock);
-    setTitle('');
     sileo.success({ title: 'Bloque de enfoque guardado' });
     loadBlocks();
   };
@@ -64,137 +111,140 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
     loadBlocks();
   };
 
-  const currentPeriodBlocks = blocks.filter(b => b.period === period);
+  const filteredBlocks = priorityFilter === 'todas'
+    ? blocks
+    : blocks.filter(b => b.priority === priorityFilter);
 
-  const slotIcons: Record<TimeSlot, React.ReactNode> = {
-    mañana: <Sun size={18} color="var(--color-primary)" aria-hidden="true" />,
-    tarde: <Sunset size={18} color="var(--color-primary-active)" aria-hidden="true" />,
-    noche: <Moon size={18} color="var(--color-ink)" aria-hidden="true" />,
-    meta: <Target size={18} color="var(--color-primary-soft)" aria-hidden="true" />,
-  };
-
-  const slots: TimeSlot[] = ['mañana', 'tarde', 'noche', 'meta'];
+  const legacyBlocks = filteredBlocks.filter(b => b.dayOfWeek === undefined);
 
   return (
-    <div className={styles.plannerContainer}>
-      <div className={styles.headingRow}>
-        <h2 className={styles.pageTitle}>Planner y objetivos</h2>
+    <div className={styles.plannerWrapper}>
+      <header className={styles.subHeader}>
+        <div className={styles.leftGroup}>
+          <h2 className={styles.pageTitle}>Planner Semanal</h2>
 
-        <div className={styles.periodToggle}>
-          <button
-            type="button"
-            className={`${styles.toggleBtn} ${period === 'semanal' ? styles.toggleBtnActive : ''}`}
-            onClick={() => setPeriod('semanal')}
-            aria-pressed={period === 'semanal'}
-          >
-            Semanal
-          </button>
-          <button
-            type="button"
-            className={`${styles.toggleBtn} ${period === 'mensual' ? styles.toggleBtnActive : ''}`}
-            onClick={() => setPeriod('mensual')}
-            aria-pressed={period === 'mensual'}
-          >
-            Mensual
-          </button>
+          <div className={styles.weekNavGroup}>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => setWeekOffset(prev => prev - 1)}
+              aria-label="Semana anterior"
+            >
+              <ChevronLeft size={18} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className={styles.todayBtn}
+              onClick={() => setWeekOffset(0)}
+              aria-label="Hoy"
+            >
+              Hoy
+            </button>
+            <span className={styles.weekLabel}>{weekLabel}</span>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => setWeekOffset(prev => prev + 1)}
+              aria-label="Semana siguiente"
+            >
+              <ChevronRight size={18} aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className={styles.priorityGroup} role="group" aria-label="Filtro de prioridades">
+            <button
+              type="button"
+              className={`${styles.priorityPill} ${priorityFilter === 'todas' ? styles.priorityPillActive : ''}`}
+              onClick={() => setPriorityFilter('todas')}
+              aria-pressed={priorityFilter === 'todas'}
+              aria-label="Todas las prioridades"
+            >
+              Todas
+            </button>
+            <button
+              type="button"
+              className={`${styles.priorityPill} ${priorityFilter === 'alta' ? styles.priorityPillActive : ''}`}
+              onClick={() => setPriorityFilter('alta')}
+              aria-pressed={priorityFilter === 'alta'}
+              aria-label="Prioridad Alta"
+            >
+              Alta
+            </button>
+            <button
+              type="button"
+              className={`${styles.priorityPill} ${priorityFilter === 'media' ? styles.priorityPillActive : ''}`}
+              onClick={() => setPriorityFilter('media')}
+              aria-pressed={priorityFilter === 'media'}
+              aria-label="Prioridad Media"
+            >
+              Media
+            </button>
+            <button
+              type="button"
+              className={`${styles.priorityPill} ${priorityFilter === 'baja' ? styles.priorityPillActive : ''}`}
+              onClick={() => setPriorityFilter('baja')}
+              aria-pressed={priorityFilter === 'baja'}
+              aria-label="Prioridad Baja"
+            >
+              Baja
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className={styles.createCard}>
-        <form onSubmit={handleAddBlock} className={styles.createForm}>
-          <input
-            type="text"
-            id="planner-title-input"
-            name="plannerTitle"
-            className={styles.inputTitle}
-            placeholder="Objetivo o bloque de enfoque"
-            aria-label="Objetivo o bloque de enfoque"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-          />
-
-          <select
-            id="planner-slot-select"
-            name="plannerSlot"
-            className={styles.selectSlot}
-            aria-label="Momento del día o meta"
-            value={timeSlot}
-            onChange={e => setTimeSlot(e.target.value as TimeSlot)}
-          >
-            <option value="mañana">Mañana</option>
-            <option value="tarde">Tarde</option>
-            <option value="noche">Noche</option>
-            <option value="meta">Meta principal</option>
-          </select>
-
-          <select
-            id="planner-priority-select"
-            name="plannerPriority"
-            className={styles.selectPriority}
-            aria-label="Prioridad del bloque"
-            value={priority}
-            onChange={e => setPriority(e.target.value as Priority)}
-          >
-            <option value="alta">Alta</option>
-            <option value="media">Media</option>
-            <option value="baja">Baja</option>
-          </select>
-
-          <button type="submit" className={styles.btnAdd}>
-            <Plus size={18} aria-hidden="true" />
-            <span>Agregar bloque</span>
-          </button>
-        </form>
-      </div>
-
-      <div className={styles.slotsGrid}>
-        {slots.map(slot => {
-          const slotBlocks = currentPeriodBlocks.filter(b => b.timeSlot === slot);
-          return (
-            <div key={slot} className={styles.slotColumn}>
-              <h3 className={styles.slotTitle}>
-                {slotIcons[slot]}
-                <span>{slot}</span>
-              </h3>
-
-              {slotBlocks.length === 0 ? (
-                <div className={styles.emptySlot}>
-                  Sin bloques para {slot}. Agrega un objetivo de enfoque arriba.
-                </div>
-              ) : (
-                <div className={styles.blocksList}>
-                  {slotBlocks.map(block => {
-                    const blockText = block.title || (block as unknown as { content?: string }).content || 'bloque';
-                    return (
-                      <div key={block.id} className={styles.blockItem}>
-                        <input
-                          type="checkbox"
-                          id={`block-${block.id}`}
-                          aria-label={`completar ${blockText}`}
-                          className={styles.blockCheckbox}
-                          checked={block.completed}
-                          onChange={() => handleToggleBlock(block)}
-                        />
-                        <span className={`${styles.blockTitle} ${block.completed ? styles.blockCompleted : ''}`}>
-                          {blockText}
-                        </span>
-                        <button
-                          type="button"
-                          className={styles.btnDelete}
-                          aria-label={`eliminar ${blockText}`}
-                          onClick={() => handleDeleteBlock(block.id)}
-                        >
-                          <Trash2 size={16} aria-hidden="true" />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+        <div className={styles.rightGroup}>
+          <div className={styles.fulfillmentCard}>
+            <span className={styles.fulfillmentLabel}>Cumplimiento:</span>
+            <div className={styles.fulfillmentBarBg} role="progressbar" aria-valuenow={fulfillment} aria-valuemin={0} aria-valuemax={100}>
+              <div className={styles.fulfillmentBarFill} style={{ width: `${fulfillment}%` }} />
             </div>
-          );
-        })}
+            <span className={styles.fulfillmentScore}>{fulfillment}%</span>
+          </div>
+        </div>
+      </header>
+
+      <div className={styles.mainContent}>
+        <main className={styles.gridArea} aria-label="Grilla semanal de bloques">
+          <div className={styles.weeklyGrid}>
+            {legacyBlocks.length > 0 && (
+              <PlannerDayColumn
+                key="col-legacy"
+                dayName="Sin día asignado"
+                dateLabel="Legado"
+                blocks={legacyBlocks}
+                onAddBlock={() => handleOpenModal(undefined)}
+                onToggleBlock={handleToggleBlock}
+                onDeleteBlock={handleDeleteBlock}
+              />
+            )}
+
+            {weekDays.map(day => (
+              <PlannerDayColumn
+                key={day.dayOfWeek}
+                dayName={day.name}
+                dateLabel={day.dateLabel}
+                blocks={filteredBlocks.filter(b => b.dayOfWeek === day.dayOfWeek)}
+                onAddBlock={() => handleOpenModal(day.dayOfWeek)}
+                onToggleBlock={handleToggleBlock}
+                onDeleteBlock={handleDeleteBlock}
+              />
+            ))}
+          </div>
+        </main>
+
+        <aside className={styles.drawerArea}>
+          <GoalsDrawer profileId={profileId} onGoalsChange={loadBlocks} />
+        </aside>
       </div>
+
+      {isModalOpen && (
+        <PlannerBlockModal
+          key={`${selectedDay ?? 'none'}`}
+          isOpen={isModalOpen}
+          initialDay={selectedDay}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveBlock}
+        />
+      )}
     </div>
   );
 };

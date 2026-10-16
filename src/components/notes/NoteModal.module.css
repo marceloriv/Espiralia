@@ -1,0 +1,139 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 19, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+  backdrop-filter: blur(2px);
+}
+
+.modalBox {
+  background: var(--color-surface, #fcf9f6);
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  border-radius: var(--radius-lg, 0.5rem);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 560px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalTitle {
+  font-family: var(--font-headline, serif);
+  font-size: 1.25rem;
+  color: var(--color-ink, #141413);
+  margin: 0 0 1.25rem 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.checkboxGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  min-height: 44px;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--color-accent, #c96442);
+}
+
+.checkboxLabel {
+  font-size: 0.875rem;
+  color: var(--color-ink, #141413);
+  cursor: pointer;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-ink, #141413);
+}
+
+.input,
+.select,
+.textarea {
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  border-radius: var(--radius-sm, 0.25rem);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  background: var(--color-canvas, #faf9f5);
+  color: var(--color-ink, #141413);
+  font-family: inherit;
+}
+
+.input,
+.select {
+  min-height: 44px;
+}
+
+.textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--color-accent, #c96442);
+}
+
+.input:focus-visible,
+.select:focus-visible,
+.textarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+  border-color: var(--color-primary);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.btnCancel {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: transparent;
+  color: var(--color-ink-muted, #666);
+  border-radius: var(--radius-sm, 0.25rem);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.btnCancel:hover {
+  background: var(--color-hairline, #e6dfd8);
+}
+
+.btnSave {
+  min-height: 44px;
+  padding: 0.5rem 1.25rem;
+  background: var(--color-accent, #c96442);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm, 0.25rem);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnSave:hover {
+  filter: brightness(0.95);
+}

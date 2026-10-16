@@ -32,6 +32,10 @@ export function App() {
     setActiveProfile(null);
   };
 
+  const handleProfileUpdated = (updated: Profile) => {
+    setActiveProfile(updated);
+  };
+
   return (
     <HashRouter>
       <Toaster position="top-center" />
@@ -39,6 +43,7 @@ export function App() {
         activeProfile={activeProfile}
         onSelectProfile={handleSelectProfile}
         onLockProfile={handleLockProfile}
+        onProfileUpdated={handleProfileUpdated}
       />
     </HashRouter>
   );

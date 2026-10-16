@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Lock, Shield, ShieldAlert, ShieldCheck, Unlock, X } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../../types';
-import { StorageService } from '../../services/storage';
-import { PIN_PATTERN, hashPin, isPinProtected, verifyPin } from '../../services/pinHash';
+import { PIN_PATTERN, isPinProtected } from '../../services/pinHash';
+import { updateProfilePin, removeProfilePin } from '../../services/profileOperations';
 import styles from './ProfileSettingsModal.module.css';
 
 export interface ProfileSettingsModalProps {
@@ -27,18 +27,23 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   const [removeCurrentPin, setRemoveCurrentPin] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -55,36 +60,25 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
     }
 
     setIsSubmitting(true);
-    try {
-      if (protectedPin) {
-        const isValidCurrent = await verifyPin(profile, currentPin);
-        if (!isValidCurrent) {
-          sileo.error({ title: 'El PIN actual es incorrecto' });
-          setIsSubmitting(false);
+    updateProfilePin(profile, newPin, protectedPin ? currentPin : undefined)
+      .then(res => {
+        setIsSubmitting(false);
+        if (!res.success || !res.updated) {
+          sileo.error({ title: res.error || 'Error al procesar el PIN criptográfico' });
           return;
         }
-      }
 
-      const { pinHash, pinSalt } = await hashPin(newPin);
-      const updated: Profile = {
-        ...profile,
-        pinHash,
-        pinSalt,
-      };
-      delete updated.pin;
-
-      StorageService.saveProfile(updated);
-      sileo.success({ title: protectedPin ? 'PIN actualizado con éxito' : 'PIN configurado con éxito' });
-      onProfileUpdated(updated);
-      setCurrentPin('');
-      setNewPin('');
-      setConfirmPin('');
-      onClose();
-    } catch {
-      sileo.error({ title: 'Error al procesar el PIN criptográfico' });
-    } finally {
-      setIsSubmitting(false);
-    }
+        sileo.success({ title: protectedPin ? 'PIN actualizado con éxito' : 'PIN configurado con éxito' });
+        onProfileUpdated(res.updated);
+        setCurrentPin('');
+        setNewPin('');
+        setConfirmPin('');
+        onClose();
+      })
+      .catch(() => {
+        setIsSubmitting(false);
+        sileo.error({ title: 'Error al procesar el PIN criptográfico' });
+      });
   };
 
   const handleRemovePin = async (e: React.FormEvent) => {
@@ -95,35 +89,27 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
     }
 
     setIsSubmitting(true);
-    try {
-      const isValid = await verifyPin(profile, removeCurrentPin);
-      if (!isValid) {
-        sileo.error({ title: 'El PIN actual es incorrecto' });
+    removeProfilePin(profile, removeCurrentPin)
+      .then(res => {
         setIsSubmitting(false);
-        return;
-      }
+        if (!res.success || !res.updated) {
+          sileo.error({ title: res.error || 'Error al remover el PIN' });
+          return;
+        }
 
-      const updated: Profile = {
-        ...profile,
-        pinHash: undefined,
-        pinSalt: undefined,
-      };
-      delete updated.pin;
-
-      StorageService.saveProfile(updated);
-      sileo.success({ title: 'PIN eliminado. Perfil ahora en acceso libre' });
-      onProfileUpdated(updated);
-      setRemoveCurrentPin('');
-      onClose();
-    } catch {
-      sileo.error({ title: 'Error al remover el PIN' });
-    } finally {
-      setIsSubmitting(false);
-    }
+        sileo.success({ title: 'PIN eliminado. Perfil ahora en acceso libre' });
+        onProfileUpdated(res.updated);
+        setRemoveCurrentPin('');
+        onClose();
+      })
+      .catch(() => {
+        setIsSubmitting(false);
+        sileo.error({ title: 'Error al remover el PIN' });
+      });
   };
 
   return (
-    <div className={styles.backdrop} onClick={e => e.target === e.currentTarget && onClose()}>
+    <div className={styles.backdrop} role="presentation" onClick={e => e.target === e.currentTarget && onClose()}>
       <div
         className={styles.modal}
         role="dialog"

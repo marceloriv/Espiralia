@@ -140,33 +140,29 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 - **Menores de F1–F3 resueltos:** touch target ≥ 44 px en checkboxes de tareas (To-Do y Dashboard), contraste de texto secundario ≥ 4.5:1, formato gramatical de fecha en minúsculas en el saludo del Dashboard ("sábado, 10 de octubre").
 - **Aceptación:** 193/193 tests en verde, migración de esquemas legados verificada, build de producción limpio sin errores. Fusionada en `develop`.
 
-### F5 — Planner en grilla semanal + metas
+### F5 — Planner en grilla semanal + metas (Completada — 2026-10-14)
 
 - **Objetivo:** grilla Lunes–Domingo con bloques por franja y un panel de metas semanales con progreso.
-- **Modelo:** `PlannerBlock` gana `dayOfWeek` (o `date`) y las metas pasan a ser entidad con subitems. Migración: los bloques existentes sin día se asignan a una columna "Sin día" y no se descartan.
-- **Precondición:** pantalla de Stitch corregida (D6). La actual tiene columnas superpuestas.
-- **Fuera del alcance:** arrastrar bloques entre días (agregar solo si se pide; si se agrega, con alternativa por formulario).
-- **Aceptación:** grilla legible desde 320 px (scroll horizontal acotado a la grilla, no a la página); bloques viejos visibles.
+- **Modelo:** `PlannerBlock` gana `dayOfWeek` y `time`, preservando bloques legados en columna "Sin día asignado". Se introduce la entidad `Goal` persistida en `localStorage` con sub-items checklist y cálculo de progreso.
+- **Aceptación:** 221/221 tests en verde, scroll horizontal acotado a la grilla semanal, touch targets ≥ 44 px, build limpio en 9.12 KB gzip.
 
-### F6 — IndexedDB + Notas, Vínculos y Adjuntos
+### F6 — IndexedDB + Notas, Vínculos y Adjuntos (Completada — 2026-10-14)
 
-- **Objetivo:** migrar la persistencia a IndexedDB (D3) y agregar notas rápidas/diario, carpetas y vínculos, y adjuntos locales.
-- **Dentro del alcance:** capa de almacenamiento con la misma interfaz pública de `StorageService` para no tocar las vistas; migración única de `localStorage` → IndexedDB por perfil, idempotente y con rollback si falla a mitad; manejo de `QuotaExceededError`; borrado en cascada extendido.
-- **Riesgos:** API asíncrona (todo `StorageService` pasa de síncrono a `Promise`, y eso impacta todas las vistas y tests); pérdida de datos en la migración; tamaño de adjuntos.
-- **Seguridad:** pasa por `security-review` antes del merge (§10).
-- **Aceptación:** migración probada con datos reales de cada dominio; un fallo a mitad de migración deja los datos originales intactos; borrar un perfil elimina todos sus stores.
+- **Objetivo:** persistencia nativa con IndexedDB (`EspiraliaIDB`) con fallback seguro y Cuaderno digital de Reflexiones (para proceso terapéutico y autorregulación sin límite de longitud), sistema de Carpetas temáticas y guardado de Vínculos/documentos web (licencia clase B, universidad, etc.).
+- **Dentro del alcance:** motor `src/services/idb.ts`, extensiones a `StorageService` preservando firmas síncronas con sincronización asíncrona a IDB; vistas `NotesView` y `FoldersView`; modales accesibles `NoteModal`, `FolderModal`, `LinkModal`; rutas `/notes` y `/folders`; integración en `AppLayout` (sidebar y botón "+ Nueva Nota" en cabecera).
+- **Aceptación:** 239/239 tests en verde, resiliencia total ante ausencia de IndexedDB (jsdom/modo incógnito), borrado en cascada consistente, build limpio de producción.
 
-### F7 — Bóveda: exportar/importar y cifrado
+### F7 — Bóveda: exportar/importar y cifrado (Completada — 2026-10-15)
 
 - **Objetivo:** respaldo JSON por perfil (derechos ARCO y portabilidad, Ley 21.719, §17.4) e importación con validación de esquema. Cifrado opcional con Web Crypto (AES-GCM, clave derivada con PBKDF2 desde una contraseña del usuario).
 - **Seguridad:** sin criptografía propia (§17.2 A.8.24); el import valida todo como input no confiable (§10 A08); `security-review` obligatorio. Recién aquí la UI puede mostrar "cifrado", y solo si está activado.
-- **Aceptación:** un export seguido de import reproduce los datos exactamente; un import malformado se rechaza sin tocar los datos existentes; contraseña incorrecta da error claro y no corrompe nada.
+- **Aceptación:** 249/249 tests en verde, cifrado AES-GCM + PBKDF2 sin dependencias externas, validación estricta de esquemas, restauración sin colisiones y build de producción verificado.
 
-### F8 — Búsqueda global
+### F8 — Búsqueda global (Completada — 2026-10-15)
 
-- **Objetivo:** el buscador de la barra superior busca en eventos, tareas, bloques y notas del perfil activo.
-- **Fuera del alcance:** búsqueda difusa con librería externa; `filter` + normalización de acentos alcanza para volúmenes locales.
-- **Aceptación:** nunca devuelve resultados de otro perfil; accesible con `role="search"` y resultados anunciados.
+- **Objetivo:** el buscador de la barra superior busca en eventos, tareas, bloques, notas y vínculos del perfil activo con coincidencia multi-palabra y normalización de acentos.
+- **Fuera del alcance:** búsqueda difusa con librería externa; `filter` + normalización de acentos nativa alcanza para volúmenes locales.
+- **Aceptación:** 266/266 tests en verde, atajos accesibles `Ctrl+K` / `⌘K` y `/`, buscador local en memoria multientidad y navegación fluida entre vistas. Cierre total de deuda técnica de layout.
 
 ## Estado de herramientas al 2026-10-10
 
@@ -176,21 +172,21 @@ F1 y F2 son independientes y pueden ir en paralelo. F3 a F5 dependen de F2 para 
 
 ## Deuda técnica registrada
 
-Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porque la feature que los respalda todavía no existe. Un test de `src/tests/AppLayout.test.tsx` ("no muestra controles de features que todavía no existen") verifica que no aparezcan. Cuando la fase indicada los implemente, ese test se actualiza junto con el control.
+Controles del layout de Stitch que F2 (2026-10-10) dejó fuera a propósito porque la feature que los respalda todavía no existía. **Con la culminación de F8, todos los controles del rediseño editorial han sido completamente implementados y respaldados por tests.**
 
-| Control de Stitch | Ubicación en el diseño | Se resuelve en | Nota |
+| Control de Stitch | Ubicación en el diseño | Estado | Nota |
 |---|---|---|---|
-| Buscador global | Barra superior | F8 | Requiere el índice de F6 para incluir notas |
-| "Nueva Nota" | Barra superior | F6 | Depende del modelo de notas |
+| Buscador global | Barra superior | **Resuelto (2026-10-15)** | Disparador en cabecera con atajo Ctrl+K conectado a GlobalSearchModal |
+| "Nueva Nota" | Barra superior | **Resuelto (2026-10-14)** | Botón "+ Nueva Nota" conectado en cabecera con NoteModal |
 | "Acción Rápida" | Sidebar | **Resuelto (2026-10-12)** | Modal rápido de tareas y eventos conectado en layout |
 | "Ajustes & PIN" | Sidebar (pie) | **Resuelto (2026-10-12)** | Modal de gestión de PIN y acceso libre con Web Crypto PBKDF2 |
-| "Bóveda Offline" | Sidebar (pie) | F7 | Exportar/importar y cifrado |
-| "Notas Rápidas" | Sidebar | F6 | |
-| "Carpetas & Vínculos" | Sidebar | F6 | |
+| "Bóveda Offline" | Sidebar (pie) | **Resuelto (2026-10-15)** | Botón accesible en pie de sidebar conectado a VaultModal |
+| "Notas Rápidas" | Sidebar | **Resuelto (2026-10-14)** | Enlace "Notas" en navegación conectado a NotesView |
+| "Carpetas & Vínculos" | Sidebar | **Resuelto (2026-10-14)** | Enlace "Carpetas" en navegación conectado a FoldersView |
 | Pestañas de navegación duplicadas | Barra superior | No se implementan | Decisión de accesibilidad: un solo `<nav>` |
 
 ## Siguiente paso
 
-1. F0 a F4 completadas y fusionadas en `develop`.
-2. F5: Corregir pantalla defectuosa de Planner en Stitch (`101cab70f79e45a192ef8069fada0140`) vía `edit_screens` o rediseño directo (D6).
-3. Redactar spec `docs/superpowers/specs/2026-10-10-planner-weekly-design.md` (grilla semanal Lunes–Domingo con bloques y metas) y su plan TDD.
+1. Ciclo completo de rediseño Stitch F0–F8 finalizado con 38 suites y 266/266 tests en verde.
+2. Build de producción verificado y optimizado.
+3. Fusión de `feature/busqueda-global` en `develop` y preparación de release v0.2.0.

@@ -73,7 +73,7 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   padding: 10px 16px;
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md);
@@ -151,7 +151,7 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  min-height: 38px;
+  min-height: 44px;
   padding: 8px 12px;
   border: 1px solid transparent;
   border-radius: var(--radius-md);
@@ -170,6 +170,34 @@
 }
 
 .settingsButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.vaultButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vaultButton:hover {
+  background-color: var(--color-surface-card);
+  color: var(--color-ink);
+  border-color: var(--color-hairline);
+}
+
+.vaultButton:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
@@ -241,6 +269,7 @@
 }
 
 .headerTitle {
+  margin: 0;
   overflow: hidden;
   font-family: var(--font-primary);
   font-size: 20px;
@@ -257,10 +286,80 @@
   gap: 16px;
 }
 
+.searchTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-card);
+  color: var(--color-muted);
+  font-size: var(--text-body-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.searchTrigger:hover {
+  background-color: var(--color-surface-soft);
+  color: var(--color-ink);
+  border-color: var(--color-primary-soft);
+}
+
+.searchTrigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.searchPlaceholder {
+  font-family: var(--font-family-2);
+  color: var(--color-muted);
+}
+
+.searchShortcut {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  font-family: var(--font-family-3);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
 .headerDate {
   font-family: var(--font-family-3);
   font-size: var(--text-caption);
   color: var(--color-muted);
+}
+
+.newNoteButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-card);
+  color: var(--color-primary);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.newNoteButton:hover {
+  background-color: var(--color-primary-soft);
+  border-color: var(--color-primary);
+}
+
+.newNoteButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .lockButton {
@@ -415,6 +514,17 @@
 
   .headerDate {
     display: none;
+  }
+
+  .searchPlaceholder,
+  .searchShortcut {
+    display: none;
+  }
+
+  .searchTrigger {
+    min-width: 44px;
+    padding: 0;
+    justify-content: center;
   }
 
   /* Solo ícono en móvil: la etiqueta queda para lectores de pantalla y el título no se trunca. */

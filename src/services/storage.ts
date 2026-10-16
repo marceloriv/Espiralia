@@ -1,4 +1,5 @@
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem } from '../types';
+import { EspiraliaIDB } from './idb';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
@@ -41,8 +42,13 @@ export const StorageService = {
     // Cascade delete profile data
     localStorage.removeItem(getScopedKey(id, 'events'));
     localStorage.removeItem(getScopedKey(id, 'planner'));
+    localStorage.removeItem(getScopedKey(id, 'goals'));
     localStorage.removeItem(getScopedKey(id, 'todos'));
     localStorage.removeItem(getScopedKey(id, 'areas'));
+    localStorage.removeItem(getScopedKey(id, 'notes'));
+    localStorage.removeItem(getScopedKey(id, 'folders'));
+    localStorage.removeItem(getScopedKey(id, 'links'));
+    void EspiraliaIDB.clearProfile(id);
 
     if (this.getActiveProfileId() === id) {
       this.clearActiveProfileId();
@@ -111,6 +117,32 @@ export const StorageService = {
   deletePlanner(profileId: string, blockId: string): void {
     const list = this.getPlanner(profileId).filter(b => b.id !== blockId);
     localStorage.setItem(getScopedKey(profileId, 'planner'), JSON.stringify(list));
+  },
+
+  // Goals
+  getGoals(profileId: string): Goal[] {
+    try {
+      const data = localStorage.getItem(getScopedKey(profileId, 'goals'));
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveGoal(goal: Goal): void {
+    const list = this.getGoals(goal.profileId);
+    const existingIndex = list.findIndex(g => g.id === goal.id);
+    if (existingIndex >= 0) {
+      list[existingIndex] = goal;
+    } else {
+      list.push(goal);
+    }
+    localStorage.setItem(getScopedKey(goal.profileId, 'goals'), JSON.stringify(list));
+  },
+
+  deleteGoal(profileId: string, goalId: string): void {
+    const list = this.getGoals(profileId).filter(g => g.id !== goalId);
+    localStorage.setItem(getScopedKey(profileId, 'goals'), JSON.stringify(list));
   },
 
   // Areas
@@ -250,6 +282,90 @@ export const StorageService = {
       todo.completed = status === 'completada';
       localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
     }
+  },
+
+  // Notes
+  getNotes(profileId: string): Note[] {
+    try {
+      const data = localStorage.getItem(getScopedKey(profileId, 'notes'));
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveNote(note: Note): void {
+    const list = this.getNotes(note.profileId);
+    const existingIndex = list.findIndex(n => n.id === note.id);
+    if (existingIndex >= 0) {
+      list[existingIndex] = note;
+    } else {
+      list.push(note);
+    }
+    localStorage.setItem(getScopedKey(note.profileId, 'notes'), JSON.stringify(list));
+    void EspiraliaIDB.put('notes', note);
+  },
+
+  deleteNote(profileId: string, noteId: string): void {
+    const list = this.getNotes(profileId).filter(n => n.id !== noteId);
+    localStorage.setItem(getScopedKey(profileId, 'notes'), JSON.stringify(list));
+    void EspiraliaIDB.delete('notes', noteId);
+  },
+
+  // Folders
+  getFolders(profileId: string): Folder[] {
+    try {
+      const data = localStorage.getItem(getScopedKey(profileId, 'folders'));
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveFolder(folder: Folder): void {
+    const list = this.getFolders(folder.profileId);
+    const existingIndex = list.findIndex(f => f.id === folder.id);
+    if (existingIndex >= 0) {
+      list[existingIndex] = folder;
+    } else {
+      list.push(folder);
+    }
+    localStorage.setItem(getScopedKey(folder.profileId, 'folders'), JSON.stringify(list));
+    void EspiraliaIDB.put('folders', folder);
+  },
+
+  deleteFolder(profileId: string, folderId: string): void {
+    const list = this.getFolders(profileId).filter(f => f.id !== folderId);
+    localStorage.setItem(getScopedKey(profileId, 'folders'), JSON.stringify(list));
+    void EspiraliaIDB.delete('folders', folderId);
+  },
+
+  // Links
+  getLinks(profileId: string): LinkItem[] {
+    try {
+      const data = localStorage.getItem(getScopedKey(profileId, 'links'));
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveLink(link: LinkItem): void {
+    const list = this.getLinks(link.profileId);
+    const existingIndex = list.findIndex(l => l.id === link.id);
+    if (existingIndex >= 0) {
+      list[existingIndex] = link;
+    } else {
+      list.push(link);
+    }
+    localStorage.setItem(getScopedKey(link.profileId, 'links'), JSON.stringify(list));
+    void EspiraliaIDB.put('links', link);
+  },
+
+  deleteLink(profileId: string, linkId: string): void {
+    const list = this.getLinks(profileId).filter(l => l.id !== linkId);
+    localStorage.setItem(getScopedKey(profileId, 'links'), JSON.stringify(list));
+    void EspiraliaIDB.delete('links', linkId);
   },
 };
 

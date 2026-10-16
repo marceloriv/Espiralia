@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
 import { isPinProtected } from '../services/pinHash';
+import { StorageService } from '../services/storage';
 import { QuickActionModal } from './quickAction/QuickActionModal';
 import { ProfileSettingsModal } from './profile/ProfileSettingsModal';
+import { NoteModal } from './notes/NoteModal';
+import { VaultModal } from './vault/VaultModal';
+import { GlobalSearchModal } from './search/GlobalSearchModal';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -28,6 +32,8 @@ const VIEW_TITLES: Record<ViewType, string> = {
   agenda: 'Agenda',
   planner: 'Planner',
   todo: 'To-Do',
+  notes: 'Notas',
+  folders: 'Carpetas',
 };
 
 const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode }[] = [
@@ -35,6 +41,8 @@ const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode }[] = [
   { view: 'agenda', label: 'Agenda', icon: <Calendar size={20} aria-hidden="true" /> },
   { view: 'planner', label: 'Planner', icon: <Compass size={20} aria-hidden="true" /> },
   { view: 'todo', label: 'To-Do', icon: <CheckSquare size={20} aria-hidden="true" /> },
+  { view: 'notes', label: 'Notas', icon: <BookOpen size={20} aria-hidden="true" /> },
+  { view: 'folders', label: 'Carpetas', icon: <Folder size={20} aria-hidden="true" /> },
 ];
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
@@ -46,20 +54,65 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   children,
 }) => {
   const [currentDate] = useState(() => layoutDateFormatter.format(new Date()));
-  const [currentProfile, setCurrentProfile] = useState<Profile>(profile);
   const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isNewNoteOpen, setIsNewNoteOpen] = useState(false);
+  const [isVaultOpen, setIsVaultOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    setCurrentProfile(profile);
-  }, [profile]);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(prev => !prev);
+        return;
+      }
 
-  const isProtected = isPinProtected(currentProfile);
+      if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        const target = e.target as HTMLElement | null;
+        const tagName = target?.tagName;
+        const isEditable = target?.isContentEditable;
+        if (tagName !== 'INPUT' && tagName !== 'TEXTAREA' && !isEditable) {
+          e.preventDefault();
+          setIsSearchOpen(true);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const isProtected = isPinProtected(profile);
   const lockText = isProtected ? 'Bloquear perfil' : 'Cambiar perfil';
 
   const handleLock = () => {
     sileo.info({ title: 'Sesión cerrada' });
     onLockProfile();
+  };
+
+  const handleSaveNewNote = (noteData: {
+    title: string;
+    content: string;
+    isReflection: boolean;
+    folderId?: string;
+    tags: string[];
+  }) => {
+    const now = new Date().toISOString();
+    const newNote = {
+      id: `note-${Date.now()}`,
+      profileId: profile.id,
+      ...noteData,
+      createdAt: now,
+      updatedAt: now,
+    };
+    StorageService.saveNote(newNote);
+    try {
+      sileo.success({ title: 'Nota creada', description: 'La nota se guardó correctamente.' });
+    } catch {
+      // Ignorar
+    }
   };
 
   return (
@@ -114,14 +167,22 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               <Settings size={16} aria-hidden="true" />
               <span>Ajustes & PIN</span>
             </button>
+            <button
+              type="button"
+              className={styles.vaultButton}
+              onClick={() => setIsVaultOpen(true)}
+            >
+              <Shield size={16} aria-hidden="true" />
+              <span>Bóveda Offline</span>
+            </button>
           </div>
 
           <div className={styles.userCard}>
             <div className={styles.userAvatar} aria-hidden="true">
-              {currentProfile.avatar}
+              {profile.avatar}
             </div>
             <div className={styles.userInfo}>
-              <span className={styles.userName}>{currentProfile.name}</span>
+              <span className={styles.userName}>{profile.name}</span>
               <span className={styles.userMeta}>{isProtected ? 'Protegido por PIN' : 'Acceso libre'}</span>
             </div>
           </div>
@@ -130,17 +191,37 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
       <div className={styles.mainWrapper}>
         <header className={styles.topHeader}>
-          <span className={styles.headerTitle}>{VIEW_TITLES[currentView]}</span>
+          <h2 className={styles.headerTitle}>{VIEW_TITLES[currentView]}</h2>
           <div className={styles.headerRight}>
+            <button
+              ref={searchTriggerRef}
+              type="button"
+              className={styles.searchTrigger}
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Buscar en Espiralia (Ctrl+K)"
+            >
+              <Search size={15} aria-hidden="true" />
+              <span className={styles.searchPlaceholder}>Buscar en Espiralia...</span>
+              <kbd className={styles.searchShortcut}>Ctrl+K</kbd>
+            </button>
             <span className={styles.headerDate}>{currentDate}</span>
+            <button
+              type="button"
+              className={styles.newNoteButton}
+              onClick={() => setIsNewNoteOpen(true)}
+              aria-label="+ Nueva Nota"
+            >
+              <Plus size={16} aria-hidden="true" />
+              <span>+ Nueva Nota</span>
+            </button>
             <button
               type="button"
               className={styles.lockButton}
               onClick={handleLock}
-              aria-label={`${lockText} (${currentProfile.name})`}
+              aria-label={`${lockText} (${profile.name})`}
             >
               <span className={styles.headerAvatar} aria-hidden="true">
-                {currentProfile.avatar}
+                {profile.avatar}
               </span>
               {isProtected ? <Lock size={16} aria-hidden="true" /> : <LogOut size={16} aria-hidden="true" />}
               <span className={styles.lockLabel}>{lockText}</span>
@@ -156,17 +237,45 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       <QuickActionModal
         isOpen={isQuickActionOpen}
         onClose={() => setIsQuickActionOpen(false)}
-        profileId={currentProfile.id}
+        profileId={profile.id}
       />
 
       <ProfileSettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
-        profile={currentProfile}
+        profile={profile}
         onProfileUpdated={(updated) => {
-          setCurrentProfile(updated);
           onProfileUpdated?.(updated);
         }}
+      />
+
+      <NoteModal
+        isOpen={isNewNoteOpen}
+        onClose={() => setIsNewNoteOpen(false)}
+        onSave={handleSaveNewNote}
+        folders={StorageService.getFolders(profile.id)}
+      />
+
+      <VaultModal
+        isOpen={isVaultOpen}
+        onClose={() => setIsVaultOpen(false)}
+        profile={profile}
+        onProfileRestored={(restored) => {
+          onProfileUpdated?.(restored);
+        }}
+      />
+
+      <GlobalSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => {
+          setIsSearchOpen(false);
+          searchTriggerRef.current?.focus();
+        }}
+        onNavigate={(view) => {
+          onViewChange(view);
+          searchTriggerRef.current?.focus();
+        }}
+        profileId={profile.id}
       />
     </div>
   );

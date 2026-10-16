@@ -15,18 +15,20 @@ export interface QuickActionModalProps {
 
 type TabType = 'todo' | 'event';
 
-export const QuickActionModal: React.FC<QuickActionModalProps> = ({
-  isOpen,
+const QuickActionModalContent: React.FC<QuickActionModalProps> = ({
   onClose,
   profileId,
   onItemCreated,
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('todo');
-  const [areas, setAreas] = useState<Area[]>([]);
+  const [areas] = useState<Area[]>(() => StorageService.getAreas(profileId));
 
   // Task form state
   const [todoTitle, setTodoTitle] = useState('');
-  const [todoAreaId, setTodoAreaId] = useState('');
+  const [todoAreaId, setTodoAreaId] = useState<string>(() => {
+    const loadedAreas = StorageService.getAreas(profileId);
+    return loadedAreas.length > 0 ? loadedAreas[0].id : '';
+  });
   const [todoPriority, setTodoPriority] = useState<Priority>('media');
   const [todoDueDate, setTodoDueDate] = useState('');
 
@@ -38,32 +40,21 @@ export const QuickActionModal: React.FC<QuickActionModalProps> = ({
   const [eventCategory, setEventCategory] = useState<EventCategory>('personal');
 
   const modalRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
-    if (isOpen) {
-      const loadedAreas = StorageService.getAreas(profileId);
-      setAreas(loadedAreas);
-      if (loadedAreas.length > 0 && !todoAreaId) {
-        setTodoAreaId(loadedAreas[0].id);
-      }
-      setEventDate(toLocalDateStr(new Date()));
-    }
-  }, [isOpen, profileId, todoAreaId]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+  }, []);
 
   const handleCreateTodo = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,7 +108,7 @@ export const QuickActionModal: React.FC<QuickActionModalProps> = ({
   };
 
   return (
-    <div className={styles.backdrop} onClick={e => e.target === e.currentTarget && onClose()}>
+    <div className={styles.backdrop} role="presentation" onClick={e => e.target === e.currentTarget && onClose()}>
       <div
         ref={modalRef}
         className={styles.modal}
@@ -349,4 +340,9 @@ export const QuickActionModal: React.FC<QuickActionModalProps> = ({
       </div>
     </div>
   );
+};
+
+export const QuickActionModal: React.FC<QuickActionModalProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <QuickActionModalContent {...props} />;
 };

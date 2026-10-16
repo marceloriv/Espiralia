@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Superpowers and worktrees
+.superpowers/
+.worktrees/

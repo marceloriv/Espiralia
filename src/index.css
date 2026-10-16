@@ -117,6 +117,11 @@
   --shadow-lg: 0 12px 32px rgba(20, 20, 19, 0.14);
   --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-primary);
 
+  /* Tokens de compatibilidad y alias historicos */
+  --color-surface: #faf9f5;
+  --elevation-lg: 0 12px 32px rgba(20, 20, 19, 0.14);
+  --text-heading-sm: 16px;
+
   font-family: var(--font-family-2);
   color: var(--color-body);
   background-color: var(--color-canvas);
@@ -196,6 +201,7 @@ h1, h2, h3, h4 {
 
 /* La barra superior es sticky (y en móvil la navegación es fija abajo): el foco nunca queda oculto bajo ellas (WCAG 2.2 SC 2.4.11). */
 html {
+  scroll-behavior: smooth;
   scroll-padding-top: 72px;
 }
 

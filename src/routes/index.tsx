@@ -9,17 +9,21 @@ const DashboardView = lazy(() => import('../components/DashboardView').then(m =>
 const AgendaView = lazy(() => import('../components/AgendaView').then(m => ({ default: m.AgendaView })));
 const PlannerView = lazy(() => import('../components/PlannerView').then(m => ({ default: m.PlannerView })));
 const TodoView = lazy(() => import('../components/TodoView').then(m => ({ default: m.TodoView })));
+const NotesView = lazy(() => import('../components/NotesView').then(m => ({ default: m.NotesView })));
+const FoldersView = lazy(() => import('../components/FoldersView').then(m => ({ default: m.FoldersView })));
 
 interface AppRoutesProps {
   activeProfile: Profile | null;
   onSelectProfile: (profile: Profile) => void;
   onLockProfile: () => void;
+  onProfileUpdated?: (profile: Profile) => void;
 }
 
 export const AppRoutes: React.FC<AppRoutesProps> = ({
   activeProfile,
   onSelectProfile,
   onLockProfile,
+  onProfileUpdated,
 }) => {
   const navigate = useNavigate();
 
@@ -42,6 +46,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           <ProtectedRoute
             activeProfile={activeProfile}
             onLockProfile={onLockProfile}
+            onProfileUpdated={onProfileUpdated}
           />
         }
       >
@@ -85,6 +90,26 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
             activeProfile ? (
               <Suspense fallback={<RouteLoadingFallback />}>
                 <TodoView profileId={activeProfile.id} />
+              </Suspense>
+            ) : null
+          }
+        />
+        <Route
+          path="/notes"
+          element={
+            activeProfile ? (
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <NotesView profileId={activeProfile.id} />
+              </Suspense>
+            ) : null
+          }
+        />
+        <Route
+          path="/folders"
+          element={
+            activeProfile ? (
+              <Suspense fallback={<RouteLoadingFallback />}>
+                <FoldersView profileId={activeProfile.id} />
               </Suspense>
             ) : null
           }

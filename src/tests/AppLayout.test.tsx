@@ -8,12 +8,16 @@ import type { Profile, ViewType } from '../types';
 const freeProfile: Profile = { id: 'p-1', name: 'Francisca', avatar: 'F', createdAt: '2026-10-09' };
 const protectedProfile: Profile = { ...freeProfile, pinHash: 'a'.repeat(64), pinSalt: 'b'.repeat(32) };
 
-const renderLayout = (profile: Profile = freeProfile, currentView: ViewType = 'dashboard') => {
+const renderLayout = (
+  profile: Profile = freeProfile,
+  currentView: ViewType = 'dashboard',
+  children: React.ReactNode = <div>Contenido Principal</div>,
+) => {
   const onViewChange = vi.fn();
   const onLockProfile = vi.fn();
   render(
     <AppLayout profile={profile} currentView={currentView} onViewChange={onViewChange} onLockProfile={onLockProfile}>
-      <div>Contenido Principal</div>
+      {children}
     </AppLayout>,
   );
   return { onViewChange, onLockProfile };
@@ -59,28 +63,109 @@ describe('AppLayout', () => {
     expect(screen.getByText('Protegido por PIN')).toBeInTheDocument();
   });
 
-  // Técnica: partición de equivalencia sobre las cuatro vistas (título con mayúsculas correctas).
+  // Técnica: partición de equivalencia sobre las vistas (título con mayúsculas correctas).
   it.each([
     ['dashboard', 'Dashboard'],
     ['agenda', 'Agenda'],
     ['planner', 'Planner'],
     ['todo', 'To-Do'],
+    ['notes', 'Notas'],
+    ['folders', 'Carpetas'],
   ] as const)('la barra superior titula la vista %s como "%s"', (view, title) => {
     renderLayout(freeProfile, view);
     expect(within(screen.getByRole('banner')).getByText(title)).toBeInTheDocument();
   });
 
-  // Guarda de la deuda técnica del roadmap: el layout expone los controles reales y ningún campo de búsqueda.
-  it('no muestra controles de features que todavía no existen', () => {
+  // Con F8 completada, todas las features del rediseño Stitch están implementadas.
+  it('expone todos los controles de navegación, búsqueda y acciones del layout', () => {
     renderLayout();
     const names = screen.getAllByRole('button').map(b => b.getAttribute('aria-label') ?? b.textContent?.trim());
-    expect(names).toEqual(['+ Acción Rápida', 'Dashboard', 'Agenda', 'Planner', 'To-Do', 'Ajustes & PIN', 'Cambiar perfil (Francisca)']);
-    expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
-    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
-    const forbidden = [/buscar/i, /nueva nota/i, /bóveda/i, /notas rápidas/i, /carpetas/i, /indexeddb/i, /cifrad/i, /\bAES\b/];
-    for (const label of forbidden) {
-      expect(screen.queryByText(label)).not.toBeInTheDocument();
-    }
+    expect(names).toEqual([
+      '+ Acción Rápida',
+      'Dashboard',
+      'Agenda',
+      'Planner',
+      'To-Do',
+      'Notas',
+      'Carpetas',
+      'Ajustes & PIN',
+      'Bóveda Offline',
+      'Buscar en Espiralia (Ctrl+K)',
+      '+ Nueva Nota',
+      'Cambiar perfil (Francisca)',
+    ]);
+  });
+
+  it('abre el modal de Búsqueda Global al hacer click en el disparador de la cabecera', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const searchBtn = screen.getByRole('button', { name: /buscar en espiralia/i });
+    await user.click(searchBtn);
+
+    expect(screen.getByRole('dialog', { name: /búsqueda global/i })).toBeInTheDocument();
+  });
+
+  it('abre el modal de Búsqueda Global al pulsar el atajo Ctrl+K', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    await user.keyboard('{Control>}k{/Control}');
+
+    expect(screen.getByRole('dialog', { name: /búsqueda global/i })).toBeInTheDocument();
+  });
+
+  it('abre el modal de Búsqueda Global al pulsar la tecla / cuando no se está en un campo editable', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    await user.keyboard('/');
+
+    expect(screen.getByRole('dialog', { name: /búsqueda global/i })).toBeInTheDocument();
+  });
+
+  it('no abre el modal de búsqueda al pulsar / dentro de un input editable', async () => {
+    const user = userEvent.setup();
+    renderLayout(freeProfile, 'dashboard', <input data-testid="test-input" />);
+
+    const input = screen.getByTestId('test-input');
+    await user.click(input);
+    await user.type(input, '/');
+
+    expect(screen.queryByRole('dialog', { name: /búsqueda global/i })).not.toBeInTheDocument();
+  });
+
+  it('restaura el foco en el disparador de búsqueda al cerrar el modal con Escape', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const searchBtn = screen.getByRole('button', { name: /buscar en espiralia/i });
+    await user.click(searchBtn);
+    expect(screen.getByRole('dialog', { name: /búsqueda global/i })).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog', { name: /búsqueda global/i })).not.toBeInTheDocument();
+    expect(searchBtn).toHaveFocus();
+  });
+
+  it('abre el modal de Bóveda Offline al hacer click en el botón del sidebar', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const vaultBtn = screen.getByRole('button', { name: /bóveda offline/i });
+    await user.click(vaultBtn);
+
+    expect(screen.getByRole('dialog', { name: /bóveda offline/i })).toBeInTheDocument();
+  });
+
+  it('abre el modal de Nueva Nota al hacer click en el boton de la cabecera', async () => {
+    const user = userEvent.setup();
+    renderLayout();
+
+    const newNoteBtn = screen.getByRole('button', { name: /\+ nueva nota/i });
+    await user.click(newNoteBtn);
+
+    expect(screen.getByRole('dialog', { name: /nueva nota o reflexión/i })).toBeInTheDocument();
   });
 
   it('abre el modal de Accion Rapida al hacer click en el boton de la barra lateral', async () => {

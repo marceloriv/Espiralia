@@ -39,13 +39,9 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
   const todayStr = toLocalDateStr(new Date());
 
   const loadData = useCallback(() => {
-    const loadedAreas = StorageService.getAreas(profileId);
-    setAreas(loadedAreas);
+    setAreas(StorageService.getAreas(profileId));
     setTodos(StorageService.getTodos(profileId));
-    if (!selectedAreaForNew && loadedAreas.length > 0) {
-      setSelectedAreaForNew(loadedAreas[0].id);
-    }
-  }, [profileId, selectedAreaForNew]);
+  }, [profileId]);
 
   useEffect(() => {
     if (isFirstMount.current) {
@@ -212,7 +208,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
       </div>
 
       {/* Barra de Áreas Temáticas (Diseño Stitch) */}
-      <section className={styles.areasSection} aria-label="Áreas temáticas" role="region">
+      <section className={styles.areasSection} aria-label="Áreas temáticas">
         <div className={styles.areasHeader}>
           <span className={styles.areasLabel}>Áreas temáticas</span>
           <button
@@ -477,18 +473,21 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
                 autoFocus
               />
 
-              <label className={styles.formLabel}>Color identificador</label>
-              <div className={styles.colorPalette}>
-                {COLOR_PALETTE.map(color => (
-                  <button
-                    key={color}
-                    type="button"
-                    className={`${styles.colorCircle} ${newAreaColor === color ? styles.colorCircleActive : ''}`}
-                    style={{ backgroundColor: color }}
-                    aria-label={`color ${color}`}
-                    onClick={() => setNewAreaColor(color)}
-                  />
-                ))}
+              <div role="group" aria-labelledby="todo-color-label">
+                <span id="todo-color-label" className={styles.formLabel}>Color identificador</span>
+                <div className={styles.colorPalette}>
+                  {COLOR_PALETTE.map(color => (
+                    <button
+                      key={color}
+                      type="button"
+                      className={`${styles.colorCircle} ${newAreaColor === color ? styles.colorCircleActive : ''}`}
+                      style={{ backgroundColor: color }}
+                      aria-label={`color ${color}`}
+                      aria-pressed={newAreaColor === color}
+                      onClick={() => setNewAreaColor(color)}
+                    />
+                  ))}
+                </div>
               </div>
 
               <div className={styles.modalActions}>
