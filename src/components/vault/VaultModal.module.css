@@ -17,7 +17,7 @@
   padding: 1.5rem;
   width: 100%;
   max-width: 540px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -43,6 +43,8 @@
 }
 
 .closeBtn {
+  min-height: 44px;
+  min-width: 44px;
   background: transparent;
   border: none;
   color: var(--color-ink-muted, #666);
@@ -172,18 +174,18 @@
   gap: 0.5rem;
   min-height: 44px;
   padding: 0.6rem 1.25rem;
-  background: var(--color-accent, #c96442);
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   border: none;
   border-radius: var(--radius-sm, 0.25rem);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
 }
 
 .btnPrimary:hover {
-  opacity: 0.9;
+  background: var(--color-primary-active);
 }
 
 .btnSecondary {
