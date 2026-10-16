@@ -43,6 +43,8 @@
 }
 
 .closeBtn {
+  min-height: 44px;
+  min-width: 44px;
   background: transparent;
   border: none;
   color: var(--color-ink-muted, #666);

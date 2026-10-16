@@ -437,9 +437,10 @@
 }
 
 .areaActionBtn {
+  min-height: 44px;
+  padding: 8px 12px;
   background: none;
   border: none;
-  padding: 0;
   color: var(--color-primary);
   font-family: var(--font-family-2);
   font-size: var(--text-caption);

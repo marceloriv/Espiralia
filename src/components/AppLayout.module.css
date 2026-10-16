@@ -88,7 +88,8 @@
 }
 
 .quickActionButton:hover {
-  background-color: var(--color-primary-soft);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   border-color: var(--color-primary);
 }
 
