@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Plus, BookOpen, FileText, Pencil, Trash2, Folder as FolderIcon } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Note, Folder } from '../types';
@@ -13,21 +13,26 @@ interface NotesViewProps {
 type TabType = 'all' | 'reflections' | 'quick';
 
 export const NotesView: React.FC<NotesViewProps> = ({ profileId }) => {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [folders, setFolders] = useState<Folder[]>([]);
+  const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profileId));
+  const [folders, setFolders] = useState<Folder[]>(() => StorageService.getFolders(profileId));
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const isFirstMount = useRef(true);
 
-  const loadData = () => {
+  const loadData = useCallback(() => {
     setNotes(StorageService.getNotes(profileId));
     setFolders(StorageService.getFolders(profileId));
-  };
+  }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadData();
-  }, [profileId]);
+  }, [loadData]);
 
   const handleOpenNew = () => {
     setEditingNote(null);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { PlannerBlock, DayOfWeek, TimeSlot, Priority } from '../types';
@@ -18,12 +18,17 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
   const [priorityFilter, setPriorityFilter] = useState<'todas' | Priority>('todas');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<DayOfWeek | undefined>(1);
+  const isFirstMount = useRef(true);
 
   const loadBlocks = useCallback(() => {
     setBlocks(StorageService.getPlanner(profileId));
   }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadBlocks();
   }, [loadBlocks]);
 

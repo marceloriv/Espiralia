@@ -30,47 +30,42 @@ const EMPTY_RESULTS: GroupedSearchResults = {
   totalCount: 0,
 };
 
-export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
-  isOpen,
+const GlobalSearchModalContent: React.FC<GlobalSearchModalProps> = ({
   onClose,
   onNavigate,
   profileId,
 }) => {
   const [query, setQuery] = useState('');
-  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [rawIndex, setRawIndex] = useState(0);
   const [results, setResults] = useState<GroupedSearchResults>(EMPTY_RESULTS);
   const inputRef = useRef<HTMLInputElement>(null);
   const getItemId = (item: SearchResultItem) => `search-opt-${item.type}-${item.id}`;
 
+  const onCloseRef = useRef(onClose);
   useEffect(() => {
-    if (isOpen) {
-      setQuery('');
-      setSelectedIndex(-1);
-      const timer = setTimeout(() => {
-        inputRef.current?.focus();
-      }, 50);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
-    if (!isOpen) return;
+    const timer = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault();
-        onClose();
+        onCloseRef.current();
       }
     };
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [isOpen, onClose]);
+  }, []);
 
-  // Async effect: perform search when open/query/profileId change
+  // Async effect: perform search when query/profileId change
   useEffect(() => {
-    if (!isOpen) {
-      setResults(EMPTY_RESULTS);
-      return;
-    }
     let cancelled = false;
     const performSearch = async () => {
       const res = await SearchService.search(profileId, query);
@@ -78,7 +73,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     };
     performSearch();
     return () => { cancelled = true; };
-  }, [isOpen, profileId, query]);
+  }, [profileId, query]);
 
   const flatResults = useMemo<SearchResultItem[]>(() => [
     ...results.todos,
@@ -89,9 +84,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
     ...results.links,
   ], [results]);
 
-  useEffect(() => {
-    setSelectedIndex(flatResults.length > 0 ? 0 : -1);
-  }, [flatResults]);
+  const selectedIndex = flatResults.length === 0
+    ? -1
+    : Math.min(Math.max(0, rawIndex), flatResults.length - 1);
 
   useEffect(() => {
     if (selectedIndex >= 0 && flatResults[selectedIndex]) {
@@ -101,8 +96,6 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       }
     }
   }, [selectedIndex, flatResults]);
-
-  if (!isOpen) return null;
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -115,10 +108,10 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSelectedIndex(prev => (prev + 1) % flatResults.length);
+      setRawIndex(prev => (prev + 1) % flatResults.length);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setSelectedIndex(prev => (prev - 1 + flatResults.length) % flatResults.length);
+      setRawIndex(prev => (prev - 1 + flatResults.length) % flatResults.length);
     } else if (e.key === 'Enter') {
       e.preventDefault();
       const target = flatResults[selectedIndex >= 0 ? selectedIndex : 0];
@@ -162,7 +155,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
                   aria-selected={isSelected}
                   className={`${styles.resultItem} ${isSelected ? styles.resultItemActive : ''}`}
                   onClick={() => handleItemClick(item)}
-                  onMouseEnter={() => setSelectedIndex(itemIndex)}
+                  onMouseEnter={() => setRawIndex(itemIndex)}
                 >
                   <div className={styles.itemContent}>
                     <span className={styles.itemTitle}>{item.title}</span>
@@ -220,7 +213,10 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
             className={styles.searchInput}
             placeholder="Buscar eventos, tareas, notas, metas o enlaces..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setRawIndex(0);
+            }}
             aria-label="Buscar en toda la aplicación"
             aria-controls="search-results-region"
             aria-activedescendant={
@@ -292,4 +288,9 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
       </div>
     </div>
   );
+};
+
+export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <GlobalSearchModalContent {...props} />;
 };

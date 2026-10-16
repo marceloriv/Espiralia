@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Plus, Folder as FolderIcon, ExternalLink, Pencil, Trash2, Link as LinkIcon, FileText } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Folder, LinkItem, Note } from '../types';
@@ -12,10 +12,11 @@ interface FoldersViewProps {
 }
 
 export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
-  const [folders, setFolders] = useState<Folder[]>([]);
-  const [links, setLinks] = useState<LinkItem[]>([]);
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
+  const [folders, setFolders] = useState<Folder[]>(() => StorageService.getFolders(profileId));
+  const [links, setLinks] = useState<LinkItem[]>(() => StorageService.getLinks(profileId));
+  const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profileId));
+  const [userSelectedFolderId, setUserSelectedFolderId] = useState<string | null>(null);
+  const isFirstMount = useRef(true);
 
   // Modals state
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
@@ -24,30 +25,26 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<LinkItem | null>(null);
 
-  const loadData = () => {
-    const fList = StorageService.getFolders(profileId);
-    const lList = StorageService.getLinks(profileId);
-    const nList = StorageService.getNotes(profileId);
-    setFolders(fList);
-    setLinks(lList);
-    setNotes(nList);
-
-    // Si la carpeta seleccionada ya no existe o es null y hay carpetas, seleccionar la primera
-    if (fList.length > 0) {
-      setSelectedFolderId((prev) => {
-        if (!prev || !fList.some((f) => f.id === prev)) {
-          return fList[0].id;
-        }
-        return prev;
-      });
-    } else {
-      setSelectedFolderId(null);
+  const selectedFolderId = useMemo(() => {
+    if (userSelectedFolderId && folders.some((f) => f.id === userSelectedFolderId)) {
+      return userSelectedFolderId;
     }
-  };
+    return folders[0]?.id || null;
+  }, [folders, userSelectedFolderId]);
+
+  const loadData = useCallback(() => {
+    setFolders(StorageService.getFolders(profileId));
+    setLinks(StorageService.getLinks(profileId));
+    setNotes(StorageService.getNotes(profileId));
+  }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadData();
-  }, [profileId]);
+  }, [loadData]);
 
   const activeFolder = useMemo(() => {
     return folders.find((f) => f.id === selectedFolderId) || null;
@@ -98,7 +95,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
         createdAt: new Date().toISOString(),
       };
       StorageService.saveFolder(newFolder);
-      setSelectedFolderId(newFolder.id);
+      setUserSelectedFolderId(newFolder.id);
       try {
         sileo.success({ title: 'Carpeta creada', description: `Se creó la carpeta ${data.name}.` });
       } catch {
@@ -226,23 +223,19 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
                 <div
                   key={folder.id}
                   className={`${styles.folderItem} ${isSelected ? styles.folderItemActive : ''}`}
-                  onClick={() => setSelectedFolderId(folder.id)}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={isSelected}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      setSelectedFolderId(folder.id);
-                    }
-                  }}
                 >
-                  <div className={styles.folderItemLeft}>
+                  <button
+                    type="button"
+                    className={styles.folderSelectBtn}
+                    onClick={() => setUserSelectedFolderId(folder.id)}
+                    aria-pressed={isSelected}
+                  >
                     <span
                       className={styles.colorDot}
                       style={{ backgroundColor: folder.color || '#3b82f6' }}
                     />
                     <span className={styles.folderItemName}>{folder.name}</span>
-                  </div>
+                  </button>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <span className={styles.folderBadgeCount}>{totalItems}</span>
                     <button

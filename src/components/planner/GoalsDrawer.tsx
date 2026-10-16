@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Target, Plus, X } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Goal, GoalSubItem } from '../../types';
@@ -26,9 +26,15 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
     onGoalsChange?.();
   }, [profileId, onGoalsChange]);
 
+  const isFirstMount = useRef(true);
+
   useEffect(() => {
-    loadGoals();
-  }, [loadGoals]);
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    setGoals(StorageService.getGoals(profileId));
+  }, [profileId]);
 
   const handleToggleSubItem = (goalId: string, subId: string) => {
     const targetGoal = goals.find(g => g.id === goalId);
@@ -191,6 +197,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
                     onClick={handleAddSubItem}
                     className={styles.addGoalBtn}
                     style={{ padding: '0.5rem 0.75rem' }}
+                    aria-label="Agregar sub-tarea"
                   >
                     +
                   </button>

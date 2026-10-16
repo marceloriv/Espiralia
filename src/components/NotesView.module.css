@@ -130,8 +130,13 @@
 }
 
 .searchInput:focus {
-  outline: none;
   border-color: var(--color-accent, #c96442);
+}
+
+.searchInput:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+  border-color: var(--color-primary);
 }
 
 .grid {

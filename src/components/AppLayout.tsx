@@ -54,17 +54,12 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   children,
 }) => {
   const [currentDate] = useState(() => layoutDateFormatter.format(new Date()));
-  const [currentProfile, setCurrentProfile] = useState<Profile>(profile);
   const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNewNoteOpen, setIsNewNoteOpen] = useState(false);
   const [isVaultOpen, setIsVaultOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    setCurrentProfile(profile);
-  }, [profile]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -89,7 +84,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const isProtected = isPinProtected(currentProfile);
+  const isProtected = isPinProtected(profile);
   const lockText = isProtected ? 'Bloquear perfil' : 'Cambiar perfil';
 
   const handleLock = () => {
@@ -107,7 +102,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
     const now = new Date().toISOString();
     const newNote = {
       id: `note-${Date.now()}`,
-      profileId: currentProfile.id,
+      profileId: profile.id,
       ...noteData,
       createdAt: now,
       updatedAt: now,
@@ -184,10 +179,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
           <div className={styles.userCard}>
             <div className={styles.userAvatar} aria-hidden="true">
-              {currentProfile.avatar}
+              {profile.avatar}
             </div>
             <div className={styles.userInfo}>
-              <span className={styles.userName}>{currentProfile.name}</span>
+              <span className={styles.userName}>{profile.name}</span>
               <span className={styles.userMeta}>{isProtected ? 'Protegido por PIN' : 'Acceso libre'}</span>
             </div>
           </div>
@@ -196,7 +191,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
       <div className={styles.mainWrapper}>
         <header className={styles.topHeader}>
-          <span className={styles.headerTitle}>{VIEW_TITLES[currentView]}</span>
+          <h2 className={styles.headerTitle}>{VIEW_TITLES[currentView]}</h2>
           <div className={styles.headerRight}>
             <button
               ref={searchTriggerRef}
@@ -223,10 +218,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               type="button"
               className={styles.lockButton}
               onClick={handleLock}
-              aria-label={`${lockText} (${currentProfile.name})`}
+              aria-label={`${lockText} (${profile.name})`}
             >
               <span className={styles.headerAvatar} aria-hidden="true">
-                {currentProfile.avatar}
+                {profile.avatar}
               </span>
               {isProtected ? <Lock size={16} aria-hidden="true" /> : <LogOut size={16} aria-hidden="true" />}
               <span className={styles.lockLabel}>{lockText}</span>
@@ -242,15 +237,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       <QuickActionModal
         isOpen={isQuickActionOpen}
         onClose={() => setIsQuickActionOpen(false)}
-        profileId={currentProfile.id}
+        profileId={profile.id}
       />
 
       <ProfileSettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
-        profile={currentProfile}
+        profile={profile}
         onProfileUpdated={(updated) => {
-          setCurrentProfile(updated);
           onProfileUpdated?.(updated);
         }}
       />
@@ -259,15 +253,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         isOpen={isNewNoteOpen}
         onClose={() => setIsNewNoteOpen(false)}
         onSave={handleSaveNewNote}
-        folders={StorageService.getFolders(currentProfile.id)}
+        folders={StorageService.getFolders(profile.id)}
       />
 
       <VaultModal
         isOpen={isVaultOpen}
         onClose={() => setIsVaultOpen(false)}
-        profile={currentProfile}
+        profile={profile}
         onProfileRestored={(restored) => {
-          setCurrentProfile(restored);
           onProfileUpdated?.(restored);
         }}
       />
@@ -282,7 +275,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           onViewChange(view);
           searchTriggerRef.current?.focus();
         }}
-        profileId={currentProfile.id}
+        profileId={profile.id}
       />
     </div>
   );
