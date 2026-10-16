@@ -289,7 +289,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
               <section className={styles.sectionBox}>
                 <div className={styles.sectionHeader}>
                   <h4 className={styles.sectionTitle}>
-                    <LinkIcon size={18} color="var(--color-accent, #c96442)" />
+                    <LinkIcon size={18} color="var(--color-primary)" />
                     Vínculos & Documentos Web ({folderLinks.length})
                   </h4>
                 </div>
@@ -346,7 +346,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
               <section className={styles.sectionBox}>
                 <div className={styles.sectionHeader}>
                   <h4 className={styles.sectionTitle}>
-                    <FileText size={18} color="var(--color-accent, #c96442)" />
+                    <FileText size={18} color="var(--color-primary)" />
                     Notas en esta Carpeta ({folderNotes.length})
                   </h4>
                 </div>

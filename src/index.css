@@ -118,7 +118,10 @@
   --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-primary);
 
   /* Tokens de compatibilidad y alias historicos */
-  --color-surface: #faf9f5;
+  --color-surface: var(--color-surface-soft);
+  --color-accent: var(--color-primary);
+  --color-ink-muted: var(--color-muted);
+  --font-headline: var(--font-primary);
   --elevation-lg: 0 12px 32px rgba(20, 20, 19, 0.14);
   --text-heading-sm: 16px;
 

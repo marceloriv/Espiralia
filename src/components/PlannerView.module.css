@@ -191,6 +191,8 @@
   flex: 1;
   overflow-x: auto;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
   padding: 1.25rem;
 }
 
