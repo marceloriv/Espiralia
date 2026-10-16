@@ -1,12 +1,12 @@
 export type Priority = 'alta' | 'media' | 'baja';
 
-export type EventCategory = 'trabajo' | 'personal' | 'urgente' | 'estudio';
+export type EventCategory = 'trabajo' | 'personal' | 'urgente' | 'estudio' | 'universidad';
 
 export type PlannerPeriod = 'semanal' | 'mensual';
 
 export type TimeSlot = 'mañana' | 'tarde' | 'noche' | 'meta';
 
-export type ViewType = 'dashboard' | 'agenda' | 'planner' | 'todo' | 'notes' | 'folders';
+export type ViewType = 'dashboard' | 'agenda' | 'planner' | 'todo' | 'notes' | 'folders' | 'integrations';
 
 export interface Profile {
   id: string;
@@ -116,6 +116,7 @@ export interface LinkItem {
   id: string;
   profileId: string;
   folderId?: string;
+  areaId?: string;
   title: string;
   url: string;
   description?: string;

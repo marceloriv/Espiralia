@@ -7,9 +7,9 @@ const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
 const getScopedKey = (profileId: string, domain: string) => `espiralia_${profileId}_${domain}`;
 
 const DEFAULT_AREAS = [
-  { name: 'Trabajo', color: '#3b82f6' },
+  { name: 'Estudios', color: '#3b82f6' },
   { name: 'Personal', color: '#10b981' },
-  { name: 'Estudio', color: '#8b5cf6' },
+  { name: 'Universidad', color: '#8b5cf6' },
   { name: 'General', color: '#6b7280' },
 ];
 
@@ -366,6 +366,109 @@ export const StorageService = {
     const list = this.getLinks(profileId).filter(l => l.id !== linkId);
     localStorage.setItem(getScopedKey(profileId, 'links'), JSON.stringify(list));
     void EspiraliaIDB.delete('links', linkId);
+  },
+
+  seedInitialProfileData(profileId: string): void {
+    const areas = this.getAreas(profileId);
+    const estudiosArea = areas.find(a => a.name.toLowerCase().startsWith('estudio')) ?? areas[0];
+    const personalArea = areas.find(a => a.name.toLowerCase() === 'personal') ?? areas[0];
+    const universidadArea = areas.find(a => a.name.toLowerCase() === 'universidad') ?? areas[0];
+
+    const currentTodos = this.getTodos(profileId);
+    if (currentTodos.length === 0) {
+      const initialTodos: TodoItem[] = [
+        {
+          id: `todo-seed-1`,
+          profileId,
+          title: 'Preparación teórica licencia Clase B: Banco de preguntas Conaset',
+          areaId: estudiosArea.id,
+          category: estudiosArea.name,
+          priority: 'alta',
+          status: 'pendiente',
+          completed: false,
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: `todo-seed-2`,
+          profileId,
+          title: 'Simulacro de examen y práctica de manejo',
+          areaId: estudiosArea.id,
+          category: estudiosArea.name,
+          priority: 'media',
+          status: 'pendiente',
+          completed: false,
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: `todo-seed-3`,
+          profileId,
+          title: 'Escritura de bitácora semanal y proceso terapéutico',
+          areaId: personalArea.id,
+          category: personalArea.name,
+          priority: 'media',
+          status: 'pendiente',
+          completed: false,
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: `todo-seed-4`,
+          profileId,
+          title: 'Postulaciones semestre 2026-II: Entrega de portafolio y becas',
+          areaId: universidadArea.id,
+          category: universidadArea.name,
+          priority: 'alta',
+          status: 'pendiente',
+          completed: false,
+          createdAt: new Date().toISOString(),
+        },
+      ];
+      for (const t of initialTodos) {
+        this.saveTodo(t);
+      }
+    }
+
+    const currentLinks = this.getLinks(profileId);
+    if (currentLinks.length === 0) {
+      const initialLinks: LinkItem[] = [
+        {
+          id: `link-seed-1`,
+          profileId,
+          areaId: estudiosArea.id,
+          title: 'Simulador Oficial Conaset',
+          url: 'https://conaset.cl/simulador',
+          description: 'Práctica teórica y banco de preguntas de tránsito Clase B',
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: `link-seed-2`,
+          profileId,
+          areaId: universidadArea.id,
+          title: 'Portal de Postulaciones Semestre 2026-II',
+          url: 'https://universidad.edu/postulaciones',
+          description: 'Envío de portafolio, cartas de recomendación y becas',
+          createdAt: new Date().toISOString(),
+        },
+      ];
+      for (const l of initialLinks) {
+        this.saveLink(l);
+      }
+    }
+
+    const currentNotes = this.getNotes(profileId);
+    if (currentNotes.length === 0) {
+      const initialNote: Note = {
+        id: `note-seed-1`,
+        profileId,
+        areaId: personalArea.id,
+        title: 'Espacio de Bitácora y Proceso Terapéutico',
+        content: 'Espacio de introspección para el proceso terapéutico con escritura de bitácora y reflexiones extendidas sin límite de espacio.',
+        isReflection: true,
+        tags: ['terapia', 'introspección', 'personal'],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      this.saveNote(initialNote);
+    }
   },
 };
 

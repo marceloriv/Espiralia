@@ -96,7 +96,7 @@ describe('StorageService', () => {
     it('siembra áreas por defecto cuando el perfil no tiene áreas', () => {
       const areas = StorageService.getAreas('p-1');
       expect(areas).toHaveLength(4);
-      expect(areas.map(a => a.name)).toEqual(['Trabajo', 'Personal', 'Estudio', 'General']);
+      expect(areas.map(a => a.name)).toEqual(['Estudios', 'Personal', 'Universidad', 'General']);
       expect(areas[0].profileId).toBe('p-1');
     });
 
@@ -132,21 +132,21 @@ describe('StorageService', () => {
 
     it('elimina un área y reasigna tareas huérfanas al área General', () => {
       const areas = StorageService.getAreas('p-1');
-      const trabajoArea = areas.find(a => a.name === 'Trabajo')!;
+      const estudiosArea = areas.find(a => a.name === 'Estudios')!;
       const generalArea = areas.find(a => a.name === 'General')!;
 
       StorageService.saveTodo({
         id: 't-1',
         profileId: 'p-1',
         title: 'Informe mensual',
-        areaId: trabajoArea.id,
+        areaId: estudiosArea.id,
         priority: 'alta',
         status: 'pendiente',
         createdAt: '2026-10-10',
       });
 
-      StorageService.deleteArea('p-1', trabajoArea.id);
-      expect(StorageService.getAreas('p-1').find(a => a.id === trabajoArea.id)).toBeUndefined();
+      StorageService.deleteArea('p-1', estudiosArea.id);
+      expect(StorageService.getAreas('p-1').find(a => a.id === estudiosArea.id)).toBeUndefined();
 
       const todos = StorageService.getTodos('p-1');
       expect(todos[0].areaId).toBe(generalArea.id);
