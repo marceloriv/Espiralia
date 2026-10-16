@@ -4,6 +4,42 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.3.0] - 2026-10-16
+
+### Added
+
+- **Página de inicio editorial Stitch (`LandingView`)**:
+  - Vista de bienvenida y mesa de trabajo editorial en `/inicio` con acceso público sin requerir perfil activo.
+  - Widget interactivo de intenciones diarias (calma mental, foco profundo, arranque suave) con persistencia temporal y anuncios accesibles en vivo (`aria-live="polite"`).
+  - Mesa de trabajo editorial interactiva con vista previa de columnas (Enfoque, Tareas, Espacio Mental) y barras de progreso con `role="progressbar"` y valores accesibles.
+  - Gráfico dinámico de ritmo semanal integrado con `@polar-sh/react`, renderizando el progreso de bloques completados con anillos concéntricos y etiqueta textual accesible.
+- **Áreas temáticas clave integradas en To-Do**:
+  - Vista de espacio de trabajo unificado (`AreaIntegratedWorkspace`) combinando tareas del área, agenda contextual de eventos y notas vinculadas en una sola pantalla.
+  - Sembrado contextual de áreas iniciales con paletas cromáticas diferenciadas y filtros dedicados.
+- **Centro de integraciones externas (`IntegrationsView`)**:
+  - Pantalla editorial de integraciones con soporte para exportación e importación de calendarios en formato `.ics` estándar (`IcsService`).
+  - Atajos directos a Google Calendar Web con parámetros seguros (`action=TEMPLATE`) y plantillas de correo para Gmail precompiladas con enlaces `mailto:`.
+  - Banner informativo de privacidad garantizando arquitectura 100% local en cliente sin fuga de datos a servidores externos.
+- **Mejoras del Dashboard principal**:
+  - Aforismo reflexivo dinámico y sección de 4 accesos instantáneos ("A un solo clic") para captura y navegación rápida.
+
+### Changed
+
+- **Refinamiento visual y accesibilidad (H1-H7)**:
+  - Tokens globales de Claude/Espiralia en `src/index.css` (`--font-headline`, `--color-accent`, `--color-ink-muted`).
+  - Ajuste de dimensiones táctiles mínimas a 44px en controles interactivos de modales y dashboard (WCAG 2.5.5 / 2.5.8).
+  - Optimización de contrastes cromáticos y visibilidad de anillos de enfoque en estados hover y focus.
+  - Desplazamiento horizontal fluido y scroll suave en cuadrícula semanal de Planner en pantallas medianas y tablets.
+- **Optimización de servicios (disciplina Ponytail)**:
+  - Simplificación radical de `StorageService` (-180 líneas), unificando serialización directa en `localStorage` con fallbacks seguros.
+  - Adopción de `scheduler.yield()` nativo con fallback a `Promise.resolve()` en bucles de búsqueda cooperativa.
+  - Centralización de utilidades de codificación hexadecimal (`toHex`, `fromHex`) en módulo compartido `src/utils/hex.ts`.
+
+### Removed
+
+- Eliminación de capa en sombra `EspiraliaIDB` (`src/services/idb.ts`), suite asociada y duplicación en `localStorage`.
+- Eliminación de assets huérfanos no referenciados (`hero.png`, `react.svg`, `vite.svg`).
+
 ## [0.2.0] - 2026-10-15
 
 ### Added

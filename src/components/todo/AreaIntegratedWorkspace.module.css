@@ -1,0 +1,320 @@
+.workspaceContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.workspaceHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+}
+
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.areaDotLarge {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.areaTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: var(--text-headline-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.areaBadge {
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-body);
+}
+
+/* ---------- 3-Column Grid ---------- */
+
+.columnsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 1024px) {
+  .columnsGrid {
+    grid-template-columns: 1.2fr 1fr 1fr;
+  }
+}
+
+.columnCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  min-height: 480px;
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.columnTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.columnTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: var(--text-body-md);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.columnCount {
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+}
+
+/* ---------- Columna 1: Tareas ---------- */
+
+.todoInputForm {
+  display: flex;
+  gap: 8px;
+}
+
+.todoInput {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-size: var(--text-body-sm);
+  outline: none;
+}
+
+.todoInput:focus {
+  border-color: var(--color-primary);
+}
+
+.btnAddTodo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: none;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 40px;
+}
+
+.todosList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.todoItemRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+}
+
+.todoCheckbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.todoTitle {
+  flex: 1;
+  font-size: var(--text-body-sm);
+  color: var(--color-ink);
+}
+
+.todoTitleDone {
+  text-decoration: line-through;
+  color: var(--color-muted);
+}
+
+.btnDeleteTask {
+  background: none;
+  border: none;
+  padding: 4px;
+  color: var(--color-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.btnDeleteTask:hover {
+  color: var(--color-error);
+}
+
+/* ---------- Columna 2: Agenda Contextual ---------- */
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.eventItemRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+}
+
+.eventTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.eventTimeTag {
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.eventDateTag {
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+}
+
+.eventTitle {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.quickAddEventBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-hairline);
+  background-color: var(--color-canvas);
+  color: var(--color-body);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quickAddEventBtn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ---------- Columna 3: Notas & Recursos ---------- */
+
+.resourceSubSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resourceSubTitle {
+  margin: 0;
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+
+.resourceList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resourceItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  font-size: var(--text-body-sm);
+}
+
+.resourceTitle {
+  font-weight: 500;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+.resourceLink {
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.resourceLink:hover {
+  text-decoration: underline;
+}
+
+.emptyNotice {
+  margin: 0;
+  padding: 12px;
+  text-align: center;
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+  background-color: var(--color-canvas);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-hairline);
+}

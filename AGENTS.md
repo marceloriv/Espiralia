@@ -300,7 +300,7 @@ feature          ●──────● (feature/login)
 | --- | --- | --- |
 | `main` | Rama permanente de producción. Siempre verde, etiquetada con tags semánticos (`vX.Y.Z`). | Protegida; solo recibe merges desde `release/*` o `hotfix/*`. |
 | `develop` | Rama permanente de integración y desarrollo activo. Base para nuevas características. | Protegida; recibe merges desde `feature/*`, `release/*` y `hotfix/*`. |
-| `feature/*` | Ramas temporales de nueva funcionalidad. Nace de `develop` y mergea a `develop`. | `feature/descripcion-corta` |
+| `feature/*` | Ramas temporales de nueva funcionalidad. Nace de `develop`; siempre se integra a `develop` vía Pull Request (PR), nunca merge directo. | `feature/descripcion-corta` |
 | `release/*` | Ramas temporales de preparación de release (bump de versión y CHANGELOG). Nace de `develop`, mergea a `main` y a `develop`. | `release/vX.Y.Z` |
 | `hotfix/*` | Ramas temporales de corrección crítica en producción. Nace de `main`, mergea a `main` y a `develop`. | `hotfix/descripcion-corta` |
 
@@ -328,6 +328,7 @@ git branch -d release/v0.1.0
 ```
 
 **Reglas nunca:**
+- Siempre que se termine una feature: crear un Pull Request (PR) hacia la rama `develop`. NUNCA hacer merge directo local sobre `develop`.
 - Nunca commit directo en `main` si los tests no están verificados en verde.
 - Nunca force-push sobre `main` ni `develop` (`--force`).
 - Nunca dejar ramas de feature o release acumulándose tras el merge.
@@ -339,6 +340,7 @@ git branch -d release/v0.1.0
 **Preguntar primero**: force-push, `git reset --hard`/`clean`, agregar o actualizar dependencias, cualquier acción que afecte estado compartido (push, PR, deploy a staging).
 
 **Nunca sin aprobación explícita**:
+- Merge directo de una rama `feature/*` a `develop` o `main` (siempre abrir un PR hacia `develop`, nunca merge directo).
 
 - Migraciones de base de datos aplicadas.
 - Configuración de CI/CD.

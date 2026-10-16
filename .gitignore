@@ -26,3 +26,9 @@ dist-ssr
 # Superpowers and worktrees
 .superpowers/
 .worktrees/
+graphify-out/
+
+# Local tools, caches and scratchpad
+.codegraph/
+.claude/
+scratchpad/

@@ -172,6 +172,6 @@ describe('countByCategory', () => {
       { id: 'c', profileId: 'p', title: 'sin cat', date: '2026-10-14' },
       { ...single, id: 'd', category: 'urgente' },
     ];
-    expect(countByCategory(events)).toEqual({ todas: 4, trabajo: 2, personal: 1, urgente: 1, estudio: 0 });
+    expect(countByCategory(events)).toEqual({ todas: 4, trabajo: 2, personal: 1, urgente: 1, estudio: 0, universidad: 0 });
   });
 });

@@ -106,14 +106,14 @@ describe('TodoView', () => {
   it('renderiza barra de áreas temáticas con conteos y permite filtrar por área', async () => {
     const user = userEvent.setup();
     const areas = StorageService.getAreas(profileId);
-    const trabajo = areas.find(a => a.name === 'Trabajo')!;
+    const estudios = areas.find(a => a.name === 'Estudios')!;
     const personal = areas.find(a => a.name === 'Personal')!;
 
     StorageService.saveTodo({
       id: 't-w',
       profileId,
       title: 'Reporte trimestral',
-      areaId: trabajo.id,
+      areaId: estudios.id,
       priority: 'alta',
       status: 'pendiente',
       createdAt: '2026-10-10',
@@ -132,11 +132,11 @@ describe('TodoView', () => {
 
     // Barra de áreas
     const areaNav = screen.getByRole('region', { name: /áreas temáticas/i });
-    expect(within(areaNav).getByText('Trabajo')).toBeInTheDocument();
+    expect(within(areaNav).getByText('Estudios')).toBeInTheDocument();
     expect(within(areaNav).getByText('Personal')).toBeInTheDocument();
 
-    // Filtra por Trabajo
-    await user.click(within(areaNav).getByRole('button', { name: /área trabajo/i }));
+    // Filtra por Estudios
+    await user.click(within(areaNav).getByRole('button', { name: /área estudios/i }));
     expect(screen.getByText('Reporte trimestral')).toBeInTheDocument();
     expect(screen.queryByText('Comprar frutas')).not.toBeInTheDocument();
 

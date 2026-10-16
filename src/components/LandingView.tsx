@@ -1,0 +1,299 @@
+import React from 'react';
+import {
+  Feather,
+  ShieldCheck,
+  EyeOff,
+  Database,
+  ArrowRight,
+  BookOpen,
+  GraduationCap,
+  Sparkles,
+} from 'lucide-react';
+import { LandingDeskPreview } from './landing/LandingDeskPreview';
+import { LandingIntentionWidget } from './landing/LandingIntentionWidget';
+import styles from './LandingView.module.css';
+
+export interface LandingViewProps {
+  onNavigateLogin: () => void;
+  onNavigateDashboard?: () => void;
+  hasActiveProfile?: boolean;
+}
+
+export const LandingView: React.FC<LandingViewProps> = ({
+  onNavigateLogin,
+  onNavigateDashboard,
+  hasActiveProfile = false,
+}) => {
+  const handlePrimaryCta = () => {
+    if (hasActiveProfile && onNavigateDashboard) {
+      onNavigateDashboard();
+    } else {
+      onNavigateLogin();
+    }
+  };
+
+  return (
+    <div className={styles.landingWrapper}>
+      {/* 1. Top App Bar */}
+      <header className={styles.topBar}>
+        <div className={styles.brandGroup}>
+          <a href="#root" className={styles.logoTitle} aria-label="Espiralia Inicio">
+            Espiralia
+          </a>
+          <span className={styles.editionBadge}>Edición Cuaderno 2026</span>
+          <div className={styles.vaultIndicator} aria-label="Estado del sistema: Bóveda Local">
+            <span className={styles.pulseDot} aria-hidden="true" />
+            <span>Bóveda Local</span>
+          </div>
+        </div>
+
+        <nav className={styles.navLinks} aria-label="Navegación editorial">
+          <a href="#cuaderno" className={styles.navLink}>Cuaderno</a>
+          <a href="#pilares" className={styles.navLink}>Pilares</a>
+          <a href="#ritmos" className={styles.navLink}>Ritmos</a>
+          <a href="#manifiesto" className={styles.navLink}>Manifiesto</a>
+        </nav>
+
+        <div className={styles.actionButtons}>
+          <button
+            type="button"
+            className={styles.loginBtn}
+            onClick={onNavigateLogin}
+          >
+            Acceder
+          </button>
+          <button
+            type="button"
+            className={styles.primaryCtaBtn}
+            onClick={handlePrimaryCta}
+          >
+            <span>Comenzar Cuaderno</span>
+            <ArrowRight size={16} aria-hidden="true" />
+          </button>
+        </div>
+      </header>
+
+      <main>
+        {/* 2. Hero Section */}
+        <section className={styles.heroSection} aria-labelledby="hero-title">
+          <div className={styles.heroInsignia}>
+            <Sparkles size={14} aria-hidden="true" />
+            <span>El Santuario de tu Orden Cotidiano</span>
+          </div>
+
+          <h1 id="hero-title" className={styles.heroHeading}>
+            Tu caos mental transformado en{' '}
+            <span className={styles.heroHeadingItalic}>arte cotidiano</span>.
+          </h1>
+
+          <p className={styles.heroSubtitle}>
+            El cuaderno digital definitivo de productividad introspectiva. Local-first, sobrio y libre de la tiranía de algoritmos o la nube corporativa. Diseñado para ordenar tu mente con la calidez del papel.
+          </p>
+
+          <div className={styles.heroActions}>
+            <button
+              type="button"
+              className={styles.primaryCtaBtn}
+              onClick={handlePrimaryCta}
+            >
+              <Feather size={16} aria-hidden="true" />
+              <span>Abrir Cuaderno Personal</span>
+            </button>
+            <a href="#pilares" className={styles.heroSecondaryLink}>
+              <span>Explorar sin registro</span>
+              <ArrowRight size={14} aria-hidden="true" />
+            </a>
+          </div>
+
+          {/* Tarjeta del Aforismo Oficial */}
+          <div className={styles.aforismoCard} aria-labelledby="aforismo-heading">
+            <div className={styles.aforismoHeader}>
+              <span id="aforismo-heading">Cuaderno de Hoy • 09:15 AM</span>
+              <span className={styles.aforismoTag}>Inspiración Matutina</span>
+            </div>
+            <blockquote className={styles.aforismoText}>
+              “El orden no es una restricción fría, es el espacio fértil donde florecen tus mejores ideas y tu calma más honda.”
+            </blockquote>
+            <div className={styles.aforismoAuthor}>
+              — Cuaderno Espiralia
+            </div>
+          </div>
+        </section>
+
+        {/* 3. Mesa de Trabajo (Showcase Vivo) */}
+        <div id="cuaderno" className={styles.anchorSection}>
+          <LandingDeskPreview />
+        </div>
+
+        {/* 4. Tres Pilares de Enfoque */}
+        <section id="pilares" className={`${styles.pilaresSection} ${styles.anchorSection}`} aria-labelledby="pilares-heading">
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionBadge}>
+              <BookOpen size={14} aria-hidden="true" />
+              <span>Arquitectura de Vida</span>
+            </div>
+            <h2 id="pilares-heading" className={styles.sectionTitle}>
+              Tres pilares de enfoque soberano
+            </h2>
+            <p className={styles.sectionSubtitle}>
+              Estructurado como los tres cuadernos esenciales de una vida reflexiva y dirigida con propósito.
+            </p>
+          </div>
+
+          <div className={styles.pilaresGrid}>
+            <article className={styles.pilarCard} aria-labelledby="pilar-1-title">
+              <div>
+                <div className={styles.pilarHeader}>
+                  <span className={styles.pilarBadge}>Módulo 01</span>
+                </div>
+                <h3 id="pilar-1-title" className={styles.pilarTitle}>1. Estudios & Foco Práctico</h3>
+                <p className={styles.pilarText}>
+                  Preparación intensiva para Licencia Clase B con banco de preguntas oficial CONASET, simuladores cronometrados y métricas de retención real.
+                </p>
+              </div>
+              <div className={styles.pilarMetricBox}>
+                <Sparkles size={14} color="var(--color-primary)" aria-hidden="true" />
+                <span>92% de éxito en simulaciones</span>
+              </div>
+            </article>
+
+            <article className={styles.pilarCard} aria-labelledby="pilar-2-title">
+              <div>
+                <div className={styles.pilarHeader}>
+                  <span className={styles.pilarBadge}>Módulo 02</span>
+                </div>
+                <h3 id="pilar-2-title" className={styles.pilarTitle}>2. Introspección & Diario</h3>
+                <p className={styles.pilarText}>
+                  Escritura reflexiva, registro de estados emocionales y diario de sesiones sin límites ni juicios. Lo que escribes queda únicamente en tu disco.
+                </p>
+              </div>
+              <div className={styles.pilarMetricBox}>
+                <Feather size={14} color="var(--color-primary)" aria-hidden="true" />
+                <span>Sin límites de caracteres • Privacidad total</span>
+              </div>
+            </article>
+
+            <article className={styles.pilarCard} aria-labelledby="pilar-3-title">
+              <div>
+                <div className={styles.pilarHeader}>
+                  <span className={styles.pilarBadge}>Módulo 03</span>
+                </div>
+                <h3 id="pilar-3-title" className={styles.pilarTitle}>3. Horizonte & Universidad</h3>
+                <p className={styles.pilarText}>
+                  Planificación estratégica de postulaciones universitarias 2026, expediente documental, plazos innegociables y seguimiento de requisitos.
+                </p>
+              </div>
+              <div className={styles.pilarMetricBox}>
+                <GraduationCap size={14} color="var(--color-primary)" aria-hidden="true" />
+                <span>6 de 8 documentos verificados</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        {/* 5. Brújula Interior Inmediata */}
+        <div id="ritmos" className={styles.anchorSection}>
+          <LandingIntentionWidget />
+        </div>
+
+        {/* 6. Métricas de Soberanía Digital */}
+        <section className={styles.soberaniaSection} aria-labelledby="soberania-heading">
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionBadge}>
+              <ShieldCheck size={14} aria-hidden="true" />
+              <span>Privacidad Radical</span>
+            </div>
+            <h2 id="soberania-heading" className={styles.sectionTitle}>
+              Soberanía digital certificada
+            </h2>
+            <p className={styles.sectionSubtitle}>
+              Una herramienta construida bajo el principio innegociable de que tus pensamientos no le pertenecen a ninguna corporación.
+            </p>
+          </div>
+
+          <div className={styles.soberaniaGrid}>
+            <div className={styles.soberaniaCard}>
+              <div className={styles.soberaniaIcon}>
+                <ShieldCheck size={24} aria-hidden="true" />
+              </div>
+              <h3 className={styles.soberaniaTitle}>100% Client-Side & Privado</h3>
+              <p className={styles.soberaniaDesc}>
+                Sin servidores remotos ni procesamiento en nube externa. Todo el cómputo y cifrado suceden exclusivamente en tu navegador.
+              </p>
+            </div>
+
+            <div className={styles.soberaniaCard}>
+              <div className={styles.soberaniaIcon}>
+                <EyeOff size={24} aria-hidden="true" />
+              </div>
+              <h3 className={styles.soberaniaTitle}>0 Telemetría Externa</h3>
+              <p className={styles.soberaniaDesc}>
+                Sin trackers, píxeles de seguimiento ni analíticas comerciales. Nadie observa cuándo abres tu cuaderno ni cuánto tiempo escribes.
+              </p>
+            </div>
+
+            <div className={styles.soberaniaCard}>
+              <div className={styles.soberaniaIcon}>
+                <Database size={24} aria-hidden="true" />
+              </div>
+              <h3 className={styles.soberaniaTitle}>Persistencia Perpetua</h3>
+              <p className={styles.soberaniaDesc}>
+                Tus datos residen en la bóveda de almacenamiento del navegador con capacidad de exportación total en JSON y Markdown cuando lo decidas.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 7. Manifiesto Oscuro */}
+        <section id="manifiesto" className={`${styles.manifiestoCard} ${styles.anchorSection}`} aria-labelledby="manifiesto-heading">
+          <div className={styles.manifiestoBadge}>
+            <Feather size={14} aria-hidden="true" />
+            <span>Manifiesto de Soberanía</span>
+          </div>
+          <h2 id="manifiesto-heading" className="sr-only">
+            Manifiesto de Soberanía
+          </h2>
+          <blockquote className={styles.manifiestoQuote}>
+            “Tu tiempo no es un recurso corporativo para exprimir; es el lienzo de tu existencia.”
+          </blockquote>
+          <div className={styles.manifiestoAuthor}>
+            Cuaderno Espiralia • Principios Fundacionales
+          </div>
+          <button
+            type="button"
+            className={styles.manifiestoCta}
+            onClick={handlePrimaryCta}
+          >
+            Comenzar Cuaderno
+          </button>
+        </section>
+      </main>
+
+      {/* Footer */}
+      <footer className={styles.footer} role="contentinfo">
+        <div className={styles.footerContent}>
+          <div>
+            <div className={styles.footerBrand}>Espiralia</div>
+            <div className={styles.footerCopy}>
+              © 2026 Espiralia. Santuario de orden personal y soberanía local.
+            </div>
+          </div>
+
+          <div className={styles.footerLinks}>
+            <a href="#cuaderno" className={styles.footerLink}>Cuaderno</a>
+            <a href="#pilares" className={styles.footerLink}>Pilares</a>
+            <a href="#manifiesto" className={styles.footerLink}>Manifiesto</a>
+            <button
+              type="button"
+              className={styles.footerLink}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit' }}
+              onClick={onNavigateLogin}
+            >
+              Acceder a Bóveda
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};

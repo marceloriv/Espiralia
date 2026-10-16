@@ -27,9 +27,9 @@ describe('App integración general', () => {
     expect(stored.pinHash).toMatch(/^[0-9a-f]{64}$/);
   });
 
-  it('inicia en el selector de perfiles si no hay sesion activa', () => {
+  it('inicia en la portada editorial de bienvenida si no hay sesion activa', async () => {
     render(<App />);
-    expect(screen.getByText(/selecciona tu perfil/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i })).toBeInTheDocument();
   });
 
   it('permite crear perfil, ingresar al dashboard y cambiar de perfil', async () => {
@@ -37,7 +37,10 @@ describe('App integración general', () => {
 
     render(<App />);
 
-    const openCreateBtn = screen.getByRole('button', { name: /nuevo perfil/i });
+    const openLandingBtn = await screen.findByRole('button', { name: /abrir cuaderno personal/i });
+    await user.click(openLandingBtn);
+
+    const openCreateBtn = await screen.findByRole('button', { name: /nuevo perfil/i });
     await user.click(openCreateBtn);
 
     const nameInput = screen.getByLabelText(/nombre/i);
@@ -63,7 +66,10 @@ describe('App integración general', () => {
 
     render(<App />);
 
-    const openCreateBtn = screen.getByRole('button', { name: /nuevo perfil/i });
+    const openLandingBtn = await screen.findByRole('button', { name: /abrir cuaderno personal/i });
+    await user.click(openLandingBtn);
+
+    const openCreateBtn = await screen.findByRole('button', { name: /nuevo perfil/i });
     await user.click(openCreateBtn);
 
     const nameInput = screen.getByLabelText(/nombre/i);

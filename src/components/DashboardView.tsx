@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { BarChart2, Calendar, CalendarPlus, Compass, Flag, ListPlus } from 'lucide-react';
+import { BarChart2, BookOpen, Calendar, CalendarPlus, Compass, Flag, Link as LinkIcon, ListPlus } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
@@ -12,6 +12,8 @@ import styles from './DashboardView.module.css';
 interface DashboardViewProps {
   profile: Profile;
   onNavigate: (view: ViewType) => void;
+  onOpenReflection?: () => void;
+  onOpenLink?: () => void;
 }
 
 const longDateFormatter = new Intl.DateTimeFormat('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -23,7 +25,12 @@ const formatHeroDate = (date: Date): string => {
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
 
-export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigate }) => {
+export const DashboardView: React.FC<DashboardViewProps> = ({
+  profile,
+  onNavigate,
+  onOpenReflection,
+  onOpenLink,
+}) => {
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
   const [planner, setPlanner] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profile.id));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profile.id));
@@ -69,6 +76,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
           {greetingFor(now)}, {profile.name}.
         </h2>
         <p className={styles.heroSubtitle}>Aquí está el pulso de tu día y lo que no puede esperar.</p>
+        <blockquote className={styles.heroAphorism}>
+          <p className={styles.aphorismText}>
+            “El orden no es una restricción, es el espacio donde florecen tus ideas y tu calma.”
+          </p>
+        </blockquote>
         <ul className={styles.heroChips} aria-label="Resumen">
           <li className={styles.chip}>{countLabel(pendingCount, 'pendiente', 'pendientes')}</li>
           <li className={`${styles.chip} ${styles.chipCritical}`}>{countLabel(criticalCount, 'crítico', 'críticos')}</li>
@@ -96,6 +108,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ profile, onNavigat
             <span className={styles.quickText}>
               <span className={styles.quickTitle}>Nuevo evento</span>
               <span className={styles.quickHint}>Horarios y citas</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            className={styles.quickBtn}
+            onClick={() => (onOpenReflection ? onOpenReflection() : onNavigate('notes'))}
+          >
+            <span className={`${styles.quickIcon} ${styles.quickIconNote}`} aria-hidden="true">
+              <BookOpen size={18} />
+            </span>
+            <span className={styles.quickText}>
+              <span className={styles.quickTitle}>Nueva reflexión</span>
+              <span className={styles.quickHint}>Bitácora y calma</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            className={styles.quickBtn}
+            onClick={() => (onOpenLink ? onOpenLink() : onNavigate('folders'))}
+          >
+            <span className={`${styles.quickIcon} ${styles.quickIconLink}`} aria-hidden="true">
+              <LinkIcon size={18} />
+            </span>
+            <span className={styles.quickText}>
+              <span className={styles.quickTitle}>Nuevo enlace / doc</span>
+              <span className={styles.quickHint}>Recursos y vínculos</span>
             </span>
           </button>
         </div>
