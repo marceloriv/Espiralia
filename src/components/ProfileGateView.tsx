@@ -9,9 +9,13 @@ import styles from './ProfileGateView.module.css';
 
 interface ProfileGateViewProps {
   onSelectProfile: (profile: Profile) => void;
+  onNavigateLanding?: () => void;
 }
 
-export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfile }) => {
+export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
+  onSelectProfile,
+  onNavigateLanding,
+}) => {
   const [profiles, setProfiles] = useState<Profile[]>(() => StorageService.getProfiles());
   const [isCreating, setIsCreating] = useState(false);
   const [selectedProfileForPin, setSelectedProfileForPin] = useState<Profile | null>(null);
@@ -143,6 +147,22 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
         >
           <Plus size={18} aria-hidden="true" />
           <span>Nuevo perfil</span>
+        </button>
+      </div>
+
+      <div className={styles.gateFooterLink}>
+        <button
+          type="button"
+          className={styles.btnBackToLanding}
+          onClick={() => {
+            if (onNavigateLanding) {
+              onNavigateLanding();
+            } else {
+              window.location.hash = '#/inicio';
+            }
+          }}
+        >
+          ← Conoce más sobre Espiralia
         </button>
       </div>
 

@@ -191,3 +191,34 @@
   font-size: 14px;
   cursor: pointer;
 }
+
+.gateFooterLink {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.btnBackToLanding {
+  min-height: 44px;
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: var(--color-muted);
+  font-family: var(--font-family-2);
+  font-size: var(--text-button);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  transition: color 150ms ease;
+  touch-action: manipulation;
+}
+
+.btnBackToLanding:hover {
+  color: var(--color-ink);
+}
+
+.btnBackToLanding:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
