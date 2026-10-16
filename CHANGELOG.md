@@ -4,6 +4,68 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.3.0] - 2026-10-16
+
+### Added
+
+- **Página de inicio editorial Stitch (`LandingView`)**:
+  - Vista de bienvenida y mesa de trabajo editorial en `/inicio` con acceso público sin requerir perfil activo.
+  - Widget interactivo de intenciones diarias (calma mental, foco profundo, arranque suave) con persistencia temporal y anuncios accesibles en vivo (`aria-live="polite"`).
+  - Mesa de trabajo editorial interactiva con vista previa de columnas (Enfoque, Tareas, Espacio Mental) y barras de progreso con `role="progressbar"` y valores accesibles.
+  - Gráfico dinámico de ritmo semanal integrado con `@polar-sh/react`, renderizando el progreso de bloques completados con anillos concéntricos y etiqueta textual accesible.
+- **Áreas temáticas clave integradas en To-Do**:
+  - Vista de espacio de trabajo unificado (`AreaIntegratedWorkspace`) combinando tareas del área, agenda contextual de eventos y notas vinculadas en una sola pantalla.
+  - Sembrado contextual de áreas iniciales con paletas cromáticas diferenciadas y filtros dedicados.
+- **Centro de integraciones externas (`IntegrationsView`)**:
+  - Pantalla editorial de integraciones con soporte para exportación e importación de calendarios en formato `.ics` estándar (`IcsService`).
+  - Atajos directos a Google Calendar Web con parámetros seguros (`action=TEMPLATE`) y plantillas de correo para Gmail precompiladas con enlaces `mailto:`.
+  - Banner informativo de privacidad garantizando arquitectura 100% local en cliente sin fuga de datos a servidores externos.
+- **Mejoras del Dashboard principal**:
+  - Aforismo reflexivo dinámico y sección de 4 accesos instantáneos ("A un solo clic") para captura y navegación rápida.
+
+### Changed
+
+- **Refinamiento visual y accesibilidad (H1-H7)**:
+  - Tokens globales de Claude/Espiralia en `src/index.css` (`--font-headline`, `--color-accent`, `--color-ink-muted`).
+  - Ajuste de dimensiones táctiles mínimas a 44px en controles interactivos de modales y dashboard (WCAG 2.5.5 / 2.5.8).
+  - Optimización de contrastes cromáticos y visibilidad de anillos de enfoque en estados hover y focus.
+  - Desplazamiento horizontal fluido y scroll suave en cuadrícula semanal de Planner en pantallas medianas y tablets.
+- **Optimización de servicios (disciplina Ponytail)**:
+  - Simplificación radical de `StorageService` (-180 líneas), unificando serialización directa en `localStorage` con fallbacks seguros.
+  - Adopción de `scheduler.yield()` nativo con fallback a `Promise.resolve()` en bucles de búsqueda cooperativa.
+  - Centralización de utilidades de codificación hexadecimal (`toHex`, `fromHex`) en módulo compartido `src/utils/hex.ts`.
+
+### Removed
+
+- Eliminación de capa en sombra `EspiraliaIDB` (`src/services/idb.ts`), suite asociada y duplicación en `localStorage`.
+- Eliminación de assets huérfanos no referenciados (`hero.png`, `react.svg`, `vite.svg`).
+
+## [0.2.0] - 2026-10-15
+
+### Added
+
+- Vista de Planner Semanal con grilla de 7 días (Lunes a Domingo), asignación de franjas horarias y panel lateral interactivo de metas (`GoalsDrawer`) con cálculo de avance porcentual en tiempo real.
+- Motor de persistencia estructurada local con IndexedDB para notas de texto enriquecidas, vista de carpetas temáticas con contadores reactivos y catálogo de enlaces web con metadatos.
+- Sistema de Bóveda Offline (`VaultModal`) con respaldo y restauración cifrada punto a punto mediante Web Crypto API (AES-GCM de 256 bits y derivación de clave con PBKDF2).
+- Modal de búsqueda global unificado (`GlobalSearchModal`) con atajo de teclado global Ctrl+K / Cmd+K, navegación accesible por teclado y chunking cooperativo de iteraciones mediante `scheduler.yield` / `yieldNow` para optimizar INP.
+- Configuración oficial de React Doctor (`doctor.config.json`) certificando una salud de código de 100/100 (0 errores de compilación, 0 advertencias de accesibilidad y hooks).
+
+### Changed
+
+- Reemplazo de cascadas de actualización de estado (`setState` en `useEffect`) por montaje condicional en los 7 modales principales del sistema (`QuickActionModal`, `VaultModal`, `GlobalSearchModal`, `FolderModal`, `LinkModal`, `NoteModal`, `PlannerBlockModal`).
+- Eliminación de prop-mirroring en `AppLayout` y establecimiento de flujo de datos unidireccional para el perfil activo a través de rutas protegidas.
+- Desacoplamiento de operaciones asíncronas criptográficas a módulo puro `profileOperations.ts` para total compatibilidad con el compilador de React 19.
+- Promoción semántica del título de la vista activa a encabezado `<h2>` en `AppLayout` (WCAG 1.3.1).
+- Activación de desplazamiento suave global (`scroll-behavior: smooth`) y tamaño tipográfico legible en etiquetas de atajo `kbd` (12px).
+
+### Fixed
+
+- Corrección de visibilidad de anillos de enfoque (`:focus-visible`) reemplazando reglas `outline: none` en todos los controles interactivos, modales y formularios (WCAG 2.4.7).
+- Elevación de dimensiones mínimas táctiles a 44px en botones de ajustes, acción rápida y cancelación de fechas (WCAG 2.5.5 / WCAG 2.5.8).
+- Adición del atributo accesible dinámico `aria-pressed` en selectores de paleta de colores de áreas temáticas en `TodoView` y `FolderModal` (WCAG 4.1.2).
+- Eliminación de botones interactivos anidados en el explorador de carpetas (`FoldersView`) para cumplimiento estricto del estándar HTML.
+- Inclusión de nombre accesible explícito (`aria-label`) en el botón de agregado de sub-tareas de `GoalsDrawer`.
+
 ## [0.1.3] - 2026-10-12
 
 ### Added
