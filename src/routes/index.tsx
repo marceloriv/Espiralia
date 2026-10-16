@@ -12,6 +12,7 @@ const TodoView = lazy(() => import('../components/TodoView').then(m => ({ defaul
 const NotesView = lazy(() => import('../components/NotesView').then(m => ({ default: m.NotesView })));
 const FoldersView = lazy(() => import('../components/FoldersView').then(m => ({ default: m.FoldersView })));
 const IntegrationsView = lazy(() => import('../components/IntegrationsView').then(m => ({ default: m.IntegrationsView })));
+const LandingView = lazy(() => import('../components/LandingView').then(m => ({ default: m.LandingView })));
 
 interface AppRoutesProps {
   activeProfile: Profile | null;
@@ -35,10 +36,45 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
 
   return (
     <Routes>
-      {/* Ruta pública: Selector / Creador de perfil */}
+      {/* Rutas públicas */}
+      <Route
+        path="/inicio"
+        element={
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <LandingView
+              onNavigateLogin={() => navigate('/login')}
+              onNavigateDashboard={() => navigate('/dashboard')}
+              hasActiveProfile={Boolean(activeProfile)}
+            />
+          </Suspense>
+        }
+      />
       <Route
         path="/login"
-        element={<ProfileGateView onSelectProfile={handleProfileSelected} />}
+        element={
+          <ProfileGateView
+            onSelectProfile={handleProfileSelected}
+            onNavigateLanding={() => navigate('/inicio')}
+          />
+        }
+      />
+
+      {/* Raíz: bienvenida editorial si no hay perfil; redirección a dashboard si ya está autenticado */}
+      <Route
+        path="/"
+        element={
+          activeProfile ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Suspense fallback={<RouteLoadingFallback />}>
+              <LandingView
+                onNavigateLogin={() => navigate('/login')}
+                onNavigateDashboard={() => navigate('/dashboard')}
+                hasActiveProfile={false}
+              />
+            </Suspense>
+          )
+        }
       />
 
       {/* Rutas protegidas */}
@@ -51,7 +87,6 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           />
         }
       >
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route
           path="/dashboard"
           element={

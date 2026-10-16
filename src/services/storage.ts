@@ -1,10 +1,35 @@
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem } from '../types';
-import { EspiraliaIDB } from './idb';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
 
 const getScopedKey = (profileId: string, domain: string) => `espiralia_${profileId}_${domain}`;
+
+// ponytail: persistencia directa y sincrónica en localStorage. Si un perfil excede 5MB (QuotaExceeded), migrar a IndexedDB asíncrono.
+function getScopedList<T>(key: string): T[] {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveScopedItem<T extends { id: string }>(key: string, item: T): void {
+  const list = getScopedList<T>(key);
+  const existingIndex = list.findIndex(i => i.id === item.id);
+  if (existingIndex >= 0) {
+    list[existingIndex] = item;
+  } else {
+    list.push(item);
+  }
+  localStorage.setItem(key, JSON.stringify(list));
+}
+
+function deleteScopedItem<T extends { id: string }>(key: string, id: string): void {
+  const list = getScopedList<T>(key).filter(i => i.id !== id);
+  localStorage.setItem(key, JSON.stringify(list));
+}
 
 const DEFAULT_AREAS = [
   { name: 'Estudios', color: '#3b82f6' },
@@ -16,39 +41,21 @@ const DEFAULT_AREAS = [
 export const StorageService = {
   // Profiles
   getProfiles(): Profile[] {
-    try {
-      const data = localStorage.getItem(PROFILES_KEY);
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
+    return getScopedList<Profile>(PROFILES_KEY);
   },
 
   saveProfile(profile: Profile): void {
-    const list = this.getProfiles();
-    const existingIndex = list.findIndex(p => p.id === profile.id);
-    if (existingIndex >= 0) {
-      list[existingIndex] = profile;
-    } else {
-      list.push(profile);
-    }
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(list));
+    saveScopedItem(PROFILES_KEY, profile);
   },
 
   deleteProfile(id: string): void {
-    const list = this.getProfiles().filter(p => p.id !== id);
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(list));
+    deleteScopedItem<Profile>(PROFILES_KEY, id);
 
     // Cascade delete profile data
-    localStorage.removeItem(getScopedKey(id, 'events'));
-    localStorage.removeItem(getScopedKey(id, 'planner'));
-    localStorage.removeItem(getScopedKey(id, 'goals'));
-    localStorage.removeItem(getScopedKey(id, 'todos'));
-    localStorage.removeItem(getScopedKey(id, 'areas'));
-    localStorage.removeItem(getScopedKey(id, 'notes'));
-    localStorage.removeItem(getScopedKey(id, 'folders'));
-    localStorage.removeItem(getScopedKey(id, 'links'));
-    void EspiraliaIDB.clearProfile(id);
+    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links'];
+    for (const d of domains) {
+      localStorage.removeItem(getScopedKey(id, d));
+    }
 
     if (this.getActiveProfileId() === id) {
       this.clearActiveProfileId();
@@ -69,80 +76,41 @@ export const StorageService = {
 
   // Agenda Events
   getEvents(profileId: string): AgendaEvent[] {
-    try {
-      const data = localStorage.getItem(getScopedKey(profileId, 'events'));
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
+    return getScopedList<AgendaEvent>(getScopedKey(profileId, 'events'));
   },
 
   saveEvent(event: AgendaEvent): void {
-    const list = this.getEvents(event.profileId);
-    const existingIndex = list.findIndex(e => e.id === event.id);
-    if (existingIndex >= 0) {
-      list[existingIndex] = event;
-    } else {
-      list.push(event);
-    }
-    localStorage.setItem(getScopedKey(event.profileId, 'events'), JSON.stringify(list));
+    saveScopedItem(getScopedKey(event.profileId, 'events'), event);
   },
 
   deleteEvent(profileId: string, eventId: string): void {
-    const list = this.getEvents(profileId).filter(e => e.id !== eventId);
-    localStorage.setItem(getScopedKey(profileId, 'events'), JSON.stringify(list));
+    deleteScopedItem<AgendaEvent>(getScopedKey(profileId, 'events'), eventId);
   },
 
   // Planner
   getPlanner(profileId: string): PlannerBlock[] {
-    try {
-      const data = localStorage.getItem(getScopedKey(profileId, 'planner'));
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
+    return getScopedList<PlannerBlock>(getScopedKey(profileId, 'planner'));
   },
 
   savePlanner(block: PlannerBlock): void {
-    const list = this.getPlanner(block.profileId);
-    const existingIndex = list.findIndex(b => b.id === block.id);
-    if (existingIndex >= 0) {
-      list[existingIndex] = block;
-    } else {
-      list.push(block);
-    }
-    localStorage.setItem(getScopedKey(block.profileId, 'planner'), JSON.stringify(list));
+    saveScopedItem(getScopedKey(block.profileId, 'planner'), block);
   },
 
   deletePlanner(profileId: string, blockId: string): void {
-    const list = this.getPlanner(profileId).filter(b => b.id !== blockId);
-    localStorage.setItem(getScopedKey(profileId, 'planner'), JSON.stringify(list));
+    deleteScopedItem<PlannerBlock>(getScopedKey(profileId, 'planner'), blockId);
   },
 
   // Goals
   getGoals(profileId: string): Goal[] {
-    try {
-      const data = localStorage.getItem(getScopedKey(profileId, 'goals'));
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
+    return getScopedList<Goal>(getScopedKey(profileId, 'goals'));
   },
 
   saveGoal(goal: Goal): void {
-    const list = this.getGoals(goal.profileId);
-    const existingIndex = list.findIndex(g => g.id === goal.id);
-    if (existingIndex >= 0) {
-      list[existingIndex] = goal;
-    } else {
-      list.push(goal);
-    }
-    localStorage.setItem(getScopedKey(goal.profileId, 'goals'), JSON.stringify(list));
+    saveScopedItem(getScopedKey(goal.profileId, 'goals'), goal);
   },
 
   deleteGoal(profileId: string, goalId: string): void {
-    const list = this.getGoals(profileId).filter(g => g.id !== goalId);
-    localStorage.setItem(getScopedKey(profileId, 'goals'), JSON.stringify(list));
+    deleteScopedItem<Goal>(getScopedKey(profileId, 'goals'), goalId);
   },
 
   // Areas
@@ -168,14 +136,7 @@ export const StorageService = {
   },
 
   saveArea(area: Area): void {
-    const list = this.getAreas(area.profileId);
-    const existingIndex = list.findIndex(a => a.id === area.id);
-    if (existingIndex >= 0) {
-      list[existingIndex] = area;
-    } else {
-      list.push(area);
-    }
-    localStorage.setItem(getScopedKey(area.profileId, 'areas'), JSON.stringify(list));
+    saveScopedItem(getScopedKey(area.profileId, 'areas'), area);
   },
 
   deleteArea(profileId: string, areaId: string): void {
@@ -255,8 +216,7 @@ export const StorageService = {
   },
 
   deleteTodo(profileId: string, todoId: string): void {
-    const list = this.getTodos(profileId).filter(t => t.id !== todoId);
-    localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
+    deleteScopedItem<TodoItem>(getScopedKey(profileId, 'todos'), todoId);
   },
 
   toggleTodo(profileId: string, todoId: string): void {
@@ -286,86 +246,41 @@ export const StorageService = {
 
   // Notes
   getNotes(profileId: string): Note[] {
-    try {
-      const data = localStorage.getItem(getScopedKey(profileId, 'notes'));
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
+    return getScopedList<Note>(getScopedKey(profileId, 'notes'));
   },
 
   saveNote(note: Note): void {
-    const list = this.getNotes(note.profileId);
-    const existingIndex = list.findIndex(n => n.id === note.id);
-    if (existingIndex >= 0) {
-      list[existingIndex] = note;
-    } else {
-      list.push(note);
-    }
-    localStorage.setItem(getScopedKey(note.profileId, 'notes'), JSON.stringify(list));
-    void EspiraliaIDB.put('notes', note);
+    saveScopedItem(getScopedKey(note.profileId, 'notes'), note);
   },
 
   deleteNote(profileId: string, noteId: string): void {
-    const list = this.getNotes(profileId).filter(n => n.id !== noteId);
-    localStorage.setItem(getScopedKey(profileId, 'notes'), JSON.stringify(list));
-    void EspiraliaIDB.delete('notes', noteId);
+    deleteScopedItem<Note>(getScopedKey(profileId, 'notes'), noteId);
   },
 
   // Folders
   getFolders(profileId: string): Folder[] {
-    try {
-      const data = localStorage.getItem(getScopedKey(profileId, 'folders'));
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
+    return getScopedList<Folder>(getScopedKey(profileId, 'folders'));
   },
 
   saveFolder(folder: Folder): void {
-    const list = this.getFolders(folder.profileId);
-    const existingIndex = list.findIndex(f => f.id === folder.id);
-    if (existingIndex >= 0) {
-      list[existingIndex] = folder;
-    } else {
-      list.push(folder);
-    }
-    localStorage.setItem(getScopedKey(folder.profileId, 'folders'), JSON.stringify(list));
-    void EspiraliaIDB.put('folders', folder);
+    saveScopedItem(getScopedKey(folder.profileId, 'folders'), folder);
   },
 
   deleteFolder(profileId: string, folderId: string): void {
-    const list = this.getFolders(profileId).filter(f => f.id !== folderId);
-    localStorage.setItem(getScopedKey(profileId, 'folders'), JSON.stringify(list));
-    void EspiraliaIDB.delete('folders', folderId);
+    deleteScopedItem<Folder>(getScopedKey(profileId, 'folders'), folderId);
   },
 
   // Links
   getLinks(profileId: string): LinkItem[] {
-    try {
-      const data = localStorage.getItem(getScopedKey(profileId, 'links'));
-      return data ? JSON.parse(data) : [];
-    } catch {
-      return [];
-    }
+    return getScopedList<LinkItem>(getScopedKey(profileId, 'links'));
   },
 
   saveLink(link: LinkItem): void {
-    const list = this.getLinks(link.profileId);
-    const existingIndex = list.findIndex(l => l.id === link.id);
-    if (existingIndex >= 0) {
-      list[existingIndex] = link;
-    } else {
-      list.push(link);
-    }
-    localStorage.setItem(getScopedKey(link.profileId, 'links'), JSON.stringify(list));
-    void EspiraliaIDB.put('links', link);
+    saveScopedItem(getScopedKey(link.profileId, 'links'), link);
   },
 
   deleteLink(profileId: string, linkId: string): void {
-    const list = this.getLinks(profileId).filter(l => l.id !== linkId);
-    localStorage.setItem(getScopedKey(profileId, 'links'), JSON.stringify(list));
-    void EspiraliaIDB.delete('links', linkId);
+    deleteScopedItem<LinkItem>(getScopedKey(profileId, 'links'), linkId);
   },
 
   seedInitialProfileData(profileId: string): void {
@@ -471,4 +386,3 @@ export const StorageService = {
     }
   },
 };
-

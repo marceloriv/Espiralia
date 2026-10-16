@@ -1,0 +1,625 @@
+.landingWrapper {
+  min-height: 100vh;
+  background-color: var(--color-canvas);
+  color: var(--color-body);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scroll margin para navegación ancla (WCAG 2.4.11 Focus Not Obscured) */
+.anchorSection {
+  scroll-margin-top: calc(5rem + 1.5rem);
+}
+
+/* 1. Top App Bar */
+.topBar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: rgba(250, 249, 245, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-hairline);
+  padding: 0 var(--spacing-lg);
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brandGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.logoTitle {
+  font-family: var(--font-primary);
+  font-size: var(--text-title-lg);
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: -0.5px;
+  text-decoration: none;
+  margin: 0;
+}
+
+.editionBadge {
+  font-family: var(--font-family-2);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-surface-cream-strong);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vaultIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-body-strong);
+}
+
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-success);
+  box-shadow: 0 0 0 0 rgba(93, 184, 114, 0.7);
+  animation: pulseAnimation 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes pulseAnimation {
+  0% {
+    box-shadow: 0 0 0 0 rgba(93, 184, 114, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(93, 184, 114, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(93, 184, 114, 0);
+  }
+}
+
+.navLinks {
+  display: none;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 860px) {
+  .navLinks {
+    display: flex;
+  }
+}
+
+.navLink {
+  color: var(--color-muted);
+  font-size: var(--text-nav-link);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 150ms ease;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--spacing-xs);
+}
+
+.navLink:hover {
+  color: var(--color-ink);
+}
+
+.navLink:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+.actionButtons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.loginBtn {
+  min-height: 44px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  color: var(--color-ink);
+  font-family: var(--font-family-2);
+  font-size: var(--text-button);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  touch-action: manipulation;
+}
+
+.loginBtn:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.loginBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.primaryCtaBtn {
+  min-height: 44px;
+  padding: 8px 18px;
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  color: var(--color-on-primary);
+  font-family: var(--font-family-2);
+  font-size: var(--text-button);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease, box-shadow 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  touch-action: manipulation;
+  box-shadow: var(--shadow-sm);
+}
+
+.primaryCtaBtn:hover {
+  background-color: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+
+.primaryCtaBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* 2. Hero Section */
+.heroSection {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--spacing-xxl) var(--spacing-lg) var(--spacing-xl);
+  text-align: center;
+}
+
+.heroInsignia {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 14px;
+  background-color: var(--color-surface-cream-strong);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption-uppercase);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caption-uppercase);
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+}
+
+.heroHeading {
+  font-family: var(--font-primary);
+  font-size: var(--text-display-lg);
+  line-height: var(--leading-display-lg);
+  letter-spacing: var(--tracking-display-lg);
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .heroHeading {
+    font-size: var(--text-display-xl);
+    line-height: var(--leading-display-xl);
+  }
+}
+
+.heroHeadingItalic {
+  font-style: italic;
+  color: var(--color-primary);
+}
+
+.heroSubtitle {
+  font-size: var(--text-body-md);
+  line-height: var(--leading-body-md);
+  color: var(--color-muted);
+  max-width: 680px;
+  margin: 0 auto var(--spacing-xl);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xxl);
+}
+
+.heroSecondaryLink {
+  min-height: 44px;
+  padding: 8px 18px;
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  color: var(--color-body);
+  font-family: var(--font-family-2);
+  font-size: var(--text-button);
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  transition: all 150ms ease;
+}
+
+.heroSecondaryLink:hover {
+  background-color: var(--color-surface-card);
+  color: var(--color-ink);
+}
+
+.heroSecondaryLink:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Tarjeta del Aforismo */
+.aforismoCard {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  position: relative;
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.aforismoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+}
+
+.aforismoTag {
+  background-color: var(--color-surface-cream-strong);
+  border: 1px solid var(--color-hairline);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-transform: uppercase;
+}
+
+.aforismoText {
+  font-family: var(--font-primary);
+  font-size: var(--text-title-lg);
+  line-height: var(--leading-title-lg);
+  font-style: italic;
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-sm);
+}
+
+.aforismoAuthor {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-body);
+}
+
+/* 4. Tres Pilares */
+.pilaresSection {
+  max-width: 1140px;
+  margin: var(--spacing-xxl) auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.sectionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 12px;
+  background-color: var(--color-surface-cream-strong);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption-uppercase);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caption-uppercase);
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+}
+
+.sectionTitle {
+  font-family: var(--font-primary);
+  font-size: var(--text-display-sm);
+  line-height: var(--leading-display-sm);
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-xs);
+}
+
+.sectionSubtitle {
+  font-size: var(--text-body-sm);
+  color: var(--color-muted);
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.pilaresGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 900px) {
+  .pilaresGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.pilarCard {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+
+.pilarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+}
+
+.pilarBadge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-primary);
+  background-color: var(--color-surface-cream-strong);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.pilarTitle {
+  font-family: var(--font-family-2);
+  font-size: var(--text-title-sm);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-xs);
+}
+
+.pilarText {
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-body-sm);
+  color: var(--color-body);
+  margin-bottom: var(--spacing-md);
+}
+
+.pilarMetricBox {
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--text-caption);
+  color: var(--color-body-strong);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+/* 6. Métricas de Soberanía */
+.soberaniaSection {
+  max-width: 1140px;
+  margin: var(--spacing-xxl) auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.soberaniaGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .soberaniaGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.soberaniaCard {
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  text-align: center;
+}
+
+.soberaniaIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-cream-strong);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+.soberaniaTitle {
+  font-family: var(--font-family-2);
+  font-size: var(--text-title-sm);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-xs);
+}
+
+.soberaniaDesc {
+  font-size: var(--text-body-sm);
+  color: var(--color-muted);
+  line-height: var(--leading-body-sm);
+  margin: 0;
+}
+
+/* 7. Manifiesto Oscuro */
+.manifiestoCard {
+  background-color: var(--color-surface-dark);
+  color: var(--color-on-dark);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xxl) var(--spacing-xl);
+  max-width: 960px;
+  margin: var(--spacing-xxl) auto;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.manifiestoBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 14px;
+  background-color: var(--color-surface-dark-elevated);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption-uppercase);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caption-uppercase);
+  color: var(--color-primary-soft);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+}
+
+.manifiestoQuote {
+  font-family: var(--font-primary);
+  font-size: var(--text-display-sm);
+  line-height: var(--leading-display-sm);
+  font-style: italic;
+  color: var(--color-on-dark);
+  max-width: 760px;
+  margin: 0 auto var(--spacing-lg);
+}
+
+.manifiestoAuthor {
+  font-size: var(--text-body-sm);
+  color: var(--color-on-dark-soft);
+  margin-bottom: var(--spacing-xl);
+}
+
+.manifiestoCta {
+  min-height: 44px;
+  padding: 10px 24px;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family-2);
+  font-size: var(--text-button);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  touch-action: manipulation;
+}
+
+.manifiestoCta:hover {
+  background-color: var(--color-primary-active);
+}
+
+.manifiestoCta:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-surface-dark), 0 0 0 4px var(--color-primary-soft);
+}
+
+/* Footer */
+.footer {
+  border-top: 1px solid var(--color-hairline);
+  background-color: var(--color-surface-soft);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  margin-top: auto;
+}
+
+.footerContent {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .footerContent {
+    flex-direction: row;
+    text-align: left;
+  }
+}
+
+.footerBrand {
+  font-family: var(--font-primary);
+  font-size: var(--text-title-sm);
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.footerCopy {
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+}
+
+.footerLinks {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.footerLink {
+  color: var(--color-muted);
+  font-size: var(--text-caption);
+  text-decoration: none;
+  transition: color 150ms ease;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.footerLink:hover {
+  color: var(--color-ink);
+}
+
+.footerLink:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulseDot {
+    animation: none;
+  }
+}

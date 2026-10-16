@@ -1,4 +1,5 @@
 import type { Profile, AgendaEvent, PlannerBlock, Goal, TodoItem, Area, Note, Folder, LinkItem } from '../types';
+import { toHex, fromHex } from '../utils/hex';
 
 export interface ProfileBackup {
   version: 1;
@@ -25,12 +26,6 @@ export interface EncryptedVaultEnvelope {
   iv: string;   // hex de 12 bytes
   ciphertext: string; // hex
 }
-
-const toHex = (bytes: ArrayBuffer | Uint8Array): string =>
-  Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2, '0')).join('');
-
-const fromHex = (hex: string): Uint8Array<ArrayBuffer> =>
-  new Uint8Array((hex.match(/.{2}/g) ?? []).map(h => parseInt(h, 16)));
 
 export const isVaultEnvelope = (data: unknown): data is EncryptedVaultEnvelope => {
   if (!data || typeof data !== 'object') return false;
