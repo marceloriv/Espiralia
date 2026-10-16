@@ -1,0 +1,312 @@
+.deskContainer {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  margin: var(--spacing-xxl) auto;
+  max-width: 1140px;
+  box-shadow: var(--shadow-md);
+}
+
+.deskHeader {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.deskBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 4px 12px;
+  background-color: var(--color-surface-cream-strong);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption-uppercase);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caption-uppercase);
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm);
+}
+
+.deskTitle {
+  font-family: var(--font-primary);
+  font-size: var(--text-display-sm);
+  line-height: var(--leading-display-sm);
+  color: var(--color-ink);
+  margin-bottom: var(--spacing-xs);
+}
+
+.deskSubtitle {
+  font-size: var(--text-body-sm);
+  color: var(--color-muted);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.columnsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 1024px) {
+  .columnsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.columnCard {
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+
+.colHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+
+.colTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.colTitle {
+  font-family: var(--font-family-2);
+  font-size: var(--text-title-sm);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.colTag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-soft);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Columna 1: Terapéutica */
+.manuscriptExcerpt {
+  font-family: var(--font-primary);
+  font-size: var(--text-body-sm);
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--color-body);
+  background-color: var(--color-surface-soft);
+  border-left: 3px solid var(--color-primary);
+  padding: var(--spacing-md);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: var(--spacing-md);
+}
+
+.findingCard {
+  background-color: var(--color-surface-cream-strong);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--text-caption);
+  color: var(--color-body-strong);
+  font-weight: 500;
+  margin-bottom: var(--spacing-md);
+}
+
+.colFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+/* Columna 2: Ritmo Semanal */
+.circularProgressWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: var(--spacing-sm) 0;
+}
+
+.circularSvg {
+  width: 140px;
+  height: 140px;
+  transform: rotate(-90deg);
+}
+
+.circleBg {
+  fill: none;
+  stroke: var(--color-hairline);
+  stroke-width: 10;
+}
+
+.circleBar {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 377;
+  stroke-dashoffset: 60.32; /* 84% de 377 */
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.progressLabelGroup {
+  margin-top: -85px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.progressNumber {
+  font-family: var(--font-primary);
+  font-size: var(--text-display-sm);
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.progressLabel {
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.legendList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin-bottom: var(--spacing-md);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--text-caption);
+  color: var(--color-body);
+}
+
+.legendDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  margin-right: 6px;
+}
+
+.daysRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+.dayPill {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-muted);
+  background-color: var(--color-surface-soft);
+}
+
+.dayPillActive {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* Columna 3: Tareas Prioritarias */
+.taskList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.taskItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--radius-md);
+}
+
+.taskCheckbox {
+  margin-top: 3px;
+  color: var(--color-primary);
+}
+
+.taskContent {
+  flex: 1;
+}
+
+.taskTitle {
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: 2px;
+}
+
+.taskCompleted {
+  text-decoration: line-through;
+  color: var(--color-muted);
+}
+
+.taskBadge {
+  font-size: 11px;
+  color: var(--color-muted);
+  background-color: var(--color-surface-card);
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  display: inline-block;
+}
+
+.shortcutTip {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--text-caption);
+  color: var(--color-muted);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-hairline-soft);
+}
+
+.kbd {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  background-color: var(--color-surface-cream-strong);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xs);
+  padding: 2px 5px;
+  color: var(--color-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .circleBar {
+    transition: none;
+  }
+}
