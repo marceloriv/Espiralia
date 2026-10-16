@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { DayOfWeek, TimeSlot, Priority } from '../../types';
 import styles from './PlannerBlockModal.module.css';
 
@@ -16,46 +16,34 @@ interface PlannerBlockModalProps {
   }) => void;
 }
 
-export const PlannerBlockModal: React.FC<PlannerBlockModalProps> = ({
-  isOpen,
+const PlannerBlockModalContent: React.FC<PlannerBlockModalProps> = ({
   initialDay,
   onClose,
   onSave,
 }) => {
   const [title, setTitle] = useState('');
   const [dayOfWeek, setDayOfWeek] = useState<string>(
-    initialDay !== undefined ? String(initialDay) : 'none'
+    () => (initialDay !== undefined ? String(initialDay) : 'none')
   );
   const [timeSlot, setTimeSlot] = useState<TimeSlot>('mañana');
   const [priority, setPriority] = useState<Priority>('alta');
   const [time, setTime] = useState('');
   const [notes, setNotes] = useState('');
 
-  // Sincronizar y limpiar estado cuando cambia isOpen o initialDay
-  React.useEffect(() => {
-    if (isOpen) {
-      setDayOfWeek(initialDay !== undefined ? String(initialDay) : 'none');
-      setTitle('');
-      setTimeSlot('mañana');
-      setPriority('alta');
-      setTime('');
-      setNotes('');
-    }
-  }, [isOpen, initialDay]);
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
-  // Manejo de tecla Escape
-  React.useEffect(() => {
-    if (!isOpen) return;
+  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -179,4 +167,9 @@ export const PlannerBlockModal: React.FC<PlannerBlockModalProps> = ({
       </div>
     </div>
   );
+};
+
+export const PlannerBlockModal: React.FC<PlannerBlockModalProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <PlannerBlockModalContent {...props} key={props.initialDay !== undefined ? String(props.initialDay) : 'none'} />;
 };

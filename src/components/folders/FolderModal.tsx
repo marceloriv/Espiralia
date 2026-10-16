@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Folder } from '../../types';
 import styles from './FolderModal.module.css';
 
@@ -11,39 +11,28 @@ interface FolderModalProps {
   initialFolder?: Folder | null;
 }
 
-export const FolderModal: React.FC<FolderModalProps> = ({
-  isOpen,
+const FolderModalContent: React.FC<FolderModalProps> = ({
   onClose,
   onSave,
   initialFolder,
 }) => {
-  const [name, setName] = useState('');
-  const [color, setColor] = useState(DEFAULT_COLORS[0]);
+  const [name, setName] = useState(() => initialFolder?.name || '');
+  const [color, setColor] = useState(() => initialFolder?.color || DEFAULT_COLORS[0]);
+
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
-    if (isOpen) {
-      if (initialFolder) {
-        setName(initialFolder.name);
-        setColor(initialFolder.color || DEFAULT_COLORS[0]);
-      } else {
-        setName('');
-        setColor(DEFAULT_COLORS[0]);
-      }
-    }
-  }, [isOpen, initialFolder]);
-
-  useEffect(() => {
-    if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,4 +103,9 @@ export const FolderModal: React.FC<FolderModalProps> = ({
       </div>
     </div>
   );
+};
+
+export const FolderModal: React.FC<FolderModalProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <FolderModalContent {...props} key={props.initialFolder?.id || 'new'} />;
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Download, Upload, X, Lock, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../../types';
@@ -15,8 +15,7 @@ interface VaultModalProps {
 
 type TabType = 'export' | 'import';
 
-export const VaultModal: React.FC<VaultModalProps> = ({
-  isOpen,
+const VaultModalContent: React.FC<VaultModalProps> = ({
   onClose,
   profile,
   onProfileRestored,
@@ -27,7 +26,13 @@ export const VaultModal: React.FC<VaultModalProps> = ({
   const [isEncrypted, setIsEncrypted] = useState(false);
   const [passphrase, setPassphrase] = useState('');
   const [confirmPassphrase, setConfirmPassphrase] = useState('');
-  const [exportStats, setExportStats] = useState<ProfileBackup | null>(null);
+  const [exportStats] = useState<ProfileBackup | null>(() => {
+    try {
+      return VaultService.exportProfile(profile.id);
+    } catch {
+      return null;
+    }
+  });
 
   // Import State
   const [loadedBackup, setLoadedBackup] = useState<ProfileBackup | null>(null);
@@ -36,39 +41,20 @@ export const VaultModal: React.FC<VaultModalProps> = ({
   const [restoreMode, setRestoreMode] = useState<'overwrite' | 'new_profile'>('overwrite');
   const [importError, setImportError] = useState<string | null>(null);
 
+  const onCloseRef = useRef(onClose);
   useEffect(() => {
-    if (isOpen) {
-      setActiveTab('export');
-      setIsEncrypted(false);
-      setPassphrase('');
-      setConfirmPassphrase('');
-      setLoadedBackup(null);
-      setPendingEnvelope(null);
-      setDecryptPassphrase('');
-      setImportError(null);
-      setRestoreMode('overwrite');
-
-      try {
-        const data = VaultService.exportProfile(profile.id);
-        setExportStats(data);
-      } catch {
-        setExportStats(null);
-      }
-    }
-  }, [isOpen, profile.id]);
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
-    if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+  }, []);
 
   const triggerDownload = (content: string, filename: string, mimeType: string) => {
     const blob = new Blob([content], { type: mimeType });
@@ -408,4 +394,9 @@ export const VaultModal: React.FC<VaultModalProps> = ({
       </div>
     </div>
   );
+};
+
+export const VaultModal: React.FC<VaultModalProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <VaultModalContent {...props} />;
 };

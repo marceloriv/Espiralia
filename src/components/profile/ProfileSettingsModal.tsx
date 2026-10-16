@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Lock, Shield, ShieldAlert, ShieldCheck, Unlock, X } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../../types';
@@ -27,18 +27,23 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   const [removeCurrentPin, setRemoveCurrentPin] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

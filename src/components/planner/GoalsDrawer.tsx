@@ -27,8 +27,8 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
   }, [profileId, onGoalsChange]);
 
   useEffect(() => {
-    loadGoals();
-  }, [loadGoals]);
+    setGoals(StorageService.getGoals(profileId));
+  }, [profileId]);
 
   const handleToggleSubItem = (goalId: string, subId: string) => {
     const targetGoal = goals.find(g => g.id === goalId);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { LinkItem, Folder } from '../../types';
 import styles from './FolderModal.module.css';
 
@@ -11,47 +11,34 @@ interface LinkModalProps {
   folders?: Folder[];
 }
 
-export const LinkModal: React.FC<LinkModalProps> = ({
-  isOpen,
+const LinkModalContent: React.FC<LinkModalProps> = ({
   onClose,
   onSave,
   initialLink,
   defaultFolderId,
   folders = [],
 }) => {
-  const [title, setTitle] = useState('');
-  const [url, setUrl] = useState('');
-  const [description, setDescription] = useState('');
-  const [folderId, setFolderId] = useState<string>('');
+  const [title, setTitle] = useState(() => initialLink?.title || '');
+  const [url, setUrl] = useState(() => initialLink?.url || '');
+  const [description, setDescription] = useState(() => initialLink?.description || '');
+  const [folderId, setFolderId] = useState<string>(
+    () => initialLink?.folderId || defaultFolderId || ''
+  );
+
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
-    if (isOpen) {
-      if (initialLink) {
-        setTitle(initialLink.title);
-        setUrl(initialLink.url);
-        setDescription(initialLink.description || '');
-        setFolderId(initialLink.folderId || defaultFolderId || '');
-      } else {
-        setTitle('');
-        setUrl('');
-        setDescription('');
-        setFolderId(defaultFolderId || '');
-      }
-    }
-  }, [isOpen, initialLink, defaultFolderId]);
-
-  useEffect(() => {
-    if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,4 +150,9 @@ export const LinkModal: React.FC<LinkModalProps> = ({
       </div>
     </div>
   );
+};
+
+export const LinkModal: React.FC<LinkModalProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <LinkModalContent {...props} key={props.initialLink?.id || 'new'} />;
 };

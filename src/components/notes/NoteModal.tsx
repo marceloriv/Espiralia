@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { Note, Folder } from '../../types';
 import styles from './NoteModal.module.css';
 
@@ -16,49 +16,32 @@ interface NoteModalProps {
   folders?: Folder[];
 }
 
-export const NoteModal: React.FC<NoteModalProps> = ({
-  isOpen,
+const NoteModalContent: React.FC<NoteModalProps> = ({
   onClose,
   onSave,
   initialNote,
   folders = [],
 }) => {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [isReflection, setIsReflection] = useState(false);
-  const [folderId, setFolderId] = useState<string>('');
-  const [tagsStr, setTagsStr] = useState('');
+  const [title, setTitle] = useState(() => initialNote?.title || '');
+  const [content, setContent] = useState(() => initialNote?.content || '');
+  const [isReflection, setIsReflection] = useState(() => Boolean(initialNote?.isReflection));
+  const [folderId, setFolderId] = useState<string>(() => initialNote?.folderId || '');
+  const [tagsStr, setTagsStr] = useState(() => (initialNote?.tags || []).join(', '));
+
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
   useEffect(() => {
-    if (isOpen) {
-      if (initialNote) {
-        setTitle(initialNote.title);
-        setContent(initialNote.content);
-        setIsReflection(Boolean(initialNote.isReflection));
-        setFolderId(initialNote.folderId || '');
-        setTagsStr((initialNote.tags || []).join(', '));
-      } else {
-        setTitle('');
-        setContent('');
-        setIsReflection(false);
-        setFolderId('');
-        setTagsStr('');
-      }
-    }
-  }, [isOpen, initialNote]);
-
-  useEffect(() => {
-    if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -189,4 +172,9 @@ export const NoteModal: React.FC<NoteModalProps> = ({
       </div>
     </div>
   );
+};
+
+export const NoteModal: React.FC<NoteModalProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <NoteModalContent {...props} key={props.initialNote?.id || 'new'} />;
 };
