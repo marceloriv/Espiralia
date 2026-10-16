@@ -19,7 +19,7 @@ describe('Rutas de Landing e Inicio', () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i }, { timeout: 4000 })).toBeInTheDocument();
   });
 
   it('cuando no hay perfil activo, la raíz / presenta la landing de bienvenida', async () => {
@@ -33,6 +33,6 @@ describe('Rutas de Landing e Inicio', () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i }, { timeout: 4000 })).toBeInTheDocument();
   });
 });

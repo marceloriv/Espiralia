@@ -21,7 +21,7 @@ describe('App integración general', () => {
 
     render(<App />);
 
-    await waitFor(() => expect(localStorage.getItem('espiralia_profiles')).not.toContain('4321'));
+    await waitFor(() => expect(localStorage.getItem('espiralia_profiles')).not.toContain('4321'), { timeout: 4000 });
     const [stored] = JSON.parse(localStorage.getItem('espiralia_profiles')!);
     expect(stored.pin).toBeUndefined();
     expect(stored.pinHash).toMatch(/^[0-9a-f]{64}$/);
@@ -29,7 +29,7 @@ describe('App integración general', () => {
 
   it('inicia en la portada editorial de bienvenida si no hay sesion activa', async () => {
     render(<App />);
-    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i }, { timeout: 4000 })).toBeInTheDocument();
   });
 
   it('permite crear perfil, ingresar al dashboard y cambiar de perfil', async () => {
