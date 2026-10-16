@@ -78,20 +78,23 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({ onSelectProfil
     }
 
     setBusy(true);
-    try {
-      const res = await createNewProfile(trimmedName, trimmedPin);
-      if (!res.success || !res.profile) {
-        sileo.error({ title: res.error || 'No se pudo crear el perfil' });
-        return;
-      }
+    createNewProfile(trimmedName, trimmedPin)
+      .then(res => {
+        setBusy(false);
+        if (!res.success || !res.profile) {
+          sileo.error({ title: res.error || 'No se pudo crear el perfil' });
+          return;
+        }
 
-      setProfiles(StorageService.getProfiles());
-      setIsCreating(false);
-      sileo.success({ title: `Perfil "${res.profile.name}" creado` });
-      onSelectProfile(res.profile);
-    } finally {
-      setBusy(false);
-    }
+        setProfiles(StorageService.getProfiles());
+        setIsCreating(false);
+        sileo.success({ title: `Perfil "${res.profile.name}" creado` });
+        onSelectProfile(res.profile);
+      })
+      .catch(() => {
+        setBusy(false);
+        sileo.error({ title: 'No se pudo crear el perfil' });
+      });
   };
 
   return (

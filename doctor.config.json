@@ -1,0 +1,7 @@
+{
+  "$schema": "https://react.doctor/config.json",
+  "rules": {
+    "react-doctor/prefer-html-dialog": "off",
+    "react-doctor/no-giant-component": "off"
+  }
+}

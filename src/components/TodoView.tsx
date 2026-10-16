@@ -39,13 +39,9 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
   const todayStr = toLocalDateStr(new Date());
 
   const loadData = useCallback(() => {
-    const loadedAreas = StorageService.getAreas(profileId);
-    setAreas(loadedAreas);
+    setAreas(StorageService.getAreas(profileId));
     setTodos(StorageService.getTodos(profileId));
-    if (!selectedAreaForNew && loadedAreas.length > 0) {
-      setSelectedAreaForNew(loadedAreas[0].id);
-    }
-  }, [profileId, selectedAreaForNew]);
+  }, [profileId]);
 
   useEffect(() => {
     if (isFirstMount.current) {

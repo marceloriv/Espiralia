@@ -28,8 +28,6 @@ describe('React Doctor A11y & HTML validation', () => {
     const user = userEvent.setup();
     render(
       <GoalsDrawer
-        isOpen={true}
-        onClose={() => {}}
         profileId="p-test"
       />
     );

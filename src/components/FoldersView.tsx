@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Plus, Folder as FolderIcon, ExternalLink, Pencil, Trash2, Link as LinkIcon, FileText } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Folder, LinkItem, Note } from '../types';
@@ -12,10 +12,11 @@ interface FoldersViewProps {
 }
 
 export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
-  const [folders, setFolders] = useState<Folder[]>([]);
-  const [links, setLinks] = useState<LinkItem[]>([]);
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null);
+  const [folders, setFolders] = useState<Folder[]>(() => StorageService.getFolders(profileId));
+  const [links, setLinks] = useState<LinkItem[]>(() => StorageService.getLinks(profileId));
+  const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profileId));
+  const [userSelectedFolderId, setUserSelectedFolderId] = useState<string | null>(null);
+  const isFirstMount = useRef(true);
 
   // Modals state
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
@@ -24,28 +25,24 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<LinkItem | null>(null);
 
-  const loadData = useCallback(() => {
-    const fList = StorageService.getFolders(profileId);
-    const lList = StorageService.getLinks(profileId);
-    const nList = StorageService.getNotes(profileId);
-    setFolders(fList);
-    setLinks(lList);
-    setNotes(nList);
-
-    // Si la carpeta seleccionada ya no existe o es null y hay carpetas, seleccionar la primera
-    if (fList.length > 0) {
-      setSelectedFolderId((prev) => {
-        if (!prev || !fList.some((f) => f.id === prev)) {
-          return fList[0].id;
-        }
-        return prev;
-      });
-    } else {
-      setSelectedFolderId(null);
+  const selectedFolderId = useMemo(() => {
+    if (userSelectedFolderId && folders.some((f) => f.id === userSelectedFolderId)) {
+      return userSelectedFolderId;
     }
+    return folders[0]?.id || null;
+  }, [folders, userSelectedFolderId]);
+
+  const loadData = useCallback(() => {
+    setFolders(StorageService.getFolders(profileId));
+    setLinks(StorageService.getLinks(profileId));
+    setNotes(StorageService.getNotes(profileId));
   }, [profileId]);
 
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     loadData();
   }, [loadData]);
 
@@ -98,7 +95,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
         createdAt: new Date().toISOString(),
       };
       StorageService.saveFolder(newFolder);
-      setSelectedFolderId(newFolder.id);
+      setUserSelectedFolderId(newFolder.id);
       try {
         sileo.success({ title: 'Carpeta creada', description: `Se creó la carpeta ${data.name}.` });
       } catch {
@@ -230,7 +227,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
                   <button
                     type="button"
                     className={styles.folderSelectBtn}
-                    onClick={() => setSelectedFolderId(folder.id)}
+                    onClick={() => setUserSelectedFolderId(folder.id)}
                     aria-pressed={isSelected}
                   >
                     <span

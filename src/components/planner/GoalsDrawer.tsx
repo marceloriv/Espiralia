@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Target, Plus, X } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Goal, GoalSubItem } from '../../types';
@@ -26,7 +26,13 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
     onGoalsChange?.();
   }, [profileId, onGoalsChange]);
 
+  const isFirstMount = useRef(true);
+
   useEffect(() => {
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
     setGoals(StorageService.getGoals(profileId));
   }, [profileId]);
 

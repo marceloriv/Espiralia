@@ -60,22 +60,25 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
     }
 
     setIsSubmitting(true);
-    try {
-      const res = await updateProfilePin(profile, newPin, protectedPin ? currentPin : undefined);
-      if (!res.success || !res.updated) {
-        sileo.error({ title: res.error || 'Error al procesar el PIN criptográfico' });
-        return;
-      }
+    updateProfilePin(profile, newPin, protectedPin ? currentPin : undefined)
+      .then(res => {
+        setIsSubmitting(false);
+        if (!res.success || !res.updated) {
+          sileo.error({ title: res.error || 'Error al procesar el PIN criptográfico' });
+          return;
+        }
 
-      sileo.success({ title: protectedPin ? 'PIN actualizado con éxito' : 'PIN configurado con éxito' });
-      onProfileUpdated(res.updated);
-      setCurrentPin('');
-      setNewPin('');
-      setConfirmPin('');
-      onClose();
-    } finally {
-      setIsSubmitting(false);
-    }
+        sileo.success({ title: protectedPin ? 'PIN actualizado con éxito' : 'PIN configurado con éxito' });
+        onProfileUpdated(res.updated);
+        setCurrentPin('');
+        setNewPin('');
+        setConfirmPin('');
+        onClose();
+      })
+      .catch(() => {
+        setIsSubmitting(false);
+        sileo.error({ title: 'Error al procesar el PIN criptográfico' });
+      });
   };
 
   const handleRemovePin = async (e: React.FormEvent) => {
@@ -86,20 +89,23 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
     }
 
     setIsSubmitting(true);
-    try {
-      const res = await removeProfilePin(profile, removeCurrentPin);
-      if (!res.success || !res.updated) {
-        sileo.error({ title: res.error || 'Error al remover el PIN' });
-        return;
-      }
+    removeProfilePin(profile, removeCurrentPin)
+      .then(res => {
+        setIsSubmitting(false);
+        if (!res.success || !res.updated) {
+          sileo.error({ title: res.error || 'Error al remover el PIN' });
+          return;
+        }
 
-      sileo.success({ title: 'PIN eliminado. Perfil ahora en acceso libre' });
-      onProfileUpdated(res.updated);
-      setRemoveCurrentPin('');
-      onClose();
-    } finally {
-      setIsSubmitting(false);
-    }
+        sileo.success({ title: 'PIN eliminado. Perfil ahora en acceso libre' });
+        onProfileUpdated(res.updated);
+        setRemoveCurrentPin('');
+        onClose();
+      })
+      .catch(() => {
+        setIsSubmitting(false);
+        sileo.error({ title: 'Error al remover el PIN' });
+      });
   };
 
   return (

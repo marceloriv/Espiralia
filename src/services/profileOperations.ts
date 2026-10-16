@@ -34,10 +34,10 @@ export async function createNewProfile(name: string, pin: string): Promise<Creat
     StorageService.saveProfile(newProfile);
     StorageService.setActiveProfileId(newProfile.id);
     return { success: true, profile: newProfile };
-  } catch (err) {
+  } catch {
     return {
       success: false,
-      error: err instanceof Error ? err.message : 'No se pudo crear el perfil',
+      error: 'No se pudo crear el perfil',
     };
   }
 }
