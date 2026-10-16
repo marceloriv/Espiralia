@@ -32,3 +32,8 @@ graphify-out/
 .codegraph/
 .claude/
 scratchpad/
+
+# SonarQube & Coverage
+.scannerwork/
+coverage/
+.env
