@@ -6,7 +6,6 @@ import {
   Trash2,
   ExternalLink,
   BookOpen,
-  Link as LinkIcon,
   CalendarPlus,
 } from 'lucide-react';
 import { sileo } from 'sileo';
@@ -27,9 +26,6 @@ export interface AreaIntegratedWorkspaceProps {
 export const AreaIntegratedWorkspace: React.FC<AreaIntegratedWorkspaceProps> = ({
   area,
   profileId,
-  onNavigateAgenda,
-  onNavigateNotes,
-  onNavigateFolders,
   onDataChanged,
 }) => {
   const [todos, setTodos] = useState<TodoItem[]>(() =>

@@ -5,7 +5,7 @@ import { DEFAULT_CATEGORY } from './eventForm';
 
 export type CategoryFilter = EventCategory | 'todas';
 
-export const CATEGORIES: EventCategory[] = ['trabajo', 'personal', 'urgente', 'estudio'];
+export const CATEGORIES: EventCategory[] = ['trabajo', 'personal', 'urgente', 'estudio', 'universidad'];
 export const FILTERS: CategoryFilter[] = ['todas', ...CATEGORIES];
 export const FILTER_LABELS: Record<CategoryFilter, string> = {
   todas: 'Todas',
@@ -13,6 +13,7 @@ export const FILTER_LABELS: Record<CategoryFilter, string> = {
   personal: 'Personal',
   urgente: 'Urgente',
   estudio: 'Estudio',
+  universidad: 'Universidad',
 };
 
 // Contraste texto/fondo >= 4.5:1: ink sobre teal y amber; blanco sobre primary y error.
@@ -21,6 +22,7 @@ export const CATEGORY_COLORS: Record<EventCategory, { color: string; textColor: 
   personal: { color: 'var(--color-primary)', textColor: 'var(--color-on-primary)' },
   urgente: { color: 'var(--color-error)', textColor: 'var(--color-on-primary)' },
   estudio: { color: 'var(--color-accent-amber)', textColor: 'var(--color-ink)' },
+  universidad: { color: 'var(--color-primary-soft, #8b5cf6)', textColor: 'var(--color-on-primary, #ffffff)' },
 };
 
 export const WEEK_DAYS = [
@@ -86,7 +88,14 @@ export const occursOn = (ev: AgendaEvent, dateStr: string): boolean => {
 };
 
 export const countByCategory = (events: AgendaEvent[]): Record<CategoryFilter, number> => {
-  const counts: Record<CategoryFilter, number> = { todas: events.length, trabajo: 0, personal: 0, urgente: 0, estudio: 0 };
+  const counts: Record<CategoryFilter, number> = {
+    todas: events.length,
+    trabajo: 0,
+    personal: 0,
+    urgente: 0,
+    estudio: 0,
+    universidad: 0,
+  };
   for (const ev of events) counts[categoryOf(ev)] += 1;
   return counts;
 };
