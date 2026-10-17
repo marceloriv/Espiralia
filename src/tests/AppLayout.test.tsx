@@ -210,4 +210,16 @@ describe('AppLayout', () => {
     }
     expect(within(nav).getByRole('button', { name: /dashboard/i })).toHaveAttribute('aria-current', 'page');
   });
+
+  it('renderiza la barra lateral editorial con monograma Es, boton de entrada y ficha Local DB', () => {
+    renderLayout();
+
+    expect(screen.getByText('Es')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Espiralia', level: 1 })).toBeInTheDocument();
+    expect(screen.getByText('Taller de Escritorio')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /\+ acción rápida/i })).toBeInTheDocument();
+    expect(screen.getByText(/local db: activa/i)).toBeInTheDocument();
+    expect(screen.getByText(/aes-256/i)).toBeInTheDocument();
+  });
 });
+

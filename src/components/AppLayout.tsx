@@ -126,8 +126,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
       <aside className={styles.sidebar} aria-label="Barra lateral">
         <div className={styles.brand}>
-          <h1 className={styles.brandLogo}>Espiralia</h1>
-          <p className={styles.brandCaption}>Cuaderno personal</p>
+          <div className={styles.brandHeader}>
+            <div className={styles.monogram}>Es</div>
+            <div className={styles.brandText}>
+              <h1 className={styles.brandLogo}>Espiralia</h1>
+              <p className={styles.brandCaption}>Taller de Escritorio</p>
+            </div>
+          </div>
         </div>
 
         <div className={styles.quickActionWrapper}>
@@ -135,6 +140,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             type="button"
             className={styles.quickActionButton}
             onClick={() => setIsQuickActionOpen(true)}
+            aria-label="+ Acción Rápida"
           >
             <Plus size={18} aria-hidden="true" />
             <span>+ Acción Rápida</span>
@@ -160,6 +166,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         </nav>
 
         <div className={styles.sidebarFooter}>
+          <div className={styles.localDbBadge}>
+            <span className={styles.localDbStatus}>
+              <span className={styles.localDbDot} aria-hidden="true" />
+              Local DB: Activa
+            </span>
+            <span className={styles.localDbCipher}>AES-256</span>
+          </div>
+
           <div className={styles.sidebarFooterActions}>
             <button
               type="button"
