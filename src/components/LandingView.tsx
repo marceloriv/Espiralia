@@ -14,6 +14,7 @@ import {
 import { LandingDeskPreview } from './landing/LandingDeskPreview';
 import { LandingIntentionWidget } from './landing/LandingIntentionWidget';
 import { LandingHeroCard } from './landing/LandingHeroCard';
+import { LandingRitmosSection } from './landing/LandingRitmosSection';
 import styles from './LandingView.module.css';
 
 export interface LandingViewProps {
@@ -199,8 +200,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
         </section>
 
-        {/* 5. Brújula Interior Inmediata */}
+        {/* 5. Cadencia Vital & Ritmos */}
         <div id="ritmos" className={styles.anchorSection}>
+          <LandingRitmosSection />
           <LandingIntentionWidget />
         </div>
 
