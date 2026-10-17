@@ -205,6 +205,7 @@ body {
   color: var(--color-body);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 #root {

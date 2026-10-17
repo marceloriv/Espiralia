@@ -2106,3 +2106,35 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 640px) {
+  .dashboardContainer {
+    gap: 20px;
+  }
+  .heroCard {
+    padding: 18px 16px;
+    border-radius: var(--radius-lg);
+  }
+  .displayFocusPlan {
+    font-size: 26px;
+  }
+  .heroTitle {
+    font-size: 24px;
+  }
+  .tactilePostIt {
+    width: 100%;
+    max-width: 320px;
+    margin: 8px auto 0;
+    transform: none;
+  }
+  .heroRightCol {
+    justify-content: center;
+  }
+  .areasSection,
+  .notesSection,
+  .reflectionSection,
+  .metricsSection {
+    padding: 18px 16px;
+    border-radius: var(--radius-lg);
+  }
+}

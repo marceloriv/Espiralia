@@ -1762,3 +1762,13 @@
   color: var(--color-on-primary);
   cursor: pointer;
 }
+
+@media (max-width: 640px) {
+  .editorialH1 {
+    font-size: 1.85rem;
+  }
+  .stationeryBanner {
+    padding: 20px 16px;
+    border-radius: var(--radius-lg);
+  }
+}
