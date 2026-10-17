@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Plus, BookOpen, FileText, Pencil, Trash2, Folder as FolderIcon, Sparkles, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { Note, Folder } from '../types';
+import type { Note, Folder, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { NoteModal } from './notes/NoteModal';
 import styles from './NotesView.module.css';
 
 interface NotesViewProps {
-  profileId: string;
+  profileId?: string;
+  profile?: Profile;
+  onNavigate?: (view: ViewType) => void;
 }
 
 type TabType = 'all' | 'reflections' | 'quick';
 
-export const NotesView: React.FC<NotesViewProps> = ({ profileId }) => {
+export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
+  const profileId = profile?.id ?? propProfileId ?? '';
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profileId));
   const [folders, setFolders] = useState<Folder[]>(() => StorageService.getFolders(profileId));
   const [activeTab, setActiveTab] = useState<TabType>('all');
