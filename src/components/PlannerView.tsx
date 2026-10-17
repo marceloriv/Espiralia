@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Plus, Sparkles, Smile, Sun, Moon, BatteryCharging } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { PlannerBlock, DayOfWeek, TimeSlot, Priority } from '../types';
+import type { PlannerBlock, DayOfWeek, TimeSlot, Priority, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { PlannerDayColumn } from './planner/PlannerDayColumn';
 import { PlannerBlockModal } from './planner/PlannerBlockModal';
@@ -9,10 +9,13 @@ import { GoalsDrawer } from './planner/GoalsDrawer';
 import styles from './PlannerView.module.css';
 
 interface PlannerViewProps {
-  profileId: string;
+  profileId?: string;
+  profile?: Profile;
+  onNavigate?: (view: ViewType) => void;
 }
 
-export const PlannerView: React.FC<PlannerViewProps> = ({ profileId }) => {
+export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
+  const profileId = profile?.id ?? propProfileId ?? '';
   const [blocks, setBlocks] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profileId));
   const [weekOffset, setWeekOffset] = useState(0);
   const [priorityFilter, setPriorityFilter] = useState<'todas' | Priority>('todas');
