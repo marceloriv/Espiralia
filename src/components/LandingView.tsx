@@ -1,9 +1,6 @@
 import React from 'react';
 import {
   Feather,
-  ShieldCheck,
-  EyeOff,
-  Database,
   ArrowRight,
   BookOpen,
   GraduationCap,
@@ -15,6 +12,7 @@ import { LandingDeskPreview } from './landing/LandingDeskPreview';
 import { LandingIntentionWidget } from './landing/LandingIntentionWidget';
 import { LandingHeroCard } from './landing/LandingHeroCard';
 import { LandingRitmosSection } from './landing/LandingRitmosSection';
+import { LandingManifestoSection } from './landing/LandingManifestoSection';
 import styles from './LandingView.module.css';
 
 export interface LandingViewProps {
@@ -206,77 +204,10 @@ export const LandingView: React.FC<LandingViewProps> = ({
           <LandingIntentionWidget />
         </div>
 
-        {/* 6. Métricas de Soberanía Digital */}
-        <section className={styles.soberaniaSection} aria-labelledby="soberania-heading">
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionBadge}>
-              <ShieldCheck size={14} aria-hidden="true" />
-              <span>Privacidad Radical</span>
-            </div>
-            <h2 id="soberania-heading" className={styles.sectionTitle}>
-              Soberanía digital certificada
-            </h2>
-            <p className={styles.sectionSubtitle}>
-              Una herramienta construida bajo el principio innegociable de que tus pensamientos no le pertenecen a ninguna corporación.
-            </p>
-          </div>
-
-          <div className={styles.soberaniaGrid}>
-            <div className={styles.soberaniaCard}>
-              <div className={styles.soberaniaIcon}>
-                <ShieldCheck size={24} aria-hidden="true" />
-              </div>
-              <h3 className={styles.soberaniaTitle}>100% Client-Side & Privado</h3>
-              <p className={styles.soberaniaDesc}>
-                Sin servidores remotos ni procesamiento en nube externa. Todo el cómputo y cifrado suceden exclusivamente en tu navegador.
-              </p>
-            </div>
-
-            <div className={styles.soberaniaCard}>
-              <div className={styles.soberaniaIcon}>
-                <EyeOff size={24} aria-hidden="true" />
-              </div>
-              <h3 className={styles.soberaniaTitle}>0 Telemetría Externa</h3>
-              <p className={styles.soberaniaDesc}>
-                Sin trackers, píxeles de seguimiento ni analíticas comerciales. Nadie observa cuándo abres tu cuaderno ni cuánto tiempo escribes.
-              </p>
-            </div>
-
-            <div className={styles.soberaniaCard}>
-              <div className={styles.soberaniaIcon}>
-                <Database size={24} aria-hidden="true" />
-              </div>
-              <h3 className={styles.soberaniaTitle}>Persistencia Perpetua</h3>
-              <p className={styles.soberaniaDesc}>
-                Tus datos residen en la bóveda de almacenamiento del navegador con capacidad de exportación total en JSON y Markdown cuando lo decidas.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* 7. Manifiesto Oscuro */}
-        <section id="manifiesto" className={`${styles.manifiestoCard} ${styles.anchorSection}`} aria-labelledby="manifiesto-heading">
-          <div className={styles.manifiestoBadge}>
-            <Feather size={14} aria-hidden="true" />
-            <span>Manifiesto de Soberanía</span>
-          </div>
-          <h2 id="manifiesto-heading" className="sr-only">
-            Manifiesto de Soberanía
-          </h2>
-          <blockquote className={styles.manifiestoQuote}>
-            “Tu tiempo no es un recurso corporativo para exprimir; es el lienzo de tu existencia.”
-          </blockquote>
-          <div className={styles.manifiestoAuthor}>
-            Cuaderno Espiralia • Principios Fundacionales
-          </div>
-          <button
-            type="button"
-            className={styles.manifiestoCta}
-            onClick={handlePrimaryCta}
-          >
-            Comenzar Cuaderno
-          </button>
-        </section>
+        {/* 6. Pliego Nocturno: Manifiesto, Certificado Soberanía y Banner de Cierre */}
+        <div id="manifiesto" className={styles.anchorSection}>
+          <LandingManifestoSection onAction={handlePrimaryCta} />
+        </div>
       </main>
 
       {/* Footer */}
