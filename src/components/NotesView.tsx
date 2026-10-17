@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus, BookOpen, FileText, Pencil, Trash2, Folder as FolderIcon, Sparkles, ShieldCheck } from 'lucide-react';
+import { Plus, BookOpen, FileText, Pencil, Sparkles, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Note, Folder, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { NoteModal } from './notes/NoteModal';
+import { BujoCard } from './notes/BujoCard';
+import { parseBujoContent, countWords, getCategoryRibbonColor } from '../utils/bujoFormatter';
 import styles from './NotesView.module.css';
 
 interface NotesViewProps {
@@ -13,6 +15,18 @@ interface NotesViewProps {
 }
 
 type TabType = 'all' | 'reflections' | 'quick';
+
+const DEFAULT_THERAPEUTIC_TITLE = 'Descompresión mental & Autoobservación';
+
+const DEFAULT_THERAPEUTIC_CONTENT = `§ 1. Descompresión mental & Autoobservación
+Hoy inicié la mañana con esa típica tensión en el diafragma. Me descubrí pensando simultáneamente en tres horizontes divergentes: el simulacro de conducción clase B del sábado, la validación del certificado médico y los requerimientos preliminares de ponderación para la postulación universitaria 2026. Al escribirlo aquí, me doy cuenta de que la ansiedad es solo exceso de futuro agolpándose en un día que apenas comienza.
+
+En la sesión de terapia anterior revisamos que la necesidad de control absoluto sobre los resultados suele enmascarar miedo a ser evaluada. Hoy decido soltar la expectativa de perfección. Concluir el día con calma vale más que tachar doce casillas con taquicardia.
+
+[caja: 🚗 Avance Conaset - Simulacro Clase B | 32 / 35 Aprobado (91%) | Puntos críticos a repasar antes de salir a la vía: distancia de frenado en calzada húmeda (coeficiente de adherencia) y prioridad en rotondas de tres pistas. Ya no siento pánico frente al embrague en subida; la memoria muscular se está asentando con naturalidad.]
+
+§ 2. Planes de Postulación 2026 (Diseño & Humanidades)
+Conversado con el orientador: mantener el ritmo de lectura pausada. La meta no es devorar manuales de admisión como si fueran un trámite punitivo, sino reconectar con la curiosidad genuina por la tipografía, la historia editorial y la arquitectura de la información. Mi valor personal no depende de una tabla de percentiles.`;
 
 export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
   const profileId = profile?.id ?? propProfileId ?? '';
@@ -24,6 +38,10 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [basalEnergy, setBasalEnergy] = useState<string>('Sereno');
+  const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const [isEditingPliego, setIsEditingPliego] = useState(false);
+  const [pliegoDraftTitle, setPliegoDraftTitle] = useState('');
+  const [pliegoDraftContent, setPliegoDraftContent] = useState('');
   const isFirstMount = useRef(true);
 
   const loadData = useCallback(() => {
@@ -90,6 +108,10 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   const handleDeleteNote = (note: Note) => {
     if (window.confirm(`¿Seguro que deseas eliminar "${note.title}"?`)) {
       StorageService.deleteNote(profileId, note.id);
+      if (activeNoteId === note.id) {
+        setActiveNoteId(null);
+        setIsEditingPliego(false);
+      }
       try {
         sileo.info({ title: 'Nota eliminada', description: 'Se eliminó la nota.' });
       } catch {
@@ -97,6 +119,110 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       }
       loadData();
     }
+  };
+
+  const activeNote = useMemo(() => {
+    if (!activeNoteId) return null;
+    return notes.find((n) => n.id === activeNoteId) ?? null;
+  }, [notes, activeNoteId]);
+
+  const displayTitle = activeNote ? activeNote.title : DEFAULT_THERAPEUTIC_TITLE;
+  const displayContent = activeNote ? activeNote.content : DEFAULT_THERAPEUTIC_CONTENT;
+
+  const bujoBlocks = useMemo(() => {
+    return parseBujoContent(displayContent, displayTitle);
+  }, [displayContent, displayTitle]);
+
+  const pliegoRibbonColor = useMemo(() => {
+    if (activeNote) {
+      return getCategoryRibbonColor(activeNote.isReflection, activeNote.tags);
+    }
+    return 'var(--color-primary)';
+  }, [activeNote]);
+
+  const pliegoDate = useMemo(() => {
+    if (activeNote) {
+      const raw = activeNote.updatedAt || activeNote.createdAt;
+      if (raw) {
+        try {
+          const d = new Date(raw);
+          if (!isNaN(d.getTime())) {
+            return d.toLocaleDateString('es-CL', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            });
+          }
+        } catch {
+          // Fallback a fecha por defecto
+        }
+      }
+    }
+    return 'Jueves, 24 de Octubre de 2026';
+  }, [activeNote]);
+
+  const activeWordCount = useMemo(() => {
+    const textToCount = isEditingPliego ? pliegoDraftContent : displayContent;
+    return countWords(textToCount);
+  }, [isEditingPliego, pliegoDraftContent, displayContent]);
+
+  const handleSelectActiveNote = (note: Note) => {
+    setActiveNoteId(note.id);
+    setIsEditingPliego(false);
+    setPliegoDraftTitle(note.title);
+    setPliegoDraftContent(note.content);
+  };
+
+  const handleToggleEditPliego = () => {
+    if (!isEditingPliego) {
+      setPliegoDraftTitle(activeNote ? activeNote.title : displayTitle);
+      setPliegoDraftContent(activeNote ? activeNote.content : displayContent);
+      setIsEditingPliego(true);
+    } else {
+      setIsEditingPliego(false);
+    }
+  };
+
+  const handleSavePliego = () => {
+    const now = new Date().toISOString();
+    const titleToSave = pliegoDraftTitle.trim() || displayTitle;
+    const contentToSave = isEditingPliego ? pliegoDraftContent : displayContent;
+
+    if (activeNote) {
+      const updatedNote: Note = {
+        ...activeNote,
+        title: titleToSave,
+        content: contentToSave,
+        updatedAt: now,
+      };
+      StorageService.saveNote(updatedNote);
+      try {
+        sileo.success({ title: 'Pliego Guardado', description: 'Manuscrito preservado en almacenamiento seguro.' });
+      } catch {
+        // Ignorar
+      }
+    } else {
+      const newNote: Note = {
+        id: `note-${Date.now()}`,
+        profileId,
+        title: titleToSave,
+        content: contentToSave,
+        isReflection: true,
+        tags: ['reflexion'],
+        createdAt: now,
+        updatedAt: now,
+      };
+      StorageService.saveNote(newNote);
+      setActiveNoteId(newNote.id);
+      try {
+        sileo.success({ title: 'Pliego Guardado', description: 'Manuscrito preservado en almacenamiento seguro.' });
+      } catch {
+        // Ignorar
+      }
+    }
+    setIsEditingPliego(false);
+    loadData();
   };
 
   const folderMap = useMemo(() => {
@@ -207,16 +333,19 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
             <div className={styles.folioPageMeta}>
               <div className={styles.metaDateGroup}>
                 <span className={styles.metaLabel}>FECHA:</span>
-                <span className={styles.metaDateUnderlined}>Jueves, 24 de Octubre de 2026</span>
+                <span className={styles.metaDateUnderlined}>{pliegoDate}</span>
               </div>
               <div className={styles.metaDetailsGroup}>
+                {activeNote && (
+                  <span className={styles.activePliegoBadge}>Pliego Activo de Trabajo</span>
+                )}
                 <span className={styles.metaItem}>
                   <Sparkles size={14} className={styles.iconTeal} aria-hidden="true" />
-                  <span>Sesión Semanal #14</span>
+                  <span>{activeNote ? activeNote.title : 'Sesión Semanal #14'}</span>
                 </span>
                 <span className={styles.metaItem}>
                   <BookOpen size={14} className={styles.iconPrimary} aria-hidden="true" />
-                  <span>42 min de escritura</span>
+                  <span>{activeNote ? `${activeWordCount} palabras` : '42 min de escritura'}</span>
                 </span>
               </div>
             </div>
@@ -235,54 +364,75 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
             {/* Lienzo Manuscrito Bujo Dot Grid */}
             <div className={styles.bujoCanvas}>
               {/* Cinta marcapáginas en la esquina */}
-              <div className={styles.bookmarkRibbon} aria-hidden="true" />
+              <div
+                className={styles.bookmarkRibbon}
+                style={{ backgroundColor: pliegoRibbonColor }}
+                data-testid="pliego-ribbon"
+                aria-hidden="true"
+              />
 
-              <div className={styles.bujoTextContent}>
-                {/* Sección 1 */}
-                <div className={styles.journalSection}>
-                  <h3 className={styles.sectionHeading}>
-                    <span className={styles.sectionSymbol}>§ 1.</span>
-                    Descompresión mental &amp; Autoobservación
-                  </h3>
-                  <p className={styles.journalParagraph}>
-                    Hoy inicié la mañana con esa típica tensión en el diafragma. Me descubrí pensando simultáneamente en tres horizontes divergentes: el simulacro de conducción clase B del sábado, la validación del certificado médico y los requerimientos preliminares de ponderación para la postulación universitaria 2026. Al escribirlo aquí, me doy cuenta de que <em>la ansiedad es solo exceso de futuro agolpándose en un día que apenas comienza</em>.
-                  </p>
-                  <p className={styles.journalParagraph}>
-                    En la sesión de terapia anterior revisamos que la necesidad de control absoluto sobre los resultados suele enmascarar miedo a ser evaluada. Hoy decido soltar la expectativa de perfección. Concluir el día con calma vale más que tachar doce casillas con taquicardia.
-                  </p>
+              {isEditingPliego ? (
+                <div className={styles.pliegoEditorContainer}>
+                  <input
+                    type="text"
+                    className={styles.pliegoTitleInput}
+                    value={pliegoDraftTitle}
+                    onChange={(e) => setPliegoDraftTitle(e.target.value)}
+                    aria-label="Editar título del pliego"
+                    placeholder="Título del pliego..."
+                  />
+                  <textarea
+                    className={styles.pliegoContentTextarea}
+                    value={pliegoDraftContent}
+                    onChange={(e) => setPliegoDraftContent(e.target.value)}
+                    aria-label="Editar contenido del pliego"
+                    placeholder="Escribe usando sintaxis bujo (§ Sección, [caja: ...])..."
+                    rows={12}
+                  />
                 </div>
+              ) : (
+                <div className={styles.bujoTextContent}>
+                  {bujoBlocks.map((block, idx) => {
+                    if (block.type === 'heading') {
+                      return (
+                        <div key={`h-${idx}`} className={styles.journalSection}>
+                          <h3 className={styles.sectionHeading}>
+                            <span className={styles.sectionSymbol}>{block.symbol}</span>
+                            <span>{block.title}</span>
+                          </h3>
+                        </div>
+                      );
+                    }
+                    if (block.type === 'callout') {
+                      return (
+                        <div key={`c-${idx}`} className={styles.conasetEmbeddedBox}>
+                          <div className={styles.conasetHeader}>
+                            <span className={styles.conasetTitle}>
+                              {block.icon && <span className={styles.conasetIcon}>{block.icon}</span>}
+                              {block.title}
+                            </span>
+                            {block.badge && <span className={styles.conasetBadge}>{block.badge}</span>}
+                          </div>
+                          {block.text && <p className={styles.conasetText}>{block.text}</p>}
+                        </div>
+                      );
+                    }
+                    return (
+                      <p key={`p-${idx}`} className={styles.journalParagraph}>
+                        {block.text}
+                      </p>
+                    );
+                  })}
+                </div>
+              )}
 
-                {/* Sección 2: Simulacro Conaset */}
-                <div className={styles.conasetEmbeddedBox}>
-                  <div className={styles.conasetHeader}>
-                    <span className={styles.conasetTitle}>
-                      <span className={styles.conasetIcon}>🚗</span>
-                      Avance Conaset - Simulacro Clase B
-                    </span>
-                    <span className={styles.conasetBadge}>32 / 35 Aprobado (91%)</span>
-                  </div>
-                  <p className={styles.conasetText}>
-                    Puntos críticos a repasar antes de salir a la vía: distancia de frenado en calzada húmeda (coeficiente de adherencia) y prioridad en rotondas de tres pistas. Ya no siento pánico frente al embrague en subida; la memoria muscular se está asentando con naturalidad.
-                  </p>
-                </div>
-
-                {/* Sección 3: Postulaciones */}
-                <div className={styles.journalSection}>
-                  <h3 className={styles.sectionHeading}>
-                    <span className={styles.sectionSymbol}>§ 2.</span>
-                    Planes de Postulación 2026 (Diseño &amp; Humanidades)
-                  </h3>
-                  <p className={styles.journalParagraph}>
-                    Conversado con el orientador: mantener el ritmo de lectura pausada. La meta no es devorar manuales de admisión como si fueran un trámite punitivo, sino reconectar con la curiosidad genuina por la tipografía, la historia editorial y la arquitectura de la información. Mi valor personal no depende de una tabla de percentiles.
-                  </p>
-                </div>
-
-                {/* Barra de estado de escritura en vivo */}
-                <div className={styles.writingStatusBar}>
-                  <span className={styles.blinkingCursor} />
-                  <span>Escribiendo en vivo en almacenamiento cifrado local • Sin telemetría en la nube</span>
-                  <span className={styles.wordCount}>384 palabras escritas</span>
-                </div>
+              {/* Barra de estado de escritura en vivo */}
+              <div className={styles.writingStatusBar}>
+                <span className={styles.blinkingCursor} />
+                <span>Escribiendo en vivo en almacenamiento cifrado local • Sin telemetría en la nube</span>
+                <span className={styles.wordCount}>
+                  {activeWordCount} {activeWordCount === 1 ? 'palabra escrita' : 'palabras escritas'}
+                </span>
               </div>
             </div>
 
@@ -446,14 +596,23 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
             <button
               type="button"
               className={styles.btnVersionHistory}
-              onClick={() => sileo.info({ title: 'Versión del pliego', description: 'Pliego #14 sincronizado localmente.' })}
+              onClick={() => sileo.info({ title: 'Versión del pliego', description: 'Pliego sincronizado localmente.' })}
             >
               <span>Historial de Versiones</span>
             </button>
             <button
               type="button"
+              className={styles.btnEditPliego}
+              onClick={handleToggleEditPliego}
+              aria-label={isEditingPliego ? 'Ver Pliego' : 'Editar Pliego'}
+            >
+              <span>{isEditingPliego ? 'Ver Pliego' : 'Editar Pliego'}</span>
+            </button>
+            <button
+              type="button"
               className={styles.btnSavePliego}
-              onClick={() => sileo.success({ title: 'Pliego Guardado', description: 'Manuscrito preservado en almacenamiento seguro.' })}
+              onClick={handleSavePliego}
+              aria-label="Guardar Pliego"
             >
               <span>Guardar Pliego</span>
             </button>
@@ -523,65 +682,15 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
             {filteredNotes.map((note) => {
               const folder = note.folderId ? folderMap.get(note.folderId) : undefined;
               return (
-                <article
+                <BujoCard
                   key={note.id}
-                  className={`${styles.card} ${note.isReflection ? styles.cardReflection : ''}`}
-                >
-                  <div className={styles.cardHeader}>
-                    <div className={styles.cardTopRow}>
-                      <h3 className={styles.cardTitle}>{note.title}</h3>
-                      {note.isReflection && (
-                        <span className={`${styles.badge} ${styles.reflectionBadge}`}>
-                          Reflexión
-                        </span>
-                      )}
-                    </div>
-                    {folder && (
-                      <span className={`${styles.badge} ${styles.folderBadge}`}>
-                        <FolderIcon size={12} style={{ marginRight: 4 }} />
-                        {folder.name}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className={styles.cardContent}>{note.content}</div>
-
-                  {note.tags && note.tags.length > 0 && (
-                    <div className={styles.tagList}>
-                      {note.tags.map((tag) => (
-                        <span key={tag} className={styles.tag}>
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <div className={styles.cardFooter}>
-                    <span className={styles.dateInfo}>
-                      {note.updatedAt
-                        ? new Date(note.updatedAt).toLocaleDateString('es-CL')
-                        : ''}
-                    </span>
-                    <div className={styles.cardActions}>
-                      <button
-                        type="button"
-                        className={styles.iconBtn}
-                        onClick={() => handleOpenEdit(note)}
-                        aria-label={`Editar nota ${note.title}`}
-                      >
-                        <Pencil size={16} aria-hidden="true" />
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.iconBtn}
-                        onClick={() => handleDeleteNote(note)}
-                        aria-label={`Eliminar nota ${note.title}`}
-                      >
-                        <Trash2 size={16} aria-hidden="true" />
-                      </button>
-                    </div>
-                  </div>
-                </article>
+                  note={note}
+                  folder={folder}
+                  isActive={note.id === activeNoteId}
+                  onSelect={handleSelectActiveNote}
+                  onEdit={handleOpenEdit}
+                  onDelete={handleDeleteNote}
+                />
               );
             })}
           </div>
