@@ -11,7 +11,7 @@ import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
 import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Sparkles, CheckCircle2 } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { AgendaEvent, EventCategory } from '../types';
+import type { AgendaEvent, EventCategory, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { defaultEndTime, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
 import { MAX_TITLE_LENGTH, emptyEventForm, eventFormFromEvent, validateEventForm } from './agenda/eventForm';
@@ -32,7 +32,9 @@ import { commitTimeChange, safeDeleteEvent, safeSaveEvent } from './agenda/event
 import styles from './AgendaView.module.css';
 
 interface AgendaViewProps {
-  profileId: string;
+  profileId?: string;
+  profile?: Profile;
+  onNavigate?: (view: ViewType) => void;
 }
 
 const NARROW_QUERY = '(max-width: 767px)';
@@ -51,9 +53,10 @@ const MONTH_NAMES = [
 ];
 
 // La key fuerza un remontaje limpio al cambiar de perfil: sin estado ni calendario residual.
-export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => (
-  <AgendaBoard key={profileId} profileId={profileId} />
-);
+export const AgendaView: React.FC<AgendaViewProps> = ({ profileId: propProfileId, profile, onNavigate }) => {
+  const resolvedProfileId = profile?.id ?? propProfileId ?? '';
+  return <AgendaBoard key={resolvedProfileId} profileId={resolvedProfileId} profile={profile} onNavigate={onNavigate} />;
+};
 
 const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   const calendarRef = useRef<CalendarRef>(null);
