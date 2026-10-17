@@ -17,14 +17,16 @@ import {
   PiggyBank,
 } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { Folder, LinkItem, Note } from '../types';
+import type { Folder, LinkItem, Note, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
 import styles from './FoldersView.module.css';
 
 interface FoldersViewProps {
-  profileId: string;
+  profileId?: string;
+  profile?: Profile;
+  onNavigate?: (view: ViewType) => void;
 }
 
 interface CuratedFolder {
@@ -81,7 +83,8 @@ const DEFAULT_CURATED_FOLDERS: CuratedFolder[] = [
   },
 ];
 
-export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
+export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
+  const profileId = profile?.id ?? propProfileId ?? '';
   const [folders, setFolders] = useState<Folder[]>(() => StorageService.getFolders(profileId));
   const [links, setLinks] = useState<LinkItem[]>(() => StorageService.getLinks(profileId));
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profileId));
