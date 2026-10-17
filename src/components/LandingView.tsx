@@ -8,9 +8,12 @@ import {
   BookOpen,
   GraduationCap,
   Sparkles,
+  Lock,
+  Check,
 } from 'lucide-react';
 import { LandingDeskPreview } from './landing/LandingDeskPreview';
 import { LandingIntentionWidget } from './landing/LandingIntentionWidget';
+import { LandingHeroCard } from './landing/LandingHeroCard';
 import styles from './LandingView.module.css';
 
 export interface LandingViewProps {
@@ -37,21 +40,18 @@ export const LandingView: React.FC<LandingViewProps> = ({
       {/* 1. Top App Bar */}
       <header className={styles.topBar}>
         <div className={styles.brandGroup}>
+          <div className={styles.logoMonogram} aria-hidden="true">☲</div>
           <a href="#root" className={styles.logoTitle} aria-label="Espiralia Inicio">
             Espiralia
           </a>
-          <span className={styles.editionBadge}>Edición Cuaderno 2026</span>
-          <div className={styles.vaultIndicator} aria-label="Estado del sistema: Bóveda Local">
-            <span className={styles.pulseDot} aria-hidden="true" />
-            <span>Bóveda Local</span>
-          </div>
+          <span className={styles.editionBadge}>v2.4 Papelería</span>
         </div>
 
         <nav className={styles.navLinks} aria-label="Navegación editorial">
-          <a href="#cuaderno" className={styles.navLink}>Cuaderno</a>
-          <a href="#pilares" className={styles.navLink}>Pilares</a>
-          <a href="#ritmos" className={styles.navLink}>Ritmos</a>
           <a href="#manifiesto" className={styles.navLink}>Manifiesto</a>
+          <a href="#cuaderno" className={`${styles.navLink} ${styles.navLinkActive}`}>Cuaderno</a>
+          <a href="#ritmos" className={styles.navLink}>Ritmos</a>
+          <a href="#pilares" className={styles.navLink}>Metodología</a>
         </nav>
 
         <div className={styles.actionButtons}>
@@ -60,7 +60,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
             className={styles.loginBtn}
             onClick={onNavigateLogin}
           >
-            Acceder
+            <Lock size={14} aria-hidden="true" />
+            <span>Acceder</span>
           </button>
           <button
             type="button"
@@ -76,47 +77,54 @@ export const LandingView: React.FC<LandingViewProps> = ({
       <main>
         {/* 2. Hero Section */}
         <section className={styles.heroSection} aria-labelledby="hero-title">
-          <div className={styles.heroInsignia}>
-            <Sparkles size={14} aria-hidden="true" />
-            <span>El Santuario de tu Orden Cotidiano</span>
-          </div>
+          <div className={styles.heroGrid}>
+            <div className={styles.heroContent}>
+              <div className={styles.heroInsignia}>
+                <span className={styles.heroInsigniaDot} aria-hidden="true" />
+                <span>100% Client-Side • Sin Rastreo • Almacenamiento Local</span>
+              </div>
 
-          <h1 id="hero-title" className={styles.heroHeading}>
-            Tu caos mental transformado en{' '}
-            <span className={styles.heroHeadingItalic}>arte cotidiano</span>.
-          </h1>
+              <h1 id="hero-title" className={styles.heroHeading}>
+                El arte de organizar tu vida con{' '}
+                <span className={styles.heroHeadingItalic}>serenidad cotidiana</span>.
+              </h1>
 
-          <p className={styles.heroSubtitle}>
-            El cuaderno digital definitivo de productividad introspectiva. Local-first, sobrio y libre de la tiranía de algoritmos o la nube corporativa. Diseñado para ordenar tu mente con la calidez del papel.
-          </p>
+              <p className={styles.heroSubtitle}>
+                Un santuario táctil para tu atención. Diseñado con la nobleza de la papelería editorial japonesa y la soberanía de una bóveda local cifrada. Sin nubes ajenas, sin suscripciones, sin distracciones.
+              </p>
 
-          <div className={styles.heroActions}>
-            <button
-              type="button"
-              className={styles.primaryCtaBtn}
-              onClick={handlePrimaryCta}
-            >
-              <Feather size={16} aria-hidden="true" />
-              <span>Abrir Cuaderno Personal</span>
-            </button>
-            <a href="#pilares" className={styles.heroSecondaryLink}>
-              <span>Explorar sin registro</span>
-              <ArrowRight size={14} aria-hidden="true" />
-            </a>
-          </div>
+              <div className={styles.heroActions}>
+                <button
+                  type="button"
+                  className={styles.primaryCtaBtn}
+                  onClick={handlePrimaryCta}
+                >
+                  <Feather size={16} aria-hidden="true" />
+                  <span>Abrir Cuaderno Inmediato</span>
+                </button>
+                <a href="#cuaderno" className={styles.heroSecondaryLink}>
+                  <span>Explorar Mesa de Trabajo</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </a>
+              </div>
 
-          {/* Tarjeta del Aforismo Oficial */}
-          <div className={styles.aforismoCard} aria-labelledby="aforismo-heading">
-            <div className={styles.aforismoHeader}>
-              <span id="aforismo-heading">Cuaderno de Hoy • 09:15 AM</span>
-              <span className={styles.aforismoTag}>Inspiración Matutina</span>
+              <div className={styles.heroMicroSpecs}>
+                <div className={styles.microSpecItem}>
+                  <Check size={13} color="var(--color-primary)" aria-hidden="true" />
+                  <span>IndexedDB cifrado</span>
+                </div>
+                <div className={styles.microSpecItem}>
+                  <Check size={13} color="var(--color-primary)" aria-hidden="true" />
+                  <span>Exporta a .MD & .ICS</span>
+                </div>
+                <div className={styles.microSpecItem}>
+                  <Check size={13} color="var(--color-primary)" aria-hidden="true" />
+                  <span>Listo para imprenta A4/A5</span>
+                </div>
+              </div>
             </div>
-            <blockquote className={styles.aforismoText}>
-              “El orden no es una restricción fría, es el espacio fértil donde florecen tus mejores ideas y tu calma más honda.”
-            </blockquote>
-            <div className={styles.aforismoAuthor}>
-              — Cuaderno Espiralia
-            </div>
+
+            <LandingHeroCard onAction={handlePrimaryCta} />
           </div>
         </section>
 

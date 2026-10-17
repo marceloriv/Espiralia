@@ -4,12 +4,13 @@ import userEvent from '@testing-library/user-event';
 import { LandingView } from '../components/LandingView';
 
 describe('LandingView', () => {
-  it('renderiza la cabecera editorial con indicador de bóveda local y titular display', () => {
+  it('renderiza la cabecera editorial con indicador v2.4 papelería y titular display', () => {
     render(<LandingView onNavigateLogin={() => {}} />);
-    expect(screen.getByRole('heading', { level: 1, name: /tu caos mental transformado en arte cotidiano/i })).toBeInTheDocument();
-    expect(screen.getByText(/edición cuaderno 2026/i)).toBeInTheDocument();
-    expect(screen.getByText(/bóveda local/i)).toBeInTheDocument();
-    expect(screen.getByText(/el orden no es una restricción fría/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /el arte de organizar tu vida con serenidad cotidiana/i })).toBeInTheDocument();
+    expect(screen.getByText(/v2\.4 papelería/i)).toBeInTheDocument();
+    expect(screen.getByText(/100% client-side • sin rastreo • almacenamiento local/i)).toBeInTheDocument();
+    expect(screen.getByText(/indexeddb cifrado/i)).toBeInTheDocument();
+    expect(screen.getByText(/biorritmo hoy/i)).toBeInTheDocument();
   });
 
   it('despliega los tres pilares de enfoque con enlaces ancla y scroll-margin', () => {
