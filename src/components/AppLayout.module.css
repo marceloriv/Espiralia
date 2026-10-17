@@ -1,7 +1,9 @@
 .appContainer {
   display: flex;
   min-height: 100vh;
-  background-color: var(--color-canvas);
+  background-color: var(--bg-canvas, var(--color-canvas));
+  background-image: var(--pattern-dot-grid);
+  background-size: 24px 24px;
 }
 
 .skipLink {
@@ -37,8 +39,8 @@
   width: 260px;
   height: 100vh;
   padding: 24px 16px;
-  background-color: var(--color-surface-soft);
-  border-right: 1px solid var(--color-hairline);
+  background-color: var(--bg-surface-soft, var(--color-surface-soft));
+  border-right: 1px solid var(--border-hairline, var(--color-hairline));
 }
 
 .brand {
