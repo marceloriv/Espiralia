@@ -80,4 +80,81 @@ describe('NotesView', () => {
     expect(screen.queryByText('Nota rápida de compras')).not.toBeInTheDocument();
     expect(screen.getByText('Reflexión profunda')).toBeInTheDocument();
   });
+
+  it('flujo integral de usuario: crea nota con secciones bujo y callout, verifica BujoCard con cinta, hidrata el pliego superior y filtra por pestaña', async () => {
+    const user = userEvent.setup();
+
+    // Pre-poblamos una nota rápida no-reflexión para verificar el aislamiento y filtrado por pestañas
+    StorageService.saveNote({
+      id: 'note-compras',
+      profileId,
+      title: 'Lista de Ferretería',
+      content: 'Tornillos y lija fina',
+      isReflection: false,
+      tags: ['taller'],
+      createdAt: '2026-10-17T08:00:00.000Z',
+      updatedAt: '2026-10-17T08:00:00.000Z',
+    });
+
+    render(<NotesView profileId={profileId} />);
+
+    // 1. Crear una nueva nota con secciones § 1. y caja [caja: Examen | 100% | Excelente]
+    const addBtn = screen.getByRole('button', { name: /\+ nueva nota/i });
+    await user.click(addBtn);
+
+    const titleInput = screen.getByLabelText(/título/i);
+    await user.type(titleInput, 'Evaluación Conaset B');
+
+    const contentInput = screen.getByLabelText(/contenido/i);
+    await user.type(
+      contentInput,
+      '§ 1. Preparación Teórica\nRevisar distancias de frenado y rotondas.\n\n[[caja: Examen | 100% | Excelente]'
+    );
+
+    const reflectionCheckbox = screen.getByLabelText(/marcar como reflexión de diario/i);
+    await user.click(reflectionCheckbox);
+
+    const tagsInput = screen.getByLabelText(/etiquetas/i);
+    await user.type(tagsInput, 'conaset, estudio');
+
+    const saveBtn = screen.getByRole('button', { name: /guardar nota/i });
+    await user.click(saveBtn);
+
+    // 2. Verificar que aparece en la grilla con BujoCard (cinta marcapáginas, §)
+    const cardTitle = screen.getByRole('heading', { level: 3, name: /evaluación conaset b/i });
+    expect(cardTitle).toBeInTheDocument();
+
+    const bujoRibbons = screen.getAllByTestId('bujo-ribbon');
+    expect(bujoRibbons.length).toBeGreaterThanOrEqual(1);
+
+    // La tarjeta BujoCard muestra el preview formateado del callout y la sección
+    expect(screen.getByText(/Examen:\s*Excelente/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reflexión/i)).toBeInTheDocument();
+
+    // 3. Seleccionar la tarjeta y verificar que el pliego superior se hidrata con la caja y secciones
+    await user.click(cardTitle);
+
+    // Pliego superior hidratado
+    expect(screen.getByText('Pliego Activo de Trabajo')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /preparación teórica/i })).toBeInTheDocument();
+    expect(screen.getByText('§ 1.')).toBeInTheDocument();
+    expect(screen.getByText('Examen')).toBeInTheDocument();
+    expect(screen.getByText('100%')).toBeInTheDocument();
+    expect(screen.getByText('Excelente')).toBeInTheDocument();
+    expect(screen.getByText(/palabras escritas/i)).toBeInTheDocument();
+
+    // Cinta marcapáginas del pliego superior refleja el color de estudio (#047857)
+    const pliegoRibbon = screen.getByTestId('pliego-ribbon');
+    expect(pliegoRibbon).toHaveStyle({ backgroundColor: '#047857' });
+
+    // 4. Filtrar por reflexiones y verificar que solo permanecen las reflexiones
+    expect(screen.getByText('Lista de Ferretería')).toBeInTheDocument();
+
+    const reflectionsTab = screen.getByRole('button', { name: /reflexiones & diario/i });
+    await user.click(reflectionsTab);
+
+    expect(screen.queryByText('Lista de Ferretería')).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: /evaluación conaset b/i })).toBeInTheDocument();
+  });
 });
+

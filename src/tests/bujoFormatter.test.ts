@@ -3,9 +3,9 @@ import {
   countWords,
   parseBujoContent,
   getCategoryRibbonColor,
-  BujoHeadingBlock,
-  BujoCalloutBlock,
-  BujoParagraphBlock,
+  type BujoHeadingBlock,
+  type BujoCalloutBlock,
+  type BujoParagraphBlock,
 } from '../utils/bujoFormatter';
 
 describe('bujoFormatter', () => {
