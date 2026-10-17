@@ -74,6 +74,29 @@ export const StorageService = {
     localStorage.removeItem(ACTIVE_PROFILE_KEY);
   },
 
+  exportVault(): string {
+    const profiles = this.getProfiles();
+    const vault: Record<string, unknown> = {
+      version: '1.0',
+      exportedAt: new Date().toISOString(),
+      profiles,
+      data: {} as Record<string, unknown>,
+    };
+    for (const p of profiles) {
+      (vault.data as Record<string, unknown>)[p.id] = {
+        events: this.getEvents(p.id),
+        planner: this.getPlanner(p.id),
+        todos: this.getTodos(p.id),
+        areas: this.getAreas(p.id),
+        notes: this.getNotes(p.id),
+        folders: this.getFolders(p.id),
+        links: this.getLinks(p.id),
+        goals: this.getGoals(p.id),
+      };
+    }
+    return JSON.stringify(vault, null, 2);
+  },
+
   // Agenda Events
   getEvents(profileId: string): AgendaEvent[] {
     return getScopedList<AgendaEvent>(getScopedKey(profileId, 'events'));

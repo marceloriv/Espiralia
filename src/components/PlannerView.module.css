@@ -257,7 +257,7 @@
   background: var(--color-bg-postit, #fef8d6);
   padding: 10px 14px;
   border-radius: 2px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-postit);
   position: relative;
   transform: rotate(1.5deg);
 }
@@ -271,7 +271,7 @@
   height: 10px;
   border-radius: 50%;
   background: #b4833e;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .stickyText {

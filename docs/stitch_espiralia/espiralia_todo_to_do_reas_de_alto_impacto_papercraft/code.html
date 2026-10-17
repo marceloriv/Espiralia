@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Espiralia — Tareas &amp; Áreas Integradas</title>
+<!-- Typography: Newsreader, Inter, JetBrains Mono & Caveat (Handwritten script) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary": "#ffffff",
+            "body": "#3d3d3a",
+            "surface-soft": "#f5f0e8",
+            "tertiary": "#00483e",
+            "on-primary-container": "#fab3ff",
+            "accent-amber": "#e8a55a",
+            "error": "#c64545",
+            "inverse-primary": "#f9acff",
+            "hairline-soft": "#ebe6df",
+            "on-tertiary-fixed-variant": "#005045",
+            "background": "#fcf9f6",
+            "secondary": "#9c2c9c",
+            "secondary-container": "#ff86f9",
+            "surface-dark": "#181715",
+            "on-tertiary-fixed": "#00201b",
+            "inverse-on-surface": "#f3f0ee",
+            "surface-container-highest": "#e5e2e0",
+            "surface-container": "#f0edeb",
+            "surface-dim": "#dcd9d7",
+            "on-dark": "#faf9f5",
+            "primary-soft": "#ED96D7",
+            "surface-dark-elevated": "#252320",
+            "primary": "#6e0081",
+            "secondary-fixed-dim": "#ffaaf6",
+            "on-tertiary": "#ffffff",
+            "surface-card": "#efe9de",
+            "body-strong": "#252523",
+            "surface-cream-strong": "#e8e0d2",
+            "tertiary-fixed-dim": "#7cd7c4",
+            "primary-fixed": "#ffd6fe",
+            "error-container": "#ffdad6",
+            "primary-fixed-dim": "#f9acff",
+            "muted-soft": "#8e8b82",
+            "outline-variant": "#d4c1d2",
+            "outline": "#837281",
+            "surface-bright": "#fcf9f6",
+            "inverse-surface": "#31302f",
+            "canvas": "#faf9f5",
+            "on-primary-fixed-variant": "#7b0090",
+            "tertiary-fixed": "#98f3e0",
+            "on-primary": "#ffffff",
+            "muted": "#6c6a64",
+            "on-error": "#ffffff",
+            "on-secondary-container": "#7d0380",
+            "on-primary-fixed": "#35003f",
+            "on-tertiary-container": "#82ddc9",
+            "warning": "#d4a017",
+            "surface-variant": "#e5e2e0",
+            "secondary-fixed": "#ffd7f6",
+            "primary-container": "#8e1ea2",
+            "success": "#5db872",
+            "on-background": "#1c1c1a",
+            "ink": "#141413",
+            "surface-tint": "#982aab",
+            "surface-container-low": "#f6f3f1",
+            "surface-container-lowest": "#ffffff",
+            "accent-teal": "#5db8a6",
+            "on-surface-variant": "#504250",
+            "on-secondary-fixed": "#380039",
+            "surface-container-high": "#ebe8e5",
+            "on-error-container": "#93000a",
+            "surface": "#fcf9f6",
+            "primary-active": "#C654C3",
+            "tertiary-container": "#006255",
+            "on-surface": "#1c1c1a",
+            "hairline": "#e6dfd8",
+            "on-secondary-fixed-variant": "#7f0682",
+            "primary-disabled": "#FFC0DE"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-sm": "0.5rem",
+            "space-xl": "2.5rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "margin": "2rem",
+            "gutter-mobile": "1rem",
+            "space-lg": "1.5rem"
+          },
+          fontFamily: {
+            "headline-md": ["Newsreader", "serif"],
+            "headline-lg-mobile": ["Newsreader", "serif"],
+            "display-lg": ["Newsreader", "serif"],
+            "code-sm": ["JetBrains Mono", "monospace"],
+            "headline-lg": ["Newsreader", "serif"],
+            "headline-sm": ["Newsreader", "serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-strong": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "code-md": ["JetBrains Mono", "monospace"],
+            "body-lg": ["Inter", "sans-serif"],
+            "label-md": ["Inter", "sans-serif"],
+            "label-lg": ["Inter", "sans-serif"],
+            "script": ["Caveat", "cursive"]
+          },
+          fontSize: {
+            "headline-md": ["1.75rem", { lineHeight: "1.3", fontWeight: "600" }],
+            "headline-lg-mobile": ["2rem", { lineHeight: "1.25", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "display-lg": ["3.5rem", { lineHeight: "1.15", letterSpacing: "-0.02em", fontWeight: "600" }],
+            "code-sm": ["0.6875rem", { lineHeight: "1.3", fontWeight: "400" }],
+            "headline-lg": ["2.5rem", { lineHeight: "1.2", letterSpacing: "-0.015em", fontWeight: "600" }],
+            "headline-sm": ["1.375rem", { lineHeight: "1.4", fontWeight: "400" }],
+            "body-md": ["1rem", { lineHeight: "1.6", fontWeight: "400" }],
+            "body-strong": ["1rem", { lineHeight: "1.6", fontWeight: "600" }],
+            "body-sm": ["0.875rem", { lineHeight: "1.5", fontWeight: "400" }],
+            "code-md": ["0.8125rem", { lineHeight: "1.4", fontWeight: "400" }],
+            "body-lg": ["1.125rem", { lineHeight: "1.65", fontWeight: "400" }],
+            "label-md": ["0.75rem", { lineHeight: "1.2", fontWeight: "500" }],
+            "label-lg": ["0.875rem", { lineHeight: "1.25", fontWeight: "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Papercraft & Stationery Subtle Details */
+    .paper-texture {
+      background-color: #faf9f5;
+      background-image: radial-gradient(#e6dfd8 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+    }
+    .dot-grid {
+      background-image: radial-gradient(#d4c1d2 0.8px, transparent 0.8px);
+      background-size: 14px 14px;
+    }
+    .washi-tape {
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(142, 30, 162, 0.12),
+        rgba(142, 30, 162, 0.12) 6px,
+        rgba(237, 150, 215, 0.22) 6px,
+        rgba(237, 150, 215, 0.22) 12px
+      );
+      opacity: 0.85;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.06));
+    }
+    .washi-tape-slate {
+      background: repeating-linear-gradient(
+        45deg,
+        rgba(93, 184, 166, 0.18),
+        rgba(93, 184, 166, 0.18) 5px,
+        rgba(230, 223, 216, 0.4) 5px,
+        rgba(230, 223, 216, 0.4) 10px
+      );
+    }
+    .torn-edge-top {
+      clip-path: polygon(
+        0% 0%, 5% 3px, 10% 0%, 15% 4px, 20% 1px, 25% 5px, 30% 2px, 35% 4px, 
+        40% 1px, 45% 4px, 50% 2px, 55% 5px, 60% 1px, 65% 4px, 70% 2px, 75% 5px, 
+        80% 1px, 85% 4px, 90% 2px, 95% 4px, 100% 0%, 100% 100%, 0% 100%
+      );
+    }
+    .torn-edge-bottom {
+      clip-path: polygon(
+        0% 0%, 100% 0%, 100% 98%, 95% 95%, 90% 99%, 85% 96%, 80% 99%, 75% 95%,
+        70% 98%, 65% 95%, 60% 99%, 55% 96%, 50% 99%, 45% 95%, 40% 98%, 35% 95%,
+        30% 99%, 25% 96%, 20% 98%, 15% 95%, 10% 99%, 5% 96%, 0% 99%
+      );
+    }
+    .metal-clip {
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), 0 2px 4px rgba(20,20,19,0.12);
+    }
+    .lined-notebook {
+      background-image: repeating-linear-gradient(transparent, transparent 27px, #e6dfd8 28px);
+    }
+  </style>
+</head>
+<body class="bg-canvas text-body font-body-md antialiased selection:bg-primary-soft selection:text-primary flex h-screen overflow-hidden">
+<!-- ========================================================================= -->
+<!-- 1. SideNavBar (Shared Component - Exact JSON Blueprint)                   -->
+<!-- ========================================================================= -->
+<aside class="h-screen sticky top-0 left-0 p-4 border-r border-hairline dark:border-surface-dark-elevated bg-surface-soft dark:bg-surface-dark z-40 h-screen w-64 flex flex-col justify-between shrink-0">
+<!-- Header: Monogram Brand -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 px-1 py-1">
+<div class="w-10 h-10 rounded-lg bg-surface-card border border-hairline flex items-center justify-center shadow-sm">
+<span class="font-headline-lg text-primary font-semibold text-xl italic select-none">E</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-headline-md font-headline-lg font-semibold tracking-tight text-ink dark:text-on-dark leading-tight">Espiralia</h1>
+<span class="text-label-md font-label-md text-muted">Taller de Escritorio</span>
+</div>
+</div>
+<!-- Quick Action CTA -->
+<button class="w-full mt-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-primary-container text-on-secondary hover:bg-primary-active transition-colors text-body-sm font-body-strong shadow-sm" onclick="document.getElementById('task-input-field').focus()">
+<span class="material-symbols-outlined text-lg leading-none">add</span>
+<span>Nueva Entrada</span>
+</button>
+<!-- Navigation Tabs (6 items from JSON, 'Tareas & Áreas' strictly ACTIVE) -->
+<nav class="flex flex-col gap-1 mt-2">
+<!-- 0: Resumen -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[19px]">dashboard</span>
+<span>Resumen</span>
+</a>
+<!-- 1: Agenda & Planner -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[19px]">calendar_today</span>
+<span>Agenda &amp; Planner</span>
+</a>
+<!-- 2: Tareas & Áreas (ACTIVE - Strict style_active_navigation) -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-card dark:bg-surface-dark-elevated text-primary dark:text-primary-soft font-body-strong text-body-sm border-l-2 border-primary dark:border-primary-soft shadow-sm" href="/todo">
+<span class="material-symbols-outlined text-[19px]" style="font-variation-settings: 'FILL' 1;">checklist</span>
+<span>Tareas &amp; Áreas</span>
+</a>
+<!-- 3: Notas & Terapia -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[19px]">menu_book</span>
+<span>Notas &amp; Terapia</span>
+</a>
+<!-- 4: Archivos & Vínculos -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[19px]">folder_open</span>
+<span>Archivos &amp; Vínculos</span>
+</a>
+<!-- 5: Sincronización -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[19px]">sync</span>
+<span>Sincronización</span>
+</a>
+</nav>
+</div>
+<!-- Footer: Perfil PIN & Ajustes (from JSON footer_tab_labels) -->
+<div class="pt-4 border-t border-hairline flex flex-col gap-2">
+<!-- User profile chip with local IndexedDB lock -->
+<div class="p-2.5 rounded-lg bg-surface-card/70 border border-hairline-soft flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-primary-soft/30 text-primary border border-primary/20 flex items-center justify-center font-headline-sm font-semibold text-xs">
+            R
+          </div>
+<div class="flex flex-col">
+<span class="text-body-sm font-body-strong leading-none text-ink">Romina V.</span>
+<span class="text-code-sm font-code-sm text-accent-teal flex items-center gap-1 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-teal inline-block"></span> Local DB
+            </span>
+</div>
+</div>
+<span class="material-symbols-outlined text-muted text-base">lock</span>
+</div>
+<nav class="flex flex-col gap-0.5">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-base">lock</span>
+<span>Perfil PIN</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-base">tune</span>
+<span>Ajustes</span>
+</a>
+</nav>
+</div>
+</aside>
+<!-- ========================================================================= -->
+<!-- Main Content Canvas (Right side of shell)                                 -->
+<!-- ========================================================================= -->
+<div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto paper-texture">
+<!-- ========================================================================= -->
+<!-- 2. TopNavBar (Shared Component - Exact JSON Blueprint)                   -->
+<!-- ========================================================================= -->
+<header class="sticky top-0 z-30 flex items-center justify-between w-full px-6 py-3 bg-canvas/95 dark:bg-surface-dark/95 backdrop-blur-sm border-b border-hairline dark:border-surface-dark-elevated shrink-0">
+<!-- Search on Left (from JSON search_bar: "on_left") -->
+<div class="flex items-center gap-3 flex-1 max-w-md">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted text-lg pointer-events-none">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 bg-background border border-hairline rounded-lg text-body-sm font-body-md text-ink placeholder:text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all" placeholder="Buscar tareas, notas rápidas, citas..." type="search"/>
+<kbd class="hidden sm:inline-block absolute right-2.5 top-1/2 -translate-y-1/2 text-code-sm font-code-sm text-muted bg-surface-card px-1.5 py-0.5 rounded border border-hairline">⌘K</kbd>
+</div>
+</div>
+<!-- Center navigation links from JSON: ["Hoy", "Semana", "Mes", "Reflexión"] -->
+<div class="hidden md:flex items-center gap-6">
+<a class="text-primary dark:text-primary-soft font-body-strong border-b-2 border-primary dark:border-primary-soft pb-1 text-body-sm" href="#">Hoy</a>
+<a class="text-muted dark:text-muted-soft font-body-md hover:text-ink dark:hover:text-on-dark transition-colors pb-1 text-body-sm" href="#">Semana</a>
+<a class="text-muted dark:text-muted-soft font-body-md hover:text-ink dark:hover:text-on-dark transition-colors pb-1 text-body-sm" href="#">Mes</a>
+<a class="text-muted dark:text-muted-soft font-body-md hover:text-ink dark:hover:text-on-dark transition-colors pb-1 text-body-sm" href="#">Reflexión</a>
+</div>
+<!-- Trailing Actions & Icons -->
+<div class="flex items-center gap-3">
+<!-- Action: Exportar .ics / .md -->
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hairline text-ink hover:bg-surface-card text-body-sm font-body-md transition-colors">
+<span class="material-symbols-outlined text-[17px] text-muted">file_download</span>
+<span class="hidden sm:inline">Exportar .ics</span>
+</button>
+<!-- Action: Bloquear Cuaderno -->
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hairline bg-surface-card text-primary font-body-strong hover:bg-surface-cream-strong text-body-sm transition-colors">
+<span class="material-symbols-outlined text-[17px]">lock</span>
+<span class="hidden sm:inline">Bloquear Cuaderno</span>
+</button>
+<!-- Trailing icons from JSON: ["schedule", "lock", "notifications"] -->
+<div class="flex items-center gap-1 text-muted pl-1 border-l border-hairline">
+<button class="p-1.5 rounded-lg hover:text-ink hover:bg-surface-card transition-colors" title="Horario Pomodoro">
+<span class="material-symbols-outlined text-lg leading-none">schedule</span>
+</button>
+<button class="p-1.5 rounded-lg hover:text-ink hover:bg-surface-card transition-colors relative" title="Notificaciones">
+<span class="material-symbols-outlined text-lg leading-none">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full"></span>
+</button>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- 3. Editorial Stationery Header: "to-do & áreas integradas."                -->
+<!-- ========================================================================= -->
+<main class="flex-1 max-w-[1280px] w-full mx-auto px-6 lg:px-8 py-8 space-y-7">
+<!-- Stationery Header Banner -->
+<section class="relative bg-background border border-hairline rounded-xl p-6 lg:p-8 shadow-sm overflow-hidden">
+<!-- Washi tape corner decoration -->
+<div class="washi-tape absolute -top-2 left-10 w-28 h-6 rotate-[-3deg] pointer-events-none rounded-sm z-10"></div>
+<div class="washi-tape-slate absolute -top-2 right-40 w-24 h-5 rotate-[2deg] pointer-events-none rounded-sm z-10"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative z-0">
+<!-- Monumental Title & Editorial Intent -->
+<div class="lg:col-span-8 space-y-3">
+<div class="flex items-center gap-3">
+<span class="px-2.5 py-0.5 rounded-full bg-primary-soft/20 text-primary text-code-sm font-code-md uppercase tracking-wider">
+                Cuaderno de Tareas Semestral
+              </span>
+<span class="text-hairline">|</span>
+<span class="text-code-sm font-code-md text-muted">Otoño 2025 · Semana 09</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-ink tracking-tight font-semibold">
+              to-do &amp; áreas integradas<span class="text-primary italic">.</span>
+</h1>
+<p class="text-body-md font-body-md text-muted max-w-2xl leading-relaxed">
+<span class="italic font-headline-sm text-body-strong">Clarify your mind. Prioritize your energy.</span> Un espacio unificado donde convergen tus tareas diarias, tus sesiones agendadas y tus notas vivas organizadas por áreas de vida.
+            </p>
+<div class="pt-2 flex flex-wrap items-center gap-4 text-code-sm font-code-md text-muted">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-accent-amber">auto_awesome</span>
+                3 prioridades capitales
+              </span>
+<span>•</span>
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-accent-teal">verified</span>
+                5 pendientes para hoy
+              </span>
+<span>•</span>
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">psychology</span>
+                Enfoque: Respiración &amp; Reglas viales
+              </span>
+</div>
+</div>
+<!-- Pinned Post-It Note (Physical stationery anchor inspired by Screen reference) -->
+<div class="lg:col-span-4 flex justify-center lg:justify-end">
+<div class="relative w-64 p-5 bg-[#fffdf5] border border-[#e6dfc8] rounded-md shadow-[0_4px_16px_rgba(20,20,19,0.06)] rotate-1 hover:rotate-0 transition-transform duration-200">
+<!-- Golden Pushpin -->
+<div class="absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-gradient-to-tr from-[#99732f] via-[#d4af37] to-[#f8e49b] shadow-md border border-[#856122] flex items-center justify-center">
+<div class="w-1.5 h-1.5 rounded-full bg-white/70"></div>
+</div>
+<!-- Content of Sticky Note -->
+<div class="text-center pt-2 space-y-1.5">
+<p class="font-script text-2xl text-ink leading-tight">
+                  discipline today,<br/>peace tomorrow.
+                </p>
+<div class="w-6 h-px bg-primary-soft mx-auto my-1"></div>
+<p class="font-script text-lg text-primary leading-tight">
+                  ♡ todo en un solo lugar
+                </p>
+<p class="text-[10px] font-code-sm uppercase tracking-wider text-muted-soft pt-1">
+                  Espiralia Manila Note #08
+                </p>
+</div>
+<!-- Botanical pressed floral sprig outline decoration -->
+<div class="absolute -bottom-2 -right-2 text-primary/15 pointer-events-none select-none">
+<span class="material-symbols-outlined text-4xl leading-none">local_florist</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 4. Area Selector (Physical Folder Tabs / Archivador Cromático)            -->
+<!-- ========================================================================= -->
+<section class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-hairline pb-2">
+<div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none"><!-- Folder Tab 0: All -->
+<button class="relative px-4 py-2.5 rounded-t-xl border border-b-0 border-hairline-soft bg-surface-soft/60 hover:bg-surface-card text-muted hover:text-ink font-body-strong text-body-sm transition-all flex items-center gap-2 group overflow-hidden shadow-sm">
+<span class="relative z-10">Todas las Áreas</span>
+<span class="relative z-10 px-2 py-0.5 rounded-full bg-surface-card text-code-sm font-code-sm text-muted border border-hairline/60">8</span>
+</button>
+<!-- Folder Tab 1: Estudios & Clase B (Active) with monumental translucent 01 -->
+<button class="relative px-5 py-2.5 rounded-t-xl bg-surface-card border-t-2 border-l border-r border-t-accent-amber border-hairline text-ink font-body-strong text-body-sm shadow-[0_-3px_10px_rgba(20,20,19,0.05)] flex items-center gap-2.5 overflow-hidden group">
+<span class="absolute -right-1 -bottom-2.5 text-4xl font-headline-lg font-bold text-accent-amber/15 select-none pointer-events-none tracking-tighter">01</span>
+<span class="w-2.5 h-2.5 rounded-full bg-accent-amber shadow-sm"></span>
+<span class="relative z-10 font-semibold">01. Estudios &amp; Clase B</span>
+<span class="relative z-10 px-2 py-0.5 rounded-full bg-background border border-accent-amber/30 text-code-sm font-code-sm text-body-strong shadow-xs">3</span>
+</button>
+<!-- Folder Tab 2: Introspección & Terapia with monumental translucent 02 -->
+<button class="relative px-5 py-2.5 rounded-t-xl bg-surface-soft/70 hover:bg-surface-card border border-b-0 border-hairline text-muted hover:text-ink font-body-strong text-body-sm transition-all flex items-center gap-2.5 overflow-hidden group shadow-sm">
+<span class="absolute -right-1 -bottom-2.5 text-4xl font-headline-lg font-bold text-primary/15 select-none pointer-events-none tracking-tighter">02</span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container shadow-sm"></span>
+<span class="relative z-10">02. Introspección &amp; Terapia</span>
+<span class="relative z-10 px-2 py-0.5 rounded-full bg-surface-card text-code-sm font-code-sm text-muted border border-hairline/60">2</span>
+</button>
+<!-- Folder Tab 3: Postulación Universitaria 2026 with monumental translucent 03 -->
+<button class="relative px-5 py-2.5 rounded-t-xl bg-surface-soft/70 hover:bg-surface-card border border-b-0 border-hairline text-muted hover:text-ink font-body-strong text-body-sm transition-all flex items-center gap-2.5 overflow-hidden group shadow-sm">
+<span class="absolute -right-1 -bottom-2.5 text-4xl font-headline-lg font-bold text-accent-teal/15 select-none pointer-events-none tracking-tighter">03</span>
+<span class="w-2.5 h-2.5 rounded-full bg-accent-teal shadow-sm"></span>
+<span class="relative z-10">03. Postulación Universitaria 2026</span>
+<span class="relative z-10 px-2 py-0.5 rounded-full bg-surface-card text-code-sm font-code-sm text-muted border border-hairline/60">3</span>
+</button>
+<!-- Add Area Tab -->
+<button class="p-2 rounded-t-xl hover:bg-surface-card text-muted hover:text-primary transition-colors" title="Añadir nueva área de vida">
+<span class="material-symbols-outlined text-lg leading-none">add_circle</span>
+</button></div>
+<!-- Filter toggles -->
+<div class="flex items-center gap-1.5 self-end sm:self-auto">
+<span class="text-label-md font-label-md text-muted mr-1">Filtrar:</span>
+<span class="px-2.5 py-1 rounded bg-surface-card text-primary text-code-sm font-code-sm font-medium">Pendientes (5)</span>
+<span class="px-2 py-1 rounded text-muted hover:text-ink text-code-sm font-code-sm cursor-pointer">En Curso (2)</span>
+<span class="px-2 py-1 rounded text-muted hover:text-ink text-code-sm font-code-sm cursor-pointer">Hechas (3)</span>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 5. AreaIntegratedWorkspace (Bento Layout: Tasks + Integrated Context)     -->
+<!-- ========================================================================= -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
+<!-- ===================================================================== -->
+<!-- LEFT/MAIN COLUMN (8 cols): TO-DO LIST & QUICK INPUT                   -->
+<!-- ===================================================================== -->
+<div class="lg:col-span-7 xl:col-span-8 space-y-6">
+<!-- 5.1 Quick Add Task Stationery Box -->
+<!-- 5.1 Quick Add Task Stationery Box with torn edge & golden clip detail -->
+<div class="bg-background border border-hairline rounded-xl shadow-sm relative overflow-hidden">
+<!-- Torn edge top decoration -->
+<div class="h-1.5 bg-surface-card torn-edge-top w-full"></div>
+<!-- Brass pin clip accent -->
+<div class="absolute -top-2.5 left-8 w-4 h-7 rounded-full border-2 border-[#b8b3a8] metal-clip bg-transparent pointer-events-none z-10"></div>
+<div class="p-5 pt-4 space-y-3 dot-grid">
+<div class="flex items-center justify-between pb-3 mb-1 border-b border-hairline-soft">
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted flex items-center gap-1.5 pl-5">
+<span class="material-symbols-outlined text-[15px] text-primary">edit_note</span>
+        Entrada Rápida al Taller
+      </span>
+<span class="text-code-sm font-code-sm text-muted bg-surface-soft/80 px-2 py-0.5 rounded border border-hairline/60">Área: 01. Estudios &amp; Clase B</span>
+</div>
+<form class="space-y-3" onsubmit="event.preventDefault();">
+<div class="relative">
+<input class="w-full bg-[#fefdfa] border border-hairline rounded-lg px-3.5 py-2.5 text-body-sm font-body-md text-ink placeholder:text-muted/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all shadow-inner" id="task-input-field" placeholder="¿Qué pequeña acción constructiva harás hoy? (Ej. Repasar 15 preguntas de rotondas Conaset)..." type="text"/>
+</div>
+<!-- Metadata selectors row -->
+<div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+<div class="flex flex-wrap items-center gap-2">
+<!-- Priority Selector -->
+<div class="relative inline-block">
+<select class="bg-surface-card border border-hairline text-body-sm font-body-md text-ink rounded-lg py-1 px-2.5 pr-7 text-xs focus:outline-none focus:border-primary cursor-pointer">
+<option>Prioridad: Urgente</option>
+<option selected="">Prioridad: Alta</option>
+<option>Prioridad: Media</option>
+<option>Prioridad: Amable</option>
+</select>
+</div>
+<!-- Date deadline picker trigger -->
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-hairline bg-surface-card text-muted hover:text-ink text-xs font-body-md" type="button">
+<span class="material-symbols-outlined text-[15px]">event</span>
+<span>Para hoy</span>
+</button>
+<!-- Estimated duration -->
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-hairline bg-surface-card text-muted hover:text-ink text-xs font-body-md" type="button">
+<span class="material-symbols-outlined text-[15px]">timer</span>
+<span>45m</span>
+</button>
+</div>
+<!-- Add Button -->
+<button class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-primary-container text-on-secondary hover:bg-primary-active text-body-sm font-body-strong transition-colors shadow-sm" type="submit">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Anotar Tarea</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Torn edge bottom decoration -->
+<div class="h-1 bg-surface-card torn-edge-bottom w-full"></div>
+</div>
+<!-- 5.2 Section: TOP PRIORITIES OF THE DAY (Styled like Focus Plan reference) -->
+<!-- 5.2 Section: TOP PRIORITIES OF THE DAY (Styled like Physical Manila Focus Sheet) -->
+<div class="relative bg-[#fffdfa] border border-hairline rounded-xl shadow-sm overflow-hidden">
+<!-- Washi tape orchid banner fixing card -->
+<div class="washi-tape absolute -top-2.5 left-12 w-28 h-5 rotate-[-2deg] pointer-events-none rounded-sm z-10"></div>
+<!-- Torn paper strip top accent -->
+<div class="h-1.5 bg-surface-card torn-edge-top w-full"></div>
+<div class="p-5 pt-4 space-y-4">
+<div class="flex items-center justify-between border-b border-hairline-soft pb-2.5">
+<div class="flex items-center gap-2 pl-2">
+<span class="px-2 py-0.5 rounded bg-surface-card text-ink text-label-md font-label-md tracking-wider uppercase border border-hairline">
+          TOP PRIORITIES
+        </span>
+<span class="text-body-sm font-headline-sm italic text-muted">no negociables del día</span>
+</div>
+<span class="material-symbols-outlined text-primary text-base">star</span>
+</div>
+<!-- Priority 01 -->
+<div class="flex items-start gap-3 p-3 rounded-lg bg-surface-soft/80 border border-hairline hover:border-outline-variant transition-colors group relative shadow-xs">
+<span class="font-code-md text-code-md text-accent-amber font-semibold pt-0.5">01.</span>
+<button class="mt-0.5 w-5 h-5 rounded-full border border-[#8e8b82] flex items-center justify-center text-transparent hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-xs">check</span>
+</button>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<h2 class="text-body-strong font-body-strong text-ink">Estudio Conaset: Repasar señales de prioridad y cruces viales</h2>
+<span class="px-2 py-0.5 rounded-full bg-accent-amber/20 text-ink text-[11px] font-code-sm font-medium">Urgente</span>
+</div>
+<p class="text-body-sm text-muted mt-0.5">Simulador municipal Clase B programado. Enfoque en derecho preferente de paso y rotondas de 2 pistas.</p>
+<div class="flex items-center gap-3 mt-2 text-code-sm font-code-sm text-muted">
+<span class="flex items-center gap-1 text-accent-amber"><span class="w-2 h-2 rounded-full bg-accent-amber"></span> 01. Estudios</span>
+<span>•</span>
+<span>Hoy 16:30 hrs</span>
+<span>•</span>
+<span>45 min</span>
+</div>
+</div>
+</div>
+<!-- Priority 02 -->
+<div class="flex items-start gap-3 p-3 rounded-lg bg-surface-soft/80 border border-hairline hover:border-outline-variant transition-colors group relative shadow-xs">
+<span class="font-code-md text-code-md text-primary font-semibold pt-0.5">02.</span>
+<button class="mt-0.5 w-5 h-5 rounded-full border border-[#8e8b82] flex items-center justify-center text-transparent hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-xs">check</span>
+</button>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<h2 class="text-body-strong font-body-strong text-ink">Llevar libreta física de desahogo a consulta con Dra. Morales</h2>
+<span class="px-2 py-0.5 rounded-full bg-primary-soft/30 text-primary text-[11px] font-code-sm font-medium">Alta</span>
+</div>
+<p class="text-body-sm text-muted mt-0.5">Revisar registros de sobrepensamiento nocturno y ejercicios de grounding anotados el lunes.</p>
+<div class="flex items-center gap-3 mt-2 text-code-sm font-code-sm text-muted">
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary"></span> 02. Terapia</span>
+<span>•</span>
+<span>Mañana 11:45 hrs</span>
+<span>•</span>
+<span>Consulta Médica</span>
+</div>
+</div>
+</div>
+<!-- Priority 03 -->
+<div class="flex items-start gap-3 p-3 rounded-lg bg-surface-soft/80 border border-hairline hover:border-outline-variant transition-colors group relative shadow-xs">
+<span class="font-code-md text-code-md text-accent-teal font-semibold pt-0.5">03.</span>
+<button class="mt-0.5 w-5 h-5 rounded-full border border-[#8e8b82] flex items-center justify-center text-transparent hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-xs">check</span>
+</button>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<h2 class="text-body-strong font-body-strong text-ink">Redactar borrador de carta de postulación U. a profesor guía</h2>
+<span class="px-2 py-0.5 rounded-full bg-accent-teal/20 text-tertiary text-[11px] font-code-sm font-medium">Media</span>
+</div>
+<p class="text-body-sm text-muted mt-0.5">Sintetizar intereses de investigación académica para solicitud formal de recomendación 2026.</p>
+<div class="flex items-center gap-3 mt-2 text-code-sm font-code-sm text-muted">
+<span class="flex items-center gap-1 text-accent-teal"><span class="w-2 h-2 rounded-full bg-accent-teal"></span> 03. Universidad</span>
+<span>•</span>
+<span>Jueves</span>
+<span>•</span>
+<span>60 min</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Torn edge bottom decoration -->
+<div class="h-1.5 bg-surface-card torn-edge-bottom w-full"></div>
+</div>
+<!-- 5.3 Section: DETAILED TASKS BY STATUS (Categorized Cards with Stationery styling) -->
+<div class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-label-lg font-label-lg text-ink font-semibold flex items-center gap-2">
+<span>Tareas que importan (Tasks that matter)</span>
+<span class="text-code-sm font-code-sm text-muted font-normal">· Ordenadas por impacto</span>
+</h3>
+<span class="text-code-sm font-code-sm text-muted">Mostrando 5 pendientes</span>
+</div>
+<!-- Task Card 1: Driving Simulation -->
+<div class="bg-background border border-hairline rounded-xl p-4 shadow-sm hover:border-outline-variant transition-all flex items-start gap-3.5 group">
+<!-- Botanical custom circular checkbox -->
+<label class="cursor-pointer mt-0.5 relative flex items-center justify-center">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-5 h-5 rounded-full border-2 border-muted-soft peer-checked:bg-primary peer-checked:border-primary transition-all flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xs font-bold scale-0 peer-checked:scale-100 transition-transform">check</span>
+</div>
+</label>
+<div class="flex-1 min-w-0">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+<span class="text-body-strong font-body-strong text-ink group-hover:text-primary transition-colors">
+                    Realizar 2 simulacros completos de examen teórico municipal
+                  </span>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-accent-amber/15 text-accent-amber border border-accent-amber/30 text-[11px] font-code-sm">
+                      01. Estudios
+                    </span>
+<span class="text-code-sm font-code-sm text-muted">18:00</span>
+</div>
+</div>
+<p class="text-body-sm font-body-md text-muted mt-1 leading-snug">
+                  Revisar fallos en velocidad máxima permitida en zona urbana y demarcaciones amarillas continuas.
+                </p>
+<div class="flex items-center gap-4 mt-2.5 text-code-sm font-code-sm text-muted">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">flag</span> Prioridad Alta</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">link</span> 1 Nota asociada</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">repeat</span> Diaria</span>
+</div>
+</div>
+<!-- Soft delete / action button -->
+<button class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-surface-card text-muted hover:text-error transition-all" title="Eliminar">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+<!-- Task Card 2: Mental Health Breathing -->
+<div class="bg-background border border-hairline rounded-xl p-4 shadow-sm hover:border-outline-variant transition-all flex items-start gap-3.5 group">
+<label class="cursor-pointer mt-0.5 relative flex items-center justify-center">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-5 h-5 rounded-full border-2 border-muted-soft peer-checked:bg-primary peer-checked:border-primary transition-all flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xs font-bold scale-0 peer-checked:scale-100 transition-transform">check</span>
+</div>
+</label>
+<div class="flex-1 min-w-0">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+<span class="text-body-strong font-body-strong text-ink group-hover:text-primary transition-colors">
+                    10 minutos de respiración diafragmática 4-7-8 al atardecer
+                  </span>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-primary-soft/20 text-primary border border-primary/20 text-[11px] font-code-sm">
+                      02. Terapia
+                    </span>
+<span class="text-code-sm font-code-sm text-muted">20:00</span>
+</div>
+</div>
+<p class="text-body-sm font-body-md text-muted mt-1 leading-snug">
+                  Espacio sin pantallas ni notificaciones. Anotar sensaciones físicas posteriores en el Bujo integrado.
+                </p>
+<div class="flex items-center gap-4 mt-2.5 text-code-sm font-code-sm text-muted">
+<span class="flex items-center gap-1 text-accent-teal"><span class="material-symbols-outlined text-[14px]">spa</span> Autocuidado</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">timer</span> 10 min</span>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-surface-card text-muted hover:text-error transition-all" title="Eliminar">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+<!-- Task Card 3: University Malla review -->
+<div class="bg-background border border-hairline rounded-xl p-4 shadow-sm hover:border-outline-variant transition-all flex items-start gap-3.5 group">
+<label class="cursor-pointer mt-0.5 relative flex items-center justify-center">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-5 h-5 rounded-full border-2 border-muted-soft peer-checked:bg-primary peer-checked:border-primary transition-all flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xs font-bold scale-0 peer-checked:scale-100 transition-transform">check</span>
+</div>
+</label>
+<div class="flex-1 min-w-0">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+<span class="text-body-strong font-body-strong text-ink group-hover:text-primary transition-colors">
+                    Comparar ponderaciones y aranceles 2025/2026 en hoja de cálculo
+                  </span>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-accent-teal/15 text-tertiary border border-accent-teal/30 text-[11px] font-code-sm">
+                      03. Universidad
+                    </span>
+<span class="text-code-sm font-code-sm text-muted">Mañana</span>
+</div>
+</div>
+<p class="text-body-sm font-body-md text-muted mt-1 leading-snug">
+                  Descargar fichas oficiales DEMRE y verificar requisitos de NEM/Ranking para ingreso regular.
+                </p>
+<div class="flex items-center gap-4 mt-2.5 text-code-sm font-code-sm text-muted">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">attach_file</span> 2 PDFs adjuntos</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">event</span> Límite: 15 Oct</span>
+</div>
+</div>
+<button class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-surface-card text-muted hover:text-error transition-all" title="Eliminar">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+<!-- Task Card 4: Botanical / Habit style completed task -->
+<div class="bg-surface-soft/40 border border-hairline/80 rounded-xl p-3.5 shadow-none flex items-start gap-3.5 opacity-70 hover:opacity-100 transition-opacity">
+<label class="cursor-pointer mt-0.5 relative flex items-center justify-center">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-5 h-5 rounded-full bg-primary border-2 border-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xs font-bold">check</span>
+</div>
+</label>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-body-sm font-body-md text-muted line-through">
+                    Alinear citas bibliográficas de informe de psicología evolutiva
+                  </span>
+<span class="text-code-sm font-code-sm text-success flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">done_all</span> Hecha 09:20
+                  </span>
+</div>
+</div>
+</div>
+</div>
+<!-- 5.4 Sub-box: Eliminate Distractions (Inspired by Reference Focus Plan) -->
+<div class="bg-surface-soft/60 border border-hairline rounded-xl p-4 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-surface-card text-primary">
+<span class="material-symbols-outlined text-xl">do_not_disturb_on</span>
+</div>
+<div>
+<h4 class="text-body-sm font-body-strong text-ink">Compromiso Antidistracciones de Hoy</h4>
+<p class="text-code-sm font-code-sm text-muted">Teléfono en modo escala de grises y fuera del alcance durante las horas de estudio.</p>
+</div>
+</div>
+<span class="font-script text-xl text-primary whitespace-nowrap">disciplina gentil ♡</span>
+</div>
+</div>
+<!-- ===================================================================== -->
+<!-- RIGHT COLUMN (4 cols): CONTEXTUAL WORKSPACE (Agenda, Bujo, Energy)    -->
+<!-- ===================================================================== -->
+<div class="lg:col-span-5 xl:col-span-4 space-y-6">
+<!-- 5.5 INTEGRATED AGENDA BLOCK (Associated Area Events) -->
+<div class="bg-background border border-hairline rounded-xl p-5 shadow-sm space-y-4 relative"><div class="washi-tape-slate absolute -top-2 right-10 w-24 h-4 rotate-[1deg] pointer-events-none rounded-sm z-10"></div>
+<div class="flex items-center justify-between border-b border-hairline pb-2.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[19px]">calendar_month</span>
+<h3 class="text-label-lg font-label-lg text-ink font-semibold uppercase tracking-wider">
+                  Agenda Asociada
+                </h3>
+</div>
+<span class="text-code-sm font-code-sm text-muted">Próximos hitos</span>
+</div>
+<div class="space-y-3">
+<!-- Event 1 -->
+<div class="flex items-start gap-3 p-2.5 rounded-lg bg-surface-soft/60 border-l-4 border-l-accent-amber border-r border-t border-b border-hairline">
+<div class="text-center px-1">
+<span class="block text-code-sm font-code-md text-accent-amber font-semibold uppercase leading-none">VIE</span>
+<span class="block text-headline-sm font-headline-sm text-ink leading-tight">24</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-body-sm font-body-strong text-ink leading-tight">Simulacro Conaset &amp; Práctica en Calle</h4>
+<p class="text-code-sm font-code-sm text-muted mt-0.5">16:00 - 17:30 hrs · Circuito San Joaquín</p>
+<span class="inline-block mt-1 px-1.5 py-0.2 rounded bg-surface-card text-[10px] font-code-sm text-muted">
+                    01. Estudios &amp; Clase B
+                  </span>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="flex items-start gap-3 p-2.5 rounded-lg bg-surface-soft/60 border-l-4 border-l-primary border-r border-t border-b border-hairline">
+<div class="text-center px-1">
+<span class="block text-code-sm font-code-md text-primary font-semibold uppercase leading-none">MAR</span>
+<span class="block text-headline-sm font-headline-sm text-ink leading-tight">28</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-body-sm font-body-strong text-ink leading-tight">Sesión Terapia Clínica Presencial</h4>
+<p class="text-code-sm font-code-sm text-muted mt-0.5">11:45 - 12:45 hrs · Dra. Morales</p>
+<span class="inline-block mt-1 px-1.5 py-0.2 rounded bg-surface-card text-[10px] font-code-sm text-muted">
+                    02. Introspección &amp; Terapia
+                  </span>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="flex items-start gap-3 p-2.5 rounded-lg bg-surface-soft/60 border-l-4 border-l-accent-teal border-r border-t border-b border-hairline">
+<div class="text-center px-1">
+<span class="block text-code-sm font-code-md text-accent-teal font-semibold uppercase leading-none">LUN</span>
+<span class="block text-headline-sm font-headline-sm text-ink leading-tight">03</span>
+</div>
+<div class="flex-1 min-w-0">
+<h4 class="text-body-sm font-body-strong text-ink leading-tight">Cierre de Envío Cartas Recomendación</h4>
+<p class="text-code-sm font-code-sm text-muted mt-0.5">23:59 hrs · Plataforma Admisión 2026</p>
+<span class="inline-block mt-1 px-1.5 py-0.2 rounded bg-surface-card text-[10px] font-code-sm text-muted">
+                    03. Postulación Universitaria
+                  </span>
+</div>
+</div>
+</div>
+<div class="pt-1 text-center">
+<a class="text-code-sm font-code-sm text-primary hover:text-primary-active underline" href="#">
+                Ver vista semanal extendida en Agenda →
+              </a>
+</div>
+</div>
+<!-- 5.6 NOTAS & BUJO QUICK DUMP (Dot Grid Stationery Card with Torn Edges) -->
+<div class="relative bg-background border border-hairline rounded-xl shadow-sm overflow-hidden">
+<!-- Torn decorative edge top -->
+<div class="h-1.5 bg-surface-card torn-edge-top w-full"></div>
+<div class="p-5 space-y-3">
+<div class="flex items-center justify-between border-b border-hairline pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">border_outer</span>
+<h3 class="text-label-lg font-label-lg text-ink font-semibold uppercase tracking-wider">
+                    Notes / Brain Dump
+                  </h3>
+</div>
+<span class="text-code-sm font-code-sm text-muted">Bujo Dot Grid</span>
+</div>
+<!-- Dot Grid Canvas for Immediate Thoughts -->
+<div class="dot-grid bg-[#fcfbf7] border border-hairline rounded-lg p-3.5 min-h-[170px] relative">
+<p class="font-script text-xl text-ink leading-relaxed">
+                  "No anticipar el tráfico antes de subir al auto. Respirar tres veces antes de soltar el embrague. La calma se practica segundo a segundo."
+                </p>
+<div class="mt-3 text-right">
+<span class="font-code-sm text-[10px] text-muted bg-surface-soft px-2 py-0.5 rounded border border-hairline">
+                    vinculado a #ClaseB · 10:14 AM
+                  </span>
+</div>
+<!-- Hand-drawn heart decoration -->
+<div class="absolute bottom-2 left-3 font-script text-xl text-primary/40 select-none">
+                  ♡
+                </div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<button class="text-code-sm font-code-sm text-primary hover:text-primary-active flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">add</span>
+<span>Añadir reflexión a Terapia</span>
+</button>
+<span class="text-code-sm font-code-sm text-muted-soft">Guardado en caché local</span>
+</div>
+</div>
+<!-- Torn decorative edge bottom -->
+<div class="h-1.5 bg-surface-card torn-edge-bottom w-full"></div>
+</div>
+<!-- 5.7 MINI REMINDERS & ENERGY CHECK (Stationery Pin Card with Clip) -->
+<div class="relative bg-[#fffdfa] border border-[#ebe4d6] rounded-xl p-5 shadow-sm space-y-4">
+<!-- Metallic Paperclip in Corner -->
+<div class="absolute -top-3 left-6 w-5 h-9 rounded-full border-2 border-[#b8b3a8] metal-clip bg-transparent pointer-events-none z-10"></div>
+<div class="flex items-center justify-between pl-6 border-b border-hairline pb-2">
+<h3 class="text-label-lg font-label-lg text-ink font-semibold uppercase tracking-wider">
+                Mini Reminders &amp; Energy
+              </h3>
+<span class="material-symbols-outlined text-muted text-base">local_cafe</span>
+</div>
+<!-- Energy Meter (Inspired by reference Focus Plan) -->
+<div class="bg-surface-soft/60 rounded-lg p-3 border border-hairline space-y-2">
+<div class="flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-ink font-medium">Nivel de Energía / Presencia:</span>
+<span class="text-accent-teal font-semibold">80% · Lúcida</span>
+</div>
+<div class="grid grid-cols-5 gap-1.5 text-center">
+<button class="py-1 rounded bg-surface-card text-xs hover:bg-surface-cream-strong border border-hairline" title="Agotada">☁️</button>
+<button class="py-1 rounded bg-surface-card text-xs hover:bg-surface-cream-strong border border-hairline" title="Baja">☕</button>
+<button class="py-1 rounded bg-surface-card text-xs hover:bg-surface-cream-strong border border-hairline" title="Moderada">🌱</button>
+<button class="py-1 rounded bg-primary-container text-on-secondary text-xs shadow-sm" title="Alta y Serena">✨</button>
+<button class="py-1 rounded bg-surface-card text-xs hover:bg-surface-cream-strong border border-hairline" title="Radiante">☀️</button>
+</div>
+</div>
+<!-- Hand-written Daily Maxim -->
+<div class="p-3 bg-surface-soft/40 rounded-lg border border-dashed border-hairline text-center">
+<p class="font-script text-xl text-ink leading-snug">
+                "Paso a paso. Una tarea a la vez. No cargues mañana en el bolsillo de hoy."
+              </p>
+<span class="text-[10px] font-code-sm text-muted uppercase tracking-wider mt-1 block">
+                Mantra del Área 02
+              </span>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 6. Editorial Footer & Privacy / Architecture Seal                         -->
+<!-- ========================================================================= -->
+<footer class="mt-12 pt-6 pb-8 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+<div class="flex items-center gap-3">
+<span class="font-script text-2xl text-primary font-semibold">
+            Small steps every day lead to big results. ♡
+          </span>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-3 text-code-sm font-code-sm text-muted">
+<span class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-accent-teal"></span>
+            100% Client-Side Engine
+          </span>
+<span class="hidden sm:inline">·</span>
+<span>IndexedDB local</span>
+<span class="hidden sm:inline">·</span>
+<span>Datos particionados por perfil</span>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

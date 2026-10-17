@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus, BookOpen, FileText, Pencil, Trash2, Folder as FolderIcon, Sparkles, Heart, ShieldCheck, Download, Lock, CheckCircle2 } from 'lucide-react';
+import { Plus, BookOpen, FileText, Pencil, Trash2, Folder as FolderIcon, Sparkles, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Note, Folder } from '../types';
 import { StorageService } from '../services/storage';

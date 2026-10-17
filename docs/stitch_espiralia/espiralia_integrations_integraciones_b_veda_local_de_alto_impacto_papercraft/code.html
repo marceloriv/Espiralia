@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Espiralia — Integraciones Externas &amp; Sincronización Offline</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "hairline": "#e6dfd8",
+            "hairline-soft": "#ebe6df",
+            "ink": "#232b2b",
+            "body": "#3d3d3a",
+            "body-strong": "#252523",
+            "muted": "#6c6a64",
+            "muted-soft": "#8e8b82",
+            "canvas": "#f6f2eb",
+            "surface": "#fcf9f6",
+            "surface-soft": "#f7f3ec",
+            "surface-card": "#fbf8f3",
+            "surface-cream-strong": "#ede6d8",
+            "primary": "#6e0081",
+            "primary-container": "#8e1ea2",
+            "primary-soft": "#ed96d7",
+            "primary-active": "#c654c3",
+            "secondary": "#9c2c9c",
+            "tertiary": "#00483e",
+            "tertiary-container": "#006255",
+            "success": "#3f7a4e",
+            "warning": "#d4a017",
+            "error": "#b33939",
+            "accent-teal": "#3c7e71",
+            "accent-amber": "#c87d2a",
+            "washi-blue": "#9ab0c4",
+            "washi-rose": "#dab4a6",
+            "washi-sage": "#adc1ab",
+            "washi-khaki": "#cfc6aa"
+          },
+          "fontFamily": {
+            "serif": ["Cormorant Garamond", "Georgia", "serif"],
+            "editorial": ["Newsreader", "serif"],
+            "sans": ["Plus Jakarta Sans", "Inter", "sans-serif"],
+            "hand": ["Caveat", "cursive"],
+            "code": ["JetBrains Mono", "monospace"]
+          },
+          "boxShadow": {
+            "paper": "0 2px 10px -1px rgba(45, 38, 30, 0.05), 0 10px 25px -4px rgba(45, 38, 30, 0.06)",
+            "paper-sheet": "0 8px 30px -4px rgba(50, 40, 30, 0.08), 0 20px 48px -8px rgba(40, 30, 20, 0.05)",
+            "paper-deep": "0 14px 40px -6px rgba(40, 30, 20, 0.12), 0 28px 70px -12px rgba(35, 25, 15, 0.08)",
+            "postit": "2px 6px 16px rgba(45, 35, 25, 0.09), -1px 2px 5px rgba(45, 35, 25, 0.04)"
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Dot Grid (Bujo) texture matching SCREEN_40 & IMAGE_12 */
+    .bujo-grid {
+      background-size: 20px 20px;
+      background-image: 
+        radial-gradient(circle, rgba(140, 125, 105, 0.18) 1.2px, transparent 1.2px);
+    }
+
+    .bujo-grid-subtle {
+      background-size: 18px 18px;
+      background-image: 
+        radial-gradient(circle, rgba(140, 125, 105, 0.12) 1px, transparent 1px);
+    }
+
+    /* Washi tape visual with jagged torn edges */
+    .washi-tape {
+      opacity: 0.86;
+      backdrop-filter: blur(1px);
+      box-shadow: 0 1px 3px rgba(35, 25, 15, 0.1);
+      position: relative;
+    }
+    .washi-tape::before, .washi-tape::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background-size: 5px 6px;
+    }
+    .washi-tape::before {
+      left: -3px;
+      background: radial-gradient(circle, transparent 2.5px, currentColor 2.5px);
+    }
+    .washi-tape::after {
+      right: -3px;
+      background: radial-gradient(circle, transparent 2.5px, currentColor 2.5px);
+    }
+
+    /* Japanese Hanko stamp effect */
+    .hanko-stamp {
+      border: 2px solid #a83626;
+      color: #a83626;
+      font-family: 'Newsreader', serif;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      box-shadow: inset 0 0 0 1px rgba(168, 54, 38, 0.35);
+      position: relative;
+      opacity: 0.88;
+      transform: rotate(-3deg);
+    }
+    .hanko-stamp::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.4) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Metal Paperclip */
+    .paperclip-brass {
+      filter: drop-shadow(1px 2px 3px rgba(40, 30, 20, 0.28));
+    }
+  </style>
+</head>
+<body class="bg-[#ECE5DC] text-ink font-sans antialiased min-h-screen flex flex-col selection:bg-primary-soft selection:text-ink bujo-grid pb-12">
+<!-- TOP NAV BAR (Stationery Atelier digital header) -->
+<header class="w-full bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#DDD4C5] z-40 sticky top-0 shadow-sm">
+<div class="w-full max-w-[1340px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+<!-- Brand & Security Architecture Tag -->
+<div class="flex items-center gap-5">
+<a class="flex items-baseline gap-2.5 text-ink tracking-tight group" href="#">
+<span class="font-serif italic text-3xl font-semibold tracking-tight text-[#2b2724]">Espiralia</span>
+<span class="text-[10px] uppercase tracking-widest text-muted font-sans border-l border-[#D5CCBC] pl-2.5 font-medium">Atelier Digital</span>
+</a>
+<span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono bg-[#EBF2EA] text-[#2d6f3c] border border-[#BFD6BD]">
+<span class="material-symbols-outlined text-[14px]">shield</span>
+        Arquitectura 100% Client-Side
+      </span>
+</div>
+<!-- Navigation Tabs (Folder Index Style) -->
+<nav class="hidden md:flex items-center gap-1.5 bg-[#EDE6DC] p-1 rounded-xl border border-[#D9D1C3] text-xs font-medium">
+<a class="px-3.5 py-1.5 hover:text-ink text-[#59524a] rounded-lg transition-colors flex items-center gap-1.5 hover:bg-[#F4EEE5]" href="#">
+<span>📚</span>
+<span>Biblioteca</span>
+</a>
+<a class="px-3.5 py-1.5 hover:text-ink text-[#59524a] rounded-lg transition-colors flex items-center gap-1.5 hover:bg-[#F4EEE5]" href="#">
+<span>🌿</span>
+<span>Cuaderno</span>
+</a>
+<a class="px-3.5 py-1.5 hover:text-ink text-[#59524a] rounded-lg transition-colors flex items-center gap-1.5 hover:bg-[#F4EEE5]" href="#">
+<span>📁</span>
+<span>Bóveda Local</span>
+</a>
+<a class="px-3.5 py-1.5 bg-[#FAF7F2] text-primary font-bold rounded-lg shadow-sm border border-[#DDD5C7] flex items-center gap-1.5" href="#">
+<span>⚙️</span>
+<span>Ajustes &amp; Conexiones</span>
+</a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center gap-3">
+<button class="hidden lg:flex items-center gap-1.5 text-muted hover:text-ink font-mono text-xs px-3 py-1.5 rounded-lg border border-[#DDD5C7] bg-[#F7F3EC] hover:bg-white transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-accent-teal">sync_saved_locally</span>
+<span>Estado Offline Activo</span>
+</button>
+<button class="bg-[#8E1EA2] text-white px-3.5 py-1.5 rounded-lg text-xs font-medium hover:bg-primary-active active:scale-[0.98] transition-all flex items-center gap-1.5 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+<span>Exportar Bóveda</span>
+</button>
+<div class="h-5 w-px bg-[#D5CCBC] mx-1"></div>
+<!-- Lock PIN Action -->
+<button class="p-2 rounded-lg text-muted hover:text-ink hover:bg-[#EDE5DA] transition-colors" title="Bloquear con PIN local" type="button">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</button>
+<!-- User Profile Avatar -->
+<div class="relative flex items-center pl-1">
+<img class="w-8 h-8 rounded-full border border-[#D5CCBC] object-cover shadow-2xs" data-alt="Intellectual reader portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeehBF5f35ovCt85mnMUfE0uLhD3y1E3o_Tr1W-0KhYlT3uSh5KnF0o317rz1TuszJKVMax7oEIb5_LSi_Wp74_lJxStQhrQ2sDP0k6hSOVIFSAqxHEyRpI6XX8oMRdqgF3V9FH9sV1bRydvJ6MhW7tntDFdXljFjBmPAiKfL0zWEvRSOt95Y0--bkhlSrGsO3wMic-Fx0sSxOiULuy9FQxzpF4KMsM3oIM2tG0rlLweLzPJ0Rp5o0"/>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-success rounded-full ring-2 ring-[#FAF7F2]"></span>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN APP DESK CONTAINER -->
+<div class="w-full max-w-[1340px] mx-auto px-3 sm:px-6 pt-7 flex-1 flex flex-col gap-8">
+<!-- MASTER PAPER PLANNER SHEET (Heavy cardstock with realistic 3D contact shadows) -->
+<article class="relative bg-[#FAF7F2] border border-[#DDD5C6] rounded-2xl shadow-paper-deep p-6 sm:p-9 md:p-11 transition-all overflow-visible">
+<!-- Atmospheric Stationery: Top-Right Washi Tape -->
+<div class="hidden md:block absolute -top-3.5 right-12 z-20 w-32 h-6 bg-[#A6BAA4]/80 washi-tape text-[#A6BAA4] rotate-[3deg] rounded-xs"></div>
+<!-- Atmospheric Stationery: Handwritten Sticky Note with Brass Paperclip pinned at top left -->
+<aside class="relative sm:absolute -top-6 sm:top-5 right-2 sm:right-10 z-30 w-full sm:w-56 bg-[#FFF9D6] border border-[#E8DD9E] p-4 rounded-sm shadow-postit rotate-[1.5deg] hover:rotate-0 transition-transform">
+<!-- Brass Paperclip -->
+<div class="absolute -top-4 right-6 z-20 paperclip-brass">
+<svg fill="none" height="42" viewbox="0 0 24 42" width="24">
+<path d="M7 10 V 28 C 7 32 17 32 17 28 V 6 C 17 2 3 2 3 8 V 32 C 3 39 21 39 21 30 V 12" stroke="#B89552" stroke-linecap="round" stroke-width="2.6"></path>
+</svg>
+</div>
+<div class="pt-1">
+<span class="text-[9px] uppercase tracking-wider font-mono text-[#8C7A4A] block mb-1">Aforismo de Soberanía</span>
+<p class="font-hand text-base leading-tight text-[#473B25]">
+          «Tus compromisos y pensamientos no necesitan servidores; viven en tu propio pliego ♡»
+        </p>
+<span class="font-hand text-xs text-[#8C7A4A] block mt-1 text-right">— Espiralia Vault</span>
+</div>
+</aside>
+<!-- Botanical Floral Sketch Watermark -->
+<svg class="absolute top-6 left-8 w-28 h-28 text-[#8C9AA7]/20 pointer-events-none select-none" fill="none" stroke="currentColor" stroke-width="1.2" viewbox="0 0 100 100">
+<path d="M50 95 C 45 65, 60 40, 85 15"></path>
+<path d="M60 70 C 45 60, 35 62, 30 68 C 38 72, 52 72, 60 70"></path>
+<path d="M68 50 C 78 40, 90 42, 92 48 C 84 54, 72 52, 68 50"></path>
+<polygon fill="none" opacity="0.35" points="25,20 28,27 35,28 30,33 32,40 25,36 18,40 20,33 15,28 22,27" stroke="#9EABB7" stroke-width="0.9"></polygon>
+</svg>
+<!-- HEADER / EDITORIAL TITLE BLOCK -->
+<header class="relative mb-8 pb-7 border-b border-[#E3DCce] max-w-4xl">
+<!-- Top meta pills & life areas legend -->
+<div class="flex flex-wrap items-center gap-3 mb-3">
+<div class="flex items-center gap-2">
+<span class="px-2.5 py-0.5 rounded-full text-xs font-mono bg-primary-soft/25 text-primary font-semibold border border-primary/20">
+            Módulo Descentralizado
+          </span>
+<span class="text-hairline">•</span>
+<span class="font-mono text-xs text-muted">v4.8 Local-First</span>
+</div>
+<!-- 3 Life Area Chips -->
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono bg-[#A6BAA4]/25 text-[#24523c] border border-[#A6BAA4]/40">
+<span class="w-1.5 h-1.5 rounded-full bg-[#487e65]"></span> Estudios / Clase B
+          </span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono bg-[#E8A55A]/25 text-[#7a4812] border border-[#E8A55A]/40">
+<span class="w-1.5 h-1.5 rounded-full bg-[#b86b1c]"></span> Personal
+          </span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono bg-primary-soft/20 text-primary border border-primary/25">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Universidad 2026
+          </span>
+</div>
+</div>
+<div class="flex items-baseline gap-4">
+<h1 class="text-4xl sm:text-5xl md:text-6xl font-serif text-[#273444] tracking-tight">
+          Integraciones &amp; Enlace Externo
+        </h1>
+<!-- Hanko Japanese Red Seal Stamp -->
+<span class="hidden md:inline-flex hanko-stamp text-[10px] px-2 py-0.5 rounded font-mono font-bold">
+          ARCHIVADO LOCALMENTE
+        </span>
+</div>
+<p class="font-editorial italic text-base sm:text-lg text-[#5d6770] mt-2.5 max-w-3xl leading-relaxed">
+        Sincronización cliente pura diseñada bajo <strong class="text-ink not-italic font-medium">Privacy-by-Design</strong>. Sin servidores intermediarios, sin cuentas en la nube ni tokens OAuth almacenados fuera de tu navegador. Tus compromisos existen exclusivamente en tu disco local.
+      </p>
+</header>
+<!-- INNER APP WORKSPACE: SIDEBAR + MAIN WORKSTATION -->
+<div class="flex flex-col lg:flex-row gap-8 items-start">
+<!-- LEFT SIDEBAR EDITORIAL (Stationery index binder tabs) -->
+<aside class="w-full lg:w-72 shrink-0 flex flex-col justify-between gap-6 bg-[#F4EFE6]/70 p-5 rounded-xl border border-[#DDD5C5] shadow-xs">
+<div class="flex flex-col gap-5">
+<!-- Sidebar title badge -->
+<div class="flex items-center gap-3 pb-3 border-b border-[#E3DACB]">
+<div class="w-9 h-9 rounded-lg bg-white border border-[#DDD5C5] flex items-center justify-center text-primary shadow-2xs">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+</div>
+<div>
+<h3 class="font-serif text-lg font-bold text-ink leading-tight">Integraciones</h3>
+<p class="font-mono text-[11px] text-muted">Protocolo Local IndexedDB</p>
+</div>
+</div>
+<!-- Navigation folder tabs -->
+<nav class="flex flex-col gap-1.5">
+<a class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-body hover:text-ink hover:bg-white/60 transition-colors text-xs font-medium" href="#">
+<span class="material-symbols-outlined text-[18px] text-muted">shield</span>
+<span>Bóveda &amp; Privacidad</span>
+</a>
+<!-- Active tab (Cardstock Folder Tab aesthetic) -->
+<a class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white text-primary font-bold border border-[#DDD5C5] text-xs shadow-2xs" href="#">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+<span class="flex-1">Google Calendar (.ics)</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+</a>
+<a class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-body hover:text-ink hover:bg-white/60 transition-colors text-xs font-medium" href="#">
+<span class="material-symbols-outlined text-[18px] text-muted">mail</span>
+<span>Gmail &amp; Plantillas</span>
+</a>
+<a class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-body hover:text-ink hover:bg-white/60 transition-colors text-xs font-medium" href="#">
+<span class="material-symbols-outlined text-[18px] text-muted">category</span>
+<span>Áreas Temáticas</span>
+</a>
+<a class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-body hover:text-ink hover:bg-white/60 transition-colors text-xs font-medium" href="#">
+<span class="material-symbols-outlined text-[18px] text-muted">history</span>
+<span>Registro de Actividad</span>
+</a>
+</nav>
+<!-- Backup Papercraft Mini Card -->
+<div class="relative p-4 rounded-xl bg-white border border-[#DDD5C5] shadow-xs">
+<div class="absolute -top-2 left-6 w-16 h-3.5 bg-[#ADC1AB]/75 washi-tape text-[#ADC1AB] rounded-xs"></div>
+<div class="flex items-center gap-2 mb-1.5 text-primary font-semibold text-xs pt-1">
+<span class="material-symbols-outlined text-[17px]">verified_user</span>
+<span>Copia de Respaldo</span>
+</div>
+<p class="text-xs text-muted mb-3 leading-relaxed">
+              Genera un archivo universal .ics sin requerir conexión a internet ni cuenta externa.
+            </p>
+<button class="w-full bg-[#FAF7F2] hover:bg-[#F2EBE0] border border-[#DDD5C7] text-ink font-medium text-xs py-2 px-3 rounded-lg flex items-center justify-center gap-2 transition-colors shadow-2xs" type="button">
+<span class="material-symbols-outlined text-[15px]">download</span>
+<span>Descargar .ics Completo</span>
+</button>
+</div>
+</div>
+<!-- Sidebar footer -->
+<div class="pt-4 border-t border-[#E3DACB] flex flex-col gap-1 text-xs text-muted">
+<a class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg hover:text-ink transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+<span>Documentación Offline</span>
+</a>
+<a class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg hover:text-ink transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+<span>Cerrar Bóveda</span>
+</a>
+</div>
+</aside>
+<!-- RIGHT WORKBENCH CONTENT -->
+<div class="flex-1 flex flex-col gap-6 w-full">
+<!-- STRICT PRIVACY BANNER: Cardstock note with security stamp -->
+<section class="relative bg-[#FAF5EC] rounded-xl p-5 border border-[#DDD4C4] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+<!-- Tape accent on edge -->
+<div class="absolute -top-2.5 left-10 w-24 h-4 bg-[#8FA3B8]/70 washi-tape text-[#8FA3B8] rounded-xs"></div>
+<div class="flex items-center gap-4">
+<div class="w-11 h-11 rounded-lg bg-white border border-[#DDD5C5] flex items-center justify-center text-success shadow-2xs shrink-0">
+<span class="material-symbols-outlined text-[26px]" style="font-variation-settings: 'FILL' 1;">cloud_off</span>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-2.5">
+<h2 class="font-serif text-lg font-bold text-ink">Aislamiento Estricto Verificado</h2>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-mono bg-[#EBF2EA] text-[#256834] font-semibold border border-[#BFD6BD]">
+                  0 bytes transmitidos al exterior
+                </span>
+</div>
+<p class="text-xs text-muted mt-1 leading-relaxed">
+                Protocolo local IndexedDB activo con cifrado en reposo. Compatibilidad total con Google Calendar, Apple iCal y clientes RFC 5545.
+              </p>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full md:w-auto shrink-0">
+<button class="w-full md:w-auto px-3.5 py-2 rounded-lg bg-white hover:bg-[#F6F1EA] border border-[#DDD5C5] text-ink text-xs font-medium transition-colors flex items-center justify-center gap-2 shadow-2xs" type="button">
+<span class="material-symbols-outlined text-[16px] text-muted">terminal</span>
+<span>Ver Auditoría de Tráfico</span>
+</button>
+</div>
+</section>
+<!-- TWO MAIN EDITORIAL CARDS: Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- CARD 1: Google Calendar & iCal (.ics) [Cols 7/12] -->
+<article class="lg:col-span-7 relative bg-white border border-[#DDD5C6] rounded-xl p-6 shadow-paper flex flex-col justify-between">
+<!-- Top washi tape center -->
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-5 bg-[#C5BC9E]/75 washi-tape text-[#C5BC9E] rounded-xs text-center">
+<span class="text-[9px] uppercase tracking-widest text-[#564e3c] font-bold block pt-0.5">RFC 5545 LOCAL</span>
+</div>
+<div>
+<!-- Card Header -->
+<div class="flex items-start justify-between gap-4 pb-4 border-b border-[#EAE3D6] mt-1">
+<div class="flex items-center gap-3">
+<div class="p-2.5 rounded-lg bg-[#FAF7F2] border border-[#DDD5C6] text-primary">
+<span class="material-symbols-outlined text-[24px]">event_repeat</span>
+</div>
+<div>
+<h2 class="font-serif text-xl font-bold text-ink">
+                      Google Calendar &amp; iCal (.ics)
+                    </h2>
+<p class="font-mono text-xs text-muted">Formato estándar RFC 5545 • Sincronización bidireccional local</p>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-[#F7F3EC] border border-[#DDD5C6] text-[11px] font-mono text-muted font-medium">
+                  Sin OAuth requerido
+                </span>
+</div>
+<!-- OPCIÓN A: Exportar Agenda Completa -->
+<div class="mt-6">
+<div class="flex items-center justify-between mb-1.5">
+<label class="font-serif text-base font-bold text-ink flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+                    Opción A: Generar Archivo de Exportación (.ics)
+                  </label>
+<span class="font-mono text-[11px] text-muted">Último archivo: Hoy, 09:41 AM</span>
+</div>
+<p class="text-xs text-muted mb-4 leading-relaxed">
+                  Genera un archivo universal descargable de inmediato. Puedes arrastrarlo o abrirlo directamente en Google Calendar web o cualquier gestor de calendario sin sincronizar credenciales.
+                </p>
+<!-- Selectors Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+<div>
+<label class="block text-xs font-medium text-muted mb-1.5 font-mono">Rango Temporal</label>
+<select class="w-full bg-[#FAF7F2] border border-[#DDD5C6] rounded-lg py-2 px-3 text-xs text-ink focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+<option selected="">Todo el semestre 2026-II</option>
+<option>Próximos 30 días calendario</option>
+<option>Bloque intensivo de exámenes</option>
+<option>Histórico completo acumulado</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-medium text-muted mb-1.5 font-mono">Filtro por Área Temática</label>
+<select class="w-full bg-[#FAF7F2] border border-[#DDD5C6] rounded-lg py-2 px-3 text-xs text-ink focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+<option selected="">Todas las áreas activas (3)</option>
+<option>Solo Estudios / Clase B</option>
+<option>Solo Personal</option>
+<option>Solo Universidad 2026</option>
+</select>
+</div>
+</div>
+<!-- Export CTA -->
+<div class="flex flex-wrap items-center gap-3">
+<button class="bg-[#8E1EA2] text-white px-5 py-2.5 rounded-lg text-xs font-medium hover:bg-primary-active active:scale-[0.98] transition-all flex items-center gap-2 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">calendar_add_on</span>
+<span>Descargar Archivo .ics Calificado</span>
+</button>
+<span class="font-mono text-xs text-muted">48 eventos programados listos</span>
+</div>
+</div>
+<!-- Divider -->
+<div class="my-6 border-t border-[#EAE3D6]"></div>
+<!-- OPCIÓN B: Dropzone Importación Local -->
+<div>
+<label class="font-serif text-base font-bold text-ink flex items-center gap-2 mb-2">
+<span class="w-2.5 h-2.5 rounded-full bg-accent-teal"></span>
+                  Opción B: Importar Eventos hacia Bóveda Local
+                </label>
+<!-- Dropzone Cardstock -->
+<div class="border-2 border-dashed border-[#DDD5C6] hover:border-primary/60 transition-colors bg-[#FAF8F5] rounded-xl p-5 text-center cursor-pointer group">
+<div class="w-10 h-10 rounded-full bg-white border border-[#DDD5C6] mx-auto flex items-center justify-center text-muted group-hover:text-primary transition-colors mb-2 shadow-2xs">
+<span class="material-symbols-outlined text-[22px]">upload_file</span>
+</div>
+<p class="text-xs text-ink font-medium">
+                    Arrastra tu archivo <code class="font-mono text-[11px] bg-white border border-[#DDD5C6] px-1.5 py-0.5 rounded text-primary">.ics</code> aquí o <span class="text-primary underline">explora tu equipo</span>
+</p>
+<p class="font-mono text-[11px] text-muted mt-1">
+                    Lectura directa vía FileReader API en memoria. Ningún dato sale de este equipo.
+                  </p>
+</div>
+</div>
+<!-- Divider -->
+<div class="my-6 border-t border-[#EAE3D6]"></div>
+<!-- OPCIÓN C: Atajos Web Intent a Google Calendar -->
+<div>
+<div class="flex items-center justify-between mb-2">
+<label class="font-serif text-base font-bold text-ink flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-accent-amber"></span>
+                    Opción C: Atajos Directos "A un solo clic" (Google Calendar Web)
+                  </label>
+<span class="font-mono text-[10px] text-muted">Action Template URI</span>
+</div>
+<p class="text-xs text-muted mb-3 leading-relaxed">
+                  Añade tus hitos más críticos a Google Calendar en una pestaña nueva sin conceder permisos de acceso ni login a tu cuenta personal.
+                </p>
+<!-- List of Quick Calendar Links -->
+<div class="space-y-2.5">
+<div class="p-3 bg-[#FAF7F2] rounded-lg border border-[#DDD5C6] flex items-center justify-between gap-3 shadow-2xs">
+<div class="flex items-center gap-3">
+<span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0"></span>
+<div>
+<p class="text-xs font-semibold text-ink">Entrega Memoria de Tesis Semestre II</p>
+<p class="font-mono text-[11px] text-muted">15 Octubre 2026 • 23:59 hrs • Universidad</p>
+</div>
+</div>
+<a class="px-3 py-1.5 bg-white hover:bg-[#F2ECE1] border border-[#DDD5C6] rounded text-xs font-medium text-ink hover:text-primary transition-colors flex items-center gap-1.5 shrink-0 shadow-2xs" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Entrega+Memoria+de+Tesis+Semestre+II&amp;dates=20261015T215900Z/20261015T235900Z&amp;details=Generado+desde+Espiralia+Privacy+Vault" rel="noopener noreferrer" target="_blank">
+<span>Añadir a Google</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</div>
+<div class="p-3 bg-[#FAF7F2] rounded-lg border border-[#DDD5C6] flex items-center justify-between gap-3 shadow-2xs">
+<div class="flex items-center gap-3">
+<span class="w-2.5 h-2.5 rounded-full bg-accent-teal shrink-0"></span>
+<div>
+<p class="text-xs font-semibold text-ink">Examen Oral: Seminario de Lectura B</p>
+<p class="font-mono text-[11px] text-muted">22 Octubre 2026 • 10:00 hrs • Estudios</p>
+</div>
+</div>
+<a class="px-3 py-1.5 bg-white hover:bg-[#F2ECE1] border border-[#DDD5C6] rounded text-xs font-medium text-ink hover:text-primary transition-colors flex items-center gap-1.5 shrink-0 shadow-2xs" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Examen+Oral+Seminario+B&amp;dates=20261022T080000Z/20261022T100000Z&amp;details=Generado+desde+Espiralia" rel="noopener noreferrer" target="_blank">
+<span>Añadir a Google</span>
+<span class="material-symbols-outlined text-[14px]">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- RIGHT COLUMN: Gmail Templates & Local Audit Card [Cols 5/12] -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- CARD 2: Gmail & Plantillas mailto: -->
+<article class="relative bg-white border border-[#DDD5C6] rounded-xl p-6 shadow-paper flex flex-col justify-between">
+<!-- Washi tape at corner -->
+<div class="absolute -top-2.5 -right-2 w-20 h-4 bg-[#DAB4A6]/80 washi-tape text-[#DAB4A6] rotate-[8deg] rounded-xs"></div>
+<div>
+<div class="flex items-start justify-between gap-4 pb-4 border-b border-[#EAE3D6] mb-4">
+<div class="flex items-center gap-3">
+<div class="p-2.5 rounded-lg bg-[#FAF7F2] border border-[#DDD5C6] text-primary">
+<span class="material-symbols-outlined text-[24px]">forward_to_inbox</span>
+</div>
+<div>
+<h2 class="font-serif text-xl font-bold text-ink">
+                        Gmail &amp; Plantillas
+                      </h2>
+<p class="font-mono text-xs text-muted">Protocolo mailto:// y web intents de redacción</p>
+</div>
+</div>
+<span class="w-2.5 h-2.5 rounded-full bg-success mt-2" title="Cero permisos delegados"></span>
+</div>
+<!-- Explanation Note -->
+<div class="p-3 bg-[#FAF8F5] border border-[#E5DECF] rounded-xl mb-4">
+<div class="flex items-center gap-2 text-primary font-semibold text-xs mb-1">
+<span class="material-symbols-outlined text-[17px]">verified</span>
+<span>¿Por qué no requiere API Key ni login?</span>
+</div>
+<p class="text-xs text-muted leading-relaxed">
+                    Espiralia compila tus variables locales directamente en el esquema seguro de URL de Gmail. El correo se abre preparado en tu sesión activa; nada se transmite por backend.
+                  </p>
+</div>
+<!-- Template 1: Academic / Application -->
+<div class="border border-[#DDD5C6] rounded-xl p-4 bg-[#FAF7F2] mb-3.5 shadow-2xs">
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 rounded text-xs font-mono bg-primary-soft/25 text-primary border border-primary/20 font-medium">
+                      Universidad 2026
+                    </span>
+<span class="font-mono text-[11px] text-muted">Plantilla #acad-04</span>
+</div>
+<h4 class="font-serif text-base font-bold text-ink mb-1">
+                    Justificativo académico / Postulación
+                  </h4>
+<p class="text-xs text-muted mb-3 line-clamp-2">
+                    Asunto: Solicitud de convalidación y revisión de plazos para la convocatoria académica Semestre II.
+                  </p>
+<a class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-white hover:bg-[#F2ECE0] border border-[#DDD5C6] rounded-lg text-xs font-medium text-ink transition-colors shadow-2xs" href="mailto:coordinacion@universidad.edu?subject=Consulta%20Convocatoria%202026-II%20Espiralia&amp;body=Estimado%20Comit%C3%A9%20Acad%C3%A9mico%2C%0A%0AAdjunto%20mi%20registro%20de%20avance%20acad%C3%A9mico%20generado%20desde%20mi%20b%C3%B3veda%20local.%0A%0ASaludos%20cordiales.">
+<span class="material-symbols-outlined text-[17px] text-primary">mail</span>
+<span>Abrir borrador en Gmail</span>
+</a>
+</div>
+<!-- Template 2: Self-Notes & Readings -->
+<div class="border border-[#DDD5C6] rounded-xl p-4 bg-[#FAF7F2] shadow-2xs">
+<div class="flex items-center justify-between mb-2">
+<span class="px-2 py-0.5 rounded text-xs font-mono bg-[#E8A55A]/25 text-[#7a4812] border border-[#E8A55A]/35 font-medium">
+                      Personal
+                    </span>
+<span class="font-mono text-[11px] text-muted">Recordatorio Express</span>
+</div>
+<h4 class="font-serif text-base font-bold text-ink mb-1">
+                    Auto-envío de notas &amp; lecturas
+                  </h4>
+<p class="text-xs text-muted mb-3">
+                    Envía el extracto de tu cuaderno activo a tu propia bandeja de entrada sin rastreo de analíticas ni telemetría.
+                  </p>
+<a class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-white hover:bg-[#F2ECE0] border border-[#DDD5C6] rounded-lg text-xs font-medium text-ink transition-colors shadow-2xs" href="mailto:me@personal.vault?subject=Resumen%20Espiralia%20del%20D%C3%ADa&amp;body=Notas%20pendientes%20de%20revisi%C3%B3n%20editorial.">
+<span class="material-symbols-outlined text-[17px] text-muted">send</span>
+<span>Enviar recordatorio instantáneo</span>
+</a>
+</div>
+</div>
+</article>
+<!-- CARD 3: Registro de Auditoría Local -->
+<article class="relative bg-white border border-[#DDD5C6] rounded-xl p-6 shadow-paper flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-3 pb-3 border-b border-[#EAE3D6] mb-4">
+<div class="p-2 rounded-lg bg-[#FAF7F2] border border-[#DDD5C6] text-success">
+<span class="material-symbols-outlined text-[20px]">security_update_good</span>
+</div>
+<div>
+<h3 class="font-serif text-lg font-bold text-ink">
+                      Registro de Auditoría Local
+                    </h3>
+<p class="font-mono text-xs text-muted">Historial de sincronización en este navegador</p>
+</div>
+</div>
+<!-- Event History Checklist -->
+<div class="space-y-3 mb-5">
+<div class="flex items-start justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-success">check_circle</span>
+<span class="text-ink font-medium">Exportación agenda_2026.ics</span>
+</div>
+<span class="font-mono text-[11px] text-muted">Hoy, 09:41</span>
+</div>
+<div class="flex items-start justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-success">check_circle</span>
+<span class="text-ink font-medium">Copia de Bóveda JSON</span>
+</div>
+<span class="font-mono text-[11px] text-muted">Ayer, 18:20</span>
+</div>
+<div class="flex items-start justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-success">check_circle</span>
+<span class="text-ink font-medium">Lectura .ics Calendario Universidad</span>
+</div>
+<span class="font-mono text-[11px] text-muted">03 Oct, 14:12</span>
+</div>
+</div>
+<!-- Full Vault Download Action -->
+<div class="pt-4 border-t border-[#EAE3D6] flex flex-col gap-2">
+<button class="w-full py-2.5 px-4 bg-[#FAF7F2] hover:bg-[#F2EBE0] border border-[#DDD5C6] rounded-lg text-xs text-ink font-semibold flex items-center justify-center gap-2 transition-colors shadow-2xs" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">inventory_2</span>
+<span>Descargar Copia Completa (JSON + .ics)</span>
+</button>
+<p class="font-mono text-[10px] text-muted text-center">
+                    Copia íntegra compatible con cualquier cliente local
+                  </p>
+</div>
+</div>
+</article>
+</div>
+</div>
+</div>
+</div>
+<!-- SHEET BOTTOM EDITORIAL MANTRA -->
+<div class="mt-10 pt-6 border-t-2 border-[#E7DFD1] flex flex-col sm:flex-row items-center justify-between text-center gap-3">
+<div class="flex items-center gap-2 text-xs font-mono text-muted">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span>Almacenamiento Local: <strong class="text-ink">1.4 MB / 50 MB</strong> (IndexedDB)</span>
+</div>
+<p class="font-hand text-lg text-[#516170] tracking-wide">
+        « Small steps every day lead to big results. ♡ »
+      </p>
+<div class="flex items-center gap-3 text-xs font-mono text-muted">
+<span>RFC 5545</span>
+<span>•</span>
+<span>Sin telemetría</span>
+</div>
+</div>
+</article>
+<!-- DESK BOTTOM TECHNICAL FOOTER -->
+<footer class="px-4 py-2 flex flex-col sm:flex-row items-center justify-between text-muted font-mono text-xs gap-3">
+<p>Espiralia Editorial Desk • Bóveda Local Cifrada • Soberanía Analógica Digital</p>
+<div class="flex items-center gap-4">
+<span class="inline-flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span>Zero-Cloud Client</span>
+</span>
+<span>•</span>
+<a class="underline hover:text-ink transition-colors" href="#">Especificación RFC 5545 iCalendar</a>
+</div>
+</footer>
+</div>
+</body></html>

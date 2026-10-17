@@ -37,3 +37,4 @@ scratchpad/
 .scannerwork/
 coverage/
 .env
+.playwright-mcp/

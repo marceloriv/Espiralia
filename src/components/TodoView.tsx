@@ -645,14 +645,24 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
 
                             {/* Píldora de Fecha de Vencimiento editable */}
                             {editingDueDateId === todo.id ? (
-                              <input
-                                type="date"
-                                className={styles.editDateInput}
-                                aria-label={`cambiar fecha ${todo.title}`}
-                                defaultValue={todo.dueDate || ''}
-                                onBlur={e => handleSaveDueDate(todo.id, e.target.value)}
-                                autoFocus
-                              />
+                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                <input
+                                  type="date"
+                                  className={styles.editDateInput}
+                                  aria-label={`cambiar fecha ${todo.title}`}
+                                  defaultValue={todo.dueDate || ''}
+                                  onBlur={e => handleSaveDueDate(todo.id, e.target.value)}
+                                  autoFocus
+                                />
+                                <button
+                                  type="button"
+                                  className={styles.btnCancelDate}
+                                  aria-label="cancelar fecha"
+                                  onClick={() => setEditingDueDateId(null)}
+                                >
+                                  <X size={14} aria-hidden="true" />
+                                </button>
+                              </div>
                             ) : (
                               <button
                                 type="button"

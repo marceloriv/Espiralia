@@ -15,7 +15,6 @@ import {
   Brain,
   GraduationCap,
   PiggyBank,
-  Plus,
 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Folder, LinkItem, Note } from '../types';
@@ -145,12 +144,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
     return displayFolders.find((f) => f.id === selectedFolderId) || displayFolders[0];
   }, [displayFolders, selectedFolderId]);
 
-  // Links y notas asociados a la carpeta activa
-  const folderLinks = useMemo(() => {
-    if (!activeFolder) return [];
-    return links.filter((l) => l.folderId === activeFolder.id);
-  }, [links, activeFolder]);
-
+  // Notas asociadas a la carpeta activa
   const folderNotes = useMemo(() => {
     if (!activeFolder) return [];
     return notes.filter((n) => n.folderId === activeFolder.id);
@@ -413,6 +407,34 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId }) => {
                         {activeFolder?.num}. {activeFolder?.name}
                       </h3>
                       <span className={styles.hankoSeal}>ARCHIVADO LOCALMENTE</span>
+                      {activeFolder?.isCustom && (
+                        <div style={{ display: 'inline-flex', gap: 6, marginLeft: 8 }}>
+                          <button
+                            type="button"
+                            className={styles.btnActionTable}
+                            onClick={(e) => {
+                              const found = folders.find((f) => f.id === activeFolder.id);
+                              if (found) handleOpenEditFolder(found, e);
+                            }}
+                            title="Editar Carpeta"
+                          >
+                            <Pencil size={13} aria-hidden="true" style={{ marginRight: 4 }} />
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.btnActionTable}
+                            onClick={(e) => {
+                              const found = folders.find((f) => f.id === activeFolder.id);
+                              if (found) handleDeleteFolder(found, e);
+                            }}
+                            title="Eliminar Carpeta"
+                          >
+                            <Trash2 size={13} aria-hidden="true" style={{ marginRight: 4 }} />
+                            Eliminar
+                          </button>
+                        </div>
+                      )}
                     </div>
                     <p className={styles.folderDesc}>{activeFolder?.desc}</p>
                   </div>

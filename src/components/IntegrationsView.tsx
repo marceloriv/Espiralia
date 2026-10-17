@@ -129,7 +129,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile }) =
       profile,
       exportDate: new Date().toISOString(),
       events: StorageService.getEvents(profile.id),
-      blocks: StorageService.getBlocks(profile.id),
+      blocks: StorageService.getPlanner(profile.id),
       todos: StorageService.getTodos(profile.id),
       areas: StorageService.getAreas(profile.id),
       notes: StorageService.getNotes(profile.id),

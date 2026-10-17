@@ -9,7 +9,7 @@ import esLocale from '@fullcalendar/react/locales/es';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
-import { Pencil, Repeat, Trash2, Calendar, BookOpen, Download, Lock, Sun, Moon, Sparkles, ChevronLeft, ChevronRight, Check, Heart, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Sparkles, CheckCircle2 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { AgendaEvent, EventCategory } from '../types';
 import { StorageService } from '../services/storage';
