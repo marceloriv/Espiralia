@@ -1,0 +1,213 @@
+.card {
+  position: relative;
+  padding: 18px 20px 16px;
+  border-radius: 12px;
+  background-color: var(--bg-card, #FCF9F6);
+  background-image: radial-gradient(#E8DFD3 1px, transparent 1px);
+  background-size: 14px 14px;
+  border: 1px solid var(--color-hairline, #E6DFD8);
+  border-left: 4px solid var(--color-hairline, #E6DFD8);
+  box-shadow: var(--shadow-sheet, 0 1px 2px rgba(26, 25, 23, 0.08), 0 10px 24px -4px rgba(26, 25, 23, 0.08));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  outline: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-hairline-soft, #EBE6DF);
+  border-left-color: var(--color-primary-soft, #ED96D7);
+  box-shadow: 0 4px 16px rgba(20, 20, 19, 0.1);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--color-primary, #8E1EA2);
+  outline-offset: 2px;
+}
+
+.cardActive {
+  border-color: var(--color-primary, #8E1EA2);
+  border-left-color: var(--color-primary, #8E1EA2);
+  box-shadow: 0 4px 16px rgba(142, 30, 162, 0.15), 0 1px 3px rgba(20, 20, 19, 0.06);
+  transform: translateY(-2px);
+}
+
+.ribbon {
+  position: absolute;
+  top: 0;
+  right: 22px;
+  width: 12px;
+  height: 26px;
+  border-radius: 0 0 3px 3px;
+  box-shadow: 0 2px 4px rgba(20, 20, 19, 0.2);
+  z-index: 2;
+  transition: height 0.2s ease;
+}
+
+.card:hover .ribbon,
+.cardActive .ribbon {
+  height: 32px;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 24px; /* Espacio para que no choque con la cinta marcapáginas */
+}
+
+.cardTopRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-family: var(--font-primary, Georgia, serif);
+  font-size: var(--text-title-sm, 1.05rem);
+  font-weight: 600;
+  color: var(--color-ink, #141413);
+  line-height: 1.3;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.sectionSymbol {
+  color: var(--color-primary, #8E1EA2);
+  font-family: var(--font-primary, Georgia, serif);
+  font-weight: 700;
+  font-size: 1.15em;
+  user-select: none;
+}
+
+.titleText {
+  flex: 1;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill, 9999px);
+  font-family: var(--font-family-3, monospace);
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.reflectionBadge {
+  background-color: rgba(142, 30, 162, 0.12);
+  color: var(--color-primary, #8E1EA2);
+  border: 1px solid rgba(142, 30, 162, 0.22);
+}
+
+.folderBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill, 9999px);
+  background-color: var(--color-surface-soft, #F5F0E8);
+  color: var(--color-muted, #6C6A64);
+  font-family: var(--font-family-3, monospace);
+  font-size: 0.68rem;
+  border: 1px solid var(--color-hairline, #E6DFD8);
+  align-self: flex-start;
+}
+
+.cardContent {
+  font-family: var(--font-primary, Georgia, serif);
+  font-size: var(--text-body-sm, 0.88rem);
+  color: var(--color-body, #3D3D3A);
+  line-height: 1.6;
+}
+
+.previewParagraph {
+  margin: 0;
+  white-space: pre-wrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font-family: var(--font-family-3, monospace);
+  font-size: 0.68rem;
+  color: var(--color-muted, #6C6A64);
+  background-color: var(--color-surface-card, #EFE9DE);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.cardFooter {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--color-hairline, #E6DFD8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.metaGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wordBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background-color: var(--color-surface-soft, #F5F0E8);
+  color: var(--color-muted-soft, #8E8B82);
+  font-family: var(--font-family-3, monospace);
+  font-size: 0.68rem;
+  border: 1px solid var(--color-hairline-soft, #EBE6DF);
+}
+
+.dateInfo {
+  font-family: var(--font-family-3, monospace);
+  font-size: 0.7rem;
+  color: var(--color-muted, #6C6A64);
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.iconBtn {
+  padding: 6px;
+  border: none;
+  background: transparent;
+  color: var(--color-muted, #6C6A64);
+  cursor: pointer;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.iconBtn:hover {
+  color: var(--color-primary, #8E1EA2);
+  background-color: var(--color-surface-soft, #F5F0E8);
+}
