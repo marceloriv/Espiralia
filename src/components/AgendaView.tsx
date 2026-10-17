@@ -59,8 +59,9 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId: propProfileId
 };
 
 const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
+  const activeProfileId = profileId || 'default';
   const calendarRef = useRef<CalendarRef>(null);
-  const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
+  const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(activeProfileId));
   const [filter, setFilter] = useState<CategoryFilter>('todas');
   const [selectedDate, setSelectedDate] = useState(() => toLocalDateStr(new Date()));
   // Valor crudo de "Ir a fecha": Chrome emite fechas parciales ('0002-…') mientras se tipea el año.
@@ -73,7 +74,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   const [energyLevel, setEnergyLevel] = useState<string>('Activa');
   const [moodState, setMoodState] = useState<string>('En Calma');
 
-  const reload = () => setEvents(StorageService.getEvents(profileId));
+  const reload = () => setEvents(StorageService.getEvents(activeProfileId));
   const update = (patch: Partial<EventFormState>) => setForm(f => ({ ...f, ...patch }));
 
   const visible = filter === 'todas' ? events : events.filter(ev => categoryOf(ev) === filter);
@@ -136,7 +137,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const result = validateEventForm(form, profileId);
+    const result = validateEventForm(form, activeProfileId);
     if (!result.ok) {
       sileo.error({ title: result.error });
       return;
@@ -155,7 +156,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     if (ev.recurrence && !window.confirm(`Se eliminará la serie "${ev.title}" con todas sus repeticiones. ¿Continuar?`)) {
       return;
     }
-    if (!safeDeleteEvent(profileId, ev.id)) return;
+    if (!safeDeleteEvent(activeProfileId, ev.id)) return;
     sileo.success({ title: 'Evento eliminado' });
     if (form.editingId === ev.id) resetForm(selectedDate);
     reload();
