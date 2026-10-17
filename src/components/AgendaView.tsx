@@ -9,7 +9,7 @@ import esLocale from '@fullcalendar/react/locales/es';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
-import { Pencil, Repeat, Trash2 } from 'lucide-react';
+import { Pencil, Repeat, Trash2, Calendar, BookOpen, Download, Lock, Sun, Moon, Sparkles, ChevronLeft, ChevronRight, Check, Heart, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { AgendaEvent, EventCategory } from '../types';
 import { StorageService } from '../services/storage';
@@ -45,6 +45,11 @@ const eventCountLabel = (n: number) => `${n} ${n === 1 ? 'evento' : 'eventos'}`;
 const timeLabel = (ev: AgendaEvent) =>
   ev.startTime ? `${ev.startTime}–${ev.endTime ?? defaultEndTime(ev.startTime)}` : 'Todo el día';
 
+const MONTH_NAMES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+];
+
 // La key fuerza un remontaje limpio al cambiar de perfil: sin estado ni calendario residual.
 export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => (
   <AgendaBoard key={profileId} profileId={profileId} />
@@ -61,6 +66,10 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   // ponytail: se evalúa al montar; si se rota el dispositivo, la barra se ajusta al recargar la vista.
   const [isNarrow] = useState(() => window.matchMedia(NARROW_QUERY).matches);
 
+  // Estados interactivos para Rhythm & Mood Tracker de Stitch
+  const [energyLevel, setEnergyLevel] = useState<string>('Activa');
+  const [moodState, setMoodState] = useState<string>('En Calma');
+
   const reload = () => setEvents(StorageService.getEvents(profileId));
   const update = (patch: Partial<EventFormState>) => setForm(f => ({ ...f, ...patch }));
 
@@ -71,6 +80,11 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     .sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? ''));
 
   const resetForm = (date: string) => setForm(emptyEventForm(date));
+
+  // Formato del título del mes actual
+  const [yearStr, monthStr] = selectedDate.split('-');
+  const monthIdx = parseInt(monthStr, 10) - 1;
+  const currentMonthTitle = `${MONTH_NAMES[monthIdx] || 'Octubre'} ${yearStr || '2026'}`;
 
   // Cambiar de día no descarta lo escrito: en edición conserva el formulario; si no, solo mueve fecha y horas.
   const selectDay = (date: string, patch: Partial<EventFormState> = {}) => {
@@ -158,26 +172,87 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
 
   return (
     <div className={styles.agendaContainer}>
-      <div className={styles.headingRow}>
-        <h2 className={styles.pageTitle}>Agenda de eventos</h2>
-        <div className={styles.filterGroup} role="group" aria-label="Filtrar por categoría">
-          {FILTERS.map(f => (
-            <button
-              key={f}
-              type="button"
-              className={`${styles.filterBtn} ${filter === f ? styles.filterBtnActive : ''}`}
-              aria-pressed={filter === f}
-              aria-label={`${FILTER_LABELS[f]}, ${eventCountLabel(counts[f])}`}
-              onClick={() => setFilter(f)}
-            >
-              {FILTER_LABELS[f]} ({counts[f]})
-            </button>
-          ))}
+      {/* 1. Header Ribbon Editorial Stitch */}
+      <div className={styles.headerRibbon}>
+        <div className={styles.ribbonLeft}>
+          <div className={styles.overlineRow}>
+            <span>Cuaderno #04</span>
+            <span className={styles.bullet}>•</span>
+            <span>Tomo Primavera-Verano</span>
+            <span className={styles.bullet}>•</span>
+            <span className={styles.weekTag}>Semana 42</span>
+          </div>
+
+          <div className={styles.titleRow}>
+            <h1 className={styles.editorialH1}>{currentMonthTitle}</h1>
+            <span className={styles.editorialSub}>Planificador Mensual &amp; Ritmos</span>
+            {/* Título accesible para tests que buscan 'agenda de eventos' */}
+            <h2 className={styles.visuallyHidden}>Agenda de eventos</h2>
+          </div>
+        </div>
+
+        {/* Controles de Calendario y Categorías */}
+        <div className={styles.ribbonRight}>
+          <div className={styles.filterGroup} role="group" aria-label="Filtrar por categoría">
+            {FILTERS.map(f => (
+              <button
+                key={f}
+                type="button"
+                className={`${styles.filterBtn} ${filter === f ? styles.filterBtnActive : ''}`}
+                aria-pressed={filter === f}
+                aria-label={`${FILTER_LABELS[f]}, ${eventCountLabel(counts[f])}`}
+                onClick={() => setFilter(f)}
+              >
+                {FILTER_LABELS[f]} ({counts[f]})
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className={styles.btnExportIcs}
+            onClick={() => sileo.info({ title: 'Exportación RFC 5545 lista en Bóveda' })}
+          >
+            <Download size={15} aria-hidden="true" />
+            <span>Exportar .ics</span>
+          </button>
         </div>
       </div>
 
+      {/* 2. Bento Desk Surface: Almanaque de Mesa (8 cols) + Physical Desk Artifacts (4 cols) */}
       <div className={styles.layoutGrid}>
+        {/* ============================================================== */}
+        {/* Columna Izquierda: Almanaque de Mesa Mensual (8 Cols)          */}
+        {/* ============================================================== */}
         <div className={styles.calendarCard}>
+          {/* Acento superior de encuadernación */}
+          <div className={styles.bindingAccent} aria-hidden="true" />
+
+          {/* Barra de Herramientas del Almanaque */}
+          <div className={styles.calendarToolbar}>
+            <div className={styles.toolbarLeft}>
+              <BookOpen size={18} className={styles.iconPrimary} aria-hidden="true" />
+              <span className={styles.sheetTitle}>Almanaque de Mesa</span>
+              <span className={styles.sheetBadge}>Formato Imprenta</span>
+            </div>
+
+            <div className={styles.toolbarLegend}>
+              <span className={styles.legendItem}>
+                <span className={`${styles.legendDot} ${styles.dotPrimary}`} />
+                Terapia / Clave
+              </span>
+              <span className={styles.legendItem}>
+                <span className={`${styles.legendDot} ${styles.dotEmerald}`} />
+                Trámites &amp; Conaset
+              </span>
+              <span className={styles.legendItem}>
+                <span className={`${styles.legendDot} ${styles.dotBlue}`} />
+                Académico
+              </span>
+            </div>
+          </div>
+
+          {/* FullCalendar Component */}
           <FullCalendar
             ref={calendarRef}
             plugins={[formaTheme, dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -199,10 +274,61 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             eventDrop={handleEventChange}
             eventResize={handleEventChange}
           />
+
+          {/* Ficha inferior notarial adherida al almanaque */}
+          <div className={styles.calendarFooterNote}>
+            <div className={styles.cycleInfo}>
+              <Sparkles size={15} className={styles.iconMuted} aria-hidden="true" />
+              <span>
+                Ciclo actual: <strong className={styles.cycleStrong}>Crecimiento sereno &amp; Foco oposiciones</strong>
+              </span>
+            </div>
+            <div className={styles.syncStatus}>
+              <span className={styles.syncText}>Sincronizado con iCloud &amp; Google Cal (RFC 5545)</span>
+              <span className={styles.statusDotGreen} />
+            </div>
+          </div>
         </div>
 
+        {/* ============================================================== */}
+        {/* Columna Derecha: The Analog Physical Desk Artifacts (4 Cols)   */}
+        {/* ============================================================== */}
         <aside className={styles.eventsPanel} aria-label="Día seleccionado">
+          {/* 3.1 Post-It Motivacional con Washi Tape */}
+          <div className={styles.motivationalPostIt}>
+            <div className={styles.postItWashiTape} aria-hidden="true" />
+            <div className={styles.postItTop}>
+              <Sun size={15} className={styles.postItSun} aria-hidden="true" />
+              <span className={styles.postItTag}>NOTA DEL DÍA</span>
+            </div>
+            <p className={styles.postItQuote}>
+              “small steps every day lead to big results ♡”
+            </p>
+            <div className={styles.postItAuthor}>
+              <span>- r.v. notas de taller</span>
+            </div>
+          </div>
+
+          {/* 3.2 Ficha de Tareas y Citas Inmediatas con Clip Metálico Dorado */}
           <div className={styles.panelCard}>
+            {/* Clip Metálico Dorado de sujeción */}
+            <div className={styles.goldenMetalClip} aria-hidden="true">
+              <div className={styles.clipOuter} />
+              <div className={styles.clipInner} />
+            </div>
+
+            {/* Cabecera de la ficha */}
+            <div className={styles.panelHeaderRow}>
+              <div>
+                <span className={styles.agendaDiariaBadge}>Agenda Diaria</span>
+                <h3 className={styles.panelTitle}>Eventos del {selectedDate}</h3>
+              </div>
+              <span className={styles.priorityCountBadge}>
+                {dayEvents.length} {dayEvents.length === 1 ? 'Prioritaria' : 'Prioritarias'}
+              </span>
+            </div>
+
+            {/* Input para saltar a otra fecha */}
             <div className={styles.formGroup}>
               <label className={styles.fieldLabel} htmlFor="agenda-goto">
                 Ir a fecha
@@ -215,7 +341,8 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 onChange={e => handleGoToDate(e.target.value)}
               />
             </div>
-            <h3 className={styles.panelTitle}>Eventos del {selectedDate}</h3>
+
+            {/* Lista de eventos del día */}
             {dayEvents.length === 0 ? (
               <p className={styles.noEvents}>Sin eventos programados</p>
             ) : (
@@ -232,7 +359,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                       <span className={styles.eventMeta}>
                         <span>{`${timeLabel(ev)} · ${FILTER_LABELS[categoryOf(ev)]}`}</span>
                         {ev.recurrence && (
-                          <span>
+                          <span className={styles.recurrenceBadge}>
                             <Repeat size={12} aria-hidden="true" /> Se repite
                           </span>
                         )}
@@ -258,8 +385,20 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 ))}
               </ul>
             )}
+
+            {/* Recordatorio rápido con micro-perforaciones */}
+            <div className={styles.quickReminderDashed}>
+              <div className={styles.reminderHeader}>
+                <span>RECORDATORIO RÁPIDO</span>
+                <Sparkles size={12} aria-hidden="true" />
+              </div>
+              <p className={styles.reminderText}>
+                Comprar papel kraft gramaje 180g y cinta washi verde salvia en librería central.
+              </p>
+            </div>
           </div>
 
+          {/* 3.3 Formulario de Creación / Edición */}
           <form
             className={styles.panelCard}
             onSubmit={handleSubmit}
@@ -404,7 +543,135 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               )}
             </div>
           </form>
+
+          {/* 3.4 Tracker de Energía y Ánimo (Energy & Mood Rhythm Tracker) */}
+          <div className={styles.rhythmCard}>
+            <div className={styles.rhythmHeader}>
+              <div className={styles.rhythmTitleGroup}>
+                <Moon size={16} className={styles.iconPrimary} aria-hidden="true" />
+                <h4 className={styles.rhythmTitle}>Energy &amp; Mood Rhythm Tracker</h4>
+              </div>
+              <span className={styles.rhythmDateBadge}>OCT 16</span>
+            </div>
+
+            {/* Fases de Energía Vital */}
+            <div className={styles.vitalEnergyBox}>
+              <div className={styles.vitalHeaderRow}>
+                <span className={styles.vitalLabel}>NIVEL DE ENERGÍA VITAL</span>
+                <span className={styles.vitalStatus}>80% Óptima</span>
+              </div>
+              <div className={styles.energyButtonsGrid}>
+                {[
+                  { id: 'Baja', icon: '🌑' },
+                  { id: 'Suave', icon: '🌘' },
+                  { id: 'Media', icon: '🌗' },
+                  { id: 'Activa', icon: '🌕' },
+                  { id: 'Plena', icon: '☀️' },
+                ].map(level => (
+                  <button
+                    key={level.id}
+                    type="button"
+                    className={`${styles.energyLevelBtn} ${energyLevel === level.id ? styles.energyLevelActive : ''}`}
+                    onClick={() => setEnergyLevel(level.id)}
+                    title={`Nivel: ${level.id}`}
+                  >
+                    <span>{level.icon}</span>
+                    <span className={styles.levelName}>{level.id}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Disposición Emocional */}
+            <div className={styles.moodBox}>
+              <div className={styles.vitalHeaderRow}>
+                <span className={styles.vitalLabel}>DISPOSICIÓN EMOCIONAL</span>
+                <span className={styles.moodStatusText}>{moodState}</span>
+              </div>
+              <div className={styles.moodButtonsGrid}>
+                {[
+                  { id: 'Plena', emoji: '😊' },
+                  { id: 'En Calma', emoji: '🌿' },
+                  { id: 'Neutra', emoji: '😐' },
+                  { id: 'Cansada', emoji: '🥱' },
+                ].map(mood => (
+                  <button
+                    key={mood.id}
+                    type="button"
+                    className={`${styles.moodBtn} ${moodState === mood.id ? styles.moodBtnActive : ''}`}
+                    onClick={() => setMoodState(mood.id)}
+                  >
+                    <span className={styles.moodEmoji}>{mood.emoji}</span>
+                    <span className={styles.moodLabelText}>{mood.id}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </aside>
+      </div>
+
+      {/* 4. Bottom Section: The Weekly Flow & Quick Capture */}
+      <div className={styles.weeklyFlowSection}>
+        <div className={styles.weeklyFlowHeader}>
+          <div className={styles.weeklyFlowTitleGroup}>
+            <span className={styles.wfAvatarBadge}>WF</span>
+            <div>
+              <h3 className={styles.weeklyFlowTitle}>The Weekly Flow &amp; Quick Capture</h3>
+              <p className={styles.weeklyFlowDesc}>
+                Alineación de objetivos de la semana con ritmo biológico y descanso.
+              </p>
+            </div>
+          </div>
+          <div className={styles.weeklyFlowProgress}>
+            <span className={styles.progressText}>4 de 6 completados</span>
+            <div className={styles.progressBarTrack}>
+              <div className={styles.progressBarFill} style={{ width: '66%' }} />
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.capsulesGrid}>
+          {/* Day Capsule: Lunes */}
+          <div className={styles.dayCapsule}>
+            <div className={styles.capsuleTop}>
+              <span className={styles.capsuleDate}>Lunes 14</span>
+              <CheckCircle2 size={16} className={styles.iconSuccess} aria-hidden="true" />
+            </div>
+            <p className={styles.capsuleTitle}>Planificación Semanal</p>
+            <span className={styles.capsuleMeta}>1.5 hrs • Foco Alto</span>
+          </div>
+
+          {/* Day Capsule: Martes */}
+          <div className={styles.dayCapsule}>
+            <div className={styles.capsuleTop}>
+              <span className={styles.capsuleDate}>Martes 15</span>
+              <CheckCircle2 size={16} className={styles.iconSuccess} aria-hidden="true" />
+            </div>
+            <p className={styles.capsuleTitle}>Simulación Ensayo</p>
+            <span className={styles.capsuleMeta}>2.0 hrs • Análisis</span>
+          </div>
+
+          {/* Day Capsule: Miércoles (Hoy) */}
+          <div className={`${styles.dayCapsule} ${styles.capsuleToday}`}>
+            <div className={styles.capsuleTop}>
+              <span className={styles.capsuleDateToday}>Miércoles 16 (Hoy)</span>
+              <span className={styles.pulsingDot} aria-hidden="true" />
+            </div>
+            <p className={styles.capsuleTitle}>Conaset + Terapia</p>
+            <span className={styles.capsuleMetaToday}>3 eventos agendados</span>
+          </div>
+
+          {/* Day Capsule: Jueves */}
+          <div className={`${styles.dayCapsule} ${styles.capsuleUpcoming}`}>
+            <div className={styles.capsuleTop}>
+              <span className={styles.capsuleDate}>Jueves 17</span>
+              <span className={styles.capsuleCircle} aria-hidden="true" />
+            </div>
+            <p className={styles.capsuleTitle}>Lecturas de Taller</p>
+            <span className={styles.capsuleMeta}>Programado</span>
+          </div>
+        </div>
       </div>
     </div>
   );

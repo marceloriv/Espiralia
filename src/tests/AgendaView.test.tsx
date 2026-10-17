@@ -21,6 +21,17 @@ describe('AgendaView', () => {
     vi.restoreAllMocks();
   });
 
+  it('renderiza el almanaque de mesa con formato imprenta, dia hoy con chips apilados y panel diario con clip', () => {
+    render(<AgendaView profileId={profileId} />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /octubre 2026/i })).toBeInTheDocument();
+    expect(screen.getByText(/almanaque de mesa/i)).toBeInTheDocument();
+    expect(screen.getByText(/formato imprenta/i)).toBeInTheDocument();
+    expect(screen.getByText(/agenda diaria/i)).toBeInTheDocument();
+    expect(screen.getByText(/energy & mood rhythm tracker/i)).toBeInTheDocument();
+    expect(screen.getByText(/the weekly flow & quick capture/i)).toBeInTheDocument();
+  });
+
   // Técnica: partición de equivalencia sobre datos de entrada (perfil propio, ajeno, esquema viejo).
   it('muestra en el panel del día los eventos del perfil activo', () => {
     seed({ id: 'e1', title: 'Clase de conducción', startTime: '09:00', endTime: '10:00', category: 'estudio' });
