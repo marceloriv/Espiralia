@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   Sparkles,
   Activity,
-  Clock,
   ShieldCheck,
   Check,
 } from 'lucide-react';

@@ -123,7 +123,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               </div>
             </div>
 
-            <LandingHeroCard onAction={handlePrimaryCta} />
+            <LandingHeroCard />
           </div>
         </section>
 

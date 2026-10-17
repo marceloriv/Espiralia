@@ -29,7 +29,7 @@ describe('App integración general', () => {
 
   it('inicia en la portada editorial de bienvenida si no hay sesion activa', async () => {
     render(<App />);
-    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i }, { timeout: 4000 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /el arte de organizar tu vida con serenidad cotidiana/i }, { timeout: 4000 })).toBeInTheDocument();
   });
 
   it('permite crear perfil, ingresar al dashboard y cambiar de perfil', async () => {
@@ -37,8 +37,8 @@ describe('App integración general', () => {
 
     render(<App />);
 
-    const openLandingBtn = await screen.findByRole('button', { name: /abrir cuaderno personal/i });
-    await user.click(openLandingBtn);
+    const openLandingBtns = await screen.findAllByRole('button', { name: /abrir cuaderno inmediato|comenzar cuaderno/i });
+    await user.click(openLandingBtns[0]);
 
     const openCreateBtn = await screen.findByRole('button', { name: /nuevo perfil/i });
     await user.click(openCreateBtn);
@@ -66,8 +66,8 @@ describe('App integración general', () => {
 
     render(<App />);
 
-    const openLandingBtn = await screen.findByRole('button', { name: /abrir cuaderno personal/i });
-    await user.click(openLandingBtn);
+    const openLandingBtns = await screen.findAllByRole('button', { name: /abrir cuaderno inmediato|comenzar cuaderno/i });
+    await user.click(openLandingBtns[0]);
 
     const openCreateBtn = await screen.findByRole('button', { name: /nuevo perfil/i });
     await user.click(openCreateBtn);
