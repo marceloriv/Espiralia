@@ -56,12 +56,12 @@
   --accent-sage: #5A826D;
   --error: #C64545;
 
-  --border-subtle: rgba(20, 20, 19, 0.08);
-  --border-hairline: #E6DFD8;
+  --border-subtle: rgba(20, 20, 19, 0.12);
+  --border-hairline: #DDD5C6;
 
   /* Sombras multicapa 3D de papelería */
-  --shadow-sheet: 0 1px 2px rgba(26, 25, 23, 0.06), 0 10px 24px -4px rgba(26, 25, 23, 0.08);
-  --shadow-card-stack: 0 1px 2px rgba(26, 25, 23, 0.07), 0 4px 0 -1px #FAF6F0, 0 5px 2px -1px rgba(26, 25, 23, 0.06), 0 14px 28px -6px rgba(26, 25, 23, 0.10);
+  --shadow-sheet: 0 1px 2px rgba(26, 25, 23, 0.08), 0 10px 24px -4px rgba(26, 25, 23, 0.08);
+  --shadow-card-stack: 0 1px 2px rgba(26, 25, 23, 0.08), 0 4px 0 -1px #FAF6F0, 0 5px 2px -1px rgba(26, 25, 23, 0.07), 0 14px 28px -6px rgba(26, 25, 23, 0.12);
   --shadow-pin: 1px 3px 5px rgba(0, 0, 0, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.7);
   --shadow-recessed: inset 0 2px 4px rgba(20, 20, 19, 0.08), 0 1px 0 rgba(255, 255, 255, 0.8);
 
@@ -163,14 +163,25 @@
   --shadow-sm: 0 1px 3px rgba(20, 20, 19, 0.06);
   --shadow-md: 0 4px 12px rgba(20, 20, 19, 0.08);
   --shadow-lg: 0 12px 32px rgba(20, 20, 19, 0.14);
-  --shadow-paper: 0 1px 3px rgba(26, 25, 23, 0.04), 0 4px 12px rgba(26, 25, 23, 0.02);
-  --shadow-folder-tab: 0 4px 14px rgba(26, 25, 23, 0.03), 0 12px 28px rgba(26, 25, 23, 0.02);
-  --shadow-postit: 0 6px 16px rgba(26, 25, 23, 0.06), 0 1px 2px rgba(26, 25, 23, 0.08);
+  --shadow-paper: 0 1px 3px rgba(26, 25, 23, 0.07), 0 6px 18px -2px rgba(26, 25, 23, 0.06);
+  --shadow-folder-tab: 0 4px 14px rgba(26, 25, 23, 0.05), 0 12px 28px rgba(26, 25, 23, 0.04);
+  --shadow-postit: 0 6px 16px rgba(26, 25, 23, 0.08), 0 1px 2px rgba(26, 25, 23, 0.08);
   --shadow-dark-elevated: 0 8px 30px rgba(0, 0, 0, 0.12);
   --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-primary);
 
   /* Tokens de compatibilidad y alias historicos */
   --color-surface: var(--color-surface-soft);
+  --color-background: var(--bg-card);
+  --color-surface-bright: #FFFFFF;
+  --color-secondary: var(--color-primary-active);
+  --color-tertiary: var(--color-accent-teal);
+  --color-danger: var(--color-error);
+  --color-bg-postit: var(--bg-postit);
+  --color-primary-hover: var(--color-primary-active);
+  --color-error-container: rgba(198, 69, 69, 0.12);
+  --color-accent-red: var(--color-error);
+  --font-mono: var(--font-family-3);
+  --text-headline-sm: 18px;
   --color-accent: var(--color-primary);
   --color-ink-muted: var(--color-muted);
   --font-headline: var(--font-primary);

@@ -507,8 +507,8 @@
 
 .bentoCard {
   position: relative;
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: var(--radius-xl);
   padding: 22px;
   box-shadow: var(--shadow-paper);
@@ -1005,8 +1005,8 @@
 /* Card General */
 .card {
   position: relative;
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: var(--radius-xl);
   padding: 24px;
   box-shadow: var(--shadow-paper);
@@ -1498,8 +1498,8 @@
 /* Mini Reminders Card */
 .miniRemindersCard {
   position: relative;
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: var(--radius-xl);
   padding: 20px;
   box-shadow: var(--shadow-paper);
@@ -1579,8 +1579,8 @@
 
 .areasSection {
   position: relative;
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: var(--radius-xl);
   padding: 26px 28px;
   box-shadow: var(--shadow-paper);
@@ -1825,8 +1825,8 @@
 
 .notesSection {
   position: relative;
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: var(--radius-xl);
   padding: 26px 28px;
   box-shadow: var(--shadow-paper);
@@ -1940,8 +1940,8 @@
 
 .reflectionSection {
   position: relative;
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: var(--radius-xl);
   padding: 28px;
   box-shadow: var(--shadow-paper);
@@ -2087,8 +2087,8 @@
    ========================================================================= */
 
 .metricsSection {
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: var(--radius-xl);
   padding: 24px;
   box-shadow: var(--shadow-paper);
