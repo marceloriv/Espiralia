@@ -13,13 +13,14 @@ import {
   CheckCircle,
   Car,
   Coffee,
-  Moon,
   Star,
   Pin,
   Check,
   Clock,
   Bell,
   ShieldCheck,
+  Edit,
+  ArrowRight,
 } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType } from '../types';
 import { StorageService } from '../services/storage';
@@ -243,18 +244,38 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className={styles.bentoCard}>
           <div className={styles.bentoCardHeader}>
             <span className={styles.bentoTag}>
-              <Moon size={16} aria-hidden="true" />
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" />
+              </svg>
               <span>Energy Check &amp; Fases</span>
             </span>
             <span className={styles.bentoBadge}>Luna Creciente</span>
           </div>
 
           <div className={styles.lunarCycleVisualizer} aria-label="Fases lunares">
-            <span className={styles.moonIcon} title="Luna Nueva">🌑</span>
-            <span className={styles.moonIcon} title="Cuarto Creciente">🌒</span>
-            <span className={`${styles.moonIcon} ${styles.moonIconActive}`} title="Gibosa Creciente (Hoy)">🌓</span>
-            <span className={styles.moonIcon} title="Luna Llena">🌕</span>
-            <span className={styles.moonIcon} title="Cuarto Menguante">🌘</span>
+            <svg viewBox="0 0 24 24" className={styles.moonVector} aria-hidden="true">
+              <title>Nueva</title>
+              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2" />
+            </svg>
+            <svg viewBox="0 0 24 24" className={styles.moonVector} aria-hidden="true">
+              <title>Creciente</title>
+              <path d="M12 4a8 8 0 1 0 8 8c0-.4-.04-.8-.1-1.2a4.8 4.8 0 0 1-3.9 2 4.8 4.8 0 0 1-2.8-8.7c-.4-.06-.8-.1-1.2-.1z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+            <svg viewBox="0 0 24 24" className={`${styles.moonVector} ${styles.moonVectorActive}`} aria-hidden="true">
+              <title>Gibosa Creciente (Hoy)</title>
+              <path d="M12 3a9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9 9 9 0 0 1 9-9z" fill="var(--color-primary-soft)" opacity="0.35" />
+              <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" fill="var(--color-primary)" />
+              <circle cx="12" cy="12" r="9" fill="none" stroke="var(--color-primary)" strokeWidth="1.5" />
+            </svg>
+            <svg viewBox="0 0 24 24" className={styles.moonVector} aria-hidden="true">
+              <title>Luna Llena</title>
+              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="2" />
+              <circle cx="12" cy="12" r="3.5" fill="currentColor" opacity="0.3" />
+            </svg>
+            <svg viewBox="0 0 24 24" className={styles.moonVector} aria-hidden="true">
+              <title>Menguante</title>
+              <path d="M12 4a8 8 0 0 1-8 8c0 .4.04.8.1 1.2a4.8 4.8 0 0 0 3.9 2 4.8 4.8 0 0 0 2.8-8.7c.4-.06.8-.1 1.2-.1z" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
           </div>
 
           <p className={styles.clarityQuestion}>¿Cómo está tu nivel de claridad hoy?</p>
@@ -420,7 +441,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <div className={styles.habitRowItem}>
               <div className={styles.habitInfo}>
-                <Moon size={15} className={styles.habitIcon} aria-hidden="true" />
+                <Clock size={15} className={styles.habitIcon} aria-hidden="true" />
                 <span className={styles.habitTitle}>Dormir antes 23h</span>
               </div>
               <div className={styles.habitPillsRow}>
@@ -446,7 +467,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           3. MAIN LAYOUT GRID (7 cols / 5 cols)
           ===================================================================== */}
       <div className={styles.mainLayoutGrid}>
-        {/* Columna Izquierda: Foco, Prioridades, Distracciones y Áreas */}
+        {/* Columna Izquierda: Foco, Prioridades, Distracciones (7 cols) */}
         <div className={styles.mainLeftCol}>
           {/* Banner Today's Main Focus */}
           <div className={styles.focusBanner}>
@@ -484,14 +505,59 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* Top Priorities no negociables */}
           <section className={styles.card} aria-labelledby="dash-critical">
             <div className={styles.cardHeader}>
-              <h3 id="dash-critical" className={styles.cardTitle}>
-                <Pin size={18} aria-hidden="true" />
-                <span>TOP PRIORITIES no negociables</span>
-              </h3>
-              <span className={styles.cardMeta}>{countLabel(criticalCount, 'crítico', 'críticos')}</span>
+              <div className={styles.cardHeaderLeft}>
+                <h3 id="dash-critical" className={styles.cardTitle}>
+                  <span>TOP PRIORITIES no negociables</span>
+                </h3>
+                <span className={styles.topPrioritiesSubBadge}>No negociables</span>
+              </div>
+              <div className={styles.cardHeaderRight}>
+                <Pin size={18} className={styles.pushPinIcon} aria-hidden="true" />
+                <span className={styles.cardMeta}>{countLabel(criticalCount, 'crítico', 'críticos')}</span>
+              </div>
             </div>
+
             {critical.length === 0 ? (
-              <p className={styles.emptyNotice}>Nada crítico pendiente</p>
+              <div className={styles.prioritiesContainer}>
+                {/* Visual Stitch Default Priorities when zero critical tasks are registered */}
+                <div className={styles.stitchPriorityRow}>
+                  <span className={styles.priorityNumHighlight}>01.</span>
+                  <input type="checkbox" defaultChecked className={styles.checkbox} aria-label="Prioridad 1 completada" />
+                  <div className={styles.stitchPriorityText}>
+                    <span className={`${styles.rowTitle} ${styles.rowTitleDone}`}>
+                      Revisión de lecturas del Módulo Epistemología para la sesión de terapia
+                    </span>
+                    <span className={styles.priorityDoneSub}>Completado a las 09:30 · 45 min foco</span>
+                  </div>
+                  <CheckCircle size={18} className={styles.priorityDoneCheck} aria-hidden="true" />
+                </div>
+
+                <div className={styles.stitchPriorityRow}>
+                  <span className={styles.priorityNum}>02.</span>
+                  <input type="checkbox" className={styles.checkbox} aria-label="Prioridad 2 pendiente" />
+                  <div className={styles.stitchPriorityText}>
+                    <span className={styles.rowTitle}>
+                      Borrador preliminar de la Carta de Motivación (Postulación Univ. 2026)
+                    </span>
+                    <span className={styles.priorityPendingSub}>Fase: Estructura de 3 párrafos y objetivos</span>
+                  </div>
+                  <span className={styles.timeTagSmall}>16:30 hrs</span>
+                </div>
+
+                <div className={styles.stitchPriorityRow}>
+                  <span className={styles.priorityNum}>03.</span>
+                  <input type="checkbox" className={styles.checkbox} aria-label="Prioridad 3 pendiente" />
+                  <div className={styles.stitchPriorityText}>
+                    <span className={styles.rowTitle}>
+                      Caminata silenciosa de 30 minutos sin auriculares (Reajuste sensorial)
+                    </span>
+                    <span className={styles.priorityPendingSub}>Autocuidado · Parque Quinta Normal</span>
+                  </div>
+                  <span className={styles.timeTagSmall}>19:00 hrs</span>
+                </div>
+
+                <p className={styles.emptyNotice}>Nada crítico pendiente</p>
+              </div>
             ) : (
               <ul className={styles.list} aria-label="No olvidar">
                 {critical.map((t, idx) => {
@@ -507,21 +573,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         checked={t.completed}
                         onChange={() => handleToggleTodo(t.id)}
                       />
-                      <span className={`${styles.rowTitle} ${t.completed ? styles.rowTitleDone : ''}`}>{t.title}</span>
-                      {due && <span className={styles.dueTag}>{due}</span>}
+                      <div className={styles.criticalTextCol}>
+                        <span className={`${styles.rowTitle} ${t.completed ? styles.rowTitleDone : ''}`}>{t.title}</span>
+                        {due && <span className={styles.dueTag}>{due}</span>}
+                      </div>
                     </li>
                   );
                 })}
               </ul>
             )}
             <button type="button" className={styles.cardLink} onClick={() => onNavigate('todo')}>
-              Ver todas las tareas
+              Ver todas las tareas →
             </button>
           </section>
 
           {/* Eliminate Distractions Box with Metallic Paperclip */}
           <div className={styles.distractionBox}>
-            <div className={styles.paperclipIcon} aria-hidden="true" />
+            <div className={styles.metallicPaperclip} aria-hidden="true" />
             <div className={styles.distractionHeader}>
               <h4 className={styles.distractionTitle}>ELIMINATE DISTRACTIONS</h4>
               <span className={styles.distractionCommitment}>Compromiso</span>
@@ -541,92 +609,76 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </li>
             </ul>
           </div>
-
-          {/* Progreso por Áreas Temáticas (Folder Tabs) */}
-          {areas.length > 0 && (
-            <section
-              className={styles.areasSection}
-              role="region"
-              aria-label="Áreas temáticas clave"
-            >
-              <div className={styles.areasHeader}>
-                <div>
-                  <h3 id="dash-areas" className={styles.cardTitle}>
-                    Progreso por Áreas Temáticas
-                  </h3>
-                  <p className={styles.heroSubtitle} style={{ marginTop: 2, fontSize: 13 }}>
-                    Carpetas activas de vida y proyectos en curso (Plan 2026-II)
-                  </p>
-                </div>
-                <span className={styles.areasMeta}>
-                  {countLabel(areas.length, 'área en seguimiento', 'áreas en seguimiento')}
-                </span>
-              </div>
-              <div className={styles.areasGrid}>
-                {areaSummaries.map((s, idx) => (
-                  <div key={s.area.id} className={styles.areaCard}>
-                    <div className={styles.folderTabTop}>
-                      Carpeta #{String(idx + 1).padStart(2, '0')}
-                    </div>
-                    <div>
-                      <div className={styles.areaTop}>
-                        <div className={styles.areaIdentity}>
-                          <span className={styles.areaDot} style={{ backgroundColor: s.area.color }} aria-hidden="true" />
-                          <h4 className={styles.areaName}>{s.area.name}</h4>
-                        </div>
-                        <span className={styles.areaPercent}>{s.completionPercentage}%</span>
-                      </div>
-                      <div className={styles.progressBarBg} aria-hidden="true">
-                        <div
-                          className={styles.progressBarFill}
-                          style={{ width: `${s.completionPercentage}%`, backgroundColor: s.area.color }}
-                        />
-                      </div>
-                    </div>
-                    <div className={styles.areaBottom}>
-                      <span className={styles.areaPendingCount}>
-                        {countLabel(s.pendingTodos, 'pendiente', 'pendientes')}
-                      </span>
-                      <button
-                        type="button"
-                        className={styles.areaActionBtn}
-                        onClick={() => onNavigate('todo')}
-                        aria-label={`Ver tareas del área ${s.area.name}`}
-                      >
-                        Ver área →
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
 
-        {/* Columna Lateral Derecha: Horario, Mini Reminders, Planner, Notes y Reflexión */}
+        {/* Columna Lateral Derecha: Horario, Mini Reminders y Planner (5 cols) */}
         <div className={styles.mainRightCol}>
           {/* Focus Schedule de Hoy (08:00 - 20:00) */}
           <section className={styles.card} aria-labelledby="dash-events">
             <div className={styles.cardHeader}>
               <h3 id="dash-events" className={styles.cardTitle}>
                 <Clock size={18} aria-hidden="true" />
-                <span>Focus Schedule de Hoy (08:00 - 20:00)</span>
+                <span>Focus Schedule de Hoy</span>
               </h3>
               <span className={styles.cardMeta}>{countLabel(todayEventsTotal, 'evento', 'eventos')}</span>
             </div>
 
-            {/* Embedded Active Session Preview card */}
-            <div className={`${styles.eventRow} ${styles.activeSlotCard}`} style={{ marginBottom: 10 }}>
-              <span className={styles.timeBlock} style={{ color: 'var(--color-primary)' }}>11:30</span>
-              <div className={styles.pulseDot} aria-hidden="true" />
-              <div className={styles.rowBody}>
-                <span className={styles.rowTitle} style={{ fontWeight: 600 }}>Test CONASET Clase B (3 ensayos)</span>
-                <span className={styles.badge} style={{ backgroundColor: 'var(--color-primary-light)', color: 'var(--color-primary)' }}>
-                  EN CURSO
-                </span>
+            {/* Complete 7 Routine Timeline Slots from Stitch */}
+            <div className={styles.routineTimeline}>
+              <div className={styles.routineSlotDone}>
+                <span className={styles.routineTime}>08:00</span>
+                <span className={styles.routineDotDone} />
+                <span className={styles.routineTitleDone}>Lectura matutina &amp; té de menta</span>
+                <span className={styles.routineStatusTag}>Completado</span>
+              </div>
+
+              <div className={styles.routineSlotDone}>
+                <span className={styles.routineTime}>09:30</span>
+                <span className={styles.routineDotDone} />
+                <span className={styles.routineTitleDone}>Lecturas Módulo Epistemología</span>
+                <span className={styles.routineStatusTag}>Completado</span>
+              </div>
+
+              {/* 11:30 Active Session Pulse */}
+              <div className={styles.routineSlotActive}>
+                <span className={styles.routineTimeActive}>11:30</span>
+                <div className={styles.pulseDot} aria-hidden="true" />
+                <div className={styles.activeSlotBody}>
+                  <span className={styles.activeSlotTitle}>Test CONASET Clase B (3 ensayos)</span>
+                  <span className={styles.activeSlotBadge}>EN CURSO · 42 min restantes</span>
+                </div>
+              </div>
+
+              <div className={styles.routineSlotPending}>
+                <span className={styles.routineTime}>14:00</span>
+                <span className={styles.routineDotAmber} />
+                <span className={styles.routineTitle}>Almuerzo pausado &amp; digestión tranquila</span>
+                <span className={styles.routinePauseTag}>Pausa</span>
+              </div>
+
+              <div className={styles.routineSlotPending}>
+                <span className={styles.routineTime}>16:30</span>
+                <span className={styles.routineDotPurple} />
+                <span className={styles.routineTitle}>Borrador Carta Univ. 2026 (Pliego libre)</span>
+                <span className={styles.routineMutedTag}>60 min</span>
+              </div>
+
+              <div className={styles.routineSlotPending}>
+                <span className={styles.routineTime}>18:30</span>
+                <span className={styles.routineDotTeal} />
+                <span className={styles.routineTitle}>Bitácora semanal de terapia personal</span>
+                <span className={styles.routineMutedTag}>30 min</span>
+              </div>
+
+              <div className={styles.routineSlotPending}>
+                <span className={styles.routineTime}>20:00</span>
+                <span className={styles.routineDotGray} />
+                <span className={styles.routineTitle}>Cierre de cuaderno &amp; reflexión nocturna</span>
+                <span className={styles.routineMutedTag}>15 min</span>
               </div>
             </div>
 
+            {/* User Events from StorageService */}
             {todayEvents.length === 0 ? (
               <p className={styles.emptyNotice}>No hay eventos para hoy</p>
             ) : (
@@ -651,11 +703,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </ul>
             )}
             <button type="button" className={styles.cardLink} onClick={() => onNavigate('agenda')}>
-              Ver agenda completa
+              Ver agenda completa →
             </button>
           </section>
 
-          {/* Mini Reminders Card */}
+          {/* Mini Reminders Card with Washi Tape */}
           <div className={styles.miniRemindersCard}>
             <div className={styles.miniRemindersWashi} aria-hidden="true" />
             <div className={styles.cardHeader} style={{ marginBottom: 6 }}>
@@ -703,97 +755,261 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </ul>
             )}
             <button type="button" className={styles.cardLink} onClick={() => onNavigate('planner')}>
-              Ver planner completo
+              Ver planner completo →
             </button>
           </section>
-
-          {/* NOTES / BRAIN DUMP card with 16px Graph Paper Grid */}
-          <div className={styles.notesCard}>
-            <div className={styles.notesWashiSlate} aria-hidden="true" />
-            <div className={styles.notesCardHeader}>
-              <h4 className={styles.notesCardTitle}>NOTES / BRAIN DUMP</h4>
-              <span className={styles.notesCardTag}>Cuadrícula de ideas espontáneas</span>
-            </div>
-            <div className={styles.paperGridContainer}>
-              <p className={styles.notesHandwriting}>
-                — Comprar cuaderno de tapas duras tamaño A5 para el módulo de dibujo técnico.<br />
-                — Recordar que el error en la rotonda fue ceder el paso cuando ya estaba dentro del anillo.<br />
-                — «Respirar 4 segundos antes de encender la pantalla».
-              </p>
-              <div className={styles.autoSaveIndicator}>
-                <Check size={12} aria-hidden="true" />
-                <span>Guardado automáticamente</span>
-              </div>
-            </div>
-            <button
-              type="button"
-              className={styles.notesCardBtn}
-              onClick={() => (onOpenReflection ? onOpenReflection() : onNavigate('notes'))}
-            >
-              + Nueva Anotación Rápida
-            </button>
-          </div>
-
-          {/* End of day reflection ♡ with 28px Ruled Notebook Lines */}
-          <div className={styles.reflectionCard}>
-            <h4 className={styles.reflectionTitle}>
-              <span>End of day reflection <span className={styles.reflectionHeart}>♡</span></span>
-              <span className={styles.cardMeta} style={{ fontSize: 11 }}>Completar al anochecer</span>
-            </h4>
-            <div className={styles.reflectionField}>
-              <label className={styles.reflectionLabel}>¿Qué salió bien hoy?</label>
-              <textarea
-                className={styles.reflectionTextarea}
-                placeholder="Escribe aquí los momentos de calma, avances o pequeñas victorias..."
-                rows={2}
-                value={reflection1}
-                onChange={(e) => setReflection1(e.target.value)}
-              />
-            </div>
-            <div className={styles.reflectionField}>
-              <label className={styles.reflectionLabel}>¿Qué puedo mejorar?</label>
-              <textarea
-                className={styles.reflectionTextarea}
-                placeholder="Reconoce tropiezos con amabilidad y sin juzgarte con dureza..."
-                rows={2}
-                value={reflection2}
-                onChange={(e) => setReflection2(e.target.value)}
-              />
-            </div>
-            <div className={styles.reflectionField}>
-              <label className={styles.reflectionLabel}>¿Cuál será mi primer paso mañana?</label>
-              <textarea
-                className={styles.reflectionTextarea}
-                placeholder="Define la primera acción precisa de las 08:00 AM..."
-                rows={2}
-                value={reflection3}
-                onChange={(e) => setReflection3(e.target.value)}
-              />
-            </div>
-
-            <div className={styles.reflectionFooterMotto}>
-              <p className={styles.closingMotto}>
-                « Small steps every day lead to big results. ♡ »
-              </p>
-              <div className={styles.sovereigntyStamp}>
-                <ShieldCheck size={14} style={{ color: 'var(--color-accent-teal)' }} aria-hidden="true" />
-                <span>Almacenamiento 100% Client-Side • Espiralia Taller de Escritorio v2.6</span>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className={styles.saveReflectionBtn}
-              onClick={() => onNavigate('notes')}
-            >
-              Guardar Pliego
-            </button>
-          </div>
         </div>
       </div>
 
       {/* =====================================================================
-          4. MÉTRICAS Y RENDIMIENTO
+          4. PROGRESO POR ÁREAS TEMÁTICAS (Solapas Folder Tabs - FULL WIDTH!)
+          ===================================================================== */}
+      {areas.length > 0 && (
+        <section
+          className={styles.areasSection}
+          role="region"
+          aria-label="Áreas temáticas clave"
+        >
+          <div className={styles.areasHeader}>
+            <div>
+              <h2 id="dash-areas" className={styles.cardTitle}>
+                Progreso por Áreas Temáticas
+              </h2>
+              <p className={styles.areasSubTitle}>
+                Carpetas activas de vida y proyectos en curso (Plan 2026-II)
+              </p>
+            </div>
+            <div className={styles.areasHeaderRight}>
+              <span className={styles.areasMeta}>
+                {countLabel(areas.length, 'área activa', 'áreas activas')}
+              </span>
+              <button
+                type="button"
+                className={styles.manageAreasBtn}
+                onClick={() => onNavigate('todo')}
+              >
+                + Gestionar Áreas
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.areasGrid}>
+            {areaSummaries.map((s, idx) => {
+              const isEstudios = s.area.name.toLowerCase().includes('estudio') || idx === 0;
+              const isSalud = s.area.name.toLowerCase().includes('salud') || idx === 1;
+
+              const displayTitle = isEstudios
+                ? 'Estudios & Licencia Clase B'
+                : isSalud
+                ? 'Introspección & Terapia'
+                : `${s.area.name} — Plan 2026`;
+              const displayDesc = isEstudios
+                ? 'Preparación teórica exhaustiva con el Libro del Nuevo Conductor y simulador CONASET.'
+                : isSalud
+                ? 'Diario de autorregulación emocional, mapas cognitivos y bitácora clínica confidencial.'
+                : 'Recopilación de certificados, cartas de recomendación y portafolio de redacción.';
+              const milestone1 = isEstudios
+                ? 'Capítulo 1 a 6 leídos y sintetizados'
+                : isSalud
+                ? 'Registro de descompresión completado'
+                : 'Certificado de egreso digitalizado';
+              const milestone2 = isEstudios
+                ? '3 simulaciones pendientes esta semana'
+                : isSalud
+                ? '1 pliego por redactar antes del viernes'
+                : 'Borrador de carta en edición';
+              const deadline = isEstudios
+                ? 'Examen: Noviembre 2026'
+                : isSalud
+                ? 'Cita: Viernes 16:00'
+                : 'Plazo: 28 Noviembre';
+              const actionLabel = isEstudios
+                ? 'Abrir simulador'
+                : isSalud
+                ? 'Ver bitácora'
+                : 'Ver expediente';
+
+              return (
+                <div key={s.area.id} className={styles.areaFolderCard}>
+                  {/* Protruding Folder Tab Top Edge */}
+                  <div className={styles.folderTabTop}>
+                    Carpeta #{String(idx + 1).padStart(2, '0')}
+                  </div>
+
+                  <div className={styles.areaFolderBody}>
+                    <div className={styles.areaFolderTopRow}>
+                      <span className={styles.areaCategoryBadge} style={{ backgroundColor: `${s.area.color}25`, color: s.area.color }}>
+                        {s.area.name}
+                      </span>
+                      <span className={styles.areaPercent}>{s.completionPercentage}%</span>
+                    </div>
+
+                    <h3 className={styles.areaFolderName}>
+                      {displayTitle}
+                    </h3>
+                    <p className={styles.areaFolderDesc}>
+                      {displayDesc}
+                    </p>
+
+                    {/* Progress Bar */}
+                    <div className={styles.progressBarBg} aria-hidden="true">
+                      <div
+                        className={styles.progressBarFill}
+                        style={{ width: `${s.completionPercentage}%`, backgroundColor: s.area.color }}
+                      />
+                    </div>
+
+                    {/* Milestones Checklist */}
+                    <div className={styles.areaMilestones}>
+                      <div className={styles.milestoneItem}>
+                        <Check size={15} className={styles.milestoneCheckIcon} aria-hidden="true" />
+                        <span>{milestone1}</span>
+                      </div>
+                      <div className={styles.milestoneItem}>
+                        <span className={styles.milestonePendingDot} aria-hidden="true" />
+                        <span>{milestone2}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Folder Card Bottom */}
+                  <div className={styles.areaFolderBottom}>
+                    <div className={styles.areaMetaDetails}>
+                      <span className={styles.areaDeadlineText}>{deadline}</span>
+                      <span className={styles.areaPendingPill}>
+                        {countLabel(s.pendingTodos, 'pendiente', 'pendientes')}
+                      </span>
+                    </div>
+
+                    {/* Preserves .areaActionBtn with min-height: 44px for accessibility and tests */}
+                    <button
+                      type="button"
+                      className={styles.areaActionBtn}
+                      onClick={() => onNavigate('todo')}
+                      aria-label={`Ver tareas del área ${s.area.name}`}
+                    >
+                      <span>{actionLabel}</span>
+                      <ArrowRight size={14} aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* =====================================================================
+          5. NOTES / BRAIN DUMP (Parchment Paper Grid - FULL WIDTH!)
+          ===================================================================== */}
+      <section className={styles.notesSection} aria-labelledby="dash-notes">
+        {/* Washi tape topper */}
+        <div className={styles.notesWashiSlate} aria-hidden="true" />
+
+        <div className={styles.notesCardHeader}>
+          <div className={styles.notesTitleBox}>
+            <h3 id="dash-notes" className={styles.notesCardTitle}>
+              NOTES / BRAIN DUMP
+            </h3>
+            <span className={styles.notesCardTag}>Cuadrícula libre de ideas espontáneas</span>
+          </div>
+          <Edit size={18} className={styles.notesHeaderIcon} aria-hidden="true" />
+        </div>
+
+        <div className={styles.paperGridContainer}>
+          <p className={styles.notesHandwriting}>
+            — Comprar cuaderno de tapas duras tamaño A5 para el módulo de dibujo técnico.<br />
+            — Recordar que el error en la rotonda fue ceder el paso cuando ya estaba dentro del anillo.<br />
+            — «Respirar 4 segundos antes de encender la pantalla».
+          </p>
+          <div className={styles.autoSaveIndicator}>
+            <Check size={14} aria-hidden="true" />
+            <span>Guardado automáticamente</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className={styles.notesCardBtn}
+          onClick={() => (onOpenReflection ? onOpenReflection() : onNavigate('notes'))}
+        >
+          + Nueva Anotación Rápida
+        </button>
+      </section>
+
+      {/* =====================================================================
+          6. CIERRE DE PLIEGO REFLEXIVO (End of day reflection ♡ - FULL WIDTH!)
+          ===================================================================== */}
+      <section className={styles.reflectionSection} aria-labelledby="dash-reflection">
+        <div className={styles.reflectionHeader}>
+          <div className={styles.reflectionTitleBox}>
+            <h3 id="dash-reflection" className={styles.reflectionTitle}>
+              End of day reflection <span className={styles.reflectionHeart}>♡</span>
+            </h3>
+            <span className={styles.reflectionSubtext}>• Balance de la jornada</span>
+          </div>
+          <span className={styles.reflectionNotice}>Completar al anochecer</span>
+        </div>
+
+        {/* 3-Column Ruled Lines Grid */}
+        <div className={styles.reflectionGrid3Col}>
+          <div className={styles.reflectionField}>
+            <label className={styles.reflectionLabel}>¿Qué salió bien hoy?</label>
+            <textarea
+              className={styles.reflectionTextarea}
+              placeholder="Escribe aquí los momentos de calma, avances o pequeñas victorias..."
+              rows={3}
+              value={reflection1}
+              onChange={(e) => setReflection1(e.target.value)}
+            />
+          </div>
+
+          <div className={styles.reflectionField}>
+            <label className={styles.reflectionLabel}>¿Qué puedo mejorar?</label>
+            <textarea
+              className={styles.reflectionTextarea}
+              placeholder="Reconoce tropiezos con amabilidad y sin juzgarte con dureza..."
+              rows={3}
+              value={reflection2}
+              onChange={(e) => setReflection2(e.target.value)}
+            />
+          </div>
+
+          <div className={styles.reflectionField}>
+            <label className={styles.reflectionLabel}>¿Cuál será mi primer paso mañana?</label>
+            <textarea
+              className={styles.reflectionTextarea}
+              placeholder="Define la primera acción precisa de las 08:00 AM..."
+              rows={3}
+              value={reflection3}
+              onChange={(e) => setReflection3(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Closing Motto & Sovereignty Stamp */}
+        <div className={styles.reflectionFooterRow}>
+          <p className={styles.closingMotto}>
+            « Small steps every day lead to big results. ♡ »
+          </p>
+
+          <div className={styles.sovereigntyStamp}>
+            <ShieldCheck size={16} className={styles.sovereigntyIcon} aria-hidden="true" />
+            <span>Almacenamiento 100% Client-Side • Espiralia Taller de Escritorio v2.6</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className={styles.saveReflectionBtn}
+          onClick={() => onNavigate('notes')}
+        >
+          Guardar Pliego
+        </button>
+      </section>
+
+      {/* =====================================================================
+          7. MÉTRICAS Y RENDIMIENTO (FULL WIDTH!)
           ===================================================================== */}
       <section className={styles.metricsSection} aria-labelledby="dash-metrics">
         <h3 id="dash-metrics" className={styles.cardTitle}>

@@ -599,6 +599,21 @@
   color: var(--color-muted);
 }
 
+.moonVector {
+  width: 22px;
+  height: 22px;
+  color: var(--color-muted-soft);
+  cursor: default;
+  transition: all 0.2s ease;
+}
+
+.moonVectorActive {
+  width: 26px;
+  height: 26px;
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 6px rgba(110, 0, 129, 0.25));
+}
+
 .moonIcon {
   font-size: 22px;
   cursor: default;
@@ -1006,6 +1021,32 @@
   margin-bottom: 14px;
 }
 
+.cardHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topPrioritiesSubBadge {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface-card);
+  color: var(--color-muted-soft);
+  border: 1px solid var(--color-hairline);
+}
+
+.cardHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pushPinIcon {
+  color: var(--color-muted);
+}
+
 .cardTitle {
   margin: 0;
   font-family: var(--font-primary);
@@ -1042,18 +1083,85 @@
   border: 1px solid var(--color-hairline);
 }
 
+.criticalTextCol {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 8px;
+}
+
 .checkbox {
   width: 18px;
   height: 18px;
   accent-color: var(--color-primary);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .priorityNum {
   font-family: var(--font-primary);
   font-weight: bold;
   font-size: 16px;
+  color: var(--color-ink);
+}
+
+.priorityNumHighlight {
+  font-family: var(--font-primary);
+  font-weight: bold;
+  font-size: 16px;
   color: var(--color-primary);
+}
+
+/* Priorities container & rows */
+.prioritiesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.stitchPriorityRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.stitchPriorityText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.priorityDoneSub {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-success);
+}
+
+.priorityPendingSub {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.priorityDoneCheck {
+  color: var(--color-success);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.timeTagSmall {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-muted);
 }
 
 .rowTitle {
@@ -1080,7 +1188,7 @@
 }
 
 .emptyNotice {
-  margin: 12px 0;
+  margin: 12px 0 0;
   font-family: var(--font-primary);
   font-style: italic;
   font-size: var(--text-body-sm);
@@ -1114,6 +1222,7 @@
   box-shadow: var(--shadow-paper);
 }
 
+.metallicPaperclip,
 .paperclipIcon {
   position: absolute;
   top: -12px;
@@ -1178,7 +1287,160 @@
   flex-shrink: 0;
 }
 
-/* Focus Schedule (08:00 - 20:00) */
+/* Focus Schedule (08:00 - 20:00) Routine Timeline */
+.routineTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.routineSlotDone {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  font-size: var(--text-body-sm);
+}
+
+.routineSlotPending {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-size: var(--text-body-sm);
+  transition: all 0.15s ease;
+}
+
+.routineSlotPending:hover {
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-hairline);
+}
+
+.routineSlotActive {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background-color: #efe9de;
+  border: 2px solid var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.routineTime {
+  font-family: var(--font-family-3);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.routineTimeActive {
+  font-family: var(--font-family-3);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-primary);
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.routineDotDone {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.routineDotAmber {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.routineDotPurple {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--color-secondary);
+  flex-shrink: 0;
+}
+
+.routineDotTeal {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--color-accent-teal);
+  flex-shrink: 0;
+}
+
+.routineDotGray {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--color-muted-soft);
+  flex-shrink: 0;
+}
+
+.routineTitleDone {
+  flex: 1;
+  font-size: 12px;
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+.routineTitle {
+  flex: 1;
+  font-size: 12px;
+  color: var(--color-ink);
+}
+
+.activeSlotBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.activeSlotTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.activeSlotBadge {
+  font-family: var(--font-family-3);
+  font-size: 10px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.routineStatusTag {
+  font-family: var(--font-family-3);
+  font-size: 10px;
+  color: var(--color-success);
+}
+
+.routinePauseTag {
+  font-family: var(--font-family-3);
+  font-size: 10px;
+  color: var(--color-muted);
+}
+
+.routineMutedTag {
+  font-family: var(--font-family-3);
+  font-size: 10px;
+  color: var(--color-muted);
+}
+
 .eventRow {
   display: flex;
   align-items: center;
@@ -1311,12 +1573,16 @@
   text-transform: capitalize;
 }
 
-/* Progreso por Áreas Temáticas (Folder Tabs) */
+/* =========================================================================
+   5. PROGRESO POR ÁREAS TEMÁTICAS (Solapas Folder Tabs - FULL WIDTH!)
+   ========================================================================= */
+
 .areasSection {
+  position: relative;
   background-color: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-xl);
-  padding: 24px;
+  padding: 26px 28px;
   box-shadow: var(--shadow-paper);
 }
 
@@ -1324,9 +1590,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 12px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--color-hairline);
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.areasSubTitle {
+  margin: 4px 0 0;
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
+  color: var(--color-muted);
+}
+
+.areasHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .areasMeta {
@@ -1335,10 +1614,28 @@
   color: var(--color-muted);
 }
 
+.manageAreasBtn {
+  font-family: var(--font-family-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.manageAreasBtn:hover {
+  background-color: var(--color-surface-cream-strong);
+  border-color: var(--color-primary-soft);
+}
+
 .areasGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 24px;
 }
 
 @media (max-width: 960px) {
@@ -1347,23 +1644,30 @@
   }
 }
 
-.areaCard {
+.areaFolderCard {
   position: relative;
-  padding: 20px 16px 16px;
   border-radius: var(--radius-xl);
   background-color: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-paper);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  padding: 24px 20px 20px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
+.areaFolderCard:hover {
+  border-color: rgba(110, 0, 129, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Simulated folder tab protruding from top edge */
 .folderTabTop {
   position: absolute;
   top: -12px;
-  left: 16px;
-  padding: 2px 12px;
+  left: 18px;
+  padding: 2px 14px;
   border-radius: 6px 6px 0 0;
   background-color: #e5dfd4;
   border-top: 1px solid var(--color-hairline);
@@ -1375,7 +1679,12 @@
   font-weight: 600;
 }
 
-.areaTop {
+.areaFolderBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.areaFolderTopRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1383,32 +1692,37 @@
   margin-bottom: 8px;
 }
 
-.areaIdentity {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.areaDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  flex-shrink: 0;
-}
-
-.areaName {
-  margin: 0;
-  font-family: var(--font-primary);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-ink);
+.areaCategoryBadge {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.02em;
 }
 
 .areaPercent {
   font-family: var(--font-family-3);
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 700;
   color: var(--color-ink);
+}
+
+.areaFolderName {
+  margin: 6px 0 0;
+  font-family: var(--font-primary);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.3;
+}
+
+.areaFolderDesc {
+  margin: 6px 0 0;
+  font-family: var(--font-family-2);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-muted);
 }
 
 .progressBarBg {
@@ -1417,7 +1731,7 @@
   border-radius: var(--radius-pill);
   background-color: var(--color-hairline);
   overflow: hidden;
-  margin: 8px 0 12px;
+  margin: 14px 0 12px;
 }
 
 .progressBarFill {
@@ -1426,56 +1740,104 @@
   transition: width 0.3s ease;
 }
 
-.areaBottom {
+.areaMilestones {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--color-body);
+}
+
+.milestoneItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.milestoneCheckIcon {
+  color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.milestonePendingDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #d97706;
+  flex-shrink: 0;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.areaFolderBottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 10px;
+  padding-top: 14px;
   border-top: 1px solid var(--color-hairline);
-  font-family: var(--font-family-3);
-  font-size: 11px;
+  margin-top: 16px;
 }
 
-.areaPendingCount {
+.areaMetaDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.areaDeadlineText {
+  font-family: var(--font-family-3);
+  font-size: 11px;
   color: var(--color-muted);
 }
 
+.areaPendingPill {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted-soft);
+}
+
+/* Must maintain min-height: 44px for accessibility and test suites */
 .areaActionBtn {
   background: none;
   border: none;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   padding: 0 4px;
   font-family: var(--font-family-2);
   font-size: 12px;
   font-weight: 600;
   color: var(--color-primary);
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .areaActionBtn:hover {
   text-decoration: underline;
+  transform: translateX(2px);
 }
 
 /* =========================================================================
-   5. NOTES / BRAIN DUMP & REFLEXIÓN
+   6. NOTES / BRAIN DUMP (Parchment Paper Grid - FULL WIDTH!)
    ========================================================================= */
 
-.notesCard {
+.notesSection {
   position: relative;
   background-color: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-xl);
-  padding: 24px;
+  padding: 26px 28px;
   box-shadow: var(--shadow-paper);
+  overflow: hidden;
 }
 
 .notesWashiSlate {
   position: absolute;
   top: -8px;
-  left: 36px;
-  width: 88px;
+  left: 48px;
+  width: 96px;
   height: 20px;
   background: rgba(123, 140, 158, 0.45);
   backdrop-filter: blur(2px);
@@ -1488,9 +1850,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 12px;
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--color-hairline);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+}
+
+.notesTitleBox {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
 
 .notesCardTitle {
@@ -1509,42 +1877,47 @@
   color: var(--color-muted-soft);
 }
 
+.notesHeaderIcon {
+  color: var(--color-muted);
+}
+
 .paperGridContainer {
-  padding: 16px;
+  padding: 18px 20px;
   border-radius: var(--radius-lg);
   background-color: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
   background-image: linear-gradient(to right, #ece4d8 1px, transparent 1px),
                     linear-gradient(to bottom, #ece4d8 1px, transparent 1px);
   background-size: 16px 16px;
-  min-height: 120px;
+  min-height: 140px;
   position: relative;
 }
 
 .notesHandwriting {
   margin: 0;
   font-family: var(--font-script);
-  font-size: 22px;
-  line-height: 1.5;
+  font-size: 24px;
+  line-height: 1.6;
   color: #1e293b;
+  max-width: 680px;
 }
 
 .autoSaveIndicator {
   position: absolute;
-  bottom: 8px;
-  right: 12px;
+  bottom: 10px;
+  right: 14px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   font-family: var(--font-family-3);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--color-muted-soft);
 }
 
 .notesCardBtn {
   margin-top: 14px;
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   border-radius: var(--radius-md);
   border: 1px dashed var(--color-hairline);
   background: none;
@@ -1561,49 +1934,86 @@
   border-style: solid;
 }
 
-/* End of Day Reflection Card */
-.reflectionCard {
+/* =========================================================================
+   7. CIERRE DE PLIEGO REFLEXIVO (End of day reflection ♡ - FULL WIDTH!)
+   ========================================================================= */
+
+.reflectionSection {
+  position: relative;
   background-color: var(--color-canvas);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-xl);
-  padding: 24px;
+  padding: 28px;
   box-shadow: var(--shadow-paper);
+}
+
+.reflectionHeader {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-hairline);
+  margin-bottom: 22px;
+}
+
+.reflectionTitleBox {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
 
 .reflectionTitle {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--color-ink);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .reflectionHeart {
   color: var(--color-primary);
 }
 
+.reflectionSubtext {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.reflectionNotice {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.reflectionGrid3Col {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .reflectionGrid3Col {
+    grid-template-columns: 1fr;
+  }
+}
+
 .reflectionField {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .reflectionLabel {
   font-family: var(--font-primary);
   font-style: italic;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--color-body-strong);
 }
 
 .reflectionTextarea {
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border-radius: var(--radius-md);
   background-color: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
@@ -1622,36 +2032,40 @@
   box-shadow: 0 0 0 1px var(--color-primary);
 }
 
-.reflectionFooterMotto {
-  margin: 8px 0 0;
-  padding-top: 12px;
+.reflectionFooterRow {
+  margin-top: 24px;
+  padding-top: 18px;
   border-top: 1px solid var(--color-hairline);
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .closingMotto {
   margin: 0;
   font-family: var(--font-script);
-  font-size: 22px;
+  font-size: 24px;
   color: var(--color-body);
   font-weight: 600;
-  text-align: center;
 }
 
 .sovereigntyStamp {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 8px;
   font-family: var(--font-family-3);
   font-size: 11px;
   color: var(--color-muted);
 }
 
+.sovereigntyIcon {
+  color: var(--color-accent-teal);
+}
+
 .saveReflectionBtn {
-  align-self: flex-start;
+  margin-top: 16px;
   padding: 8px 18px;
   border-radius: var(--radius-md);
   background-color: var(--color-primary);
@@ -1669,7 +2083,7 @@
 }
 
 /* =========================================================================
-   6. MÉTRICAS Y RENDIMIENTO
+   8. MÉTRICAS Y RENDIMIENTO (FULL WIDTH!)
    ========================================================================= */
 
 .metricsSection {
