@@ -11,6 +11,18 @@ describe('NotesView', () => {
     localStorage.clear();
   });
 
+  it('renderiza el diario de autoobservacion con pregunta ancla, pliego verjurado, reflexion nocturna y energia basal', () => {
+    render(<NotesView profileId={profileId} />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /diario de autoobservación & desahogo/i })).toBeInTheDocument();
+    expect(screen.getByText(/pregunta ancla de la semana/i)).toBeInTheDocument();
+    expect(screen.getByText(/descompresión mental & autoobservación/i)).toBeInTheDocument();
+    expect(screen.getByText(/avance conaset - simulacro clase b/i)).toBeInTheDocument();
+    expect(screen.getByText(/¿qué fluyó bien hoy\?/i)).toBeInTheDocument();
+    expect(screen.getByText(/modo estilográfica: activo/i)).toBeInTheDocument();
+    expect(screen.getByText(/brain dump rápido/i)).toBeInTheDocument();
+  });
+
   it('renderiza la vista y permite crear una nueva reflexión terapéutica', async () => {
     const user = userEvent.setup();
     render(<NotesView profileId={profileId} />);
