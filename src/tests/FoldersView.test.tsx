@@ -46,4 +46,14 @@ describe('FoldersView', () => {
     expect(anchor).toHaveAttribute('target', '_blank');
     expect(anchor).toHaveAttribute('rel', 'noopener noreferrer');
   });
+
+  it('renderiza el fichero archival con solapas escalonadas, sello archivado localmente, tabla de fichas y medidor indexeddb', () => {
+    render(<FoldersView profileId="p-test" />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /explorador de carpetas & vínculos/i })).toBeInTheDocument();
+    expect(screen.getByText(/archivado localmente/i)).toBeInTheDocument();
+    expect(screen.getByText(/libro del nuevo conductor clase b/i)).toBeInTheDocument();
+    expect(screen.getByText(/captura veloz de enlace/i)).toBeInTheDocument();
+    expect(screen.getByText(/almacenamiento local \(indexeddb\)/i)).toBeInTheDocument();
+  });
 });
