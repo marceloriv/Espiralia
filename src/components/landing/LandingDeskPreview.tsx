@@ -1,204 +1,259 @@
-import React, { useMemo } from 'react';
-import { Chart } from '@tanstack/charts/react';
-import { defineChart } from '@tanstack/charts';
-import { pie, polar, radialArc } from '@tanstack/charts/polar';
-import { BookOpen, Activity, CheckSquare, Lock, CheckCircle2, Circle, Command } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  Sparkles,
+  Activity,
+  Clock,
+  ShieldCheck,
+  Check,
+} from 'lucide-react';
 import styles from './LandingDeskPreview.module.css';
 
+interface DeskTask {
+  id: string;
+  title: string;
+  duration: string;
+  completed: boolean;
+}
+
 export const LandingDeskPreview: React.FC = () => {
-  const rhythmChart = useMemo(() => {
-    const chartData = [
-      { label: 'Estudio Licencia Clase B', hours: 14, color: '#8E1EA2' },
-      { label: 'Universidad 2026', hours: 9, color: '#5db8a6' },
-      { label: 'Pausa consciente & Diario', hours: 4, color: '#e8a55a' },
-      { label: 'Restante semanal', hours: 5, color: '#e6dfd8' },
-    ];
+  const [tasks, setTasks] = useState<DeskTask[]>([
+    {
+      id: 'task-1',
+      title: 'Estudio Licencia Clase B: 40 preguntas CONASET',
+      duration: '35m',
+      completed: true,
+    },
+    {
+      id: 'task-2',
+      title: 'Postulación Universitaria 2026: Expediente y certificados',
+      duration: '45m',
+      completed: false,
+    },
+    {
+      id: 'task-3',
+      title: 'Sesión de Diario: Introspección & Pausa consciente',
+      duration: '20m',
+      completed: false,
+    },
+  ]);
 
-    const slices = pie(chartData, { value: d => d.hours });
+  const [activeMood, setActiveMood] = useState<string>('calma');
 
-    return defineChart({
-      marks: [
-        polar({
-          marks: [
-            radialArc(slices, {
-              innerRadius: ctx => ctx.radius * 0.72,
-              outerRadius: ctx => ctx.radius,
-              fill: d => d.color,
-            }),
-          ],
-          scales: {
-            angle: null,
-            radius: null,
-          },
-        }),
-      ],
-      scales: {
-        x: null,
-        y: null,
-      },
-    });
-  }, []);
+  const handleToggleTask = (id: string) => {
+    setTasks(prev =>
+      prev.map(task =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
   return (
     <section className={styles.deskContainer} aria-labelledby="desk-preview-heading">
+      {/* Encabezado editorial */}
       <div className={styles.deskHeader}>
         <div className={styles.deskBadge}>
-          <BookOpen size={14} aria-hidden="true" />
+          <Sparkles size={14} aria-hidden="true" />
           <span>Mesa de Trabajo en Vivo</span>
         </div>
         <h2 id="desk-preview-heading" className={styles.deskTitle}>
-          La composición de tu mesa de trabajo
+          La Mesa de Trabajo: Tu Centro de Control Silencioso
         </h2>
         <p className={styles.deskSubtitle}>
-          Un espacio unificado donde la reflexión terapéutica, la disciplina de estudio y tus metas de largo aliento conviven en armonía visual.
+          Diseñado como un escritorio físico de papelería fina donde la reflexión introspectiva, el estudio riguroso y tus metas vitales conviven con total serenidad.
         </p>
       </div>
 
-      <div className={styles.columnsGrid}>
-        {/* Columna 1: Proceso Terapéutico */}
-        <article className={styles.columnCard} aria-labelledby="col-terapeutico-title">
-          <div>
-            <div className={styles.colHeader}>
-              <div className={styles.colTitleGroup}>
-                <BookOpen size={18} color="var(--color-primary)" aria-hidden="true" />
-                <h3 id="col-terapeutico-title" className={styles.colTitle}>Proceso Terapéutico</h3>
-              </div>
-              <span className={styles.colTag}>Sesión #14</span>
-            </div>
+      <div className={styles.deskGrid}>
+        {/* Columna Izquierda (7 cols): Pliego A4 Papercraft */}
+        <article className={styles.paperSheet} aria-labelledby="sheet-title">
+          <div className={styles.washiTape} aria-hidden="true" />
+          <div className={styles.binderClip} aria-hidden="true" />
 
-            <div className={styles.manuscriptExcerpt}>
-              “Ayer sentí una resistencia enorme al sentarme a repasar las preguntas de mecánica. Pero al escribirlo en el cuaderno entendí que el miedo no es al examen, sino a permitirme avanzar y asumir la autonomía que viene con conducir...”
+          <div className={styles.sheetHeader}>
+            <div className={styles.sheetTitleGroup}>
+              <h3 id="sheet-title" className={styles.sheetTitle}>
+                PLAN DE FOCO • HOY
+              </h3>
+              <span className={styles.sheetDate}>Martes, 14 Oct</span>
             </div>
+            <span className={styles.sheetWeekBadge}>Semana 42</span>
+          </div>
 
-            <div className={styles.findingCard}>
-              <strong>Hallazgo:</strong> La constancia calma la ansiedad del cambio y abre espacio mental.
+          {/* Prioridades */}
+          <div className={styles.sectionBlockTitle}>
+            Prioridades del Día (Máximo 3)
+          </div>
+
+          <div className={styles.prioritiesList} role="list">
+            {tasks.map(task => (
+              <label
+                key={task.id}
+                htmlFor={task.id}
+                className={styles.priorityItem}
+              >
+                <div className={styles.priorityLabelGroup}>
+                  <input
+                    type="checkbox"
+                    id={task.id}
+                    checked={task.completed}
+                    onChange={() => handleToggleTask(task.id)}
+                    className={styles.priorityCheckbox}
+                    aria-label={task.title}
+                  />
+                  <span
+                    className={`${styles.priorityText} ${
+                      task.completed ? styles.priorityTextCompleted : ''
+                    }`}
+                  >
+                    {task.title}
+                  </span>
+                </div>
+                <span className={styles.priorityDurationBadge}>
+                  {task.duration}
+                </span>
+              </label>
+            ))}
+          </div>
+
+          {/* Cronograma Horario */}
+          <div className={styles.sectionBlockTitle}>
+            Bloques de Atención Profunda
+          </div>
+
+          <div className={styles.scheduleList}>
+            <div className={styles.scheduleRow}>
+              <span className={styles.scheduleTime}>07:30 - 09:00</span>
+              <span className={styles.scheduleTitle}>Bloque Alpha: Revisión teórica CONASET</span>
+              <span className={styles.scheduleTag}>Enfoque Profundo</span>
+            </div>
+            <div className={`${styles.scheduleRow} ${styles.scheduleRowAmber}`}>
+              <span className={styles.scheduleTime}>11:00 - 12:30</span>
+              <span className={styles.scheduleTitle}>Documentación Académica & Ensayos</span>
+              <span className={styles.scheduleTag}>Estratégico</span>
+            </div>
+            <div className={`${styles.scheduleRow} ${styles.scheduleRowTeal}`}>
+              <span className={styles.scheduleTime}>16:00 - 17:00</span>
+              <span className={styles.scheduleTitle}>Práctica en circuito / Conducción real</span>
+              <span className={styles.scheduleTag}>Acción</span>
+            </div>
+            <div className={`${styles.scheduleRow} ${styles.scheduleRowNeutral}`}>
+              <span className={styles.scheduleTime}>20:00 - 20:30</span>
+              <span className={styles.scheduleTitle}>Cierre del día & Reflexión nocturna</span>
+              <span className={styles.scheduleTag}>Pausa</span>
             </div>
           </div>
 
-          <div className={styles.colFooter}>
-            <span>420 palabras escritas</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Lock size={12} aria-hidden="true" /> Guardado localmente
+          <footer className={styles.sheetFooter}>
+            <span>Papel libre de ácido • 120 gsm • Sincronización local instantánea</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <Check size={12} color="var(--color-primary)" aria-hidden="true" />
+              <span>Aprobado en Bóveda</span>
             </span>
-          </div>
+          </footer>
         </article>
 
-        {/* Columna 2: Ritmo Semanal */}
-        <article className={styles.columnCard} aria-labelledby="col-ritmo-title">
-          <div>
-            <div className={styles.colHeader}>
-              <div className={styles.colTitleGroup}>
+        {/* Columna Derecha (5 cols): Bento Biorritmos + Nota Táctil */}
+        <div className={styles.bentoStack}>
+          {/* Card 1: Estado Vital & Ritmo */}
+          <article className={styles.vitalCard} aria-labelledby="vital-heading">
+            <div className={styles.vitalHeader}>
+              <div className={styles.vitalTitleGroup}>
                 <Activity size={18} color="var(--color-primary)" aria-hidden="true" />
-                <h3 id="col-ritmo-title" className={styles.colTitle}>Ritmo Semanal</h3>
+                <h3 id="vital-heading" className={styles.vitalTitle}>
+                  Estado Vital & Ritmo
+                </h3>
               </div>
-              <span className={styles.colTag}>Enfoque</span>
+              <span className={styles.vitalBadge}>84% Serenidad</span>
             </div>
 
-            <div
-              className={styles.circularProgressWrapper}
-              role="progressbar"
-              aria-label="Avance semanal"
-              aria-valuenow={84}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            >
-              <div className={styles.chartWrapper}>
-                <Chart
-                  definition={rhythmChart}
-                  ariaLabel="Distribución de ritmo semanal: 84% completado"
-                  aspectRatio={1}
-                />
-              </div>
-              <div className={styles.progressLabelGroup} aria-hidden="true">
-                <span className={styles.progressNumber}>84%</span>
-                <span className={styles.progressLabel}>Completado</span>
-              </div>
+            {/* Selector de estado anímico/lunar */}
+            <div className={styles.moodSelector} role="radiogroup" aria-label="Estado anímico del día">
+              <button
+                type="button"
+                className={`${styles.moodBtn} ${activeMood === 'calma' ? styles.moodBtnActive : ''}`}
+                onClick={() => setActiveMood('calma')}
+                role="radio"
+                aria-checked={activeMood === 'calma'}
+              >
+                <span aria-hidden="true">○</span>
+                <span>Calma</span>
+              </button>
+              <button
+                type="button"
+                className={`${styles.moodBtn} ${activeMood === 'foco' ? styles.moodBtnActive : ''}`}
+                onClick={() => setActiveMood('foco')}
+                role="radio"
+                aria-checked={activeMood === 'foco'}
+              >
+                <span aria-hidden="true">◑</span>
+                <span>Foco</span>
+              </button>
+              <button
+                type="button"
+                className={`${styles.moodBtn} ${activeMood === 'fluidez' ? styles.moodBtnActive : ''}`}
+                onClick={() => setActiveMood('fluidez')}
+                role="radio"
+                aria-checked={activeMood === 'fluidez'}
+              >
+                <span aria-hidden="true">●</span>
+                <span>Fluidez</span>
+              </button>
             </div>
 
-            <div className={styles.legendList}>
-              <div className={styles.legendItem}>
-                <span>
-                  <span className={styles.legendDot} style={{ backgroundColor: 'var(--color-primary)' }} />
-                  Estudio Licencia Clase B
-                </span>
-                <strong>14 hrs</strong>
-              </div>
-              <div className={styles.legendItem}>
-                <span>
-                  <span className={styles.legendDot} style={{ backgroundColor: 'var(--color-accent-teal)' }} />
-                  Universidad 2026
-                </span>
-                <strong>9 hrs</strong>
-              </div>
-              <div className={styles.legendItem}>
-                <span>
-                  <span className={styles.legendDot} style={{ backgroundColor: 'var(--color-accent-amber)' }} />
-                  Pausa consciente & Diario
-                </span>
-                <strong>4 hrs</strong>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.daysRow} aria-label="Cumplimiento diario">
-            <span className={`${styles.dayPill} ${styles.dayPillActive}`}>L</span>
-            <span className={`${styles.dayPill} ${styles.dayPillActive}`}>M</span>
-            <span className={`${styles.dayPill} ${styles.dayPillActive}`}>M</span>
-            <span className={`${styles.dayPill} ${styles.dayPillActive}`}>J</span>
-            <span className={`${styles.dayPill} ${styles.dayPillActive}`}>V</span>
-            <span className={`${styles.dayPill} ${styles.dayPillActive}`}>S</span>
-            <span className={styles.dayPill}>D</span>
-          </div>
-        </article>
-
-        {/* Columna 3: Tareas Prioritarias */}
-        <article className={styles.columnCard} aria-labelledby="col-tareas-title">
-          <div>
-            <div className={styles.colHeader}>
-              <div className={styles.colTitleGroup}>
-                <CheckSquare size={18} color="var(--color-primary)" aria-hidden="true" />
-                <h3 id="col-tareas-title" className={styles.colTitle}>Tareas Prioritarias</h3>
-              </div>
-              <span className={styles.colTag}>Hoy</span>
-            </div>
-
-            <div className={styles.taskList}>
-              <div className={styles.taskItem}>
-                <CheckCircle2 size={16} className={styles.taskCheckbox} aria-hidden="true" />
-                <div className={styles.taskContent}>
-                  <div className={`${styles.taskTitle} ${styles.taskCompleted}`}>
-                    Examen teórico Clase B
-                  </div>
-                  <span className={styles.taskBadge}>CONASET 33/35</span>
+            {/* Barras de métricas */}
+            <div className={styles.metricsList}>
+              <div className={styles.metricRow}>
+                <div className={styles.metricLabelGroup}>
+                  <span className={styles.metricLabel}>Horas de Foco Silencioso</span>
+                  <span className={styles.metricValue}>4.5h / 6h</span>
+                </div>
+                <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={75} aria-valuemin={0} aria-valuemax={100} aria-label="Horas de foco">
+                  <div className={styles.progressBarFillPrimary} />
                 </div>
               </div>
 
-              <div className={styles.taskItem}>
-                <Circle size={16} className={styles.taskCheckbox} aria-hidden="true" />
-                <div className={styles.taskContent}>
-                  <div className={styles.taskTitle}>
-                    Postulación Universidad 2026
-                  </div>
-                  <span className={styles.taskBadge}>Expediente 6 de 8 docs</span>
+              <div className={styles.metricRow}>
+                <div className={styles.metricLabelGroup}>
+                  <span className={styles.metricLabel}>Serenidad Mental</span>
+                  <span className={styles.metricValue}>90%</span>
+                </div>
+                <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={90} aria-valuemin={0} aria-valuemax={100} aria-label="Serenidad mental">
+                  <div className={styles.progressBarFillTeal} />
                 </div>
               </div>
 
-              <div className={styles.taskItem}>
-                <Circle size={16} className={styles.taskCheckbox} aria-hidden="true" />
-                <div className={styles.taskContent}>
-                  <div className={styles.taskTitle}>
-                    Práctica en circuito cerrado
-                  </div>
-                  <span className={styles.taskBadge}>Estacionamiento en retroceso</span>
+              <div className={styles.metricRow}>
+                <div className={styles.metricLabelGroup}>
+                  <span className={styles.metricLabel}>Módulos Completados</span>
+                  <span className={styles.metricValue}>3 de 4</span>
+                </div>
+                <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={75} aria-valuemin={0} aria-valuemax={100} aria-label="Módulos completados">
+                  <div className={styles.progressBarFillAmber} />
                 </div>
               </div>
             </div>
-          </div>
+          </article>
 
-          <div className={styles.shortcutTip}>
-            <Command size={14} aria-hidden="true" />
-            <span>Presiona <kbd className={styles.kbd}>⌘N</kbd> para nueva nota o tarea</span>
-          </div>
-        </article>
+          {/* Card 2: Nota Rápida Táctil */}
+          <article className={styles.quickNoteCard} aria-labelledby="note-title">
+            <div className={styles.goldenPin} aria-hidden="true" />
+            <div className={styles.quickNoteHeader}>
+              <h3 id="note-title" className={styles.quickNoteTitle}>
+                Captura Rápida
+              </h3>
+              <span className={styles.quickNoteTag}>Hoy • 11:20 AM</span>
+            </div>
+
+            <blockquote className={styles.quickNoteContent}>
+              «No confundir movimiento con progreso. La serenidad precede al resultado.»
+            </blockquote>
+
+            <div className={styles.quickNoteFooter}>
+              <ShieldCheck size={13} aria-hidden="true" />
+              <span>Guardado en Bóveda Local • Sin conexión requerida</span>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
   );
