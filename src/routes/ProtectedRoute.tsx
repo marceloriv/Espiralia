@@ -23,7 +23,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Deduce current view from pathname
   const path = location.pathname.replace('/', '') || 'dashboard';
-  const currentView: ViewType = ['dashboard', 'agenda', 'planner', 'todo', 'notes', 'folders'].includes(path)
+  const currentView: ViewType = ['dashboard', 'agenda', 'planner', 'todo', 'notes', 'folders', 'integrations'].includes(path)
     ? (path as ViewType)
     : 'dashboard';
 

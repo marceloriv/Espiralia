@@ -229,4 +229,30 @@ describe('StorageService', () => {
       expect(localStorage.getItem('espiralia_p-del_areas')).toBeNull();
     });
   });
+
+  describe('Notes & Folders persistence', () => {
+    it('saves and isolates notes and folders per profile and cascades on deleteProfile', () => {
+      StorageService.saveNote({
+        id: 'n-1',
+        profileId: 'p-1',
+        title: 'Reflexión nocturna',
+        content: 'Avance sólido hoy',
+        updatedAt: '2026-10-17',
+        createdAt: '2026-10-17',
+      });
+      StorageService.saveFolder({
+        id: 'f-1',
+        profileId: 'p-1',
+        name: 'Universidad & Admisión',
+        createdAt: '2026-10-17',
+      });
+
+      expect(StorageService.getNotes('p-1')).toHaveLength(1);
+      expect(StorageService.getFolders('p-1')).toHaveLength(1);
+
+      StorageService.deleteProfile('p-1');
+      expect(StorageService.getNotes('p-1')).toEqual([]);
+      expect(StorageService.getFolders('p-1')).toEqual([]);
+    });
+  });
 });

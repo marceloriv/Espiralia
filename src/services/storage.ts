@@ -1,4 +1,4 @@
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem, HabitTrackerItem, MoodEntry } from '../types';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
@@ -52,7 +52,7 @@ export const StorageService = {
     deleteScopedItem<Profile>(PROFILES_KEY, id);
 
     // Cascade delete profile data
-    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links'];
+    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links', 'habits', 'moods'];
     for (const d of domains) {
       localStorage.removeItem(getScopedKey(id, d));
     }
@@ -304,6 +304,28 @@ export const StorageService = {
 
   deleteLink(profileId: string, linkId: string): void {
     deleteScopedItem<LinkItem>(getScopedKey(profileId, 'links'), linkId);
+  },
+
+  // Habits
+  getHabits(profileId: string): HabitTrackerItem[] {
+    return getScopedList<HabitTrackerItem>(getScopedKey(profileId, 'habits'));
+  },
+
+  saveHabit(habit: HabitTrackerItem): void {
+    saveScopedItem(getScopedKey(habit.profileId, 'habits'), habit);
+  },
+
+  deleteHabit(profileId: string, habitId: string): void {
+    deleteScopedItem<HabitTrackerItem>(getScopedKey(profileId, 'habits'), habitId);
+  },
+
+  // Moods
+  getMoods(profileId: string): MoodEntry[] {
+    return getScopedList<MoodEntry>(getScopedKey(profileId, 'moods'));
+  },
+
+  saveMood(mood: MoodEntry): void {
+    saveScopedItem(getScopedKey(mood.profileId, 'moods'), mood);
   },
 
   seedInitialProfileData(profileId: string): void {
