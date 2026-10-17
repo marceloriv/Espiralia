@@ -121,4 +121,16 @@ describe('ProfileGateView', () => {
     await waitFor(() => expect(onSelectProfile).toHaveBeenCalledTimes(1));
     expect(onSelectProfile.mock.calls[0][0].id).toBe('p-pin');
   });
+
+  it('renderiza la interfaz de desbloqueo con pliego papercraft, teclado numerico 3x4 y post-it con clip', () => {
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /desbloquear cuaderno\./i })).toBeInTheDocument();
+    expect(screen.getByText(/cuadernos registrados/i)).toBeInTheDocument();
+    expect(screen.getByText(/introduce tu pin maestro/i)).toBeInTheDocument();
+    expect(screen.getByText(/discipline today, peace tomorrow/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '1' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '9' })).toBeInTheDocument();
+  });
 });
+

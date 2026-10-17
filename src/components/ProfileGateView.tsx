@@ -103,54 +103,181 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 
   return (
     <div className={styles.gateContainer}>
-      <div className={styles.brandHeader}>
-        <h1 className={styles.brandTitle}>Espiralia</h1>
-        <p className={styles.brandSubtitle}>Agenda, Planner y Tareas en un solo lugar</p>
-      </div>
+      <div className={styles.topStripe} />
 
-      <div className={styles.profilesCard}>
-        <h2 className={styles.cardHeading}>Selecciona tu perfil</h2>
-
-        <div className={styles.profileList}>
-          {profiles.map(profile => (
-            <button
-              type="button"
-              key={profile.id}
-              className={styles.profileItem}
-              onClick={() => handleProfileClick(profile)}
-            >
-              <div className={styles.avatarBadge} aria-hidden="true">{profile.avatar}</div>
-              <div className={styles.profileInfo}>
-                <div className={styles.profileName}>{profile.name}</div>
-                <div className={styles.profileMeta}>
-                  {isPinProtected(profile) ? 'Protegido por PIN' : 'Acceso libre'}
-                </div>
-              </div>
-              {isPinProtected(profile) ? (
-                <Lock size={18} color="var(--color-muted)" aria-hidden="true" />
-              ) : (
-                <ArrowRight size={18} color="var(--color-primary)" aria-hidden="true" />
-              )}
-            </button>
-          ))}
+      <header className={styles.header}>
+        <div className={styles.brandRow}>
+          <span className={styles.brandIcon} aria-hidden="true">📖</span>
+          <span className={styles.brandName}>Espiralia</span>
         </div>
+        <p className={styles.tagline}>TALLER DE ESCRITORIO • CUADERNO PERSONAL</p>
+        <div className={styles.secBadge}>
+          <span className={styles.secDot} aria-hidden="true" />
+          <span>Arquitectura 100% Client-Side • IndexedDB / WebCrypto PBKDF2</span>
+        </div>
+      </header>
 
+      <main className={styles.mainSheet}>
+        <div className={styles.washiCorner} aria-hidden="true" />
+
+        {/* Columna Izquierda: Cuadernos Registrados */}
+        <section className={styles.leftCol}>
+          <span className={styles.overlineTag}>CUADERNOS REGISTRADOS</span>
+          <h1 className={styles.mainTitle}>Desbloquear Cuaderno.</h1>
+          <p className={styles.quote}>
+            «Un espacio íntimo donde tus pensamientos no salen jamás de tu dispositivo.»
+          </p>
+
+          <h2 className={styles.cardHeading}>Selecciona tu perfil</h2>
+
+          <div className={styles.profileList}>
+            {profiles.map(profile => (
+              <button
+                type="button"
+                key={profile.id}
+                className={`${styles.profileItem} ${selectedProfileForPin?.id === profile.id ? styles.profileItemActive : ''}`}
+                onClick={() => handleProfileClick(profile)}
+              >
+                <div className={styles.avatarBadge} aria-hidden="true">{profile.avatar}</div>
+                <div className={styles.profileInfo}>
+                  <div className={styles.profileNameRow}>
+                    <span className={styles.profileName}>{profile.name}</span>
+                    <span className={styles.activePill}>ACTIVO</span>
+                  </div>
+                  <div className={styles.profileMeta}>
+                    {isPinProtected(profile) ? 'Protegido por PIN' : 'Acceso libre'}
+                  </div>
+                </div>
+                {isPinProtected(profile) ? (
+                  <Lock size={18} className={styles.lockIcon} aria-hidden="true" />
+                ) : (
+                  <ArrowRight size={18} className={styles.arrowIcon} aria-hidden="true" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className={styles.btnPrimary}
+            onClick={() => {
+              setIsCreating(true);
+              setName('');
+              setPin('');
+              setCreatePinError(false);
+            }}
+          >
+            <Plus size={18} aria-hidden="true" />
+            <span>Nuevo perfil</span>
+          </button>
+
+          <p className={styles.secNote}>
+            ✓ Cifrado PBKDF2 • 100.000 iteraciones en navegador
+          </p>
+        </section>
+
+        {/* Columna Derecha: Teclado táctil y Post-it */}
+        <section className={styles.rightCol}>
+          <div className={styles.postitNote}>
+            <div className={styles.brassClip} aria-hidden="true" />
+            <div className={styles.postitText}>discipline today, peace tomorrow ♡</div>
+            <div className={styles.postitSub}>Escribe sin censura.</div>
+          </div>
+
+          <div className={styles.redStamp}>LOCAL ENCRIPTADO</div>
+
+          <div className={styles.pinPanel}>
+            <span className={styles.pinOverline}>ACCESO A CUADERNO PERSONAL</span>
+            <h2 className={styles.pinTitle}>Introduce tu PIN Maestro</h2>
+
+            {/* Cajas de dígitos PIN */}
+            <div className={styles.pinBoxes}>
+              {[0, 1, 2, 3].map(i => (
+                <div key={i} className={styles.pinBox}>
+                  {pinInput[i] ? '●' : ''}
+                </div>
+              ))}
+            </div>
+
+            {/* Teclado numérico táctil 3x4 */}
+            <div className={styles.keypadGrid}>
+              {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map(digit => (
+                <button
+                  type="button"
+                  key={digit}
+                  className={styles.keypadBtn}
+                  onClick={() => {
+                    if (pinInput.length < 6) {
+                      setPinInput(prev => prev + digit);
+                      setPinError(false);
+                    }
+                  }}
+                >
+                  {digit}
+                </button>
+              ))}
+              <button
+                type="button"
+                className={styles.keypadBtn}
+                aria-label="Borrar dígito"
+                onClick={() => setPinInput(prev => prev.slice(0, -1))}
+              >
+                ⌫
+              </button>
+              <button
+                type="button"
+                className={styles.keypadBtn}
+                onClick={() => {
+                  if (pinInput.length < 6) {
+                    setPinInput(prev => prev + '0');
+                    setPinError(false);
+                  }
+                }}
+              >
+                0
+              </button>
+              <button
+                type="button"
+                className={`${styles.keypadBtn} ${styles.keypadSubmit}`}
+                aria-label="Confirmar PIN"
+                onClick={handleVerifyPin}
+                disabled={busy}
+              >
+                ➔
+              </button>
+            </div>
+
+            <p className={styles.keypadHint}>
+              Ingresa los 4 dígitos o pulsa las teclas del teclado
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer className={styles.footerLinks}>
         <button
           type="button"
-          className={styles.btnPrimary}
+          className={styles.footerTextBtn}
+          onClick={() => sileo.info({ title: 'Para restablecer tu PIN, exporta y restaura tu bóveda local.' })}
+        >
+          ¿Olvidaste tu PIN?
+        </button>
+        <button
+          type="button"
+          className={styles.footerTextBtn}
           onClick={() => {
-            setIsCreating(true);
-            setName('');
-            setPin('');
-            setCreatePinError(false);
+            const data = StorageService.exportVault();
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `espiralia-boveda-${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
           }}
         >
-          <Plus size={18} aria-hidden="true" />
-          <span>Nuevo perfil</span>
+          Exportar Bóveda Local (.json)
         </button>
-      </div>
-
-      <div className={styles.gateFooterLink}>
         <button
           type="button"
           className={styles.btnBackToLanding}
@@ -164,7 +291,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
         >
           ← Conoce más sobre Espiralia
         </button>
-      </div>
+      </footer>
 
       {/* Modal crear perfil */}
       {isCreating && (
