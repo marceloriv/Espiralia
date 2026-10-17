@@ -192,4 +192,15 @@ describe('PlannerView integración semanal y metas', () => {
     expect(screen.getByText('Bloque Alta Prioridad')).toBeInTheDocument();
     expect(screen.getByText('Bloque Baja Prioridad')).toBeInTheDocument();
   });
+
+  it('renderiza la cabecera focus plan, filtros de area, rejilla semanal de 7 columnas y top priorities con clip', () => {
+    render(<PlannerView profileId={profileId} />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /focus plan & agenda semanal\./i })).toBeInTheDocument();
+    expect(screen.getByText(/01\. estudios & clase b/i)).toBeInTheDocument();
+    expect(screen.getByText(/top priorities de la semana/i)).toBeInTheDocument();
+    expect(screen.getByText(/habit tracker semanal/i)).toBeInTheDocument();
+    expect(screen.getByText(/discipline today, peace tomorrow/i)).toBeInTheDocument();
+  });
 });
+
