@@ -16,16 +16,24 @@ import {
   Terminal,
 } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { Profile, AgendaEvent, Area } from '../types';
+import type { Profile, AgendaEvent, Area, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { IcsService } from '../services/icsService';
 import styles from './IntegrationsView.module.css';
 
 export interface IntegrationsViewProps {
-  profile: Profile;
+  profile?: Profile;
+  profileId?: string;
+  onNavigate?: (view: ViewType) => void;
 }
 
-export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile }) => {
+export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: propProfile, profileId, onNavigate: _onNavigate }) => {
+  const profile = propProfile ?? (profileId ? StorageService.getProfiles().find(p => p.id === profileId) : null) ?? {
+    id: profileId || 'default',
+    name: 'Usuario',
+    avatar: 'U',
+    createdAt: new Date().toISOString(),
+  };
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profile.id));
   const [selectedRange, setSelectedRange] = useState('semestre');
