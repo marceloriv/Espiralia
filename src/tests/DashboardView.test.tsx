@@ -188,4 +188,17 @@ describe('DashboardView', () => {
       expect(screen.queryByText(label)).not.toBeInTheDocument();
     }
   });
+
+  it('renderiza el dashboard completo con cabecera editorial, bento de serenidad, today focus y reflexion nocturna', () => {
+    renderDashboard();
+
+    expect(screen.getByText(/hoy en el escritorio/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/octubre/i);
+    expect(screen.getByText(/today's main focus/i)).toBeInTheDocument();
+    expect(screen.getByText(/top priorities no negociables/i)).toBeInTheDocument();
+    expect(screen.getByText(/focus schedule de hoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/progreso por áreas temáticas/i)).toBeInTheDocument();
+    expect(screen.getByText(/end of day reflection/i)).toBeInTheDocument();
+  });
 });
+

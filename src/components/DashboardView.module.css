@@ -499,6 +499,287 @@
   outline-offset: 2px;
 }
 
+/* ---------- Stitch Visual Elements ---------- */
+
+.atelierOverline {
+  margin: 0;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+  text-transform: uppercase;
+}
+
+.bentoTrio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 8px 0;
+}
+
+.bentoCard {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.bentoCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.bentoTag {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-muted);
+  letter-spacing: 0.05em;
+}
+
+.bentoBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: rgba(94, 23, 85, 0.08);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.bentoScore {
+  font-family: var(--font-primary);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin-bottom: 4px;
+}
+
+.bentoHint {
+  font-size: 12px;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.mainLayoutGrid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 24px;
+  margin: 12px 0;
+}
+
+.mainLeftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mainRightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.focusBanner {
+  background-color: #faf4e8;
+  border: 1px solid #ebd9bf;
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.washiTape {
+  position: absolute;
+  top: 0;
+  right: 32px;
+  background-color: rgba(217, 119, 6, 0.2);
+  color: #92400e;
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 3px 12px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.focusTitle {
+  font-family: var(--font-primary);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 4px;
+}
+
+.focusSubtitle {
+  font-size: 13px;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.distractionBox {
+  background-color: #fffcf5;
+  border: 1px dashed #d5c7b2;
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  position: relative;
+}
+
+.paperclipIcon {
+  position: absolute;
+  top: -8px;
+  left: 18px;
+  width: 12px;
+  height: 24px;
+  border: 2px solid #b4833e;
+  border-radius: 6px;
+}
+
+.distractionTitle {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+  letter-spacing: 0.08em;
+  margin: 0 0 8px;
+}
+
+.distractionList {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 12px;
+  color: var(--color-body);
+  line-height: 1.6;
+}
+
+.notesCard {
+  background-color: #fefae0;
+  border: 1px solid #e9dfb5;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+.notesCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.notesCardTitle {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  color: #4a3e2a;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.notesCardTag {
+  font-size: 10px;
+  background-color: rgba(0, 0, 0, 0.06);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #7a6e5a;
+}
+
+.notesHandwriting {
+  font-family: 'Caveat', cursive, sans-serif;
+  font-size: 17px;
+  color: #2a2520;
+  line-height: 1.4;
+  margin: 0 0 16px;
+}
+
+.notesCardBtn {
+  background-color: var(--color-surface-card);
+  border: 1px solid #d5c89e;
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a3e2a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.notesCardBtn:hover {
+  background-color: #f7eed0;
+}
+
+.reflectionCard {
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.reflectionTitle {
+  font-family: 'Caveat', cursive, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.reflectionField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.reflectionLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.reflectionTextarea {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-canvas);
+  font-family: var(--font-family-2);
+  font-size: 12px;
+  color: var(--color-ink);
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.saveReflectionBtn {
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background-color 0.15s ease;
+}
+
+.saveReflectionBtn:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.rowTitleDone {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
 /* ---------- Responsive ---------- */
 
 @media (min-width: 769px) and (max-width: 1023px) {
@@ -508,6 +789,8 @@
 }
 
 @media (max-width: 768px) {
+  .bentoTrio,
+  .mainLayoutGrid,
   .quickGrid,
   .cardsGrid,
   .metricsGrid,
@@ -519,4 +802,5 @@
     font-size: var(--text-display-sm);
   }
 }
+
 
