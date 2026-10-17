@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Sparkles, Check, Heart, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { TodoItem, Priority, Area, TaskStatus } from '../types';
+import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
 import { dueLabel } from './dashboard/dashboardData';
@@ -9,14 +9,17 @@ import { AreaIntegratedWorkspace } from './todo/AreaIntegratedWorkspace';
 import styles from './TodoView.module.css';
 
 interface TodoViewProps {
-  profileId: string;
+  profileId?: string;
+  profile?: Profile;
+  onNavigate?: (view: ViewType) => void;
 }
 
 type FilterStatus = 'todas' | 'pendientes' | 'en_progreso' | 'completadas';
 
 const COLOR_PALETTE = ['#e8a55a', '#8e1ea2', '#5db8a6', '#3b82f6', '#10b981', '#ef4444'];
 
-export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
+export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
+  const profileId = profile?.id ?? propProfileId ?? '';
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profileId));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profileId));
   const [selectedAreaId, setSelectedAreaId] = useState<string>('todas');

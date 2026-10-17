@@ -13,11 +13,11 @@
 
 .stationeryBanner {
   position: relative;
-  background-color: var(--color-background);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--bg-card, var(--color-background));
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: var(--radius-xl);
   padding: 28px 32px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-card-stack, var(--shadow-sm));
   overflow: visible;
 }
 
