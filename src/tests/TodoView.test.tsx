@@ -13,6 +13,17 @@ describe('TodoView', () => {
     vi.clearAllMocks();
   });
 
+  it('renderiza la cabecera to-do, solapas manila con marcas de agua numericas, entrada rapida y agenda asociada', () => {
+    render(<TodoView profileId={profileId} />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /to-do & áreas integradas\./i })).toBeInTheDocument();
+    expect(screen.getByText(/todas las áreas/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/01\. estudios/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/entrada rápida al taller/i)).toBeInTheDocument();
+    expect(screen.getByText(/agenda asociada/i)).toBeInTheDocument();
+    expect(screen.getByText(/disciplina gentil/i)).toBeInTheDocument();
+  });
+
   it('permite agregar, alternar y filtrar tareas', async () => {
     const successSpy = vi.spyOn(sileo, 'success');
     const infoSpy = vi.spyOn(sileo, 'info');

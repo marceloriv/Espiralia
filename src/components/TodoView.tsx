@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Sparkles, Check, Heart, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { TodoItem, Priority, Area, TaskStatus } from '../types';
 import { StorageService } from '../services/storage';
@@ -14,7 +14,7 @@ interface TodoViewProps {
 
 type FilterStatus = 'todas' | 'pendientes' | 'en_progreso' | 'completadas';
 
-const COLOR_PALETTE = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#6b7280'];
+const COLOR_PALETTE = ['#e8a55a', '#8e1ea2', '#5db8a6', '#3b82f6', '#10b981', '#ef4444'];
 
 export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profileId));
@@ -35,6 +35,9 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
 
   // Edición rápida de fecha en fila
   const [editingDueDateId, setEditingDueDateId] = useState<string | null>(null);
+
+  // Nivel de energía en tarjeta mini reminders
+  const [energyLevel, setEnergyLevel] = useState<string>('✨');
 
   const isFirstMount = useRef(true);
   const todayStr = toLocalDateStr(new Date());
@@ -192,74 +195,169 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
 
   const emptyContent = getEmptyStateContent();
 
+  // Top priorities editoriales de Stitch
+  const [priorityDone, setPriorityDone] = useState<Record<string, boolean>>({
+    p1: false,
+    p2: false,
+    p3: false,
+  });
+
+  const toggleEditorialPriority = (key: string) => {
+    setPriorityDone(prev => ({ ...prev, [key]: !prev[key] }));
+  };
+
   return (
     <div className={styles.todoContainer}>
-      {/* Cabecera y Resumen de Avance */}
-      <div className={styles.headingRow}>
-        <div>
-          <h2 className={styles.pageTitle}>Mis tareas</h2>
-          <p className={styles.pageSubtitle}>
-            Gestión integral por flujo y áreas temáticas
-          </p>
-        </div>
-        <div className={styles.completionSummary}>
-          <span className={styles.completionBadge}>
-            {totalCompleted} de {areaFilteredTodos.length} completadas
-          </span>
-        </div>
-      </div>
+      {/* 1. Cabecera Editorial Papercraft Stitch */}
+      <section className={styles.stationeryBanner}>
+        <div className={styles.washiTapeLeft} aria-hidden="true" />
+        <div className={styles.washiTapeRight} aria-hidden="true" />
 
-      {/* Barra de Áreas Temáticas (Diseño Stitch) */}
-      <section className={styles.areasSection} aria-label="Áreas temáticas">
-        <div className={styles.areasHeader}>
-          <span className={styles.areasLabel}>Áreas temáticas</span>
-          <button
-            type="button"
-            className={styles.btnAddArea}
-            aria-label="Crear área"
-            onClick={() => setIsAreaModalOpen(true)}
-          >
-            <FolderPlus size={16} aria-hidden="true" />
-            <span>+ Área</span>
-          </button>
-        </div>
+        <div className={styles.bannerGrid}>
+          {/* Columna Izquierda: Titular y Propósito */}
+          <div className={styles.bannerMain}>
+            <div className={styles.overlineRow}>
+              <span className={styles.overlineTag}>Cuaderno de Tareas Semestral · Mis tareas</span>
+              <span className={styles.overlineDivider}>|</span>
+              <span className={styles.overlineSub}>Otoño 2026 · Semana 42</span>
+            </div>
 
-        <div className={styles.areasList}>
-          <button
-            type="button"
-            className={`${styles.areaCard} ${selectedAreaId === 'todas' ? styles.areaCardActive : ''}`}
-            onClick={() => setSelectedAreaId('todas')}
-            aria-label="Todas las áreas"
-            aria-pressed={selectedAreaId === 'todas'}
-          >
-            <span className={styles.areaDot} style={{ backgroundColor: 'var(--color-primary)' }} />
-            <span className={styles.areaCardName}>Todas</span>
-            <span className={styles.areaCardCount}>
-              {todos.filter(t => t.status !== 'completada').length}
-            </span>
-          </button>
+            <h1 className={styles.editorialH1}>
+              to-do &amp; áreas integradas<span className={styles.purpleDot}>.</span>
+            </h1>
 
-          {areas.map(area => {
-            const openCount = todos.filter(t => t.areaId === area.id && t.status !== 'completada').length;
-            const isSelected = selectedAreaId === area.id;
-            return (
-              <button
-                key={area.id}
-                type="button"
-                className={`${styles.areaCard} ${isSelected ? styles.areaCardActive : ''}`}
-                onClick={() => setSelectedAreaId(area.id)}
-                aria-label={`Área ${area.name}`}
-                aria-pressed={isSelected}
-              >
-                <span className={styles.areaDot} style={{ backgroundColor: area.color }} />
-                <span className={styles.areaCardName}>{area.name}</span>
-                <span className={styles.areaCardCount}>{openCount}</span>
-              </button>
-            );
-          })}
+            <p className={styles.editorialLead}>
+              <span className={styles.leadItalic}>Clarify your mind. Prioritize your energy.</span> Un espacio unificado donde convergen tus tareas diarias, tus sesiones agendadas y tus notas vivas organizadas por áreas de vida.
+            </p>
+
+            <div className={styles.metaRow}>
+              <span className={styles.metaItem}>
+                <Sparkles size={15} className={styles.iconAmber} aria-hidden="true" />
+                <span>3 prioridades capitales</span>
+              </span>
+              <span className={styles.bullet}>•</span>
+              <span className={styles.metaItem}>
+                <ShieldCheck size={15} className={styles.iconTeal} aria-hidden="true" />
+                <span>{countPending} pendientes para hoy</span>
+              </span>
+              <span className={styles.bullet}>•</span>
+              <span className={styles.metaItem}>
+                <span className={styles.enfoqueLabel}>Enfoque:</span> Respiración &amp; Reglas viales
+              </span>
+              <span className={styles.bullet}>•</span>
+              <span className={styles.completionBadge}>
+                {totalCompleted} de {areaFilteredTodos.length} completadas
+              </span>
+            </div>
+          </div>
+
+          {/* Columna Derecha: Post-it Manila con Chincheta Dorada */}
+          <div className={styles.bannerPostItCol}>
+            <div className={styles.pinnedPostIt}>
+              {/* Golden pushpin */}
+              <div className={styles.goldenPushpin} aria-hidden="true">
+                <div className={styles.pushpinShine} />
+              </div>
+
+              <div className={styles.postItContent}>
+                <p className={styles.postItScript}>
+                  discipline today,<br />peace tomorrow.
+                </p>
+                <div className={styles.postItDivider} />
+                <p className={styles.postItSub}>♡ todo en un solo lugar</p>
+                <p className={styles.postItCode}>Espiralia Manila Note #08</p>
+              </div>
+
+              <div className={styles.floralWatermark} aria-hidden="true">
+                <Heart size={38} strokeWidth={1} />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
+      {/* 2. Barra de Áreas Temáticas (Archivador Manila Cromático) & Filtros */}
+      <section className={styles.areasSection} aria-label="Áreas temáticas">
+        <div className={styles.areasHeader}>
+          <div className={styles.folderTabsRow}>
+            {/* Folder Tab 0: Todas las Áreas */}
+            <button
+              type="button"
+              className={`${styles.folderTab} ${selectedAreaId === 'todas' ? styles.folderTabActive : ''}`}
+              onClick={() => setSelectedAreaId('todas')}
+              aria-label="Todas las áreas"
+              aria-pressed={selectedAreaId === 'todas'}
+            >
+              <span className={styles.folderTabName}>Todas las Áreas</span>
+              <span className={styles.folderTabCount}>
+                {todos.filter(t => t.status !== 'completada').length}
+              </span>
+            </button>
+
+            {/* Folder Tabs 1..N por cada área */}
+            {areas.map((area, idx) => {
+              const openCount = todos.filter(t => t.areaId === area.id && t.status !== 'completada').length;
+              const isSelected = selectedAreaId === area.id;
+              const numStr = String(idx + 1).padStart(2, '0');
+
+              return (
+                <button
+                  key={area.id}
+                  type="button"
+                  className={`${styles.folderTab} ${isSelected ? styles.folderTabActive : ''}`}
+                  onClick={() => setSelectedAreaId(area.id)}
+                  aria-label={`Área ${area.name}`}
+                  aria-pressed={isSelected}
+                >
+                  <span className={styles.tabWatermark} aria-hidden="true">{numStr}</span>
+                  <span className={styles.areaDot} style={{ backgroundColor: area.color }} />
+                  <span className={styles.areaIndex}>{numStr}.</span>
+                  <span className={styles.areaCardName}>{area.name}</span>
+                  <span className={styles.folderTabCount}>{openCount}</span>
+                </button>
+              );
+            })}
+
+            {/* Botón Añadir Área */}
+            <button
+              type="button"
+              className={styles.btnAddAreaTab}
+              aria-label="Crear área"
+              title="Añadir nueva área de vida"
+              onClick={() => setIsAreaModalOpen(true)}
+            >
+              <FolderPlus size={16} aria-hidden="true" />
+              <span>+ Área</span>
+            </button>
+          </div>
+
+          {/* Filtros de Estado */}
+          <div className={styles.filterBar} role="region" aria-label="Filtro de estados">
+            <span className={styles.filterLabel}>Filtrar:</span>
+            {(
+              [
+                { id: 'todas', label: 'Todas', count: areaFilteredTodos.length },
+                { id: 'pendientes', label: 'Pendientes', count: countPending },
+                { id: 'en_progreso', label: 'En progreso', count: countInProgress },
+                { id: 'completadas', label: 'Completadas', count: countDone },
+              ] as const
+            ).map(({ id, label, count }) => (
+              <button
+                key={id}
+                type="button"
+                className={`${styles.filterBtn} ${filterStatus === id ? styles.filterBtnActive : ''}`}
+                onClick={() => setFilterStatus(id)}
+                aria-pressed={filterStatus === id}
+              >
+                <span>{label}</span>
+                <span className={styles.filterBadge}>{count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Pliego de Contenido Integrado */}
       {activeArea && selectedAreaId !== 'todas' ? (
         <AreaIntegratedWorkspace
           area={activeArea}
@@ -267,192 +365,489 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
           onDataChanged={loadData}
         />
       ) : (
-        <>
-          {/* Formulario de creación rápida */}
-          <div className={styles.createCard}>
-        <form onSubmit={handleAddTodo} className={styles.createForm}>
-          <input
-            type="text"
-            className={styles.inputTask}
-            placeholder="¿Qué tienes pendiente?"
-            aria-label="¿Qué tienes pendiente?"
-            value={inputTitle}
-            onChange={e => setInputTitle(e.target.value)}
-          />
+        <div className={styles.workspaceGrid}>
+          {/* Columna Principal / Izquierda (Tareas & Entrada Rápida) */}
+          <div className={styles.leftColumn}>
+            {/* 3.1 Entrada Rápida al Taller con Clip de Latón */}
+            <div className={styles.quickAddCard}>
+              <div className={styles.tornEdgeTop} aria-hidden="true" />
+              <div className={styles.metalClipAccent} aria-hidden="true" />
 
-          <div className={styles.createControls}>
-            <select
-              className={styles.selectArea}
-              aria-label="Área de la tarea"
-              value={selectedAreaForNew}
-              onChange={e => setSelectedAreaForNew(e.target.value)}
-            >
-              {areas.map(area => (
-                <option key={area.id} value={area.id}>
-                  {area.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              className={styles.selectPriority}
-              aria-label="Prioridad de la tarea"
-              value={selectedPriority}
-              onChange={e => setSelectedPriority(e.target.value as Priority)}
-            >
-              <option value="alta">Alta</option>
-              <option value="media">Media</option>
-              <option value="baja">Baja</option>
-            </select>
-
-            <input
-              type="date"
-              className={styles.inputDate}
-              aria-label="Fecha de vencimiento"
-              value={inputDueDate}
-              onChange={e => setInputDueDate(e.target.value)}
-            />
-
-            <button type="submit" className={styles.btnAdd}>
-              <Plus size={18} aria-hidden="true" />
-              <span>Añadir</span>
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* Barra de filtros de estado */}
-      <div className={styles.filterBar} role="region" aria-label="Filtro de estados">
-        {(
-          [
-            { id: 'todas', label: 'Todas', count: areaFilteredTodos.length },
-            { id: 'pendientes', label: 'Pendientes', count: countPending },
-            { id: 'en_progreso', label: 'En progreso', count: countInProgress },
-            { id: 'completadas', label: 'Completadas', count: countDone },
-          ] as const
-        ).map(({ id, label, count }) => (
-          <button
-            key={id}
-            type="button"
-            className={`${styles.filterBtn} ${filterStatus === id ? styles.filterBtnActive : ''}`}
-            onClick={() => setFilterStatus(id)}
-            aria-pressed={filterStatus === id}
-          >
-            <span>{label}</span>
-            <span className={styles.filterBadge}>{count}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Lista de tareas */}
-      {filteredTodos.length === 0 ? (
-        <div className={styles.emptyState}>
-          <CheckCircle2 size={36} color="var(--color-primary-soft)" aria-hidden="true" style={{ marginBottom: 12 }} />
-          <h3 className={styles.emptyTitle}>{emptyContent.title}</h3>
-          <p className={styles.emptySubtitle}>{emptyContent.description}</p>
-        </div>
-      ) : (
-        <div className={styles.todoList}>
-          {filteredTodos.map(todo => {
-            const area = getAreaById(todo.areaId);
-            const isDone = todo.status === 'completada';
-            const inProgress = todo.status === 'en_progreso';
-            const dueText = dueLabel(todo.dueDate, todayStr);
-
-            return (
-              <div key={todo.id} className={`${styles.todoItem} ${isDone ? styles.todoItemDone : ''}`}>
-                {/* Touch target envolvente para checkbox */}
-                <label className={styles.checkboxTouchTarget} htmlFor={`todo-${todo.id}`}>
-                  <input
-                    type="checkbox"
-                    id={`todo-${todo.id}`}
-                    aria-label={`completar ${todo.title}`}
-                    className={styles.todoCheckbox}
-                    checked={isDone}
-                    onChange={() => handleToggleTodo(todo.id)}
-                  />
-                </label>
-
-                <div className={styles.todoContent}>
-                  <span className={`${styles.todoTitle} ${isDone ? styles.todoCompleted : ''}`}>
-                    {todo.title}
+              <div className={styles.quickAddBody}>
+                <div className={styles.quickAddHeader}>
+                  <span className={styles.quickAddTitle}>
+                    <Sparkles size={16} className={styles.iconPrimary} aria-hidden="true" />
+                    Entrada Rápida al Taller
                   </span>
+                  <span className={styles.quickAddAreaPill}>
+                    Área: {areas[0]?.name || 'General'}
+                  </span>
+                </div>
 
-                  <div className={styles.todoMeta}>
-                    {/* Badge de Área */}
-                    {area && (
-                      <span className={styles.badgeArea}>
-                        <span className={styles.badgeAreaDot} style={{ backgroundColor: area.color }} />
-                        <span>{area.name}</span>
-                      </span>
-                    )}
+                <form onSubmit={handleAddTodo} className={styles.createForm}>
+                  <input
+                    type="text"
+                    className={styles.inputTask}
+                    placeholder="¿Qué tienes pendiente? (Ej. Repasar 15 preguntas de rotondas Conaset)..."
+                    aria-label="¿Qué tienes pendiente?"
+                    value={inputTitle}
+                    onChange={e => setInputTitle(e.target.value)}
+                  />
 
-                    {/* Chip de Estado interactivo */}
+                  <div className={styles.createControls}>
+                    <div className={styles.selectGroup}>
+                      <select
+                        className={styles.selectArea}
+                        aria-label="Área de la tarea"
+                        value={selectedAreaForNew}
+                        onChange={e => setSelectedAreaForNew(e.target.value)}
+                      >
+                        {areas.map(area => (
+                          <option key={area.id} value={area.id}>
+                            {area.name}
+                          </option>
+                        ))}
+                      </select>
+
+                      <select
+                        className={styles.selectPriority}
+                        aria-label="Prioridad de la tarea"
+                        value={selectedPriority}
+                        onChange={e => setSelectedPriority(e.target.value as Priority)}
+                      >
+                        <option value="alta">Prioridad: Alta</option>
+                        <option value="media">Prioridad: Media</option>
+                        <option value="baja">Prioridad: Baja</option>
+                      </select>
+
+                      <input
+                        type="date"
+                        className={styles.inputDate}
+                        aria-label="Fecha de vencimiento"
+                        value={inputDueDate}
+                        onChange={e => setInputDueDate(e.target.value)}
+                      />
+                    </div>
+
+                    <button type="submit" className={styles.btnAdd}>
+                      <Plus size={16} aria-hidden="true" />
+                      <span>Añadir</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div className={styles.tornEdgeBottom} aria-hidden="true" />
+            </div>
+
+            {/* 3.2 TOP PRIORITIES Manila Card */}
+            <div className={styles.topPrioritiesCard}>
+              <div className={styles.washiTapeCard} aria-hidden="true" />
+              <div className={styles.tornEdgeTop} aria-hidden="true" />
+
+              <div className={styles.topPrioritiesBody}>
+                <div className={styles.topPrioritiesHeader}>
+                  <div className={styles.topPrioritiesTitleGroup}>
+                    <span className={styles.topPrioritiesBadge}>TOP PRIORITIES</span>
+                    <span className={styles.topPrioritiesSub}>no negociables del día</span>
+                  </div>
+                  <Star size={18} className={styles.iconStar} aria-hidden="true" />
+                </div>
+
+                <div className={styles.topPrioritiesList}>
+                  {/* Priority 01 */}
+                  <div className={styles.priorityItem}>
+                    <span className={styles.priorityIndex}>01.</span>
                     <button
                       type="button"
-                      className={`${styles.statusPill} ${
-                        inProgress ? styles.statusPillInProgress : isDone ? styles.statusPillDone : styles.statusPillPending
-                      }`}
-                      aria-label={`estado: ${todo.status === 'en_progreso' ? 'en progreso' : todo.status}`}
-                      onClick={() => handleToggleStatus(todo.id)}
+                      className={`${styles.roundCheckbox} ${priorityDone.p1 ? styles.roundCheckboxChecked : ''}`}
+                      onClick={() => toggleEditorialPriority('p1')}
+                      aria-label="Completar prioridad Estudio Conaset"
                     >
-                      <Clock size={12} aria-hidden="true" />
-                      <span>{todo.status === 'en_progreso' ? 'En progreso' : isDone ? 'Completada' : 'Pendiente'}</span>
+                      {priorityDone.p1 && <Check size={12} strokeWidth={3} />}
                     </button>
+                    <div className={styles.priorityContent}>
+                      <div className={styles.priorityTitleRow}>
+                        <h4 className={`${styles.priorityTitle} ${priorityDone.p1 ? styles.titleDone : ''}`}>
+                          Estudio Conaset: Repasar señales de prioridad y cruces viales
+                        </h4>
+                        <span className={`${styles.badgePriority} ${styles.badgePriorityAlta}`}>
+                          URGENTE
+                        </span>
+                      </div>
+                      <p className={styles.priorityDesc}>
+                        Simulador municipal Clase B programado. Enfoque en derecho preferente de paso y rotondas de 2 pistas.
+                      </p>
+                      <div className={styles.priorityMeta}>
+                        <span className={styles.priorityAreaTag}>
+                          <span className={styles.tinyDot} style={{ backgroundColor: '#e8a55a' }} />
+                          01. Estudios
+                        </span>
+                        <span>•</span>
+                        <span>Hoy 16:30 hrs</span>
+                        <span>•</span>
+                        <span>45 min</span>
+                      </div>
+                    </div>
+                  </div>
 
-                    {/* Chip de Vencimiento interactivo */}
-                    {editingDueDateId === todo.id ? (
-                      <div className={styles.inlineDateEditor}>
-                        <input
-                          type="date"
-                          defaultValue={todo.dueDate || ''}
-                          className={styles.inlineDateInput}
-                          aria-label={`editar fecha de ${todo.title}`}
-                          onChange={e => handleSaveDueDate(todo.id, e.target.value)}
-                        />
+                  {/* Priority 02 */}
+                  <div className={styles.priorityItem}>
+                    <span className={styles.priorityIndex}>02.</span>
+                    <button
+                      type="button"
+                      className={`${styles.roundCheckbox} ${priorityDone.p2 ? styles.roundCheckboxChecked : ''}`}
+                      onClick={() => toggleEditorialPriority('p2')}
+                      aria-label="Completar prioridad Libreta Terapia"
+                    >
+                      {priorityDone.p2 && <Check size={12} strokeWidth={3} />}
+                    </button>
+                    <div className={styles.priorityContent}>
+                      <div className={styles.priorityTitleRow}>
+                        <h4 className={`${styles.priorityTitle} ${priorityDone.p2 ? styles.titleDone : ''}`}>
+                          Llevar libreta física de desahogo a consulta con Dra. Morales
+                        </h4>
+                        <span className={`${styles.badgePriority} ${styles.badgePriorityMedia}`}>
+                          ALTA
+                        </span>
+                      </div>
+                      <p className={styles.priorityDesc}>
+                        Revisar registros de sobrepensamiento nocturno y ejercicios de grounding anotados el lunes.
+                      </p>
+                      <div className={styles.priorityMeta}>
+                        <span className={styles.priorityAreaTag}>
+                          <span className={styles.tinyDot} style={{ backgroundColor: '#8e1ea2' }} />
+                          02. Terapia
+                        </span>
+                        <span>•</span>
+                        <span>Mañana 11:45 hrs</span>
+                        <span>•</span>
+                        <span>Consulta Médica</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Priority 03 */}
+                  <div className={styles.priorityItem}>
+                    <span className={styles.priorityIndex}>03.</span>
+                    <button
+                      type="button"
+                      className={`${styles.roundCheckbox} ${priorityDone.p3 ? styles.roundCheckboxChecked : ''}`}
+                      onClick={() => toggleEditorialPriority('p3')}
+                      aria-label="Completar prioridad Postulación U"
+                    >
+                      {priorityDone.p3 && <Check size={12} strokeWidth={3} />}
+                    </button>
+                    <div className={styles.priorityContent}>
+                      <div className={styles.priorityTitleRow}>
+                        <h4 className={`${styles.priorityTitle} ${priorityDone.p3 ? styles.titleDone : ''}`}>
+                          Redactar borrador de carta de postulación U. a profesor guía
+                        </h4>
+                        <span className={`${styles.badgePriority} ${styles.badgePriorityBaja}`}>
+                          MEDIA
+                        </span>
+                      </div>
+                      <p className={styles.priorityDesc}>
+                        Sintetizar intereses de investigación académica para solicitud formal de recomendación 2026.
+                      </p>
+                      <div className={styles.priorityMeta}>
+                        <span className={styles.priorityAreaTag}>
+                          <span className={styles.tinyDot} style={{ backgroundColor: '#5db8a6' }} />
+                          03. Universidad
+                        </span>
+                        <span>•</span>
+                        <span>Jueves</span>
+                        <span>•</span>
+                        <span>60 min</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.tornEdgeBottom} aria-hidden="true" />
+            </div>
+
+            {/* 3.3 Lista Detallada de Tareas */}
+            <div className={styles.detailedTasksSection}>
+              <div className={styles.detailedHeader}>
+                <h3 className={styles.detailedTitle}>
+                  <span>Tareas que importan (Tasks that matter)</span>
+                  <span className={styles.detailedSub}>· Ordenadas por impacto</span>
+                </h3>
+                <span className={styles.showingCount}>
+                  Mostrando {filteredTodos.length} tareas
+                </span>
+              </div>
+
+              {filteredTodos.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <CheckCircle2 size={36} color="var(--color-primary-soft)" aria-hidden="true" style={{ marginBottom: 12 }} />
+                  <h3 className={styles.emptyTitle}>{emptyContent.title}</h3>
+                  <p className={styles.emptySubtitle}>{emptyContent.description}</p>
+                </div>
+              ) : (
+                <div className={styles.todoList}>
+                  {filteredTodos.map(todo => {
+                    const area = getAreaById(todo.areaId);
+                    const isDone = todo.status === 'completada';
+                    const inProgress = todo.status === 'en_progreso';
+                    const dueText = dueLabel(todo.dueDate, todayStr);
+
+                    return (
+                      <div key={todo.id} className={`${styles.todoItem} ${isDone ? styles.todoItemDone : ''}`}>
+                        {/* Checkbox circular táctil */}
+                        <label className={styles.checkboxTouchTarget} htmlFor={`todo-${todo.id}`}>
+                          <input
+                            type="checkbox"
+                            id={`todo-${todo.id}`}
+                            aria-label={`completar ${todo.title}`}
+                            className={styles.todoCheckbox}
+                            checked={isDone}
+                            onChange={() => handleToggleTodo(todo.id)}
+                          />
+                          <span className={styles.customCheckbox} aria-hidden="true">
+                            {isDone && <Check size={12} strokeWidth={3} />}
+                          </span>
+                        </label>
+
+                        <div className={styles.todoContent}>
+                          <div className={styles.todoMainRow}>
+                            <span className={`${styles.todoTitle} ${isDone ? styles.titleDone : ''}`}>
+                              {todo.title}
+                            </span>
+                          </div>
+
+                          <div className={styles.todoMetaRow}>
+                            {/* Píldora de Área */}
+                            {area && (
+                              <span className={styles.badgeArea} style={{ borderColor: area.color }}>
+                                <span className={styles.badgeAreaDot} style={{ backgroundColor: area.color }} />
+                                {area.name}
+                              </span>
+                            )}
+
+                            {/* Píldora de Prioridad */}
+                            <span className={`${styles.badgePriority} ${getPriorityClass(todo.priority)}`}>
+                              {todo.priority}
+                            </span>
+
+                            {/* Píldora de Estado (alternable) */}
+                            <button
+                              type="button"
+                              className={`${styles.statusPill} ${inProgress ? styles.statusPillInProgress : styles.statusPillPending}`}
+                              onClick={() => handleToggleStatus(todo.id)}
+                              aria-label={`estado: ${todo.status.replace('_', ' ')}`}
+                            >
+                              <Clock size={12} aria-hidden="true" />
+                              <span>{todo.status.replace('_', ' ')}</span>
+                            </button>
+
+                            {/* Píldora de Fecha de Vencimiento editable */}
+                            {editingDueDateId === todo.id ? (
+                              <input
+                                type="date"
+                                className={styles.editDateInput}
+                                aria-label={`cambiar fecha ${todo.title}`}
+                                defaultValue={todo.dueDate || ''}
+                                onBlur={e => handleSaveDueDate(todo.id, e.target.value)}
+                                autoFocus
+                              />
+                            ) : (
+                              <button
+                                type="button"
+                                className={styles.badgeDue}
+                                onClick={() => setEditingDueDateId(todo.id)}
+                                aria-label={`vencimiento: ${todo.dueDate || 'sin fecha'}`}
+                              >
+                                <Calendar size={12} aria-hidden="true" />
+                                <span>{dueText}</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Botón Eliminar Tarea */}
                         <button
                           type="button"
-                          className={styles.btnCancelDate}
-                          aria-label="cancelar fecha"
-                          onClick={() => setEditingDueDateId(null)}
+                          className={styles.btnDelete}
+                          aria-label={`eliminar ${todo.title}`}
+                          onClick={() => handleDeleteTodo(todo.id)}
                         >
-                          <X size={14} />
+                          <Trash2 size={16} aria-hidden="true" />
                         </button>
                       </div>
-                    ) : (
-                      <button
-                        type="button"
-                        className={`${styles.duePill} ${todo.dueDate ? styles.duePillActive : ''}`}
-                        aria-label={todo.dueDate ? `vencimiento: ${todo.dueDate}` : `asignar vencimiento a ${todo.title}`}
-                        onClick={() => setEditingDueDateId(todo.id)}
-                      >
-                        <Calendar size={12} aria-hidden="true" />
-                        <span>{dueText || '+ Vence'}</span>
-                      </button>
-                    )}
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
-                    {/* Badge de Prioridad */}
-                    <span className={getPriorityClass(todo.priority)}>
-                      {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
-                    </span>
+            {/* 3.4 Compromiso Antidistracciones de Hoy */}
+            <div className={styles.distractionsBox}>
+              <div className={styles.distractionsLeft}>
+                <div className={styles.distractionsIcon}>
+                  <ShieldCheck size={20} className={styles.iconPrimary} aria-hidden="true" />
+                </div>
+                <div>
+                  <h4 className={styles.distractionsTitle}>Compromiso Antidistracciones de Hoy</h4>
+                  <p className={styles.distractionsDesc}>
+                    Teléfono en modo escala de grises y fuera del alcance durante las horas de estudio.
+                  </p>
+                </div>
+              </div>
+              <span className={styles.distractionsScript}>disciplina gentil ♡</span>
+            </div>
+          </div>
+
+          {/* Columna Lateral / Derecha (Agenda, Bujo & Energía) */}
+          <div className={styles.rightColumn}>
+            {/* 3.5 Agenda Asociada */}
+            <div className={styles.associatedAgendaCard}>
+              <div className={styles.washiTapeSlate} aria-hidden="true" />
+              <div className={styles.agendaCardHeader}>
+                <div className={styles.agendaCardTitleGroup}>
+                  <Calendar size={18} className={styles.iconPrimary} aria-hidden="true" />
+                  <h3 className={styles.agendaCardTitle}>Agenda Asociada</h3>
+                </div>
+                <span className={styles.agendaCardSubtitle}>Próximos hitos</span>
+              </div>
+
+              <div className={styles.associatedEventsList}>
+                {/* Evento 1 */}
+                <div className={`${styles.eventItem} ${styles.eventBorderAmber}`}>
+                  <div className={styles.eventDateCol}>
+                    <span className={styles.eventDayName} style={{ color: '#e8a55a' }}>VIE</span>
+                    <span className={styles.eventDayNum}>24</span>
+                  </div>
+                  <div className={styles.eventInfo}>
+                    <h4 className={styles.eventTitle}>Simulacro Conaset &amp; Práctica en Calle</h4>
+                    <p className={styles.eventMeta}>16:00 - 17:30 hrs · Circuito San Joaquín</p>
+                    <span className={styles.eventAreaTag}>01. Estudios &amp; Clase B</span>
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  className={styles.btnDelete}
-                  aria-label={`eliminar ${todo.title}`}
-                  onClick={() => handleDeleteTodo(todo.id)}
-                >
-                  <Trash2 size={16} aria-hidden="true" />
-                </button>
+                {/* Evento 2 */}
+                <div className={`${styles.eventItem} ${styles.eventBorderPurple}`}>
+                  <div className={styles.eventDateCol}>
+                    <span className={styles.eventDayName} style={{ color: '#8e1ea2' }}>MAR</span>
+                    <span className={styles.eventDayNum}>28</span>
+                  </div>
+                  <div className={styles.eventInfo}>
+                    <h4 className={styles.eventTitle}>Sesión Terapia Clínica Presencial</h4>
+                    <p className={styles.eventMeta}>11:45 - 12:45 hrs · Dra. Morales</p>
+                    <span className={styles.eventAreaTag}>02. Introspección &amp; Terapia</span>
+                  </div>
+                </div>
+
+                {/* Evento 3 */}
+                <div className={`${styles.eventItem} ${styles.eventBorderTeal}`}>
+                  <div className={styles.eventDateCol}>
+                    <span className={styles.eventDayName} style={{ color: '#5db8a6' }}>LUN</span>
+                    <span className={styles.eventDayNum}>03</span>
+                  </div>
+                  <div className={styles.eventInfo}>
+                    <h4 className={styles.eventTitle}>Cierre de Envío Cartas Recomendación</h4>
+                    <p className={styles.eventMeta}>23:59 hrs · Plataforma Admisión 2026</p>
+                    <span className={styles.eventAreaTag}>03. Postulación Universitaria</span>
+                  </div>
+                </div>
               </div>
-            );
-          })}
+
+              <div className={styles.agendaCardFooter}>
+                <span className={styles.agendaFooterLink}>
+                  Ver vista semanal extendida en Agenda →
+                </span>
+              </div>
+            </div>
+
+            {/* 3.6 Notes / Brain Dump Bujo Dot Grid */}
+            <div className={styles.brainDumpCard}>
+              <div className={styles.tornEdgeTop} aria-hidden="true" />
+
+              <div className={styles.brainDumpBody}>
+                <div className={styles.brainDumpHeader}>
+                  <div className={styles.brainDumpTitleGroup}>
+                    <Sparkles size={16} className={styles.iconPrimary} aria-hidden="true" />
+                    <h3 className={styles.brainDumpTitle}>Notes / Brain Dump</h3>
+                  </div>
+                  <span className={styles.brainDumpSub}>Bujo Dot Grid</span>
+                </div>
+
+                <div className={styles.dotGridCanvas}>
+                  <p className={styles.dotGridScript}>
+                    "No anticipar el tráfico antes de subir al auto. Respirar tres veces antes de soltar el embrague. La calma se practica segundo a segundo."
+                  </p>
+                  <div className={styles.dotGridTagRow}>
+                    <span className={styles.dotGridTag}>vinculado a #ClaseB · 10:14 AM</span>
+                  </div>
+                  <span className={styles.dotGridHeart} aria-hidden="true">♡</span>
+                </div>
+
+                <div className={styles.brainDumpFooter}>
+                  <span className={styles.localCacheNote}>Guardado en caché local</span>
+                </div>
+              </div>
+
+              <div className={styles.tornEdgeBottom} aria-hidden="true" />
+            </div>
+
+            {/* 3.7 Mini Reminders & Energy Check */}
+            <div className={styles.miniRemindersCard}>
+              <div className={styles.metalPaperclipCorner} aria-hidden="true" />
+
+              <div className={styles.miniRemindersHeader}>
+                <h3 className={styles.miniRemindersTitle}>Mini Reminders &amp; Energy</h3>
+                <span className={styles.remindersSub}>☕</span>
+              </div>
+
+              <div className={styles.energyMeterBox}>
+                <div className={styles.energyMeterHeader}>
+                  <span className={styles.energyLabel}>Nivel de Energía / Presencia:</span>
+                  <span className={styles.energyStatus}>80% · Lúcida</span>
+                </div>
+                <div className={styles.energyButtonsRow}>
+                  {['☁️', '☕', '🌱', '✨', '☀️'].map(icon => (
+                    <button
+                      key={icon}
+                      type="button"
+                      className={`${styles.energyBtn} ${energyLevel === icon ? styles.energyBtnActive : ''}`}
+                      onClick={() => setEnergyLevel(icon)}
+                      title={`Nivel ${icon}`}
+                    >
+                      {icon}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.dailyMantraBox}>
+                <p className={styles.mantraScript}>
+                  "Paso a paso. Una tarea a la vez. No cargues mañana en el bolsillo de hoy."
+                </p>
+                <span className={styles.mantraSub}>Mantra del Taller</span>
+              </div>
+            </div>
+          </div>
         </div>
       )}
-        </>
-      )}
+
+      {/* 4. Footer Editorial de Privacidad */}
+      <footer className={styles.editorialFooter}>
+        <span className={styles.footerScript}>
+          Small steps every day lead to big results. ♡
+        </span>
+        <div className={styles.footerMeta}>
+          <span className={styles.footerPill}>
+            <span className={styles.footerGreenDot} />
+            100% Client-Side Engine
+          </span>
+          <span className={styles.bullet}>·</span>
+          <span>IndexedDB local</span>
+          <span className={styles.bullet}>·</span>
+          <span>Datos particionados por perfil</span>
+        </div>
+      </footer>
 
       {/* Modal para Crear Nueva Área Temática */}
       {isAreaModalOpen && (
