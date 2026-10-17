@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Note, Folder } from '../../types';
+import { countWords, getCategoryRibbonColor } from '../../utils/bujoFormatter';
 import styles from './NoteModal.module.css';
 
 interface NoteModalProps {
@@ -28,6 +29,7 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
   const [folderId, setFolderId] = useState<string>(() => initialNote?.folderId || '');
   const [tagsStr, setTagsStr] = useState(() => (initialNote?.tags || []).join(', '));
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -43,14 +45,54 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const tags = tagsStr
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean);
+
+  const ribbonColor = getCategoryRibbonColor(isReflection, tags);
+  const wordCount = countWords(content);
+
+  const handleInsertSnippet = (snippet: string) => {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      setContent((prev) => (prev ? `${prev}${snippet}` : snippet));
+      return;
+    }
+
+    const isTextareaFocused = document.activeElement === textarea;
+    const start = isTextareaFocused && textarea.selectionStart !== null
+      ? textarea.selectionStart
+      : (textarea.selectionStart && textarea.selectionStart > 0 ? textarea.selectionStart : content.length);
+    const end = isTextareaFocused && textarea.selectionEnd !== null
+      ? textarea.selectionEnd
+      : (textarea.selectionEnd && textarea.selectionEnd > 0 ? textarea.selectionEnd : content.length);
+
+    const next = content.slice(0, start) + snippet + content.slice(end);
+    setContent(next);
+
+    const newPos = start + snippet.length;
+    setTimeout(() => {
+      textarea.focus();
+      try {
+        textarea.setSelectionRange(newPos, newPos);
+      } catch {
+        // Ignorar en entornos de test si setSelectionRange no está emulado
+      }
+    }, 0);
+  };
+
+  const handleInsertSection = () => {
+    handleInsertSnippet('\n§ Nueva Sección\n');
+  };
+
+  const handleInsertBox = () => {
+    handleInsertSnippet('\n[caja: 🚗 Hito / Recuadro | Detalle]\n');
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
-
-    const tags = tagsStr
-      .split(',')
-      .map(t => t.trim())
-      .filter(Boolean);
 
     onSave({
       title: title.trim(),
@@ -71,6 +113,13 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
         aria-modal="true"
         aria-labelledby="note-modal-title"
       >
+        <div
+          className={styles.ribbon}
+          style={{ backgroundColor: ribbonColor }}
+          data-testid="bujo-ribbon"
+          aria-hidden="true"
+        />
+
         <h3 id="note-modal-title" className={styles.modalTitle}>
           {initialNote ? 'Editar Nota' : 'Nueva Nota o Reflexión'}
         </h3>
@@ -127,11 +176,32 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
           )}
 
           <div className={styles.formGroup}>
-            <label htmlFor="note-content" className={styles.label}>
-              Contenido
-            </label>
+            <div className={styles.contentHeader}>
+              <label htmlFor="note-content" className={styles.label}>
+                Contenido
+              </label>
+              <div className={styles.syntaxHelpers}>
+                <button
+                  type="button"
+                  className={styles.helperBtn}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={handleInsertSection}
+                >
+                  + § Sección
+                </button>
+                <button
+                  type="button"
+                  className={styles.helperBtn}
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={handleInsertBox}
+                >
+                  + 🚗 Caja/Hito
+                </button>
+              </div>
+            </div>
             <textarea
               id="note-content"
+              ref={textareaRef}
               className={styles.textarea}
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -153,20 +223,28 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
             />
           </div>
 
-          <div className={styles.modalActions}>
-            <button
-              type="button"
-              className={styles.btnCancel}
-              onClick={onClose}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className={styles.btnSave}
-            >
-              Guardar Nota
-            </button>
+          <div className={styles.modalFooter}>
+            <div className={styles.modalStatusBar} data-testid="modal-status-bar">
+              <span className={styles.wordCounter} data-testid="note-word-count">
+                {wordCount} {wordCount === 1 ? 'palabra' : 'palabras'}
+              </span>
+            </div>
+
+            <div className={styles.modalActions}>
+              <button
+                type="button"
+                className={styles.btnCancel}
+                onClick={onClose}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className={styles.btnSave}
+              >
+                Guardar Nota
+              </button>
+            </div>
           </div>
         </form>
       </div>
