@@ -5,8 +5,8 @@
   align-items: center;
   justify-content: center;
   padding: 32px 16px;
-  background-color: var(--color-canvas);
-  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-color: var(--bg-canvas, var(--color-canvas));
+  background-image: var(--pattern-dot-grid, radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px));
   background-size: 18px 18px;
   position: relative;
 }
@@ -81,10 +81,10 @@
 .mainSheet {
   width: 100%;
   max-width: 940px;
-  background-color: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
+  background-color: var(--bg-card, var(--color-surface-card));
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: 16px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+  box-shadow: var(--shadow-card-stack, 0 10px 25px -5px rgba(0, 0, 0, 0.05));
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   position: relative;
