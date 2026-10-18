@@ -24,6 +24,7 @@ describe('NotesView - Tomos y Carpetas', () => {
       isReflection: true,
       tags: ['terapia'],
       createdAt: '2026-10-17T10:00:00.000Z',
+      updatedAt: '2026-10-17T10:00:00.000Z',
     });
 
     StorageService.saveNote({
@@ -35,6 +36,7 @@ describe('NotesView - Tomos y Carpetas', () => {
       isReflection: false,
       tags: ['ideas'],
       createdAt: '2026-10-17T11:00:00.000Z',
+      updatedAt: '2026-10-17T11:00:00.000Z',
     });
 
     render(<NotesView profileId={profileId} />);
@@ -105,6 +107,7 @@ describe('NotesView - Tomos y Carpetas', () => {
       title: 'Nota 1',
       content: 'Contenido 1',
       createdAt: '2026-10-17T10:00:00.000Z',
+      updatedAt: '2026-10-17T10:00:00.000Z',
     });
     StorageService.saveNote({
       id: 'n-2',
@@ -113,6 +116,7 @@ describe('NotesView - Tomos y Carpetas', () => {
       title: 'Nota 2',
       content: 'Contenido 2',
       createdAt: '2026-10-17T10:00:00.000Z',
+      updatedAt: '2026-10-17T10:00:00.000Z',
     });
     StorageService.saveNote({
       id: 'n-3',
@@ -121,6 +125,7 @@ describe('NotesView - Tomos y Carpetas', () => {
       title: 'Nota 3',
       content: 'Contenido 3',
       createdAt: '2026-10-17T10:00:00.000Z',
+      updatedAt: '2026-10-17T10:00:00.000Z',
     });
 
     render(<NotesView profileId={profileId} />);
