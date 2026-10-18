@@ -8,6 +8,8 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
   const dashboardCss = fs.readFileSync(path.resolve(__dirname, '../components/DashboardView.module.css'), 'utf-8');
   const plannerCss = fs.readFileSync(path.resolve(__dirname, '../components/PlannerView.module.css'), 'utf-8');
   const todoCss = fs.readFileSync(path.resolve(__dirname, '../components/TodoView.module.css'), 'utf-8');
+  const notesCss = fs.readFileSync(path.resolve(__dirname, '../components/NotesView.module.css'), 'utf-8');
+  const foldersCss = fs.readFileSync(path.resolve(__dirname, '../components/FoldersView.module.css'), 'utf-8');
 
   it('previene fugas de desplazamiento horizontal en el cuerpo (Horizontal Scroll Leak)', () => {
     expect(indexCss).toMatch(/body\s*\{[^}]*overflow-x:\s*hidden/);
@@ -32,5 +34,17 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
   it('TodoView escala el encabezado H1 y banner en pantallas moviles (< 640px)', () => {
     expect(todoCss).toContain('@media (max-width: 640px)');
     expect(todoCss).toMatch(/@media \(max-width: 640px\)[\s\S]*?\.editorialH1\s*\{[^}]*font-size:\s*1\.85rem/);
+  });
+
+  it('NotesView define escala compacta de archivador y pliego para pantallas moviles (< 640px)', () => {
+    expect(notesCss).toContain('@media (max-width: 640px)');
+    expect(notesCss).toMatch(/@media \(max-width: 640px\)[\s\S]*?\.folioContainer\s*\{[^}]*padding:\s*20px 14px 20px 46px/);
+    expect(notesCss).toMatch(/@media \(max-width: 640px\)[\s\S]*?\.binderMechanism\s*\{[^}]*width:\s*24px/);
+  });
+
+  it('FoldersView define scroll-snap y dimensiones adaptadas para carpetas en pantallas moviles (< 640px)', () => {
+    expect(foldersCss).toContain('@media (max-width: 640px)');
+    expect(foldersCss).toMatch(/@media \(max-width: 640px\)[\s\S]*?\.flatFolderTab[\s\S]*?width:\s*155px/);
+    expect(foldersCss).toMatch(/@media \(max-width: 640px\)[\s\S]*?scroll-snap-type:\s*x mandatory/);
   });
 });

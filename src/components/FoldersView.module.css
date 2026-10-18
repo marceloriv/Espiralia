@@ -250,6 +250,51 @@
   transform: translateY(-2px);
 }
 
+@media (max-width: 640px) {
+  .flatFoldersRow,
+  .steppedTabsWrapper {
+    gap: 8px;
+    padding: 6px 0.5rem 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .flatFolderTab,
+  .steppedTab {
+    width: 155px;
+    min-width: 135px;
+    height: 46px;
+    scroll-snap-align: start;
+  }
+
+  .flatFolderTab.flatFolderActive,
+  .steppedTabActive,
+  .flatFolderTab[aria-selected="true"] {
+    height: 50px;
+  }
+
+  .flatFrontFlap {
+    height: 32px;
+    padding: 0 8px;
+  }
+
+  .flatFolderTab.flatFolderActive .flatFrontFlap,
+  .steppedTabActive .flatFrontFlap,
+  .flatFolderTab[aria-selected="true"] .flatFrontFlap {
+    height: 35px;
+  }
+
+  .flatFolderTitle {
+    font-size: 0.72rem;
+    gap: 4px;
+  }
+
+  .flatCountPill {
+    font-size: 0.62rem;
+    padding: 1px 4px;
+  }
+}
+
 /* 1. Tapa Trasera Plana con Solapa Superior (Back Flap) */
 .flatBackFlap {
   position: absolute;

@@ -161,6 +161,51 @@
   border-color: var(--binder-border-active, #c29d59);
 }
 
+@media (max-width: 640px) {
+  .binderCabinetRow,
+  .flatFoldersBar,
+  .tomoTabsRow {
+    gap: 8px;
+    padding: 6px 4px 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .binderSpineBtn,
+  .flatFolderTab,
+  .tomoTab {
+    width: 168px;
+    min-width: 148px;
+    height: 46px;
+    padding: 0 8px;
+    scroll-snap-align: start;
+  }
+
+  .binderSpineBtn.binderActive,
+  .binderSpineBtn.flatFolderActive,
+  .binderSpineBtn[aria-current="page"] {
+    height: 52px;
+  }
+
+  .binderLabelFrame {
+    padding: 2px 6px;
+  }
+
+  .binderLabelText {
+    font-size: 0.72rem;
+  }
+
+  .binderFingerRing {
+    width: 18px;
+    height: 18px;
+  }
+
+  .binderCountPill {
+    font-size: 0.62rem;
+    padding: 1px 4px;
+  }
+}
+
 /* Cantonera o refuerzo superior */
 .binderTopCap {
   position: absolute;
@@ -444,6 +489,63 @@
   padding: 32px 36px 28px 64px;
   box-shadow: var(--shadow-card-stack, 0 1px 2px rgba(20, 20, 19, 0.04), 0 4px 12px rgba(20, 20, 19, 0.05), 0 18px 36px -4px rgba(32, 28, 24, 0.08));
   overflow: visible;
+}
+
+@media (max-width: 640px) {
+  .folioContainer {
+    padding: 20px 14px 20px 46px;
+    border-radius: 12px 6px 12px 4px;
+  }
+
+  .binderMechanism {
+    width: 24px;
+    padding: 24px 0;
+  }
+
+  .binderPunchMargin {
+    left: 26px;
+    width: 16px;
+    padding: 24px 0;
+  }
+
+  .binderPunchHole {
+    width: 11px;
+    height: 11px;
+  }
+
+  .binderRing {
+    width: 26px;
+    height: 13px;
+    border-width: 2.5px;
+    margin-left: 8px;
+  }
+
+  .binderRingHighlight {
+    width: 10px;
+    height: 1.5px;
+  }
+
+  .binderLeverHandle {
+    display: none;
+  }
+
+  .pliegoTitleInput {
+    font-size: 1.35rem;
+  }
+
+  .washiTapeMagenta {
+    left: 36px;
+    width: 80px;
+    height: 18px;
+    top: -9px;
+  }
+
+  .washiTapeSlate {
+    right: 14px;
+    width: 70px;
+    height: 18px;
+    top: -9px;
+  }
 }
 
 .washiTapeMagenta {
@@ -1360,6 +1462,7 @@
 
 .searchInput {
   width: 260px;
+  max-width: 100%;
   padding: 8px 12px;
   border: 1px solid var(--color-hairline);
   border-radius: 8px;
@@ -1426,7 +1529,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 16px;
 }
 
