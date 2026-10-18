@@ -373,6 +373,12 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
             <div className={styles.bentoGrid}>
               {/* Columna Izquierda: Google Calendar & iCal (.ics) */}
               <article className={styles.cardLeft} aria-labelledby="gcal-heading">
+                {/* Ojales metálicos de latón de carpeta archivadora */}
+                <div className={styles.grommetRow} aria-hidden="true">
+                  <span className={`${styles.grommetRivet} ${styles.grommetRivetLeft}`} aria-hidden="true" />
+                  <span className={`${styles.grommetRivet} ${styles.grommetRivetRight}`} aria-hidden="true" />
+                </div>
+
                 <div className={styles.cardTopWashi} aria-hidden="true">
                   <span className={styles.cardTopWashiText}>RFC 5545 LOCAL</span>
                 </div>
@@ -689,6 +695,11 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     className={styles.btnDownloadFullVault}
                     onClick={handleExportFullVault}
                   >
+                    {/* Medallón de sello de lacre rojo en relieve */}
+                    <div className={styles.waxSealMedallion} aria-hidden="true">
+                      <span className={styles.waxSealMonogram}>E</span>
+                    </div>
+
                     <Download size={16} color="var(--color-primary, #6e0081)" aria-hidden="true" />
                     <span>Descargar Copia Completa (JSON + .ics)</span>
                   </button>

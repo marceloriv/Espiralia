@@ -81,4 +81,19 @@ describe('IntegrationsView (Stitch screen)', () => {
     expect(screen.getAllByText(/gmail & plantillas/i)[0]).toBeInTheDocument();
     expect(screen.getByText(/registro de auditoría local/i)).toBeInTheDocument();
   });
+
+  it('incluye medallón de sello de lacre rojo y ojales metálicos de archivo', () => {
+    const { container } = render(<IntegrationsView profile={profile} />);
+
+    const waxSeal = container.querySelector('[class*="waxSealMedallion"]');
+    expect(waxSeal).toBeInTheDocument();
+    expect(waxSeal).toHaveAttribute('aria-hidden', 'true');
+    expect(waxSeal).toHaveTextContent('E');
+
+    const grommets = container.querySelectorAll('[class*="grommetRivet"]');
+    expect(grommets.length).toBeGreaterThanOrEqual(2);
+    grommets.forEach(grommet => {
+      expect(grommet).toHaveAttribute('aria-hidden', 'true');
+    });
+  });
 });

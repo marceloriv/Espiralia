@@ -569,6 +569,49 @@
   }
 }
 
+/* Ojales metálicos de latón para ficha de archivo */
+.grommetRow {
+  position: absolute;
+  top: 8px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.grommetRivet {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ecd89d 0%, #caa658 55%, #735a26 100%);
+  border: 1px solid #5a451b;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  position: relative;
+}
+
+.grommetRivet::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #2a2010;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+.grommetRivetLeft {
+  left: 0;
+}
+
+.grommetRivetRight {
+  right: 0;
+}
+
 /* Card 1: Google Calendar & iCal (7 Cols) */
 .cardLeft {
   position: relative;
@@ -1077,6 +1120,31 @@
 
 .btnDownloadFullVault:hover {
   background: #F2EBE0;
+}
+
+/* Medallón de sello de lacre rojo en relieve */
+.waxSealMedallion {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #e03545 0%, #a81c2b 60%, #6e0f1b 100%);
+  border: 1.5px solid #821420;
+  box-shadow: 1px 2px 4px rgba(110, 15, 27, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transform: rotate(-5deg);
+}
+
+.waxSealMonogram {
+  font-family: var(--font-headline, serif);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffccd2;
+  text-shadow: 0 1px 1px rgba(80, 10, 18, 0.9);
+  line-height: 1;
 }
 
 .vaultSubhint {
