@@ -162,13 +162,14 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
 
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
-      <div
-        className={styles.modalBox}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="vault-modal-title"
-      >
+      <div className={styles.modalWrap} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.washiTape} aria-hidden="true" />
+        <div
+          className={styles.modalBox}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="vault-modal-title"
+        >
         <div className={styles.modalHeader}>
           <div>
             <h3 id="vault-modal-title" className={styles.modalTitle}>
@@ -393,7 +394,8 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
         )}
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export const VaultModal: React.FC<VaultModalProps> = (props) => {
