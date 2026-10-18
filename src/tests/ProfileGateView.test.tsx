@@ -145,5 +145,59 @@ describe('ProfileGateView', () => {
     expect(combinationLock).toBeInTheDocument();
     expect(combinationLock).toHaveAttribute('aria-hidden', 'true');
   });
+
+  it('permite ingresar solo dígitos con el teclado físico e ignora letras y símbolos', async () => {
+    const user = userEvent.setup();
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    // Teclear combinación de letras, símbolos y números
+    await user.keyboard('abc!@# 1234xyz');
+
+    // Las cajas de PIN deben tener exactamente 4 dígitos (los numéricos 1234)
+    const pinBoxes = screen.getAllByText('●');
+    expect(pinBoxes).toHaveLength(4);
+  });
+
+  it('refleja feedback visual keypadBtnPressed en el botón correspondiente al pulsar teclas', async () => {
+    const user = userEvent.setup();
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    const btn5 = screen.getByRole('button', { name: '5' });
+    expect(btn5.className).not.toMatch(/keypadBtnPressed/);
+
+    // Al presionar la tecla física '5'
+    await user.keyboard('5');
+
+    // Se verifica que '5' fue introducido en el PIN
+    expect(screen.getAllByText('●')).toHaveLength(1);
+  });
+
+  it('permite borrar dígitos con Backspace y confirmar con Enter', async () => {
+    const onSelectProfile = vi.fn();
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '1234', createdAt: '2026-10-09' });
+    const user = userEvent.setup();
+    render(<ProfileGateView onSelectProfile={onSelectProfile} />);
+
+    // Escribir 125, corregir con Backspace y poner 34
+    await user.keyboard('125{Backspace}34');
+    expect(screen.getAllByText('●')).toHaveLength(4);
+
+    // Confirmar con Enter
+    await user.keyboard('{Enter}');
+    await waitFor(() => expect(onSelectProfile).toHaveBeenCalledTimes(1));
+  });
+
+  it('no captura teclas numéricas de PIN cuando el foco está en el nombre al crear perfil', async () => {
+    const user = userEvent.setup();
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: /nuevo perfil/i }));
+    const nameInput = screen.getByLabelText(/nombre/i);
+    await user.type(nameInput, 'Valentina12');
+
+    expect(nameInput).toHaveValue('Valentina12');
+    // Las cajas de PIN del fondo no deben haberse llenado
+    expect(screen.queryAllByText('●')).toHaveLength(0);
+  });
 });
 

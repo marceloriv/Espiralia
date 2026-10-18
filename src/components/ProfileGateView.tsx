@@ -18,12 +18,16 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 }) => {
   const [profiles, setProfiles] = useState<Profile[]>(() => StorageService.getProfiles());
   const [isCreating, setIsCreating] = useState(false);
-  const [selectedProfileForPin, setSelectedProfileForPin] = useState<Profile | null>(null);
+  const [selectedProfileForPin, setSelectedProfileForPin] = useState<Profile | null>(() => {
+    const initialProfiles = StorageService.getProfiles();
+    return initialProfiles.find(isPinProtected) || null;
+  });
 
   // Form states
   const [name, setName] = useState('');
   const [pin, setPin] = useState('');
   const [pinInput, setPinInput] = useState('');
+  const [activeKey, setActiveKey] = useState<string | null>(null);
   const [pinError, setPinError] = useState(false);
   const [createPinError, setCreatePinError] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -54,21 +58,95 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
     }
   };
 
-  const handleVerifyPin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedProfileForPin || busy) return;
+  const executeVerify = React.useCallback(async () => {
+    const target = selectedProfileForPin || profiles.find(isPinProtected) || profiles[0] || null;
+    if (!target || busy) return;
     setBusy(true);
-    const ok = await verifyPin(selectedProfileForPin, pinInput).catch(() => false);
+    const ok = await verifyPin(target, pinInput).catch(() => false);
     setBusy(false);
 
     if (ok) {
-      StorageService.setActiveProfileId(selectedProfileForPin.id);
-      onSelectProfile(selectedProfileForPin);
+      StorageService.setActiveProfileId(target.id);
+      onSelectProfile(target);
     } else {
       setPinError(true);
       sileo.error({ title: 'PIN incorrecto' });
     }
+  }, [selectedProfileForPin, profiles, busy, pinInput, onSelectProfile]);
+
+  const handleVerifyPin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    await executeVerify();
   };
+
+  // Listener de teclado físico restringido a dígitos numéricos y feedback táctil
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const triggerActiveKey = (key: string) => {
+      setActiveKey(key);
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => setActiveKey(null), 160);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignorar si el usuario está en el modal de crear perfil o escribiendo en inputs externos
+      if (isCreating) {
+        return;
+      }
+
+      const activeEl = document.activeElement;
+      if (
+        (activeEl instanceof HTMLInputElement && activeEl.id !== 'verify-pin-input') ||
+        activeEl instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (e.key >= '0' && e.key <= '9') {
+        e.preventDefault();
+        triggerActiveKey(e.key);
+        setPinInput(prev => (prev.length < 6 ? prev + e.key : prev));
+        setPinError(false);
+      } else if (e.key === 'Backspace') {
+        e.preventDefault();
+        triggerActiveKey('Backspace');
+        setPinInput(prev => prev.slice(0, -1));
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        triggerActiveKey('Enter');
+        executeVerify();
+      } else if (e.key === 'Escape') {
+        setPinInput('');
+        setPinError(false);
+      } else if (
+        !['Tab', 'Shift', 'Control', 'Alt', 'Meta', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)
+      ) {
+        // Bloquear cualquier otra tecla alfabética o símbolo
+        if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.length === 1) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (
+        activeKey === e.key ||
+        (e.key === 'Backspace' && activeKey === 'Backspace') ||
+        (e.key === 'Enter' && activeKey === 'Enter')
+      ) {
+        setActiveKey(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      if (timer) clearTimeout(timer);
+    };
+  }, [executeVerify, activeKey, isCreating]);
 
   const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -214,7 +292,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
                 <button
                   type="button"
                   key={digit}
-                  className={styles.keypadBtn}
+                  className={`${styles.keypadBtn} ${activeKey === digit ? styles.keypadBtnPressed : ''}`}
                   onClick={() => {
                     if (pinInput.length < 6) {
                       setPinInput(prev => prev + digit);
@@ -227,7 +305,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
               ))}
               <button
                 type="button"
-                className={styles.keypadBtn}
+                className={`${styles.keypadBtn} ${activeKey === 'Backspace' ? styles.keypadBtnPressed : ''}`}
                 aria-label="Borrar dígito"
                 onClick={() => setPinInput(prev => prev.slice(0, -1))}
               >
@@ -235,7 +313,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
               </button>
               <button
                 type="button"
-                className={styles.keypadBtn}
+                className={`${styles.keypadBtn} ${activeKey === '0' ? styles.keypadBtnPressed : ''}`}
                 onClick={() => {
                   if (pinInput.length < 6) {
                     setPinInput(prev => prev + '0');
@@ -247,7 +325,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
               </button>
               <button
                 type="button"
-                className={`${styles.keypadBtn} ${styles.keypadSubmit}`}
+                className={`${styles.keypadBtn} ${styles.keypadSubmit} ${activeKey === 'Enter' ? styles.keypadSubmitPressed : ''}`}
                 aria-label="Confirmar PIN"
                 onClick={handleVerifyPin}
                 disabled={busy}
@@ -394,10 +472,11 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
                   id="verify-pin-input"
                   type="password"
                   inputMode="numeric"
+                  maxLength={6}
                   className={styles.formInput}
                   value={pinInput}
                   onChange={e => {
-                    setPinInput(e.target.value);
+                    setPinInput(e.target.value.replace(/\D/g, '').slice(0, 6));
                     setPinError(false);
                   }}
                   aria-invalid={pinError ? 'true' : 'false'}
