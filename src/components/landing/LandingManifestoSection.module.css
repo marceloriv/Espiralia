@@ -80,13 +80,15 @@
   letter-spacing: 0.04em;
 }
 
-/* Certificado Local-First */
+/* Certificado Local-First con orla grabada */
 .certificateCard {
-  background-color: #252320;
-  border: 1px solid rgba(230, 223, 216, 0.12);
+  background-color: #22201d;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  outline: 1px solid rgba(212, 175, 55, 0.18);
+  outline-offset: -8px;
   border-radius: var(--radius-lg, 12px);
-  padding: 2.5rem 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  padding: 2.75rem 2.25rem;
+  box-shadow: 1px 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   margin-bottom: 4rem;
   position: relative;
 }

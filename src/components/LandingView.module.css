@@ -13,7 +13,7 @@
   scroll-margin-top: calc(5rem + 1.5rem);
 }
 
-/* 1. Top App Bar */
+/* 1. Top App Bar con pespunte artesanal */
 .topBar {
   position: sticky;
   top: 0;
@@ -29,6 +29,24 @@
   justify-content: space-between;
 }
 
+.topBar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-primary, #8E1EA2) 0px,
+    var(--color-primary, #8E1EA2) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  opacity: 0.35;
+  pointer-events: none;
+}
+
 .brandGroup {
   display: flex;
   align-items: center;
@@ -36,18 +54,19 @@
 }
 
 .logoMonogram {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-md, 8px);
-  background-color: var(--color-primary, #8E1EA2);
-  color: var(--color-on-primary, #ffffff);
+  background: linear-gradient(135deg, #8E1EA2 0%, #6E0081 100%);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-primary, serif);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 2px 4px rgba(60, 10, 70, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(110, 0, 129, 0.6);
   transition: transform 0.2s ease;
 }
 
@@ -150,37 +169,52 @@
 }
 
 .primaryCtaBtn {
-  min-height: 40px;
-  padding: 8px 18px;
-  background-color: var(--color-primary, #8E1EA2);
-  border: 1px solid var(--color-primary, #8E1EA2);
+  min-height: 42px;
+  padding: 9px 20px;
+  background: linear-gradient(180deg, #8E1EA2 0%, #761088 100%);
+  border: 1px solid #5a006b;
   border-radius: var(--radius-md, 8px);
-  color: var(--color-on-primary, #ffffff);
+  color: #ffffff;
   font-family: var(--font-body, sans-serif);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 150ms ease, box-shadow 150ms ease;
+  transition: all 150ms ease;
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
   touch-action: manipulation;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 2px 5px rgba(60, 10, 70, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .primaryCtaBtn:hover {
-  background-color: var(--color-primary-active, #C654C3);
-  border-color: var(--color-primary-active, #C654C3);
+  background: linear-gradient(180deg, #9b28b0 0%, #821594 100%);
+  transform: translateY(-1px);
+  box-shadow: 1px 3px 7px rgba(60, 10, 70, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* 2. Hero Section Stitch */
+.primaryCtaBtn:active {
+  transform: translateY(1px);
+  box-shadow: inset 1px 1px 3px rgba(30, 0, 40, 0.4);
+}
+
+.primaryCtaBtn:focus-visible,
+.loginBtn:focus-visible,
+.heroSecondaryLink:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* 2. Hero Section con Retícula Japonesa y Guía de Margen */
 .heroSection {
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
   padding: var(--spacing-xxl) var(--spacing-lg) var(--spacing-xl);
   position: relative;
-  background-image: radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.65px, transparent 0.65px);
+  background-image: 
+    linear-gradient(to right, rgba(221, 214, 203, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(221, 214, 203, 0.3) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -188,17 +222,17 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
+  padding: 5px 14px;
   background-color: var(--color-surface-soft, #f5f0e8);
   border: 1px solid var(--color-hairline, #e6dfd8);
   border-radius: var(--radius-pill, 9999px);
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   color: var(--color-body-strong, #252523);
   font-weight: 500;
   margin-bottom: var(--spacing-lg);
-  box-shadow: 0 1px 4px rgba(26, 25, 23, 0.03);
+  box-shadow: 1px 1px 3px rgba(26, 25, 23, 0.04);
 }
 
 .heroInsigniaDot {
@@ -224,12 +258,15 @@
 
 .heroContent {
   text-align: left;
+  position: relative;
+  padding-left: 1.5rem;
+  border-left: 2px solid rgba(198, 69, 69, 0.28);
 }
 
 .heroHeading {
   font-family: var(--font-primary, serif);
   font-size: 2.5rem;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   color: var(--color-body-strong, #252523);
   margin-bottom: var(--spacing-md);
@@ -244,7 +281,9 @@
 .heroHeadingItalic {
   font-style: italic;
   font-weight: 400;
-  color: var(--color-primary, #8E1EA2);
+  color: var(--color-body-strong, #252523);
+  border-bottom: 2px solid rgba(142, 30, 162, 0.35);
+  padding-bottom: 2px;
 }
 
 .heroSubtitle {
