@@ -759,21 +759,21 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                 ) : (
                   upcomingEvents.map(event => {
                     const { dayName, dayNum } = getEventDayParts(event.date);
-                    const eventArea = areas.find(a => a.id === event.areaId);
-                    const areaColor = eventArea?.color || '#e8a55a';
-                    const areaName = eventArea?.name || event.category || 'General';
-                    const timeMeta = `${event.startTime ? `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''} hrs` : 'Todo el día'}${event.location ? ` · ${event.location}` : ''}`;
+                    const cat = event.category || 'personal';
+                    const categoryLabel = cat.charAt(0).toUpperCase() + cat.slice(1);
+                    const categoryColor = cat === 'urgente' ? 'var(--color-error)' : cat === 'trabajo' ? 'var(--color-accent-teal)' : '#e8a55a';
+                    const timeMeta = `${event.startTime ? `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''} hrs` : 'Todo el día'}${event.notes ? ` · ${event.notes}` : ''}`;
 
                     return (
-                      <div key={event.id} className={styles.eventItem} style={{ borderLeftColor: areaColor }}>
+                      <div key={event.id} className={styles.eventItem} style={{ borderLeftColor: categoryColor }}>
                         <div className={styles.eventDateCol}>
-                          <span className={styles.eventDayName} style={{ color: areaColor }}>{dayName}</span>
+                          <span className={styles.eventDayName} style={{ color: categoryColor }}>{dayName}</span>
                           <span className={styles.eventDayNum}>{dayNum}</span>
                         </div>
                         <div className={styles.eventInfo}>
                           <h4 className={styles.eventTitle}>{event.title}</h4>
                           <p className={styles.eventMeta}>{timeMeta}</p>
-                          <span className={styles.eventAreaTag}>{areaName}</span>
+                          <span className={styles.eventAreaTag}>{categoryLabel}</span>
                         </div>
                       </div>
                     );

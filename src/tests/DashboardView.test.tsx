@@ -109,7 +109,7 @@ describe('DashboardView', () => {
     await user.click(screen.getByRole('checkbox', { name: /completar pagar arriendo/i }));
 
     expect(StorageService.getTodos(profile.id).find(t => t.id === 'c1')?.completed).toBe(true);
-    expect(screen.getByText('Nada crítico pendiente')).toBeInTheDocument();
+    expect(screen.getByText(/todo al día • ninguna tarea crítica pendiente/i)).toBeInTheDocument();
     expect(within(screen.getByRole('list', { name: /resumen/i })).getByText('0 críticos')).toBeInTheDocument();
   });
 
@@ -127,8 +127,8 @@ describe('DashboardView', () => {
     renderDashboard();
 
     expect(within(screen.getByRole('list', { name: /planner/i })).getByText('Bloque de foco')).toBeInTheDocument();
-    expect(screen.getByText('No hay eventos para hoy')).toBeInTheDocument();
-    expect(screen.getByText('Nada crítico pendiente')).toBeInTheDocument();
+    expect(screen.getByText(/día despejado • sin eventos agendados para hoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/todo al día • ninguna tarea crítica pendiente/i)).toBeInTheDocument();
   });
 
   // Revisión final, Minor 1 re-graduado: el contador cuenta todos los bloques semanales, la lista muestra 4.
@@ -177,7 +177,7 @@ describe('DashboardView', () => {
     renderDashboard();
 
     const areasSection = screen.getByRole('region', { name: /áreas temáticas clave/i });
-    expect(within(areasSection).getByText('Estudios')).toBeInTheDocument();
+    expect(within(areasSection).getAllByText('Estudios')[0]).toBeInTheDocument();
     expect(within(areasSection).getByText('50%')).toBeInTheDocument();
     expect(within(areasSection).getByText('1 pendiente')).toBeInTheDocument();
   });

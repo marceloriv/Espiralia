@@ -274,7 +274,6 @@ describe('TodoView', () => {
         startTime: '10:00',
         endTime: '11:00',
         category: 'personal',
-        createdAt: '2026-10-17',
       });
 
       render(<TodoView profileId={profileId} />);

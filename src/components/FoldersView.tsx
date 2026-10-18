@@ -9,8 +9,6 @@ import {
   Printer,
   Shield,
   FileText,
-  CheckCircle,
-  Receipt,
   Car,
   Brain,
   GraduationCap,

@@ -83,6 +83,7 @@ describe('DashboardView critical CSS & Hero Content', () => {
       const criticalTodo = {
         id: 'todo-crit-1',
         profileId: mockProfile.id,
+        areaId: 'default',
         title: 'Redactar informe final de tesis',
         priority: 'alta' as const,
         status: 'pendiente' as const,
@@ -121,6 +122,7 @@ describe('DashboardView critical CSS & Hero Content', () => {
       StorageService.saveTodo({
         id: 'todo-crit-1',
         profileId: mockProfile.id,
+        areaId: 'default',
         title: 'Tarea Crítica Automática',
         priority: 'alta',
         status: 'pendiente',
@@ -130,6 +132,7 @@ describe('DashboardView critical CSS & Hero Content', () => {
       StorageService.saveTodo({
         id: 'todo-opt-2',
         profileId: mockProfile.id,
+        areaId: 'default',
         title: 'Estudio de Gramática Latina',
         priority: 'media',
         status: 'pendiente',

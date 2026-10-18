@@ -170,7 +170,7 @@
   width: 100%;
   height: 42px;
   padding: 0 14px;
-  font-family: var(--font-family-1, sans-serif);
+  font-family: var(--font-family-2, sans-serif);
   font-size: 0.92rem;
   background-color: var(--bg-card, #ffffff);
   border: 1px solid var(--color-hairline, #d4cdc3);

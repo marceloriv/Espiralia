@@ -11,7 +11,6 @@ import {
   Zap,
   Sparkles,
   CheckCircle,
-  Car,
   Coffee,
   Star,
   Pin,
@@ -23,11 +22,11 @@ import {
   ArrowRight,
   X,
 } from 'lucide-react';
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem, Note } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem, Note, DayOfWeek } from '../types';
 import { StorageService } from '../services/storage';
 import { sileo } from 'sileo';
 import { toLocalDateStr } from '../utils/localDate';
-import { CATEGORY_COLORS, FILTER_LABELS, categoryOf, occursOn } from './agenda/eventMapping';
+import { categoryOf } from './agenda/eventMapping';
 import { criticalTodos, dueLabel, greetingFor, isCritical, todayEventsSorted, computeAreaSummaries } from './dashboard/dashboardData';
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
@@ -104,7 +103,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   const todayStr = toLocalDateStr(now);
   const todayEvents = todayEventsSorted(events, todayStr);
-  const todayEventsTotal = events.filter(e => occursOn(e, todayStr)).length;
   const pendingCount = todos.filter(t => (t.status ? t.status !== 'completada' : !t.completed)).length;
   const criticalCount = todos.filter(isCritical).length;
   const critical = criticalTodos(todos);
@@ -126,8 +124,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const weekBlocks = allWeekBlocks.slice(0, 4);
   const areaSummaries = computeAreaSummaries(areas, todos);
 
-  const todayPlannerBlocks = planner.filter(b => b.date === todayStr);
-  const todayScheduleItems = [
+  const todayDayOfWeek = now.getDay() as DayOfWeek;
+  const todayPlannerBlocks = planner.filter(b => b.dayOfWeek === todayDayOfWeek);
+  interface ScheduleItem {
+    id: string;
+    time: string;
+    title: string;
+    source: 'event' | 'planner';
+    category?: string;
+    completed: boolean;
+  }
+  const todayScheduleItems: ScheduleItem[] = [
     ...todayEvents.map(e => ({
       id: e.id,
       time: e.startTime || '09:00',
@@ -138,7 +145,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     })),
     ...todayPlannerBlocks.map(b => ({
       id: b.id,
-      time: b.timeSlot || '12:00',
+      time: b.time || '12:00',
       title: b.title,
       source: 'planner' as const,
       category: undefined,
@@ -834,16 +841,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </button>
               </div>
             ) : (
-              <div className={styles.routineTimeline}>
+              <div className={styles.routineTimeline} role="list" aria-label="Eventos de hoy">
                 {todayScheduleItems.map((item) => (
-                  <div key={item.id} className={item.completed ? styles.routineSlotDone : styles.routineSlotPending}>
+                  <div key={item.id} role="listitem" className={item.completed ? styles.routineSlotDone : styles.routineSlotPending}>
                     <span className={styles.routineTime}>{item.time}</span>
                     <span className={item.completed ? styles.routineDotDone : styles.routineDotTeal} />
                     <span className={item.completed ? styles.routineTitleDone : styles.routineTitle}>
                       {item.title}
                     </span>
                     <span className={item.source === 'event' ? styles.routineStatusTag : styles.routineMutedTag}>
-                      {item.source === 'event' ? 'Evento' : 'Bloque'}
+                      {item.category ? item.category.charAt(0).toUpperCase() + item.category.slice(1) : (item.source === 'event' ? 'Evento' : 'Bloque')}
                     </span>
                   </div>
                 ))}
@@ -961,7 +968,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               const deadline = dueDates.length > 0 ? `Plazo: ${dueDates[0]}` : 'Sin fecha límite fijada';
               const actionLabel = `Ver área`;
               const displayTitle = s.area.name;
-              const displayDesc = s.area.description || 'Área activa de enfoque personal y seguimiento de proyectos.';
+              const displayDesc = 'Área activa de enfoque personal y seguimiento de proyectos.';
 
               return (
                 <div key={s.area.id} className={styles.areaFolderCard}>

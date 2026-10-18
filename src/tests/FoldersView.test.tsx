@@ -91,6 +91,7 @@ describe('FoldersView', () => {
         content: 'Exploración de la percepción y el espacio vivido.',
         tags: ['filosofía'],
         createdAt: '2026-10-17',
+        updatedAt: '2026-10-17',
       });
 
       StorageService.saveLink({
