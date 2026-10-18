@@ -52,4 +52,20 @@ describe('VaultModal', () => {
     expect(washiTape).toBeInTheDocument();
     expect(washiTape).toHaveAttribute('aria-hidden', 'true');
   });
+
+  it('cierra el modal cuando el usuario hace clic fuera de la hoja de papel rasgado (overlay)', async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+
+    const { container } = render(
+      <VaultModal isOpen={true} onClose={onClose} profile={mockProfile} />
+    );
+
+    const overlay = container.querySelector('div[class*="modalOverlay"]');
+    expect(overlay).toBeInTheDocument();
+    if (overlay) {
+      await user.click(overlay);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    }
+  });
 });
