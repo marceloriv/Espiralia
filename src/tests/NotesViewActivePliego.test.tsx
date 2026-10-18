@@ -179,4 +179,14 @@ describe('NotesView - Pliego Bujo Superior Activo', () => {
     // Color de ideas: #d97706 -> rgb(217, 119, 6)
     expect(ribbon).toHaveStyle({ backgroundColor: '#d97706' });
   });
+
+  it('el pliego superior abierto despliega el mecanismo de anillas metalicas del archivador y perforaciones de hoja', () => {
+    render(<NotesView profileId={profileId} />);
+
+    const mechanism = screen.getByTestId('binder-mechanism');
+    expect(mechanism).toBeInTheDocument();
+    expect(screen.getAllByTestId('binder-ring').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByTestId('binder-punch-hole').length).toBeGreaterThanOrEqual(2);
+  });
 });
+

@@ -411,6 +411,30 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
 
       {/* 2. Pliego Físico Abierto Papercraft Stitch */}
       <div className={styles.folioContainer}>
+        {/* Mecanismo de Anillas de Acero de Archivador de Palanca */}
+        <div className={styles.binderMechanism} data-testid="binder-mechanism" aria-hidden="true">
+          <div className={styles.binderSpinePlate} />
+          <div className={styles.binderRingGroup}>
+            <div className={styles.binderRing} data-testid="binder-ring">
+              <div className={styles.binderRingHighlight} />
+            </div>
+            <div className={styles.binderRing} data-testid="binder-ring">
+              <div className={styles.binderRingHighlight} />
+            </div>
+            <div className={styles.binderRing} data-testid="binder-ring">
+              <div className={styles.binderRingHighlight} />
+            </div>
+          </div>
+          <div className={styles.binderLeverHandle} />
+        </div>
+
+        {/* Perforaciones circulares en el margen de la hoja */}
+        <div className={styles.binderPunchMargin} aria-hidden="true">
+          <div className={styles.binderPunchHole} data-testid="binder-punch-hole" />
+          <div className={styles.binderPunchHole} data-testid="binder-punch-hole" />
+          <div className={styles.binderPunchHole} data-testid="binder-punch-hole" />
+        </div>
+
         {/* Cintas Washi en esquinas */}
         <div className={styles.washiTapeMagenta} aria-hidden="true" />
         <div className={styles.washiTapeSlate} aria-hidden="true" />
