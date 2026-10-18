@@ -66,8 +66,8 @@ describe('NotesView - Tomos y Carpetas', () => {
     const user = userEvent.setup();
     render(<NotesView profileId={profileId} />);
 
-    // Cambiar al Tomo 03: Conaset
-    const tomo3Btn = screen.getByRole('button', { name: /conaset & apuntes/i });
+    // Cambiar al Tomo 03: Estudio & Ensayos
+    const tomo3Btn = screen.getByRole('button', { name: /estudio & ensayos/i });
     await user.click(tomo3Btn);
 
     // Crear nueva nota
@@ -133,7 +133,7 @@ describe('NotesView - Tomos y Carpetas', () => {
     // Verificar los 3 archivadores de tomos
     const tomo1Btn = screen.getByRole('button', { name: /diario íntimo & terapia/i });
     const tomo2Btn = screen.getByRole('button', { name: /ideas & taller/i });
-    const tomo3Btn = screen.getByRole('button', { name: /conaset & apuntes/i });
+    const tomo3Btn = screen.getByRole('button', { name: /estudio & ensayos/i });
 
     // Cada archivador debe reflejar el estado activo
     expect(tomo1Btn).toHaveAttribute('aria-current', 'page');

@@ -60,11 +60,11 @@ export const TOMOS_CONFIG: TomoConfig[] = [
   {
     id: '03',
     folderId: 'tomo-03',
-    title: '03. Conaset & Apuntes B',
+    title: '03. Estudio & Ensayos',
     iconName: 'file',
-    tag: 'conaset',
-    defaultTitle: 'Bitácora de Estudio Conaset Clase B',
-    defaultContent: `§ 1. Puntos Críticos y Legislación de Tránsito\nRepaso de distancias de frenado, señalización vertical y prioridad en rotondas de tres pistas.\n\n[caja: 🚗 Simulacro Municipal | Meta: 35/35 | Repasar coeficiente de adherencia y velocidad máxima en zonas urbanas.]`,
+    tag: 'estudio',
+    defaultTitle: 'Bitácora de Estudio & Ensayos',
+    defaultContent: `§ 1. Objetivos de Aprendizaje & Notas de Lectura\nSíntesis de conceptos clave, referencias bibliográficas y reflexiones de estudio activo.\n\n[caja: 📖 Sesión de Estudio | Meta: Comprensión profunda | Tomar apuntes en tus propias palabras y sintetizar las ideas principales.]`,
   },
 ];
 
