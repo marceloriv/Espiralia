@@ -1,5 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { criticalTodos, dueLabel, greetingFor, isCritical, todayEventsSorted, computeAreaSummaries } from '../components/dashboard/dashboardData';
+import {
+  criticalTodos,
+  dueLabel,
+  greetingFor,
+  isCritical,
+  todayEventsSorted,
+  computeAreaSummaries,
+  computeHabitStreak,
+  computeNetFocusHours,
+  computeTaskPerformance,
+} from '../components/dashboard/dashboardData';
 import type { AgendaEvent, TodoItem } from '../types';
 
 describe('greetingFor', () => {
@@ -154,5 +164,80 @@ describe('computeAreaSummaries', () => {
     expect(summaries[2].totalTodos).toBe(0);
     expect(summaries[2].pendingTodos).toBe(0);
     expect(summaries[2].completionPercentage).toBe(0);
+  });
+});
+
+describe('Métricas de Serenidad — funciones de cálculo', () => {
+  it('computeHabitStreak calcula los días consecutivos con al menos un hábito cumplido', () => {
+    // 0=L, 1=M, 2=X, 3=J, 4=V, 5=S, 6=D
+    const habits = [
+      { id: 'h1', profileId: 'p', name: 'Lectura', daysCompleted: [true, true, false, false, false, false, false] },
+      { id: 'h2', profileId: 'p', name: 'Meditación', daysCompleted: [false, true, true, false, false, false, false] },
+    ];
+
+    // En día X (2): L (true en h1), M (true en h1 y h2), X (true en h2) -> racha 3
+    expect(computeHabitStreak(habits, 2)).toBe(3);
+
+    // En día J (3): no está hecho hoy, pero ayer (X) sí -> racha 3
+    expect(computeHabitStreak(habits, 3)).toBe(3);
+
+    // Si no hay hábitos: 0
+    expect(computeHabitStreak([], 2)).toBe(0);
+
+    // Si el día anterior no estuvo hecho: racha 0
+    const noStreakHabits = [
+      { id: 'h1', profileId: 'p', name: 'Lectura', daysCompleted: [true, false, false, false, false, false, false] },
+    ];
+    expect(computeHabitStreak(noStreakHabits, 3)).toBe(0);
+  });
+
+  it('computeNetFocusHours calcula horas de eventos y bloques del día', () => {
+    const events = [
+      ev({ id: 'e1', title: 'Reunión', startTime: '10:00', endTime: '11:30' }), // 1.5h
+      ev({ id: 'e2', title: 'Otro día', date: '2026-10-15', startTime: '08:00' }),
+    ];
+    const planner = [
+      {
+        id: 'b1',
+        profileId: 'p',
+        period: 'semanal' as const,
+        timeSlot: 'mañana' as const,
+        title: 'Bloque 1',
+        priority: 'alta' as const,
+        completed: false,
+        dayOfWeek: 3 as const, // Miércoles
+      },
+    ];
+
+    // Miércoles 2026-10-14 (dayOfWeek: 3)
+    const result = computeNetFocusHours(events, planner, '2026-10-14', 3);
+    // 1.5h (evento e1) + 1.5h (bloque b1) = 3.0h, count = 2
+    expect(result.hours).toBe(3);
+    expect(result.count).toBe(2);
+
+    // Día sin actividades
+    const emptyResult = computeNetFocusHours([], [], '2026-10-14', 3);
+    expect(emptyResult.hours).toBe(0);
+    expect(emptyResult.count).toBe(0);
+  });
+
+  it('computeTaskPerformance calcula el porcentaje global y conteo de tareas completadas', () => {
+    const todos = [
+      todo({ id: 't1', status: 'completada', completed: true }),
+      todo({ id: 't2', status: 'pendiente', completed: false }),
+      todo({ id: 't3', status: 'en_progreso', completed: false }),
+      todo({ id: 't4', status: 'completada', completed: true }),
+    ];
+
+    const result = computeTaskPerformance(todos);
+    expect(result.percentage).toBe(50);
+    expect(result.completed).toBe(2);
+    expect(result.total).toBe(4);
+
+    // Sin tareas
+    const empty = computeTaskPerformance([]);
+    expect(empty.percentage).toBe(100);
+    expect(empty.completed).toBe(0);
+    expect(empty.total).toBe(0);
   });
 });
