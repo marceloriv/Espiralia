@@ -3,7 +3,12 @@ import styles from './LandingHeroCard.module.css';
 
 export const LandingHeroCard: React.FC = () => {
   return (
-    <div className={styles.heroVignetteContainer}>
+    <div
+      className={styles.heroVignetteContainer}
+      data-interactive-stack="true"
+      tabIndex={0}
+      aria-label="Bodegón de papelería interactivo: Dossier, Biorritmo y Aforismo"
+    >
       {/* 1. Capa Fondo: Carpeta Dossier Manila de Expediente Analógico */}
       <div className={styles.dossierFolder} aria-label="Expediente analógico Santuario">
         <div className={styles.dossierTab}>

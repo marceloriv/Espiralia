@@ -4,6 +4,12 @@
   max-width: 460px;
   margin-left: auto;
   padding-top: 1.5rem;
+  outline: none;
+}
+
+.heroVignetteContainer:focus-visible {
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 0 0 2px var(--color-primary);
 }
 
 /* 1. Carpeta Dossier Manila (Fondo) */
@@ -17,12 +23,14 @@
   padding: 2.25rem 1.5rem 1.5rem;
   box-shadow: 0 4px 16px rgba(26, 25, 23, 0.06), 0 1px 3px rgba(26, 25, 23, 0.04);
   transform: rotate(-1.5deg);
-  transition: transform 0.25s ease-out;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
   z-index: 1;
 }
 
-.dossierFolder:hover {
-  transform: rotate(0deg);
+.heroVignetteContainer:hover .dossierFolder,
+.heroVignetteContainer:focus-within .dossierFolder {
+  transform: rotate(-2.8deg) translate(-6px, 2px);
+  box-shadow: 0 6px 20px rgba(26, 25, 23, 0.09);
 }
 
 .dossierTab {
@@ -89,7 +97,7 @@
   margin-left: 1rem;
   max-width: 380px;
   transform: rotate(1deg);
-  transition: transform 0.25s ease-out;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
   z-index: 2;
   clip-path: polygon(
     0% 6px, 4% 1px, 8% 6px, 12% 2px, 16% 6px, 20% 1px, 24% 6px, 28% 2px,
@@ -106,8 +114,10 @@
   );
 }
 
-.tornPaperSlip:hover {
-  transform: rotate(0deg);
+.heroVignetteContainer:hover .tornPaperSlip,
+.heroVignetteContainer:focus-within .tornPaperSlip {
+  transform: rotate(2.2deg) translate(8px, -4px);
+  box-shadow: 0 8px 22px rgba(26, 25, 23, 0.08);
 }
 
 /* Clip de latón metálico para el pliego */
@@ -216,15 +226,17 @@
   border: 1px solid #ebd88d;
   box-shadow: 0 6px 18px rgba(26, 25, 23, 0.1), 0 1px 3px rgba(26, 25, 23, 0.06);
   transform: rotate(2.5deg);
-  transition: transform 0.25s ease-out;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
   margin-top: -2rem;
   margin-left: 2rem;
   max-width: 360px;
   z-index: 3;
 }
 
-.stickyNote:hover {
-  transform: rotate(0deg);
+.heroVignetteContainer:hover .stickyNote,
+.heroVignetteContainer:focus-within .stickyNote {
+  transform: rotate(4.8deg) translate(14px, -8px);
+  box-shadow: 0 10px 24px rgba(26, 25, 23, 0.12);
 }
 
 /* Clip de latón dorado en la nota */
@@ -239,6 +251,12 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   opacity: 0.95;
   pointer-events: none;
+  transition: filter 0.3s ease;
+}
+
+.heroVignetteContainer:hover .brassClip,
+.heroVignetteContainer:hover .paperClipBrass {
+  filter: brightness(1.12);
 }
 
 /* Cinta washi tape magenta en esquina */
@@ -304,7 +322,13 @@
 
   .dossierFolder,
   .tornPaperSlip,
-  .stickyNote {
+  .stickyNote,
+  .heroVignetteContainer:hover .dossierFolder,
+  .heroVignetteContainer:focus-within .dossierFolder,
+  .heroVignetteContainer:hover .tornPaperSlip,
+  .heroVignetteContainer:focus-within .tornPaperSlip,
+  .heroVignetteContainer:hover .stickyNote,
+  .heroVignetteContainer:focus-within .stickyNote {
     transform: none !important;
     margin-left: 0;
     max-width: 100%;

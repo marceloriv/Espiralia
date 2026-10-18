@@ -26,4 +26,11 @@ describe('LandingHeroCard', () => {
     const dossier = screen.getByLabelText(/expediente analógico santuario/i);
     expect(dossier).toBeInTheDocument();
   });
+
+  it('contiene la estructura de bodegón analógico con capas táctiles interactivas', () => {
+    const { container } = render(<LandingHeroCard />);
+    const vignetteContainer = container.querySelector('[class*="heroVignetteContainer"]');
+    expect(vignetteContainer).toBeInTheDocument();
+    expect(vignetteContainer).toHaveAttribute('data-interactive-stack', 'true');
+  });
 });
