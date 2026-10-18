@@ -375,7 +375,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           <div className={styles.quickGrid}>
-            <button type="button" className={styles.quickBtn} onClick={() => onNavigate('todo')}>
+            <button type="button" className={`${styles.quickBtn} ${styles.quickBtnTask}`} onClick={() => onNavigate('todo')}>
               <div className={`${styles.quickIconBox} ${styles.quickIconTask}`} aria-hidden="true">
                 <ListPlus size={20} />
               </div>
@@ -385,7 +385,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
             </button>
 
-            <button type="button" className={styles.quickBtn} onClick={() => onNavigate('agenda')}>
+            <button type="button" className={`${styles.quickBtn} ${styles.quickBtnEvent}`} onClick={() => onNavigate('agenda')}>
               <div className={`${styles.quickIconBox} ${styles.quickIconEvent}`} aria-hidden="true">
                 <CalendarPlus size={20} />
               </div>
@@ -397,7 +397,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <button
               type="button"
-              className={styles.quickBtn}
+              className={`${styles.quickBtn} ${styles.quickBtnNote}`}
               onClick={() => (onOpenReflection ? onOpenReflection() : onNavigate('notes'))}
             >
               <div className={`${styles.quickIconBox} ${styles.quickIconNote}`} aria-hidden="true">
@@ -411,7 +411,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <button
               type="button"
-              className={styles.quickBtn}
+              className={`${styles.quickBtn} ${styles.quickBtnLink}`}
               onClick={() => (onOpenLink ? onOpenLink() : onNavigate('folders'))}
             >
               <div className={`${styles.quickIconBox} ${styles.quickIconLink}`} aria-hidden="true">

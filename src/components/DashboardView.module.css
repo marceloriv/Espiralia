@@ -433,6 +433,47 @@
   box-shadow: var(--shadow-sm);
 }
 
+.quickBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.quickBtnTask {
+  border-left: 3.5px solid var(--color-primary);
+}
+
+.quickBtnEvent {
+  border-left: 3.5px solid var(--color-accent-amber);
+}
+
+.quickBtnNote {
+  border-left: 3.5px solid var(--color-secondary);
+}
+
+.quickBtnLink {
+  border-left: 3.5px solid var(--color-tertiary);
+}
+
+.quickBtnTask:hover,
+.quickBtnTask:focus-visible {
+  border-left-color: var(--color-primary);
+}
+
+.quickBtnEvent:hover,
+.quickBtnEvent:focus-visible {
+  border-left-color: var(--color-accent-amber);
+}
+
+.quickBtnNote:hover,
+.quickBtnNote:focus-visible {
+  border-left-color: var(--color-secondary);
+}
+
+.quickBtnLink:hover,
+.quickBtnLink:focus-visible {
+  border-left-color: var(--color-tertiary);
+}
+
 .quickIconBox {
   display: inline-flex;
   flex-shrink: 0;
@@ -1467,9 +1508,28 @@
 }
 
 .rowTitleDone {
-  text-decoration: line-through;
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  text-decoration: none;
   color: var(--color-muted);
-  opacity: 0.7;
+  opacity: 0.75;
+  transition: color 200ms ease;
+}
+
+.rowTitleDone::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 52%;
+  height: 2px;
+  background: linear-gradient(90deg, #7B188E 0%, #9426A8 65%, #7B188E 100%);
+  transform: translateY(-50%) rotate(-0.35deg);
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: dashInkStrokeDraw 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .dueTag {
@@ -1762,10 +1822,29 @@
 }
 
 .routineTitleDone {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
   flex: 1;
   font-size: 12px;
   color: var(--color-muted);
-  text-decoration: line-through;
+  text-decoration: none;
+  opacity: 0.75;
+}
+
+.routineTitleDone::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 52%;
+  height: 1.5px;
+  background: linear-gradient(90deg, #7B188E 0%, #9426A8 65%, #7B188E 100%);
+  transform: translateY(-50%) rotate(-0.3deg);
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: dashInkStrokeDraw 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .routineTitle {
@@ -2506,5 +2585,28 @@
   .metricsSection {
     padding: 18px 16px;
     border-radius: var(--radius-lg);
+  }
+}
+
+/* =========================================================================
+   9. TRAZO DE TINTA CALIGRÁFICO (FOUNTAIN PEN INK STROKE)
+   ========================================================================= */
+
+@keyframes dashInkStrokeDraw {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0.6;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rowTitleDone::after,
+  .routineTitleDone::after {
+    animation: none;
+    clip-path: inset(0 0 0 0);
   }
 }
