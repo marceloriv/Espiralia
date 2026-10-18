@@ -28,6 +28,52 @@ En la sesión de terapia anterior revisamos que la necesidad de control absoluto
 § 2. Planes de Postulación 2026 (Diseño & Humanidades)
 Conversado con el orientador: mantener el ritmo de lectura pausada. La meta no es devorar manuales de admisión como si fueran un trámite punitivo, sino reconectar con la curiosidad genuina por la tipografía, la historia editorial y la arquitectura de la información. Mi valor personal no depende de una tabla de percentiles.`;
 
+export interface TomoConfig {
+  id: string;
+  folderId: string;
+  title: string;
+  iconName: 'book' | 'sparkles' | 'file';
+  tag: string;
+  defaultTitle: string;
+  defaultContent: string;
+}
+
+export const TOMOS_CONFIG: TomoConfig[] = [
+  {
+    id: '01',
+    folderId: 'tomo-01',
+    title: '01. Diario Íntimo & Terapia',
+    iconName: 'book',
+    tag: 'terapia',
+    defaultTitle: DEFAULT_THERAPEUTIC_TITLE,
+    defaultContent: DEFAULT_THERAPEUTIC_CONTENT,
+  },
+  {
+    id: '02',
+    folderId: 'tomo-02',
+    title: '02. Ideas & Taller',
+    iconName: 'sparkles',
+    tag: 'ideas',
+    defaultTitle: 'Bocetos, Ideas de Taller & Proyectos',
+    defaultContent: `§ 1. Lluvia de Ideas y Arquitectura de Información\nEspacio de prototipado rápido y diseño divergente. Captura conceptos antes de que se evaporen.\n\n[caja: 💡 Hito de Proyecto | En desarrollo | Definir flujo de interacción y estética de libreta analógica.]`,
+  },
+  {
+    id: '03',
+    folderId: 'tomo-03',
+    title: '03. Conaset & Apuntes B',
+    iconName: 'file',
+    tag: 'conaset',
+    defaultTitle: 'Bitácora de Estudio Conaset Clase B',
+    defaultContent: `§ 1. Puntos Críticos y Legislación de Tránsito\nRepaso de distancias de frenado, señalización vertical y prioridad en rotondas de tres pistas.\n\n[caja: 🚗 Simulacro Municipal | Meta: 35/35 | Repasar coeficiente de adherencia y velocidad máxima en zonas urbanas.]`,
+  },
+];
+
+export function getNoteTomo(note: Note): string {
+  if (note.folderId === 'tomo-02' || note.folderId === '02') return '02';
+  if (note.folderId === 'tomo-03' || note.folderId === '03') return '03';
+  return '01'; // Por defecto pertenece a Tomo 01 (Diario & Terapia)
+}
+
 export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
   const profileId = profile?.id ?? propProfileId ?? '';
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profileId));
@@ -75,10 +121,16 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
     tags: string[];
   }) => {
     const now = new Date().toISOString();
+    const currentTomo = TOMOS_CONFIG.find((t) => t.id === activeTomo) ?? TOMOS_CONFIG[0];
+    const targetFolderId = noteData.folderId || currentTomo.folderId;
+    const targetTags = noteData.tags.length > 0 ? noteData.tags : [currentTomo.tag];
+
     if (editingNote) {
       const updated: Note = {
         ...editingNote,
         ...noteData,
+        folderId: noteData.folderId || editingNote.folderId || targetFolderId,
+        tags: targetTags,
         updatedAt: now,
       };
       StorageService.saveNote(updated);
@@ -92,6 +144,8 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         id: `note-${Date.now()}`,
         profileId,
         ...noteData,
+        folderId: targetFolderId,
+        tags: targetTags,
         createdAt: now,
         updatedAt: now,
       };
@@ -121,13 +175,19 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
     }
   };
 
+  const currentTomoConfig = useMemo(() => {
+    return TOMOS_CONFIG.find((t) => t.id === activeTomo) ?? TOMOS_CONFIG[0];
+  }, [activeTomo]);
+
   const activeNote = useMemo(() => {
     if (!activeNoteId) return null;
-    return notes.find((n) => n.id === activeNoteId) ?? null;
-  }, [notes, activeNoteId]);
+    const found = notes.find((n) => n.id === activeNoteId);
+    if (found && getNoteTomo(found) === activeTomo) return found;
+    return null;
+  }, [notes, activeNoteId, activeTomo]);
 
-  const displayTitle = activeNote ? activeNote.title : DEFAULT_THERAPEUTIC_TITLE;
-  const displayContent = activeNote ? activeNote.content : DEFAULT_THERAPEUTIC_CONTENT;
+  const displayTitle = activeNote ? activeNote.title : currentTomoConfig.defaultTitle;
+  const displayContent = activeNote ? activeNote.content : currentTomoConfig.defaultContent;
 
   const bujoBlocks = useMemo(() => {
     return parseBujoContent(displayContent, displayTitle);
@@ -203,13 +263,15 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         // Ignorar
       }
     } else {
+      const currentTomo = TOMOS_CONFIG.find((t) => t.id === activeTomo) ?? TOMOS_CONFIG[0];
       const newNote: Note = {
         id: `note-${Date.now()}`,
         profileId,
         title: titleToSave,
         content: contentToSave,
-        isReflection: true,
-        tags: ['reflexion'],
+        folderId: currentTomo.folderId,
+        isReflection: activeTomo === '01',
+        tags: [currentTomo.tag],
         createdAt: now,
         updatedAt: now,
       };
@@ -233,8 +295,22 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
     return map;
   }, [folders]);
 
+  const tomoNoteCounts = useMemo(() => {
+    const counts: Record<string, number> = { '01': 0, '02': 0, '03': 0 };
+    for (const note of notes) {
+      const tomo = getNoteTomo(note);
+      if (counts[tomo] !== undefined) {
+        counts[tomo]++;
+      }
+    }
+    return counts;
+  }, [notes]);
+
   const filteredNotes = useMemo(() => {
     return notes.filter((n) => {
+      // Tomo filter (aislamiento estricto por carpeta sin pérdida de datos)
+      if (getNoteTomo(n) !== activeTomo) return false;
+
       // Tab filter
       if (activeTab === 'reflections' && !n.isReflection) return false;
       if (activeTab === 'quick' && n.isReflection) return false;
@@ -250,7 +326,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
 
       return true;
     });
-  }, [notes, activeTab, searchQuery]);
+  }, [notes, activeTomo, activeTab, searchQuery]);
 
   return (
     <div className={styles.notesContainer}>
