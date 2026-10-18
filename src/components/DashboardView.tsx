@@ -22,13 +22,14 @@ import {
   Edit,
   ArrowRight,
 } from 'lucide-react';
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem } from '../types';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
 import { CATEGORY_COLORS, FILTER_LABELS, categoryOf, occursOn } from './agenda/eventMapping';
 import { criticalTodos, dueLabel, greetingFor, isCritical, todayEventsSorted, computeAreaSummaries } from './dashboard/dashboardData';
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
+import { HabitModal } from './habits/HabitModal';
 import styles from './DashboardView.module.css';
 
 interface DashboardViewProps {
@@ -37,6 +38,15 @@ interface DashboardViewProps {
   onOpenReflection?: () => void;
   onOpenLink?: () => void;
 }
+
+const getHabitIcon = (category?: string) => {
+  const cat = (category || '').toLowerCase();
+  if (cat.includes('estudio') || cat.includes('lectura')) return BookOpen;
+  if (cat.includes('salud') || cat.includes('bienestar')) return Heart;
+  if (cat.includes('pausa') || cat.includes('descanso')) return Coffee;
+  if (cat.includes('enfoque') || cat.includes('pomodoro')) return Sparkles;
+  return CheckCircle;
+};
 
 const longDateFormatter = new Intl.DateTimeFormat('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
 
@@ -57,6 +67,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [planner, setPlanner] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profile.id));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profile.id));
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profile.id));
+  const [habits, setHabits] = useState<HabitTrackerItem[]>(() => StorageService.getHabits(profile.id));
+  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<HabitTrackerItem | null>(null);
   const [now] = useState(() => new Date());
   const [energyState, setEnergyState] = useState<'calma' | 'plena' | 'neutra' | 'cansada'>('calma');
   const [mainFocusChecked, setMainFocusChecked] = useState(false);
@@ -70,6 +83,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setPlanner(StorageService.getPlanner(profile.id));
     setTodos(StorageService.getTodos(profile.id));
     setAreas(StorageService.getAreas(profile.id));
+    setHabits(StorageService.getHabits(profile.id));
   }, [profile.id]);
 
   useEffect(() => {
@@ -98,6 +112,51 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const handleToggleTodo = (id: string) => {
     StorageService.toggleTodo(profile.id, id);
     loadData();
+  };
+
+  const totalHabitSlots = habits.length * 7;
+  const completedHabitSlots = habits.reduce((acc, h) => acc + (h.daysCompleted ? h.daysCompleted.filter(Boolean).length : 0), 0);
+  const habitsComplianceRate = totalHabitSlots > 0 ? Math.round((completedHabitSlots / totalHabitSlots) * 100) : 0;
+
+  const handleToggleHabitDay = (habitId: string, dayIndex: number) => {
+    StorageService.toggleHabitDay(profile.id, habitId, dayIndex);
+    setHabits(StorageService.getHabits(profile.id));
+  };
+
+  const handleOpenAddHabit = () => {
+    setEditingHabit(null);
+    setIsHabitModalOpen(true);
+  };
+
+  const handleOpenEditHabit = (h: HabitTrackerItem) => {
+    setEditingHabit(h);
+    setIsHabitModalOpen(true);
+  };
+
+  const handleSaveHabit = (data: { id?: string; name: string; category?: string }) => {
+    if (data.id) {
+      const existing = habits.find(h => h.id === data.id);
+      if (existing) {
+        StorageService.saveHabit({ ...existing, name: data.name, category: data.category });
+      }
+    } else {
+      const newHabit: HabitTrackerItem = {
+        id: `habit-${Date.now()}`,
+        profileId: profile.id,
+        name: data.name,
+        category: data.category || 'General',
+        daysCompleted: [false, false, false, false, false, false, false],
+      };
+      StorageService.saveHabit(newHabit);
+    }
+    setHabits(StorageService.getHabits(profile.id));
+    setIsHabitModalOpen(false);
+  };
+
+  const handleDeleteHabit = (habitId: string) => {
+    StorageService.deleteHabit(profile.id, habitId);
+    setHabits(StorageService.getHabits(profile.id));
+    setIsHabitModalOpen(false);
   };
 
   return (
@@ -385,79 +444,75 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <CheckCircle size={16} aria-hidden="true" />
               <span>Hábitos Semanales</span>
             </span>
-            <div className={styles.habitDaysHead}>
-              <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <button
+                type="button"
+                className={styles.addHabitBtn}
+                onClick={handleOpenAddHabit}
+                aria-label="Añadir nuevo hábito"
+              >
+                + Hábito
+              </button>
+              <div className={styles.habitDaysHead}>
+                <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+              </div>
             </div>
           </div>
 
           <div className={styles.habitRowsList}>
-            <div className={styles.habitRowItem}>
-              <div className={styles.habitInfo}>
-                <Car size={15} className={styles.habitIcon} aria-hidden="true" />
-                <span className={styles.habitTitle}>Test CONASET</span>
+            {habits.length === 0 ? (
+              <div style={{ padding: '16px 0', textAlign: 'center', color: 'var(--color-muted)' }}>
+                <p style={{ margin: '0 0 8px 0', fontSize: 'var(--text-body-sm)' }}>Sin hábitos registrados aún</p>
+                <button
+                  type="button"
+                  className={styles.addHabitBtn}
+                  onClick={handleOpenAddHabit}
+                  aria-label="Añadir primer hábito"
+                >
+                  + Añadir primer hábito
+                </button>
               </div>
-              <div className={styles.habitPillsRow}>
-                <span className={styles.habitPillChecked}>✓</span>
-                <span className={styles.habitPillChecked}>✓</span>
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-              </div>
-            </div>
-
-            <div className={styles.habitRowItem}>
-              <div className={styles.habitInfo}>
-                <Coffee size={15} className={styles.habitIcon} aria-hidden="true" />
-                <span className={styles.habitTitle}>Pausa sin móvil</span>
-              </div>
-              <div className={styles.habitPillsRow}>
-                <span className={styles.habitPillChecked}>✓</span>
-                <span className={styles.habitPillChecked}>✓</span>
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-              </div>
-            </div>
-
-            <div className={styles.habitRowItem}>
-              <div className={styles.habitInfo}>
-                <Heart size={15} className={styles.habitIcon} aria-hidden="true" />
-                <span className={styles.habitTitle}>Registro terapia</span>
-              </div>
-              <div className={styles.habitPillsRow}>
-                <span className={styles.habitPillChecked}>✓</span>
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-              </div>
-            </div>
-
-            <div className={styles.habitRowItem}>
-              <div className={styles.habitInfo}>
-                <Clock size={15} className={styles.habitIcon} aria-hidden="true" />
-                <span className={styles.habitTitle}>Dormir antes 23h</span>
-              </div>
-              <div className={styles.habitPillsRow}>
-                <span className={styles.habitPillChecked}>✓</span>
-                <span className={styles.habitPillChecked}>✓</span>
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-                <span className={styles.habitPillEmpty} />
-              </div>
-            </div>
+            ) : (
+              habits.map((h) => {
+                const HabitIcon = getHabitIcon(h.category);
+                return (
+                  <div key={h.id} className={styles.habitRowItem}>
+                    <div className={styles.habitInfo}>
+                      <button
+                        type="button"
+                        className={styles.habitEditBtn}
+                        onClick={() => handleOpenEditHabit(h)}
+                        title="Editar hábito"
+                        aria-label={`Editar hábito ${h.name}`}
+                      >
+                        <HabitIcon size={15} className={styles.habitIcon} aria-hidden="true" />
+                        <span className={styles.habitTitle}>{h.name}</span>
+                      </button>
+                    </div>
+                    <div className={styles.habitPillsRow}>
+                      {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((dayLetter, dayIdx) => {
+                        const isCompleted = Boolean(h.daysCompleted?.[dayIdx]);
+                        return (
+                          <button
+                            key={dayIdx}
+                            type="button"
+                            className={isCompleted ? styles.habitPillChecked : styles.habitPillEmpty}
+                            onClick={() => handleToggleHabitDay(h.id, dayIdx)}
+                            aria-label={`Marcar ${dayLetter} para ${h.name}`}
+                          >
+                            {isCompleted ? '✓' : ''}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
 
           <div className={styles.bentoCardFooter}>
-            <span>Cumplimiento: 85%</span>
+            <span>Cumplimiento: {habitsComplianceRate}%</span>
             <span className={styles.statusSuccess}>Semana #{currentWeekNumber} en curso</span>
           </div>
         </div>
@@ -1021,6 +1076,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <CategoryDistributionChart todos={todos} planner={planner} />
         </div>
       </section>
+
+      <HabitModal
+        isOpen={isHabitModalOpen}
+        habit={editingHabit}
+        onClose={() => setIsHabitModalOpen(false)}
+        onSave={handleSaveHabit}
+        onDelete={handleDeleteHabit}
+      />
     </div>
   );
 };
