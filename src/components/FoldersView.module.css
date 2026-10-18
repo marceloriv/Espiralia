@@ -435,13 +435,19 @@
 
 /* Heavy Cartulina Folder Body */
 .folderBinderBody {
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: #F4EDE2;
+  /* Textura de cartulina manila pesada con sutiles marcas de prensado */
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(142, 30, 162, 0.02) 31px, rgba(142, 30, 162, 0.02) 32px),
+    radial-gradient(#dfd5c5 1.1px, transparent 1.1px);
+  background-size: 100% 32px, 18px 18px;
+  border: 1px solid #dfd4c4;
   border-radius: 0 1rem 1rem 1rem;
-  padding: 1.75rem;
+  padding: 2.25rem 1.75rem 1.75rem;
   position: relative;
   overflow: hidden;
   box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
     0 1px 2px rgba(20, 20, 19, 0.05),
     0 8px 16px -4px rgba(20, 20, 19, 0.08),
     0 20px 32px -8px rgba(20, 20, 19, 0.07);
@@ -449,8 +455,73 @@
 
 @media (min-width: 640px) {
   .folderBinderBody {
-    padding: 2rem;
+    padding: 2.5rem 2rem 2rem;
   }
+}
+
+/* Broche Fastener de Latón de Sujeción de Expediente */
+.brassProngFastener {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 18px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.fastenerBasePlate {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(180deg, #d4b878 0%, #ecd79c 50%, #ad9151 100%);
+  border: 1px solid #7c6431;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.fastenerProngLeft,
+.fastenerProngRight {
+  position: absolute;
+  top: -2px;
+  width: 22px;
+  height: 5px;
+  background: linear-gradient(90deg, #876d37 0%, #cfb370 50%, #876d37 100%);
+  border: 1px solid #665022;
+  border-radius: 1px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.fastenerProngLeft {
+  left: 18px;
+}
+
+.fastenerProngRight {
+  right: 18px;
+}
+
+.fastenerCompressorBar {
+  position: absolute;
+  top: 2px;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  background: #fdf5d6;
+  opacity: 0.85;
+  border-radius: 1px;
+}
+
+/* Línea de hendidura de pliegue prensado de la carpeta manila */
+.manilaCreaseLine {
+  position: absolute;
+  top: 26px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(180deg, rgba(160, 140, 115, 0.25) 0%, rgba(255, 255, 255, 0.5) 100%);
+  pointer-events: none;
+  z-index: 4;
 }
 
 .watermarkNum {
@@ -528,16 +599,19 @@
   font-family: var(--font-code, monospace);
   font-size: 0.625rem;
   font-weight: 700;
-  padding: 0.15rem 0.5rem;
-  border-radius: 0.25rem;
-  border: 1.5px solid #b93c3c;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  border: 1.5px dashed #b93c3c;
   color: #b93c3c;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  transform: rotate(-3deg);
-  mix-blend-mode: multiply;
-  opacity: 0.9;
-  display: inline-block;
+  transform: rotate(-2.5deg);
+  background: rgba(185, 60, 60, 0.06);
+  box-shadow: 0 0 0 1px rgba(185, 60, 60, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
 }
 
 .folderDesc {
@@ -650,6 +724,20 @@
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
   color: var(--color-ink-muted, #6c6a64);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.catalogRodHole {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #231f1c;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 0 1.5px rgba(220, 210, 195, 0.5);
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .docTitleBox {

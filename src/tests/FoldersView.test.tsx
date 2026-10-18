@@ -57,6 +57,18 @@ describe('FoldersView', () => {
     expect(screen.getByText(/almacenamiento local \(indexeddb\)/i)).toBeInTheDocument();
   });
 
+  it('incluye broche fastener de latón y hendidura de pliegue de expediente manila', () => {
+    const { container } = render(<FoldersView profileId="p-test" />);
+
+    const fastener = container.querySelector('[class*="brassProngFastener"]');
+    expect(fastener).toBeInTheDocument();
+    expect(fastener).toHaveAttribute('aria-hidden', 'true');
+
+    const creaseLine = container.querySelector('[class*="manilaCreaseLine"]');
+    expect(creaseLine).toBeInTheDocument();
+    expect(creaseLine).toHaveAttribute('aria-hidden', 'true');
+  });
+
   it('renderiza las carpetas del fichero con estructura de carpeta plana moderna (solapa trasera, hojas y bolsillo frontal)', () => {
     render(<FoldersView profileId="p-test-flat" />);
 

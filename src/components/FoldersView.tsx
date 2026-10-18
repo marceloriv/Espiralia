@@ -502,6 +502,18 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
 
             {/* Main File Folder Body (Heavy Cartulina Paper) */}
             <div className={styles.folderBinderBody}>
+              {/* Broche Fastener de Latón de Sujeción de Expediente */}
+              <div className={styles.brassProngFastener} aria-hidden="true">
+                <div className={styles.fastenerBasePlate}>
+                  <div className={styles.fastenerProngLeft} />
+                  <div className={styles.fastenerProngRight} />
+                  <div className={styles.fastenerCompressorBar} />
+                </div>
+              </div>
+
+              {/* Hendidura de pliegue prensado en cartulina manila */}
+              <div className={styles.manilaCreaseLine} aria-hidden="true" />
+
               {/* Monumental Watermark Number */}
               <div className={styles.watermarkNum} aria-hidden="true">
                 {activeFolder?.num || '01'}
@@ -618,7 +630,10 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                       ) : (
                         folderItems.map((item) => (
                           <tr key={item.id} className={styles.ledgerRow}>
-                            <td className={`${styles.ledgerTd} ${styles.docCode}`}>{item.code}</td>
+                            <td className={`${styles.ledgerTd} ${styles.docCode}`}>
+                              <span className={styles.catalogRodHole} aria-hidden="true" />
+                              <span>{item.code}</span>
+                            </td>
                             <td className={styles.ledgerTd}>
                               <div className={styles.docTitleBox}>
                                 {item.type === 'note' ? (
