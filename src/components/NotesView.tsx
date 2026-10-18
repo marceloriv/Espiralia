@@ -348,32 +348,46 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
           <h2 className={styles.visuallyHidden}>Notas &amp; Reflexiones</h2>
         </div>
 
-        {/* Archival Index Folders / Solapas Superiores */}
-        <div className={styles.tomoTabsRow}>
-          <button
-            type="button"
-            className={`${styles.tomoTab} ${activeTomo === '01' ? styles.tomoTabActive : ''}`}
-            onClick={() => setActiveTomo('01')}
-          >
-            <span className={styles.tomoDot} />
-            <span>01. Diario Íntimo &amp; Terapia</span>
-          </button>
-          <button
-            type="button"
-            className={`${styles.tomoTab} ${activeTomo === '02' ? styles.tomoTabActive : ''}`}
-            onClick={() => setActiveTomo('02')}
-          >
-            <Sparkles size={14} aria-hidden="true" />
-            <span>02. Ideas &amp; Taller</span>
-          </button>
-          <button
-            type="button"
-            className={`${styles.tomoTab} ${activeTomo === '03' ? styles.tomoTabActive : ''}`}
-            onClick={() => setActiveTomo('03')}
-          >
-            <FileText size={14} aria-hidden="true" />
-            <span>03. Conaset &amp; Apuntes B</span>
-          </button>
+        {/* Archival Index Folders / Solapas Superiores Planas Estilo Windows */}
+        <div className={styles.flatFoldersBar} role="tablist" aria-label="Carpetas de Tomos">
+          {TOMOS_CONFIG.map((tomo) => {
+            const isActive = activeTomo === tomo.id;
+            const tomoStyleMap: Record<string, string> = {
+              '01': styles.tomoDiario,
+              '02': styles.tomoIdeas,
+              '03': styles.tomoConaset,
+            };
+            const tomoStyleClass = tomoStyleMap[tomo.id] ?? styles.tomoDiario;
+            const count = tomoNoteCounts[tomo.id] ?? 0;
+
+            return (
+              <button
+                key={tomo.id}
+                type="button"
+                aria-current={isActive ? 'page' : 'false'}
+                className={`${styles.flatFolderTab} ${tomoStyleClass} ${isActive ? styles.flatFolderActive : ''}`}
+                onClick={() => setActiveTomo(tomo.id)}
+              >
+                <div className={styles.flatBackFlap} aria-hidden="true" />
+                <div className={styles.flatSheets} data-testid="flat-sheets" aria-hidden="true">
+                  <div className={`${styles.sheetFlatLine} ${styles.sheetFlatAccent}`} />
+                  <div className={styles.sheetFlatLine} />
+                </div>
+                <div className={styles.flatFrontFlap}>
+                  <div className={styles.flatFolderTitle}>
+                    {tomo.iconName === 'book' && <BookOpen size={14} aria-hidden="true" />}
+                    {tomo.iconName === 'sparkles' && <Sparkles size={14} aria-hidden="true" />}
+                    {tomo.iconName === 'file' && <FileText size={14} aria-hidden="true" />}
+                    <span>{tomo.title}</span>
+                  </div>
+                  <span className={styles.flatCountPill} data-testid={`count-${tomo.folderId}`}>
+                    {count}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+
           <button
             type="button"
             className={styles.btnAddNoteHeader}

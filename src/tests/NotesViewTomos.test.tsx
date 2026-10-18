@@ -95,4 +95,54 @@ describe('NotesView - Tomos y Carpetas', () => {
     await user.click(tomo1Btn);
     expect(screen.queryByText('Prioridad en Rotondas y Frenado')).not.toBeInTheDocument();
   });
+
+  it('renderiza la estructura visual de carpetas planas modernas con solapa, hojas decorativas y badge de conteo', async () => {
+    // Guardar 2 notas en Tomo 01, 1 en Tomo 02, 0 en Tomo 03
+    StorageService.saveNote({
+      id: 'n-1',
+      profileId,
+      folderId: 'tomo-01',
+      title: 'Nota 1',
+      content: 'Contenido 1',
+      createdAt: '2026-10-17T10:00:00.000Z',
+    });
+    StorageService.saveNote({
+      id: 'n-2',
+      profileId,
+      folderId: 'tomo-01',
+      title: 'Nota 2',
+      content: 'Contenido 2',
+      createdAt: '2026-10-17T10:00:00.000Z',
+    });
+    StorageService.saveNote({
+      id: 'n-3',
+      profileId,
+      folderId: 'tomo-02',
+      title: 'Nota 3',
+      content: 'Contenido 3',
+      createdAt: '2026-10-17T10:00:00.000Z',
+    });
+
+    render(<NotesView profileId={profileId} />);
+
+    // Verificar las 3 carpetas de tomos
+    const tomo1Btn = screen.getByRole('button', { name: /diario íntimo & terapia/i });
+    const tomo2Btn = screen.getByRole('button', { name: /ideas & taller/i });
+    const tomo3Btn = screen.getByRole('button', { name: /conaset & apuntes/i });
+
+    // Cada botón debe reflejar el estado activo
+    expect(tomo1Btn).toHaveAttribute('aria-current', 'page');
+    expect(tomo2Btn).toHaveAttribute('aria-current', 'false');
+    expect(tomo3Btn).toHaveAttribute('aria-current', 'false');
+
+    // Debe contener las hojas decorativas con aria-hidden="true"
+    const sheets = screen.getAllByTestId('flat-sheets');
+    expect(sheets.length).toBe(3);
+
+    // Contadores de notas en cada carpeta (2, 1, 0)
+    expect(screen.getByTestId('count-tomo-01')).toHaveTextContent('2');
+    expect(screen.getByTestId('count-tomo-02')).toHaveTextContent('1');
+    expect(screen.getByTestId('count-tomo-03')).toHaveTextContent('0');
+  });
 });
+

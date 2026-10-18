@@ -89,44 +89,229 @@
   border: 0;
 }
 
+.flatFoldersBar,
 .tomoTabsRow {
   display: flex;
   align-items: flex-end;
-  gap: 8px;
+  gap: 12px;
   overflow-x: auto;
-  padding-bottom: 2px;
+  padding: 8px 4px 0;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 10;
 }
 
+/* Contenedor plano de la carpeta */
+.flatFolderTab,
 .tomoTab {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 10px 10px 0 0;
-  border: 1px solid var(--color-hairline);
-  border-bottom: none;
-  background-color: rgba(245, 240, 232, 0.6);
-  color: var(--color-muted);
-  font-family: var(--font-family-2);
-  font-size: var(--text-body-sm);
-  font-weight: 600;
+  position: relative;
+  width: 210px;
+  height: 52px;
+  background: transparent;
+  border: 0;
+  padding: 0;
   cursor: pointer;
-  transition: all 0.15s ease;
-  min-height: 42px;
+  user-select: none;
+  transition: all 0.18s ease-out;
+  flex-shrink: 0;
 }
 
+.flatFolderTab:hover,
 .tomoTab:hover {
-  background-color: var(--color-surface-card);
-  color: var(--color-ink);
+  transform: translateY(-2px);
 }
 
-.tomoTabActive {
-  background-color: #FAF7F0;
-  color: var(--color-ink);
-  border-top: 3px solid var(--color-primary);
-  border-left-color: var(--color-primary);
-  border-right-color: var(--color-primary);
-  box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.04);
+.flatFolderTab:focus-visible,
+.tomoTab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.flatFolderTab.flatFolderActive,
+.flatFolderTab.tomoTabActive,
+.tomoTab.tomoTabActive,
+.flatFolderTab[aria-current="page"] {
+  height: 58px;
+  z-index: 20;
+  transform: translateY(-2px);
+}
+
+/* 1. Tapa Trasera Plana con Solapa Superior (Back Flap) */
+.flatBackFlap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  border-radius: 8px 12px 0 0;
+  clip-path: polygon(0% 0%, 45% 0%, 54% 22%, 100% 22%, 100% 100%, 0% 100%);
+  border: 1px solid #D19C28;
+  border-bottom: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  pointer-events: none;
+}
+
+/* 2. Hojas de Papel Blancas Planas asomando (Sheets) */
+.flatSheets {
+  position: absolute;
+  top: 6px;
+  left: 14px;
+  right: 14px;
+  height: 28px;
+  background: #FFFFFF;
+  border-radius: 4px 4px 0 0;
+  border: 1px solid #E5DFD5;
+  border-bottom: none;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 8px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  pointer-events: none;
+}
+
+.flatFolderTab.flatFolderActive .flatSheets,
+.flatFolderTab[aria-current="page"] .flatSheets {
+  transform: translateY(-6px);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.06);
+}
+
+.sheetFlatLine {
+  height: 2px;
+  background: #E2DBD0;
+  border-radius: 1px;
+  width: 85%;
+}
+
+.sheetFlatAccent {
+  background: var(--color-primary, #8E1EA2);
+  width: 60%;
+}
+
+/* 3. Tapa Delantera Plana (Front Flap) */
+.flatFrontFlap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 38px;
+  border-radius: 6px 6px 0 0;
+  border: 1px solid #D19C28;
+  border-bottom: none;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.flatFolderTab.flatFolderActive .flatFrontFlap,
+.flatFolderTab[aria-current="page"] .flatFrontFlap {
+  height: 40px;
+}
+
+.flatFolderTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-family-2);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #382405;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flatCountPill {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.12);
+  color: #382405;
+  padding: 1px 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+/* --- Variaciones Temáticas de Tomos --- */
+/* Tomo 01: Dorado Ámbar (Diario & Terapia) */
+.tomoDiario .flatBackFlap {
+  background: #E5B23E;
+  border-color: #D19C28;
+}
+.tomoDiario.flatFolderActive .flatBackFlap,
+.tomoDiario[aria-current="page"] .flatBackFlap {
+  background: #F3C34B;
+  border-color: #DDA622;
+}
+.tomoDiario .flatFrontFlap {
+  background: #F5C64C;
+  border-color: #D19C28;
+}
+.tomoDiario.flatFolderActive .flatFrontFlap,
+.tomoDiario[aria-current="page"] .flatFrontFlap {
+  background: #FFD45E;
+  border-color: #DDA622;
+}
+.tomoDiario .flatFolderTitle,
+.tomoDiario .flatCountPill {
+  color: #382405;
+}
+
+/* Tomo 02: Mostaza / Ámbar Cálido (Ideas & Taller) */
+.tomoIdeas .flatBackFlap {
+  background: #D99B30;
+  border-color: #BF821B;
+}
+.tomoIdeas.flatFolderActive .flatBackFlap,
+.tomoIdeas[aria-current="page"] .flatBackFlap {
+  background: #EAA835;
+  border-color: #CF8F1E;
+}
+.tomoIdeas .flatFrontFlap {
+  background: #E5A536;
+  border-color: #BF821B;
+}
+.tomoIdeas.flatFolderActive .flatFrontFlap,
+.tomoIdeas[aria-current="page"] .flatFrontFlap {
+  background: #F4B341;
+  border-color: #CF8F1E;
+}
+.tomoIdeas .flatFolderTitle,
+.tomoIdeas .flatCountPill {
+  color: #382405;
+}
+
+/* Tomo 03: Esmeralda Plano (Conaset & Apuntes B) */
+.tomoConaset .flatBackFlap {
+  background: #2E9B70;
+  border-color: #23805B;
+}
+.tomoConaset.flatFolderActive .flatBackFlap,
+.tomoConaset[aria-current="page"] .flatBackFlap {
+  background: #38B282;
+  border-color: #2A956C;
+}
+.tomoConaset .flatFrontFlap {
+  background: #35A87B;
+  border-color: #23805B;
+}
+.tomoConaset.flatFolderActive .flatFrontFlap,
+.tomoConaset[aria-current="page"] .flatFrontFlap {
+  background: #41BF8D;
+  border-color: #2A956C;
+}
+.tomoConaset .flatFolderTitle,
+.tomoConaset .flatCountPill {
+  color: #0A3323;
+}
+.tomoConaset .flatCountPill {
+  background: rgba(0, 0, 0, 0.14);
 }
 
 .tomoDot {
