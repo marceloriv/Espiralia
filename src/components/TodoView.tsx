@@ -4,7 +4,7 @@ import { sileo } from 'sileo';
 import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
-import { dueLabel } from './dashboard/dashboardData';
+import { dueLabel, criticalTodos } from './dashboard/dashboardData';
 import { AreaIntegratedWorkspace } from './todo/AreaIntegratedWorkspace';
 import styles from './TodoView.module.css';
 
@@ -223,16 +223,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
   const emptyContent = getEmptyStateContent();
 
-  // Top priorities editoriales de Stitch
-  const [priorityDone, setPriorityDone] = useState<Record<string, boolean>>({
-    p1: false,
-    p2: false,
-    p3: false,
-  });
-
-  const toggleEditorialPriority = (key: string) => {
-    setPriorityDone(prev => ({ ...prev, [key]: !prev[key] }));
-  };
+  const criticalList = criticalTodos(todos, 3);
 
   return (
     <div className={styles.todoContainer}>
@@ -261,7 +252,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
             <div className={styles.metaRow}>
               <span className={styles.metaItem}>
                 <Sparkles size={15} className={styles.iconAmber} aria-hidden="true" />
-                <span>3 prioridades capitales</span>
+                <span>{criticalList.length} {criticalList.length === 1 ? 'prioridad capital' : 'prioridades capitales'}</span>
               </span>
               <span className={styles.bullet}>•</span>
               <span className={styles.metaItem}>
@@ -270,7 +261,9 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               </span>
               <span className={styles.bullet}>•</span>
               <span className={styles.metaItem}>
-                <span className={styles.enfoqueLabel}>Enfoque:</span> Respiración &amp; Reglas viales
+                <span className={styles.enfoqueLabel}>
+                  Enfoque: {criticalList[0]?.title || (todos.length > 0 ? todos[0].title : 'Claridad y presencia')}
+                </span>
               </span>
               <span className={styles.bullet}>•</span>
               <span className={styles.completionBadge}>
@@ -339,8 +332,9 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                 >
                   <span className={styles.tabWatermark} aria-hidden="true">{numStr}</span>
                   <span className={styles.areaDot} style={{ backgroundColor: area.color }} />
-                  <span className={styles.areaIndex}>{numStr}.</span>
-                  <span className={styles.areaCardName}>{area.name}</span>
+                  <span className={styles.areaCardName}>
+                    <span className={styles.areaIndex}>{numStr}.</span> {area.name}
+                  </span>
                   <span className={styles.folderTabCount}>{openCount}</span>
                 </button>
               );
@@ -416,7 +410,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                   <input
                     type="text"
                     className={styles.inputTask}
-                    placeholder="¿Qué tienes pendiente? (Ej. Repasar 15 preguntas de rotondas Conaset)..."
+                    placeholder="¿Qué tienes pendiente? (Ej. Revisar informe, enviar correo, preparar reunión)..."
                     aria-label="¿Qué tienes pendiente?"
                     value={inputTitle}
                     onChange={e => setInputTitle(e.target.value)}
@@ -482,115 +476,59 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                   <Star size={18} className={styles.iconStar} aria-hidden="true" />
                 </div>
 
-                <div className={styles.topPrioritiesList}>
-                  {/* Priority 01 */}
-                  <div className={styles.priorityItem}>
-                    <span className={styles.priorityIndex}>01.</span>
-                    <button
-                      type="button"
-                      className={`${styles.roundCheckbox} ${priorityDone.p1 ? styles.roundCheckboxChecked : ''}`}
-                      onClick={() => toggleEditorialPriority('p1')}
-                      aria-label="Completar prioridad Estudio Conaset"
-                    >
-                      {priorityDone.p1 && <Check size={12} strokeWidth={3} />}
-                    </button>
-                    <div className={styles.priorityContent}>
-                      <div className={styles.priorityTitleRow}>
-                        <h4 className={`${styles.priorityTitle} ${priorityDone.p1 ? styles.titleDone : ''}`}>
-                          Estudio Conaset: Repasar señales de prioridad y cruces viales
-                        </h4>
-                        <span className={`${styles.badgePriority} ${styles.badgePriorityAlta}`}>
-                          URGENTE
-                        </span>
-                      </div>
-                      <p className={styles.priorityDesc}>
-                        Simulador municipal Clase B programado. Enfoque en derecho preferente de paso y rotondas de 2 pistas.
-                      </p>
-                      <div className={styles.priorityMeta}>
-                        <span className={styles.priorityAreaTag}>
-                          <span className={styles.tinyDot} style={{ backgroundColor: '#e8a55a' }} />
-                          01. Estudios
-                        </span>
-                        <span>•</span>
-                        <span>Hoy 16:30 hrs</span>
-                        <span>•</span>
-                        <span>45 min</span>
-                      </div>
-                    </div>
+                {criticalList.length === 0 ? (
+                  <div style={{ padding: '20px 0', textAlign: 'center', color: 'var(--color-ink-muted)' }}>
+                    <p style={{ margin: '0 0 6px 0', fontSize: '0.875rem', fontWeight: 500 }}>
+                      Todo al día • Ninguna prioridad crítica pendiente
+                    </p>
+                    <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-ink-muted)' }}>
+                      Tus tareas de alta prioridad no negociables aparecerán destacadas aquí.
+                    </p>
                   </div>
-
-                  {/* Priority 02 */}
-                  <div className={styles.priorityItem}>
-                    <span className={styles.priorityIndex}>02.</span>
-                    <button
-                      type="button"
-                      className={`${styles.roundCheckbox} ${priorityDone.p2 ? styles.roundCheckboxChecked : ''}`}
-                      onClick={() => toggleEditorialPriority('p2')}
-                      aria-label="Completar prioridad Libreta Terapia"
-                    >
-                      {priorityDone.p2 && <Check size={12} strokeWidth={3} />}
-                    </button>
-                    <div className={styles.priorityContent}>
-                      <div className={styles.priorityTitleRow}>
-                        <h4 className={`${styles.priorityTitle} ${priorityDone.p2 ? styles.titleDone : ''}`}>
-                          Llevar libreta física de desahogo a consulta con Dra. Morales
-                        </h4>
-                        <span className={`${styles.badgePriority} ${styles.badgePriorityMedia}`}>
-                          ALTA
-                        </span>
-                      </div>
-                      <p className={styles.priorityDesc}>
-                        Revisar registros de sobrepensamiento nocturno y ejercicios de grounding anotados el lunes.
-                      </p>
-                      <div className={styles.priorityMeta}>
-                        <span className={styles.priorityAreaTag}>
-                          <span className={styles.tinyDot} style={{ backgroundColor: '#8e1ea2' }} />
-                          02. Terapia
-                        </span>
-                        <span>•</span>
-                        <span>Mañana 11:45 hrs</span>
-                        <span>•</span>
-                        <span>Consulta Médica</span>
-                      </div>
-                    </div>
+                ) : (
+                  <div className={styles.topPrioritiesList}>
+                    {criticalList.map((t, idx) => {
+                      const area = areas.find(a => a.id === t.areaId);
+                      const isDone = t.status === 'completada' || Boolean(t.completed);
+                      const due = dueLabel(t.dueDate, todayStr);
+                      return (
+                        <div key={t.id} className={styles.priorityItem}>
+                          <span className={styles.priorityIndex}>{String(idx + 1).padStart(2, '0')}.</span>
+                          <button
+                            type="button"
+                            className={`${styles.roundCheckbox} ${isDone ? styles.roundCheckboxChecked : ''}`}
+                            onClick={() => handleToggleTodo(t.id)}
+                            aria-label={`Completar prioridad ${t.title}`}
+                          >
+                            {isDone && <Check size={12} strokeWidth={3} />}
+                          </button>
+                          <div className={styles.priorityContent}>
+                            <div className={styles.priorityTitleRow}>
+                              <h4 className={`${styles.priorityTitle} ${isDone ? styles.titleDone : ''}`}>
+                                {t.title}
+                              </h4>
+                              <span className={`${styles.badgePriority} ${styles.badgePriorityAlta}`}>
+                                {t.priority.toUpperCase()}
+                              </span>
+                            </div>
+                            <div className={styles.priorityMeta}>
+                              <span className={styles.priorityAreaTag}>
+                                <span className={styles.tinyDot} style={{ backgroundColor: area?.color || '#e8a55a' }} />
+                                {area?.name || t.category || 'General'}
+                              </span>
+                              {due && (
+                                <>
+                                  <span>•</span>
+                                  <span>Plazo: {due}</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-
-                  {/* Priority 03 */}
-                  <div className={styles.priorityItem}>
-                    <span className={styles.priorityIndex}>03.</span>
-                    <button
-                      type="button"
-                      className={`${styles.roundCheckbox} ${priorityDone.p3 ? styles.roundCheckboxChecked : ''}`}
-                      onClick={() => toggleEditorialPriority('p3')}
-                      aria-label="Completar prioridad Postulación U"
-                    >
-                      {priorityDone.p3 && <Check size={12} strokeWidth={3} />}
-                    </button>
-                    <div className={styles.priorityContent}>
-                      <div className={styles.priorityTitleRow}>
-                        <h4 className={`${styles.priorityTitle} ${priorityDone.p3 ? styles.titleDone : ''}`}>
-                          Redactar borrador de carta de postulación U. a profesor guía
-                        </h4>
-                        <span className={`${styles.badgePriority} ${styles.badgePriorityBaja}`}>
-                          MEDIA
-                        </span>
-                      </div>
-                      <p className={styles.priorityDesc}>
-                        Sintetizar intereses de investigación académica para solicitud formal de recomendación 2026.
-                      </p>
-                      <div className={styles.priorityMeta}>
-                        <span className={styles.priorityAreaTag}>
-                          <span className={styles.tinyDot} style={{ backgroundColor: '#5db8a6' }} />
-                          03. Universidad
-                        </span>
-                        <span>•</span>
-                        <span>Jueves</span>
-                        <span>•</span>
-                        <span>60 min</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className={styles.tornEdgeBottom} aria-hidden="true" />

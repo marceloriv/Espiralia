@@ -17,8 +17,7 @@ describe('TodoView', () => {
     render(<TodoView profileId={profileId} />);
 
     expect(screen.getByRole('heading', { level: 1, name: /to-do & áreas integradas\./i })).toBeInTheDocument();
-    expect(screen.getByText(/todas las áreas/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/01\. estudios/i).length).toBeGreaterThan(0);
+    expect(screen.getByRole('button', { name: /área estudios/i })).toBeInTheDocument();
     expect(screen.getByText(/entrada rápida al taller/i)).toBeInTheDocument();
     expect(screen.getByText(/agenda asociada/i)).toBeInTheDocument();
     expect(screen.getByText(/disciplina gentil/i)).toBeInTheDocument();
@@ -158,7 +157,7 @@ describe('TodoView', () => {
 
     // Filtra por Todas las áreas
     await user.click(within(areaNav).getByRole('button', { name: /todas las áreas/i }));
-    expect(screen.getByText('Reporte trimestral')).toBeInTheDocument();
+    expect(screen.getAllByText('Reporte trimestral')[0]).toBeInTheDocument();
     expect(screen.getByText('Comprar frutas')).toBeInTheDocument();
   });
 
@@ -188,12 +187,13 @@ describe('TodoView', () => {
     const statusFilters = screen.getByRole('region', { name: /filtro de estados/i });
     const progFilter = within(statusFilters).getByRole('button', { name: /en progreso/i });
     await user.click(progFilter);
-    expect(screen.getByText('Escribir artículo')).toBeInTheDocument();
+    expect(screen.getAllByText('Escribir artículo')[0]).toBeInTheDocument();
 
-    // Filtro "Pendientes" no la debe mostrar
+    // Filtro "Pendientes" no la debe mostrar en lista detallada
     const pendFilter = within(statusFilters).getByRole('button', { name: /pendientes/i });
     await user.click(pendFilter);
-    expect(screen.queryByText('Escribir artículo')).not.toBeInTheDocument();
+    const detailedSection = screen.getByText(/tareas que importan/i).closest('div')!;
+    expect(within(detailedSection).queryByText('Escribir artículo')).not.toBeInTheDocument();
   });
 
   it('permite asignar fecha de vencimiento al crear y editarla en la tarjeta', async () => {
@@ -293,6 +293,37 @@ describe('TodoView', () => {
 
       const todayStr = toLocalDateStr(new Date());
       expect(StorageService.getTodayMood(profileId, todayStr)).toBe('☀️');
+    });
+
+    it('conecta Top Priorities a las tareas críticas reales y elimina mocks de conaset', async () => {
+      const user = userEvent.setup();
+      StorageService.saveTodo({
+        id: 'todo-crit-real',
+        profileId,
+        areaId: 'default',
+        title: 'Presentación Directorio Q4',
+        priority: 'alta',
+        status: 'pendiente',
+        completed: false,
+        createdAt: '2026-10-17',
+      });
+
+      render(<TodoView profileId={profileId} />);
+
+      expect(screen.getByRole('heading', { level: 4, name: 'Presentación Directorio Q4' })).toBeInTheDocument();
+      expect(screen.queryByText(/Estudio Conaset: Repasar señales de prioridad/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Llevar libreta física de desahogo a consulta/i)).not.toBeInTheDocument();
+
+      const checkbox = screen.getByRole('button', { name: /completar prioridad presentación directorio q4/i });
+      await user.click(checkbox);
+
+      expect(StorageService.getTodos(profileId).find(t => t.id === 'todo-crit-real')?.completed).toBe(true);
+    });
+
+    it('Top Priorities muestra estado limpio cuando no hay tareas críticas pendientes', () => {
+      render(<TodoView profileId={profileId} />);
+      expect(screen.getByText(/todo al día • ninguna prioridad crítica pendiente/i)).toBeInTheDocument();
+      expect(screen.queryByText(/Estudio Conaset/i)).not.toBeInTheDocument();
     });
   });
 });
