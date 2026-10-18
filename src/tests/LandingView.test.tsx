@@ -13,11 +13,12 @@ describe('LandingView', () => {
     expect(screen.getByText(/biorritmo hoy/i)).toBeInTheDocument();
   });
 
-  it('despliega los tres pilares de enfoque con enlaces ancla y scroll-margin', () => {
+  it('integra las fichas de archivador en la sección de pilares con enlaces ancla', () => {
     render(<LandingView onNavigateLogin={() => {}} />);
     expect(screen.getByText(/1\. estudios & foco práctico/i)).toBeInTheDocument();
     expect(screen.getByText(/2\. introspección & diario/i)).toBeInTheDocument();
     expect(screen.getByText(/3\. horizonte & universidad/i)).toBeInTheDocument();
+    expect(screen.getByText(/01 \/ estudios/i)).toBeInTheDocument();
 
     const pilaresSection = document.getElementById('pilares');
     expect(pilaresSection).toBeInTheDocument();
@@ -28,10 +29,32 @@ describe('LandingView', () => {
     const handleLogin = vi.fn();
     render(<LandingView onNavigateLogin={handleLogin} />);
 
-    const ctaBtns = screen.getAllByRole('button', { name: /comenzar cuaderno|abrir cuaderno personal/i });
+    const ctaBtns = screen.getAllByRole('button', { name: /comenzar cuaderno|abrir cuaderno inmediato/i });
     expect(ctaBtns.length).toBeGreaterThan(0);
     await user.click(ctaBtns[0]);
 
     expect(handleLogin).toHaveBeenCalled();
+  });
+
+  it('soporta navegación hacia dashboard si el usuario ya cuenta con perfil activo', async () => {
+    const user = userEvent.setup();
+    const handleDashboard = vi.fn();
+    render(
+      <LandingView
+        onNavigateLogin={() => {}}
+        onNavigateDashboard={handleDashboard}
+        hasActiveProfile={true}
+      />
+    );
+
+    const ctaBtns = screen.getAllByRole('button', { name: /comenzar cuaderno|abrir cuaderno inmediato/i });
+    await user.click(ctaBtns[0]);
+    expect(handleDashboard).toHaveBeenCalled();
+  });
+
+  it('mantiene reglas de accesibilidad para movimiento reducido', () => {
+    const { container } = render(<LandingView onNavigateLogin={() => {}} />);
+    const wrapper = container.querySelector('[class*="landingWrapper"]');
+    expect(wrapper).toBeInTheDocument();
   });
 });

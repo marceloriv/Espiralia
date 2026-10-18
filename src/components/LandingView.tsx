@@ -3,14 +3,13 @@ import {
   Feather,
   ArrowRight,
   BookOpen,
-  GraduationCap,
-  Sparkles,
   Lock,
   Check,
 } from 'lucide-react';
 import { LandingDeskPreview } from './landing/LandingDeskPreview';
 import { LandingIntentionWidget } from './landing/LandingIntentionWidget';
 import { LandingHeroCard } from './landing/LandingHeroCard';
+import { LandingFolderCards } from './landing/LandingFolderCards';
 import { LandingRitmosSection } from './landing/LandingRitmosSection';
 import { LandingManifestoSection } from './landing/LandingManifestoSection';
 import styles from './LandingView.module.css';
@@ -147,55 +146,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </p>
           </div>
 
-          <div className={styles.pilaresGrid}>
-            <article className={styles.pilarCard} aria-labelledby="pilar-1-title">
-              <div>
-                <div className={styles.pilarHeader}>
-                  <span className={styles.pilarBadge}>Módulo 01</span>
-                </div>
-                <h3 id="pilar-1-title" className={styles.pilarTitle}>1. Estudios & Foco Práctico</h3>
-                <p className={styles.pilarText}>
-                  Preparación intensiva para Licencia Clase B con banco de preguntas oficial CONASET, simuladores cronometrados y métricas de retención real.
-                </p>
-              </div>
-              <div className={styles.pilarMetricBox}>
-                <Sparkles size={14} color="var(--color-primary)" aria-hidden="true" />
-                <span>92% de éxito en simulaciones</span>
-              </div>
-            </article>
-
-            <article className={styles.pilarCard} aria-labelledby="pilar-2-title">
-              <div>
-                <div className={styles.pilarHeader}>
-                  <span className={styles.pilarBadge}>Módulo 02</span>
-                </div>
-                <h3 id="pilar-2-title" className={styles.pilarTitle}>2. Introspección & Diario</h3>
-                <p className={styles.pilarText}>
-                  Escritura reflexiva, registro de estados emocionales y diario de sesiones sin límites ni juicios. Lo que escribes queda únicamente en tu disco.
-                </p>
-              </div>
-              <div className={styles.pilarMetricBox}>
-                <Feather size={14} color="var(--color-primary)" aria-hidden="true" />
-                <span>Sin límites de caracteres • Privacidad total</span>
-              </div>
-            </article>
-
-            <article className={styles.pilarCard} aria-labelledby="pilar-3-title">
-              <div>
-                <div className={styles.pilarHeader}>
-                  <span className={styles.pilarBadge}>Módulo 03</span>
-                </div>
-                <h3 id="pilar-3-title" className={styles.pilarTitle}>3. Horizonte & Universidad</h3>
-                <p className={styles.pilarText}>
-                  Planificación estratégica de postulaciones universitarias 2026, expediente documental, plazos innegociables y seguimiento de requisitos.
-                </p>
-              </div>
-              <div className={styles.pilarMetricBox}>
-                <GraduationCap size={14} color="var(--color-primary)" aria-hidden="true" />
-                <span>6 de 8 documentos verificados</span>
-              </div>
-            </article>
-          </div>
+          <LandingFolderCards />
         </section>
 
         {/* 5. Cadencia Vital & Ritmos */}
