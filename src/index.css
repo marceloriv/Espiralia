@@ -187,6 +187,10 @@
   --font-headline: var(--font-primary);
   --elevation-lg: 0 12px 32px rgba(20, 20, 19, 0.14);
   --text-heading-sm: 16px;
+  --folder-color: #e5b23e;
+  --binder-spine-bg: #2e2620;
+  --binder-border: #1c1714;
+  --binder-border-active: #c29d59;
 
   font-family: var(--font-family-2);
   color: var(--color-body);
