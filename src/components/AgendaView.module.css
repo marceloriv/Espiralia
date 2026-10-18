@@ -170,12 +170,64 @@
 .calendarCard {
   position: relative;
   min-width: 0;
-  padding: 24px;
-  background-color: var(--bg-card, var(--color-background));
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  padding: 34px 24px 24px;
+  background-color: var(--bg-card, #FAF7F0);
+  /* Textura de pliego verjurado para el almanaque de mesa */
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(142, 30, 162, 0.02) 31px, rgba(142, 30, 162, 0.02) 32px),
+    radial-gradient(#dfd5c5 1px, transparent 1px);
+  background-size: 100% 32px, 16px 16px;
+  border: 1px solid var(--border-hairline, #e2d8cb);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-card-stack, 0 1px 3px rgba(37, 35, 32, 0.04), 0 12px 28px -4px rgba(45, 35, 25, 0.08));
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    var(--shadow-card-stack, 0 1px 3px rgba(37, 35, 32, 0.04), 0 12px 28px -4px rgba(45, 35, 25, 0.08));
   overflow: hidden;
+}
+
+/* Regla milimetrada de latón grabada en el almanaque */
+.brassRulerBar {
+  position: absolute;
+  top: 6px;
+  left: 20px;
+  right: 20px;
+  height: 18px;
+  background: linear-gradient(180deg, #ecd89d 0%, #caa658 50%, #997836 100%);
+  border: 1px solid #735a26;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 4px 1px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.rulerGraduations {
+  width: 100%;
+  height: 6px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #4a3713 0px,
+    #4a3713 1px,
+    transparent 1px,
+    transparent 5px
+  );
+  opacity: 0.6;
+}
+
+.rulerMarks {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-family: var(--font-family-3, monospace);
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #3b2a0c;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  padding: 0 2px;
 }
 
 .bindingAccent {
@@ -183,9 +235,28 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 5px;
-  background: linear-gradient(90deg, var(--color-primary-soft), var(--color-accent-teal), var(--color-accent-amber));
-  opacity: 0.8;
+  height: 6px;
+  background: linear-gradient(90deg, #8E1EA2, #5DB8A6, #E8A55A);
+  opacity: 0.85;
+}
+
+.bindingRivetLeft,
+.bindingRivetRight {
+  position: absolute;
+  top: 1px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+}
+
+.bindingRivetLeft {
+  left: 30px;
+}
+
+.bindingRivetRight {
+  right: 30px;
 }
 
 .calendarToolbar {
@@ -519,14 +590,53 @@
 }
 
 .eventItem {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  background-color: var(--color-background);
-  border: 1px solid var(--color-hairline);
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(20, 20, 19, 0.03);
+  padding: 10px 14px;
+  background-color: var(--color-background, #FAF7F0);
+  border: 1px solid var(--color-hairline, #e2d8cb);
+  border-left: 3px solid var(--color-primary, #8E1EA2);
+  border-radius: 6px;
+  box-shadow: 1px 1px 0 rgba(220, 210, 195, 0.6), 0 2px 4px rgba(20, 20, 19, 0.03);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  overflow: hidden;
+}
+
+.eventItem:hover {
+  transform: translateX(2px);
+  box-shadow: 1px 1px 0 rgba(142, 30, 162, 0.2), 0 4px 10px rgba(20, 20, 19, 0.06);
+}
+
+.ticketNotchTop,
+.ticketNotchBottom {
+  position: absolute;
+  right: 64px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-surface-card, #FFFFFF);
+  border: 1px solid var(--color-hairline, #e2d8cb);
+  z-index: 2;
+}
+
+.ticketNotchTop {
+  top: -6px;
+}
+
+.ticketNotchBottom {
+  bottom: -6px;
+}
+
+.ticketPerforationLine {
+  position: absolute;
+  right: 69px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  border-left: 1px dashed rgba(160, 140, 115, 0.4);
+  pointer-events: none;
 }
 
 .eventSwatch {

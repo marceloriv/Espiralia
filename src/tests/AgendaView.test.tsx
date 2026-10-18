@@ -259,4 +259,22 @@ describe('AgendaView', () => {
     expect(screen.getByRole('heading', { name: /eventos del 2026-12-25/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /nuevo evento para 2026-12-25/i })).toBeInTheDocument();
   });
+
+  it('incluye regla milimetrada de latón y muescas de ticket recortable en la agenda', () => {
+    seed({ id: 'e-ticket', title: 'Entrada concierto', startTime: '20:00' });
+    const { container } = render(<AgendaView profileId={profileId} />);
+
+    const ruler = container.querySelector('[class*="brassRulerBar"]');
+    expect(ruler).toBeInTheDocument();
+    expect(ruler).toHaveAttribute('aria-hidden', 'true');
+
+    const topNotch = container.querySelector('[class*="ticketNotchTop"]');
+    expect(topNotch).toBeInTheDocument();
+    expect(topNotch).toHaveAttribute('aria-hidden', 'true');
+
+    const perforation = container.querySelector('[class*="ticketPerforationLine"]');
+    expect(perforation).toBeInTheDocument();
+    expect(perforation).toHaveAttribute('aria-hidden', 'true');
+  });
 });
+

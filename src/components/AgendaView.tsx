@@ -229,8 +229,25 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
         {/* Columna Izquierda: Almanaque de Mesa Mensual (8 Cols)          */}
         {/* ============================================================== */}
         <div className={styles.calendarCard}>
-          {/* Acento superior de encuadernación */}
-          <div className={styles.bindingAccent} aria-hidden="true" />
+          {/* Regla milimetrada de latón de taller de imprenta */}
+          <div className={styles.brassRulerBar} aria-hidden="true">
+            <div className={styles.rulerGraduations} />
+            <div className={styles.rulerMarks}>
+              <span>0</span>
+              <span>5</span>
+              <span>10</span>
+              <span>15</span>
+              <span>20</span>
+              <span>25</span>
+              <span>30cm</span>
+            </div>
+          </div>
+
+          {/* Acento superior de encuadernación de imprenta con pernos */}
+          <div className={styles.bindingAccent} aria-hidden="true">
+            <span className={styles.bindingRivetLeft} />
+            <span className={styles.bindingRivetRight} />
+          </div>
 
           {/* Barra de Herramientas del Almanaque */}
           <div className={styles.calendarToolbar}>
@@ -353,6 +370,10 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               <ul className={styles.eventsList} aria-label="Eventos del día">
                 {dayEvents.map(ev => (
                   <li key={ev.id} className={styles.eventItem}>
+                    <span className={styles.ticketNotchTop} aria-hidden="true" />
+                    <span className={styles.ticketNotchBottom} aria-hidden="true" />
+                    <span className={styles.ticketPerforationLine} aria-hidden="true" />
+
                     <span
                       className={styles.eventSwatch}
                       style={{ backgroundColor: CATEGORY_COLORS[categoryOf(ev)].color }}
