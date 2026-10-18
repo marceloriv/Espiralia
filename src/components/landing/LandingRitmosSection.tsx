@@ -8,6 +8,54 @@ import {
 } from 'lucide-react';
 import styles from './LandingRitmosSection.module.css';
 
+interface RitmoMomento {
+  id: string;
+  num: string;
+  horario: string;
+  titulo: string;
+  desc: string;
+  metrica: string;
+  icon: React.ReactNode;
+  washiClass: string;
+  ticketClass: string;
+}
+
+const MOMENTOS: RitmoMomento[] = [
+  {
+    id: 'momento-1',
+    num: '01',
+    horario: '01 • 07:30 - 09:00',
+    titulo: 'Enfoque Profundo Sin Ruido',
+    desc: 'Dedicado a tu tarea más exigente antes de que el mundo despierte. En este espacio se ataca el estudio riguroso de normas viales o la redacción compleja sin interrupciones.',
+    metrica: '1 sola prioridad crítica • Modo sin notificaciones',
+    icon: <Sunrise size={18} color="var(--color-primary)" aria-hidden="true" />,
+    washiClass: styles.washiMagenta,
+    ticketClass: styles.ticketTiltLeft,
+  },
+  {
+    id: 'momento-2',
+    num: '02',
+    horario: '02 • 11:00 - 13:00',
+    titulo: 'Avance Estratégico & Gestión',
+    desc: 'Expedientes universitarios, revisión documental, llamadas y tareas operativas organizadas en bloques de 30 minutos con pausas conscientes.',
+    metrica: 'Checklist visible • Cierre antes del mediodía',
+    icon: <Sun size={18} color="var(--color-accent-amber, #e8a55a)" aria-hidden="true" />,
+    washiClass: styles.washiAmber,
+    ticketClass: styles.ticketTiltStraight,
+  },
+  {
+    id: 'momento-3',
+    num: '03',
+    horario: '03 • 20:00 - 20:30',
+    titulo: 'Ritual de Vaciado & Gratitud',
+    desc: 'Traspasar pendientes al pliego del día siguiente, registrar estados emocionales en el diario y cerrar la mesa de trabajo con calma mental.',
+    metrica: 'Cero pantallas tras el cierre • Calma mental',
+    icon: <Sunset size={18} color="var(--color-accent-teal, #5db8a6)" aria-hidden="true" />,
+    washiClass: styles.washiTeal,
+    ticketClass: styles.ticketTiltRight,
+  },
+];
+
 export const LandingRitmosSection: React.FC = () => {
   return (
     <section className={styles.ritmosSection} aria-labelledby="ritmos-heading">
@@ -25,71 +73,42 @@ export const LandingRitmosSection: React.FC = () => {
       </div>
 
       <div className={styles.ritmosGrid}>
-        {/* Momento 01 */}
-        <article className={styles.ritmoCard} aria-labelledby="momento-1-title">
-          <div>
-            <div className={styles.cardHeader}>
-              <span className={styles.timeTag}>01 • 07:30 - 09:00</span>
-              <div className={styles.iconWrapper} aria-hidden="true">
-                <Sunrise size={18} color="var(--color-primary)" />
-              </div>
-            </div>
-            <h3 id="momento-1-title" className={styles.cardTitle}>
-              Enfoque Profundo Sin Ruido
-            </h3>
-            <p className={styles.cardDesc}>
-              Dedicado a tu tarea más exigente antes de que el mundo despierte. En este espacio se ataca el estudio riguroso de normas viales o la redacción compleja sin interrupciones.
-            </p>
-          </div>
-          <div className={styles.cardMetric}>
-            <CheckCircle2 size={13} color="var(--color-primary)" aria-hidden="true" />
-            <span>1 sola prioridad crítica • Modo sin notificaciones</span>
-          </div>
-        </article>
+        {MOMENTOS.map(momento => (
+          <article
+            key={momento.id}
+            className={`${styles.ritmoTicket} ${momento.ticketClass}`}
+            data-papercraft="ticket-stub"
+            aria-labelledby={`${momento.id}-title`}
+          >
+            {/* Cinta washi tape decorativa en la cabecera */}
+            <div
+              className={`${styles.ticketWashiTape} ${momento.washiClass}`}
+              data-papercraft="washi-tape"
+              aria-hidden="true"
+            />
 
-        {/* Momento 02 */}
-        <article className={styles.ritmoCard} aria-labelledby="momento-2-title">
-          <div>
-            <div className={styles.cardHeader}>
-              <span className={styles.timeTag}>02 • 11:00 - 13:00</span>
-              <div className={styles.iconWrapper} aria-hidden="true">
-                <Sun size={18} color="var(--color-accent-amber, #e8a55a)" />
+            <div>
+              <div className={styles.cardHeader}>
+                <span className={styles.timeTag}>{momento.horario}</span>
+                <div className={styles.iconWrapper}>
+                  {momento.icon}
+                </div>
               </div>
+              <h3 id={`${momento.id}-title`} className={styles.cardTitle}>
+                {momento.titulo}
+              </h3>
+              <p className={styles.cardDesc}>{momento.desc}</p>
             </div>
-            <h3 id="momento-2-title" className={styles.cardTitle}>
-              Avance Estratégico & Gestión
-            </h3>
-            <p className={styles.cardDesc}>
-              Expedientes universitarios, revisión documental, llamadas y tareas operativas organizadas en bloques de 30 minutos con pausas conscientes.
-            </p>
-          </div>
-          <div className={styles.cardMetric}>
-            <CheckCircle2 size={13} color="var(--color-accent-amber, #e8a55a)" aria-hidden="true" />
-            <span>Checklist visible • Cierre antes del mediodía</span>
-          </div>
-        </article>
 
-        {/* Momento 03 */}
-        <article className={styles.ritmoCard} aria-labelledby="momento-3-title">
-          <div>
-            <div className={styles.cardHeader}>
-              <span className={styles.timeTag}>03 • 20:00 - 20:30</span>
-              <div className={styles.iconWrapper} aria-hidden="true">
-                <Sunset size={18} color="var(--color-accent-teal, #5db8a6)" />
-              </div>
+            {/* Divisor perforado con muescas laterales */}
+            <div className={styles.perforatedLine} aria-hidden="true" />
+
+            <div className={styles.cardMetric}>
+              <CheckCircle2 size={13} color="var(--color-primary)" aria-hidden="true" />
+              <span>{momento.metrica}</span>
             </div>
-            <h3 id="momento-3-title" className={styles.cardTitle}>
-              Ritual de Vaciado & Gratitud
-            </h3>
-            <p className={styles.cardDesc}>
-              Traspasar pendientes al pliego del día siguiente, registrar estados emocionales en el diario y cerrar la mesa de trabajo con calma mental.
-            </p>
-          </div>
-          <div className={styles.cardMetric}>
-            <CheckCircle2 size={13} color="var(--color-accent-teal, #5db8a6)" aria-hidden="true" />
-            <span>Cero pantallas tras el cierre • Calma mental</span>
-          </div>
-        </article>
+          </article>
+        ))}
       </div>
     </section>
   );

@@ -46,7 +46,8 @@
 .ritmosGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: 2rem 1.5rem;
+  padding-top: 1rem;
 }
 
 @media (min-width: 860px) {
@@ -55,22 +56,73 @@
   }
 }
 
-.ritmoCard {
-  background-color: var(--color-surface, #fcf9f6);
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  border-radius: var(--radius-lg, 12px);
-  padding: 1.75rem 1.5rem;
+/* Boleto de Turno / Pliego Cortado Artesanal */
+.ritmoTicket {
+  position: relative;
+  background-color: var(--color-surface-card, #ffffff);
+  background-image: radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.5px, transparent 0.5px);
+  background-size: 14px 14px;
+  padding: 2.25rem 1.5rem 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-  position: relative;
-  transition: transform 150ms ease, box-shadow 150ms ease;
+  border-left: 1px solid var(--color-hairline, #e6dfd8);
+  border-right: 1px solid var(--color-hairline, #e6dfd8);
+  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  filter: drop-shadow(0 4px 12px rgba(26, 25, 23, 0.05));
+  transition: transform 0.25s ease-out, filter 0.25s ease-out;
+  min-height: 270px;
+  clip-path: polygon(
+    0% 7px, 3% 2px, 6% 7px, 9% 2px, 12% 7px, 15% 2px, 18% 7px, 21% 2px,
+    24% 7px, 27% 2px, 30% 7px, 33% 2px, 36% 7px, 39% 2px, 42% 7px, 45% 2px,
+    48% 7px, 51% 2px, 54% 7px, 57% 2px, 60% 7px, 63% 2px, 66% 7px, 69% 2px,
+    72% 7px, 75% 2px, 78% 7px, 81% 2px, 84% 7px, 87% 2px, 90% 7px, 93% 2px,
+    96% 7px, 100% 2px,
+    100% 100%, 0% 100%
+  );
 }
 
-.ritmoCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+.ritmoTicket:hover {
+  transform: translateY(-3px) rotate(0deg) !important;
+  filter: drop-shadow(0 8px 20px rgba(26, 25, 23, 0.09));
+}
+
+.ticketTiltLeft {
+  transform: rotate(-0.6deg);
+}
+
+.ticketTiltStraight {
+  transform: rotate(0.4deg);
+}
+
+.ticketTiltRight {
+  transform: rotate(-0.4deg);
+}
+
+/* Cinta Washi Tape decorativa superior */
+.ticketWashiTape {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 20px;
+  backdrop-filter: blur(2px);
+  clip-path: polygon(0% 4%, 3% 0%, 97% 2%, 100% 6%, 98% 94%, 95% 100%, 4% 97%, 0% 93%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.washiMagenta {
+  background: rgba(142, 30, 162, 0.35);
+}
+
+.washiAmber {
+  background: rgba(232, 165, 90, 0.45);
+}
+
+.washiTeal {
+  background: rgba(93, 184, 166, 0.40);
 }
 
 .cardHeader {
@@ -88,6 +140,7 @@
   background-color: rgba(142, 30, 162, 0.08);
   padding: 3px 8px;
   border-radius: var(--radius-pill, 9999px);
+  border: 1px solid rgba(142, 30, 162, 0.15);
 }
 
 .iconWrapper {
@@ -98,6 +151,7 @@
   align-items: center;
   justify-content: center;
   background-color: var(--color-surface-soft, #f5f0e8);
+  border: 1px solid var(--color-hairline, #e6dfd8);
   color: var(--color-body-strong, #252523);
 }
 
@@ -118,13 +172,33 @@
   margin: 0 0 1.25rem 0;
 }
 
+/* Divisor perforado */
+.perforatedLine {
+  width: 100%;
+  height: 1px;
+  border-top: 1.5px dashed var(--color-hairline, #e6dfd8);
+  margin: 0.75rem 0;
+}
+
 .cardMetric {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
   color: var(--color-muted, #6c6a64);
-  padding-top: 0.875rem;
-  border-top: 1px dashed var(--color-hairline, #e6dfd8);
+  padding-top: 0.25rem;
+}
+
+@media (max-width: 859px) {
+  .ritmoTicket {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ritmoTicket {
+    transform: none !important;
+    transition: none !important;
+  }
 }
