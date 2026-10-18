@@ -150,5 +150,27 @@ describe('ProfileSettingsModal', () => {
     expect(washiTape).toBeInTheDocument();
     expect(washiTape).toHaveAttribute('aria-hidden', 'true');
   });
+
+  it('cierra el modal cuando el usuario hace clic fuera de la hoja de papel rasgado (backdrop)', async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+
+    const { container } = render(
+      <ProfileSettingsModal
+        isOpen={true}
+        onClose={onClose}
+        profile={baseProfile}
+        onProfileUpdated={vi.fn()}
+      />
+    );
+
+    const backdrop = container.querySelector('div[class*="backdrop"]');
+    expect(backdrop).toBeInTheDocument();
+    if (backdrop) {
+      await user.click(backdrop);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    }
+  });
 });
+
 
