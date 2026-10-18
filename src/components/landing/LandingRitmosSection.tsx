@@ -98,6 +98,9 @@ export const LandingRitmosSection: React.FC = () => {
                 {momento.titulo}
               </h3>
               <p className={styles.cardDesc}>{momento.desc}</p>
+              <div className={styles.ticketSerial} aria-hidden="true">
+                SERIE {momento.num} • REGISTRO DIARIO
+              </div>
             </div>
 
             {/* Divisor perforado con muescas laterales */}

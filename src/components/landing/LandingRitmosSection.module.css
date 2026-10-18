@@ -172,12 +172,43 @@
   margin: 0 0 1.25rem 0;
 }
 
-/* Divisor perforado */
+.ticketSerial {
+  font-family: var(--font-code, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  color: var(--color-muted, #6c6a64);
+  text-transform: uppercase;
+  margin-top: -0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Divisor perforado con muescas circulares laterales */
 .perforatedLine {
+  position: relative;
   width: 100%;
   height: 1px;
   border-top: 1.5px dashed var(--color-hairline, #e6dfd8);
   margin: 0.75rem 0;
+}
+
+.perforatedLine::before,
+.perforatedLine::after {
+  content: '';
+  position: absolute;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--color-canvas, #faf9f5);
+  border: 1px solid var(--color-hairline, #e6dfd8);
+}
+
+.perforatedLine::before {
+  left: -22px;
+}
+
+.perforatedLine::after {
+  right: -22px;
 }
 
 .cardMetric {

@@ -196,6 +196,104 @@
   margin: 0;
 }
 
+/* Esquinas grabadas de orla dorada */
+.cornerOrnament {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(212, 175, 55, 0.45);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.cornerTopLeft {
+  top: 12px;
+  left: 12px;
+  border-width: 2px 0 0 2px;
+}
+
+.cornerTopRight {
+  top: 12px;
+  right: 12px;
+  border-width: 2px 2px 0 0;
+}
+
+.cornerBottomLeft {
+  bottom: 12px;
+  left: 12px;
+  border-width: 0 0 2px 2px;
+}
+
+.cornerBottomRight {
+  bottom: 12px;
+  right: 12px;
+  border-width: 0 2px 2px 0;
+}
+
+/* Pie de Certificado con Firma y Sello Notarial */
+.certificateFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed rgba(212, 175, 55, 0.25);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .certificateFooter {
+    flex-direction: row;
+    text-align: left;
+  }
+}
+
+.certSignatureGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.certSignatureLabel {
+  font-family: var(--font-code, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a8a29e;
+}
+
+.certSignatureScript {
+  font-family: var(--font-script, 'Caveat', cursive, sans-serif);
+  font-size: 1.25rem;
+  color: #d4af37;
+  letter-spacing: 0.02em;
+}
+
+.certSealTag {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 14px;
+  border: 1px dashed rgba(212, 175, 55, 0.4);
+  border-radius: 4px;
+  background-color: rgba(212, 175, 55, 0.05);
+  font-family: var(--font-code, monospace);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #d4af37;
+}
+
+.certSealSerial {
+  font-size: 0.5625rem;
+  font-weight: 500;
+  color: #a8a29e;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
 /* Banner de Cierre */
 .closingBanner {
   background-color: #211f1c;

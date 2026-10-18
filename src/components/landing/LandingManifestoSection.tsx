@@ -48,6 +48,12 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
           className={styles.certificateCard}
           aria-labelledby="cert-title"
         >
+          {/* Esquinas grabadas de orla estilo imprenta clásica */}
+          <div className={`${styles.cornerOrnament} ${styles.cornerTopLeft}`} aria-hidden="true" />
+          <div className={`${styles.cornerOrnament} ${styles.cornerTopRight}`} aria-hidden="true" />
+          <div className={`${styles.cornerOrnament} ${styles.cornerBottomLeft}`} aria-hidden="true" />
+          <div className={`${styles.cornerOrnament} ${styles.cornerBottomRight}`} aria-hidden="true" />
+
           <div className={styles.certificateHeader}>
             <div className={styles.certTitleGroup}>
               <ShieldCheck size={24} color="var(--color-accent-teal, #5db8a6)" aria-hidden="true" />
@@ -87,6 +93,18 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
               <p className={styles.pillarDesc}>
                 Exporta tus notas y cronogramas en Markdown estándar (.md) y calendarios abiertos (.ics). Sin ataduras propietarias.
               </p>
+            </div>
+          </div>
+
+          {/* Pie de Certificado con Firma y Sello Notarial */}
+          <div className={styles.certificateFooter}>
+            <div className={styles.certSignatureGroup}>
+              <span className={styles.certSignatureLabel}>Garantía Fundacional</span>
+              <span className={styles.certSignatureScript}>«Cifrado en cliente • Sin nubes ajenas»</span>
+            </div>
+            <div className={styles.certSealTag} aria-hidden="true">
+              <span>BÓVEDA SOBERANA</span>
+              <span className={styles.certSealSerial}>EXP. 2026 / PRIVACIDAD ABSOLUTA</span>
             </div>
           </div>
         </article>

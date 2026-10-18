@@ -78,6 +78,9 @@ export const LandingFolderCards: React.FC = () => {
               <span className={styles.tabLabel}>{pilar.tabLabel}</span>
             </div>
 
+            {/* Hoja interior de expediente que asoma sutilmente al interactuar */}
+            <div className={styles.innerSheet} aria-hidden="true" />
+
             {/* Accesorio decorativo físico (Clip o Washi tape) */}
             {pilar.decorType === 'clip' ? (
               <div
@@ -106,6 +109,7 @@ export const LandingFolderCards: React.FC = () => {
             <div className={styles.cardBody}>
               <div className={styles.cardHeader}>
                 <span className={styles.moduleBadge}>Módulo {pilar.num}</span>
+                <span className={styles.archivalTag}>EXP. 2026 // CLASIFICADO</span>
               </div>
               <h3 id={`${pilar.id}-title`} className={styles.cardTitle}>
                 {pilar.title}
