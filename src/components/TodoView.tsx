@@ -470,7 +470,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               <div className={styles.topPrioritiesBody}>
                 <div className={styles.topPrioritiesHeader}>
                   <div className={styles.topPrioritiesTitleGroup}>
-                    <span className={styles.topPrioritiesBadge}>TOP PRIORITIES</span>
+                    <span className={styles.topPrioritiesBadge}>PRIORIDADES CLAVE</span>
                     <span className={styles.topPrioritiesSub}>no negociables del día</span>
                   </div>
                   <Star size={18} className={styles.iconStar} aria-hidden="true" />
@@ -738,7 +738,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                 <div className={styles.brainDumpHeader}>
                   <div className={styles.brainDumpTitleGroup}>
                     <Sparkles size={16} className={styles.iconPrimary} aria-hidden="true" />
-                    <h3 className={styles.brainDumpTitle}>Notes / Brain Dump</h3>
+                    <h3 className={styles.brainDumpTitle}>Notas &amp; Vaciado Mental</h3>
                   </div>
                   <span className={styles.brainDumpSub}>Bujo Dot Grid</span>
                 </div>

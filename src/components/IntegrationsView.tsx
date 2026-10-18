@@ -198,7 +198,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
             <p className={styles.postitQuote}>
               «Tus compromisos y pensamientos no necesitan servidores; viven en tu propio pliego ♡»
             </p>
-            <span className={styles.postitAuthor}>— Espiralia Vault</span>
+            <span className={styles.postitAuthor}>Bóveda local de Espiralia</span>
           </div>
         </aside>
 
@@ -708,7 +708,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
             <span>Almacenamiento Local: <strong style={{ color: 'var(--color-ink, #232b2b)' }}>1.4 MB / 50 MB</strong> (IndexedDB)</span>
           </div>
           <p className={styles.mantraQuote}>
-            « Small steps every day lead to big results. ♡ »
+            « Tus datos soberanos residen en tu equipo, sin intermediarios. »
           </p>
           <div className={styles.mantraSpecs}>
             <span>RFC 5545</span>

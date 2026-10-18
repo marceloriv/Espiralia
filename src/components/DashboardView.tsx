@@ -229,7 +229,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const newNote: Note = {
       id: `note-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
       profileId: profile.id,
-      title: `Reflexión Diaria — ${formatHeroDate(now)}`,
+      title: `Reflexión diaria: ${formatHeroDate(now)}`,
       content: lines.join('\n\n'),
       tags: ['reflexion-diaria', 'cierre-jornada'],
       isReflection: true,
@@ -666,7 +666,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className={styles.focusHeaderRow}>
               <div className={styles.washiTapeBadge} aria-hidden="true">
                 <Star size={14} />
-                <span>TODAY'S MAIN FOCUS</span>
+                <span>FOCO PRINCIPAL DE HOY</span>
               </div>
               {pendingTodosList.length > 0 && (
                 <button
@@ -1168,7 +1168,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Closing Motto & Sovereignty Stamp */}
         <div className={styles.reflectionFooterRow}>
           <p className={styles.closingMotto}>
-            « Small steps every day lead to big results. ♡ »
+            « Cada paso firme de hoy construye la calma de mañana. »
           </p>
 
           <div className={styles.sovereigntyStamp}>

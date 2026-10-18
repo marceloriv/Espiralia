@@ -593,14 +593,14 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               <div className={styles.stickyPostItCard}>
                 <span className={styles.stickyOverline}>Recordatorio Compasivo</span>
                 <p className={styles.stickyScript}>
-                  “discipline today, peace tomorrow ♡”
+                  “Claridad hoy, sosiego mañana ♡”
                 </p>
                 <div className={styles.stickyDivider} />
                 <p className={styles.stickySub}>
                   Escribe sin censura.<br />
                   El orden exterior nutre la serenidad interior.
                 </p>
-                <span className={styles.stickyAuthor}>— Cuaderno Terapéutico #4</span>
+                <span className={styles.stickyAuthor}>Cuaderno Terapéutico #4</span>
               </div>
             </div>
 
@@ -669,7 +669,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
             <div className={styles.brainDumpBox}>
               <div className={styles.brainDumpWashi} aria-hidden="true" />
               <div className={styles.brainDumpHeader}>
-                <span className={styles.brainDumpTitle}>Brain Dump Rápido</span>
+                <span className={styles.brainDumpTitle}>Vaciado Rápido</span>
                 <Sparkles size={14} className={styles.iconPrimary} aria-hidden="true" />
               </div>
               <ul className={styles.brainDumpList}>

@@ -53,7 +53,7 @@ export const LandingHeroCard: React.FC = () => {
           <span className={styles.noteNumber}>№ 042</span>
         </div>
         <blockquote className={styles.quoteText}>
-          «small steps every day lead to big results ♡»
+          «Cada página escrita con calma sostiene el día que viene.»
         </blockquote>
         <div className={styles.noteFooter}>
           <span>Tinta ferrogalorresistente</span>

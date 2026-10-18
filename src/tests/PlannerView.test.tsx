@@ -198,7 +198,7 @@ describe('PlannerView integración semanal y metas', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /focus plan & agenda semanal\./i })).toBeInTheDocument();
     expect(screen.getByText(/01\. estudios & clase b/i)).toBeInTheDocument();
-    expect(screen.getByText(/top priorities de la semana/i)).toBeInTheDocument();
+    expect(screen.getByText(/prioridades de la semana/i)).toBeInTheDocument();
     expect(screen.getByText(/habit tracker semanal/i)).toBeInTheDocument();
     expect(screen.getByText(/discipline today, peace tomorrow/i)).toBeInTheDocument();
   });

@@ -7,7 +7,7 @@ describe('LandingHeroCard', () => {
     render(<LandingHeroCard />);
     expect(screen.getByText(/aforismo matutino/i)).toBeInTheDocument();
     expect(screen.getByText(/№ 042/i)).toBeInTheDocument();
-    expect(screen.getByText(/small steps every day lead to big results/i)).toBeInTheDocument();
+    expect(screen.getByText(/cada página escrita con calma sostiene el día que viene/i)).toBeInTheDocument();
     expect(screen.getByText(/tinta ferrogalorresistente/i)).toBeInTheDocument();
   });
 

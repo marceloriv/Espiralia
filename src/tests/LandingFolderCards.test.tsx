@@ -32,8 +32,8 @@ describe('LandingFolderCards', () => {
 
   it('despliega las métricas en recuadros estilo ficha técnica de imprenta', () => {
     render(<LandingFolderCards />);
-    expect(screen.getByText(/92% de éxito en simulaciones/i)).toBeInTheDocument();
+    expect(screen.getByText(/banco oficial conaset • modo cronometrado/i)).toBeInTheDocument();
     expect(screen.getByText(/sin límites de caracteres • privacidad total/i)).toBeInTheDocument();
-    expect(screen.getByText(/6 de 8 documentos verificados/i)).toBeInTheDocument();
+    expect(screen.getByText(/expediente de postulación y plazos/i)).toBeInTheDocument();
   });
 });

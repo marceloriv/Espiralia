@@ -20,14 +20,14 @@ describe('LandingIntentionWidget', () => {
     const user = userEvent.setup();
     render(<LandingIntentionWidget />);
 
-    const focoBtn = screen.getByRole('button', { name: /foco implacable/i });
+    const focoBtn = screen.getByRole('button', { name: /enfoque profundo/i });
     expect(focoBtn).toHaveAttribute('aria-pressed', 'false');
 
     await user.click(focoBtn);
     expect(focoBtn).toHaveAttribute('aria-pressed', 'true');
     expect(screen.getByText(/la concentración profunda es el acto de amor más grande/i)).toBeInTheDocument();
     expect(screen.getByText(/01\. mesa limpia/i)).toBeInTheDocument();
-    expect(screen.getByText(/02\. bloque sagrado/i)).toBeInTheDocument();
+    expect(screen.getByText(/02\. bloque continuo/i)).toBeInTheDocument();
     expect(screen.getByText(/03\. cierre nítido/i)).toBeInTheDocument();
   });
 

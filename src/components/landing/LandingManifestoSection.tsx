@@ -35,7 +35,7 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
           </div>
 
           <blockquote className={styles.manifestoQuote}>
-            “Tu tiempo no es un recurso corporativo para exprimir; es el lienzo de tu existencia.”
+            “Tu tiempo te pertenece: cada hora es el espacio donde decides qué construir.”
           </blockquote>
 
           <div className={styles.manifestoAuthor}>
@@ -96,7 +96,7 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
           <div className={styles.washiAccentTop} aria-hidden="true" />
           <h3 className={styles.closingTitle}>Tu Cuaderno te Espera</h3>
           <p className={styles.closingSubtitle}>
-            Comienza hoy a registrar tus días con la calma de la papelería editorial y la solidez de una bóveda digital inexpugnable.
+            Comienza hoy a registrar tus días con la calma de la papelería editorial y la solidez de una bóveda digital cifrada en tu disco.
           </p>
 
           <div className={styles.closingActions}>

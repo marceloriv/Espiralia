@@ -306,7 +306,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               <span className={styles.postItTag}>NOTA DEL DÍA</span>
             </div>
             <p className={styles.postItQuote}>
-              “small steps every day lead to big results ♡”
+              “Un día a la vez; la constancia vence a la prisa ♡”
             </p>
             <div className={styles.postItAuthor}>
               <span>- r.v. notas de taller</span>

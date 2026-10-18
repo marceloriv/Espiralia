@@ -31,13 +31,13 @@ const INTENTIONS: Record<IntentionType, IntentionData> = {
     ],
   },
   foco: {
-    label: 'Foco implacable',
+    label: 'Enfoque profundo',
     icon: Target,
     quote: '“La concentración profunda es el acto de amor más grande hacia tus proyectos. Cierra el ruido del mundo para escuchar tu maestría.”',
     author: 'Bloque de Enfoque • Espiralia',
     steps: [
       { num: '01. Mesa limpia', title: '01. Mesa limpia', desc: 'Elimina toda pestaña, notificación y objeto fuera de tu tarea.' },
-      { num: '02. Bloque sagrado', title: '02. Bloque sagrado', desc: 'Protege 50 minutos ininterrumpidos en tu planner.' },
+      { num: '02. Bloque continuo', title: '02. Bloque continuo', desc: 'Protege 50 minutos ininterrumpidos en tu planner.' },
       { num: '03. Cierre nítido', title: '03. Cierre nítido', desc: 'Verifica el avance y deja la mesa lista para mañana.' },
     ],
   },
@@ -55,7 +55,7 @@ const INTENTIONS: Record<IntentionType, IntentionData> = {
   gratitud: {
     label: 'Gratitud & Reflexión',
     icon: Heart,
-    quote: '“El progreso no solo se mide por lo que falta construir, sino por la belleza del suelo que ya sostienes bajo tus pies.”',
+    quote: '“El progreso reside en valorar lo que ya sostienes mientras das el siguiente paso con calma.”',
     author: 'Pausa Contemplativa • Espiralia',
     steps: [
       { num: '01. Reconocimiento', title: '01. Reconocimiento', desc: 'Agradece un logro o aprendizaje reciente.' },

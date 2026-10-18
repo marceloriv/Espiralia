@@ -20,7 +20,7 @@ describe('NotesView', () => {
     expect(screen.getByText(/avance conaset - simulacro clase b/i)).toBeInTheDocument();
     expect(screen.getByText(/¿qué fluyó bien hoy\?/i)).toBeInTheDocument();
     expect(screen.getByText(/modo estilográfica: activo/i)).toBeInTheDocument();
-    expect(screen.getByText(/brain dump rápido/i)).toBeInTheDocument();
+    expect(screen.getByText(/vaciado rápido/i)).toBeInTheDocument();
   });
 
   it('renderiza la vista y permite crear una nueva reflexión terapéutica', async () => {

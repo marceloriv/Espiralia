@@ -7,7 +7,7 @@ describe('LandingManifestoSection', () => {
   it('renderiza la cita display del manifiesto en pliego oscuro', () => {
     render(<LandingManifestoSection onAction={() => {}} />);
     expect(
-      screen.getByText(/tu tiempo no es un recurso corporativo para exprimir; es el lienzo de tu existencia\./i)
+      screen.getByText(/tu tiempo te pertenece: cada hora es el espacio donde decides qué construir\./i)
     ).toBeInTheDocument();
     expect(screen.getByText(/manifiesto de soberanía personal/i)).toBeInTheDocument();
   });

@@ -271,7 +271,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
           {/* Top Priorities con clip dorado */}
           <div className={styles.topPrioritiesCard}>
             <div className={styles.brassClip} aria-hidden="true" />
-            <h3 className={styles.topPrioritiesTitle}>TOP PRIORITIES DE LA SEMANA</h3>
+            <h3 className={styles.topPrioritiesTitle}>PRIORIDADES DE LA SEMANA</h3>
             <ul className={styles.prioritiesList}>
               <li className={styles.priorityItem}>
                 <span className={styles.priorityBox}>01</span>
