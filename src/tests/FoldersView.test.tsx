@@ -56,4 +56,16 @@ describe('FoldersView', () => {
     expect(screen.getByText(/captura veloz de enlace/i)).toBeInTheDocument();
     expect(screen.getByText(/almacenamiento local \(indexeddb\)/i)).toBeInTheDocument();
   });
+
+  it('renderiza las carpetas del fichero con estructura de carpeta plana moderna (solapa trasera, hojas y bolsillo frontal)', () => {
+    render(<FoldersView profileId="p-test-flat" />);
+
+    const sheets = screen.getAllByTestId('folder-flat-sheets');
+    expect(sheets.length).toBeGreaterThanOrEqual(4);
+
+    const activeTab = screen.getByRole('tab', { name: /clase b conaset/i });
+    expect(activeTab).toHaveAttribute('aria-selected', 'true');
+    expect(activeTab.querySelector('[data-front-flap="true"]')).toBeInTheDocument();
+  });
 });
+

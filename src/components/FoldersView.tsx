@@ -366,26 +366,38 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
 
           {/* Stepped Tabbed File Cabinet System */}
           <div style={{ paddingTop: '0.5rem', position: 'relative' }}>
-            {/* Staggered Index Tabs */}
-            <div className={styles.steppedTabsWrapper} role="tablist" aria-label="Solapas de carpetas">
+            {/* Flat Modern Folder Tabs */}
+            <div className={styles.flatFoldersRow} role="tablist" aria-label="Solapas de carpetas">
               {displayFolders.map((df) => {
                 const isActive = df.id === selectedFolderId;
+                const folderColor = df.color || '#E5B23E';
+
                 return (
                   <button
                     key={df.id}
                     type="button"
                     role="tab"
                     aria-selected={isActive}
-                    className={`${styles.steppedTab} ${isActive ? styles.steppedTabActive : styles.steppedTabInactive}`}
+                    className={`${styles.flatFolderTab} ${isActive ? styles.flatFolderActive : ''}`}
                     onClick={() => setUserSelectedFolderId(df.id)}
+                    style={{
+                      ['--folder-color' as any]: folderColor,
+                    }}
                   >
-                    <span className={styles.tabNum}>{df.num}</span>
-                    <span>{df.name}</span>
-                    {isActive ? (
-                      <span className={styles.tabDot}></span>
-                    ) : (
-                      <span className={styles.tabCountMini}>{df.specs.split(' ')[0]}</span>
-                    )}
+                    <div className={styles.flatBackFlap} aria-hidden="true" />
+                    <div className={styles.flatSheets} data-testid="folder-flat-sheets" aria-hidden="true">
+                      <div className={`${styles.sheetFlatLine} ${styles.sheetFlatAccent}`} />
+                      <div className={styles.sheetFlatLine} />
+                    </div>
+                    <div className={styles.flatFrontFlap} data-front-flap="true">
+                      <div className={styles.flatFolderTitle}>
+                        <span className={styles.flatTabNum}>{df.num}</span>
+                        <span>{df.name}</span>
+                      </div>
+                      <span className={styles.flatCountPill}>
+                        {df.specs.split(' ')[0]}
+                      </span>
+                    </div>
                   </button>
                 );
               })}

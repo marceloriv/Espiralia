@@ -195,11 +195,13 @@
 }
 
 /* Staggered Tabs Container */
+/* Container de Carpetas Planas Modernas */
+.flatFoldersRow,
 .steppedTabsWrapper {
   display: flex;
   align-items: flex-end;
-  gap: 0.35rem;
-  padding: 0 0.75rem;
+  gap: 10px;
+  padding: 8px 0.75rem 0;
   margin-bottom: -1px;
   position: relative;
   z-index: 10;
@@ -207,55 +209,167 @@
   scrollbar-width: none;
 }
 
+.flatFoldersRow::-webkit-scrollbar,
 .steppedTabsWrapper::-webkit-scrollbar {
   display: none;
 }
 
+/* Contenedor plano de la carpeta en FoldersView */
+.flatFolderTab,
 .steppedTab {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.65rem 1.25rem;
-  border-top: 1px solid var(--color-hairline, #e6dfd8);
-  border-left: 1px solid var(--color-hairline, #e6dfd8);
-  border-right: 1px solid var(--color-hairline, #e6dfd8);
-  border-bottom: 1px solid transparent;
-  border-top-left-radius: 0.75rem;
-  border-top-right-radius: 0.75rem;
-  background: var(--color-surface-card, #efe9de);
-  color: var(--color-ink, #141413);
+  width: 195px;
+  min-width: 170px;
+  height: 52px;
+  background: transparent;
+  border: 0;
+  padding: 0;
   cursor: pointer;
+  user-select: none;
+  transition: all 0.18s ease-out;
+  flex-shrink: 0;
   font-family: inherit;
-  font-size: 0.875rem;
+}
+
+.flatFolderTab:hover,
+.steppedTab:hover {
+  transform: translateY(-2px);
+}
+
+.flatFolderTab:focus-visible,
+.steppedTab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.flatFolderTab.flatFolderActive,
+.steppedTabActive,
+.flatFolderTab[aria-selected="true"] {
+  height: 58px;
+  z-index: 20;
+  transform: translateY(-2px);
+}
+
+/* 1. Tapa Trasera Plana con Solapa Superior (Back Flap) */
+.flatBackFlap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  border-radius: 8px 12px 0 0;
+  clip-path: polygon(0% 0%, 45% 0%, 54% 22%, 100% 22%, 100% 100%, 0% 100%);
+  background: var(--folder-color, #e5b23e);
+  filter: brightness(0.92);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-bottom: none;
   transition: all 0.15s ease;
-  box-shadow: 0 -3px 8px -2px rgba(20, 20, 19, 0.06);
+  pointer-events: none;
 }
 
-.steppedTabActive {
-  background: var(--color-surface-card, #efe9de);
-  border-color: var(--color-hairline, #e6dfd8);
-  border-bottom-color: var(--color-surface-card, #efe9de);
-  font-weight: 600;
-  z-index: 12;
+.flatFolderTab.flatFolderActive .flatBackFlap,
+.steppedTabActive .flatBackFlap,
+.flatFolderTab[aria-selected="true"] .flatBackFlap {
+  filter: brightness(1);
 }
 
-.steppedTabInactive {
-  background: var(--color-surface-soft, #f5f0e8);
-  border-color: var(--color-hairline-soft, #ebe6df);
-  color: var(--color-ink-muted, #6c6a64);
+/* 2. Hojas de Papel Blancas Planas asomando (Sheets) */
+.flatSheets {
+  position: absolute;
+  top: 6px;
+  left: 12px;
+  right: 12px;
+  height: 28px;
+  background: #ffffff;
+  border-radius: 4px 4px 0 0;
+  border: 1px solid #e5dfd5;
+  border-bottom: none;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 8px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  pointer-events: none;
 }
 
-.steppedTabInactive:hover {
-  background: var(--color-surface-card, #efe9de);
-  color: var(--color-ink, #141413);
+.flatFolderTab.flatFolderActive .flatSheets,
+.steppedTabActive .flatSheets,
+.flatFolderTab[aria-selected="true"] .flatSheets {
+  transform: translateY(-6px);
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.06);
 }
 
-.tabNum {
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
+.sheetFlatLine {
+  height: 2px;
+  background: #e2dbd0;
+  border-radius: 1px;
+  width: 85%;
+}
+
+.sheetFlatAccent {
+  background: var(--color-primary, #8e1ea2);
+  width: 60%;
+}
+
+/* 3. Tapa Delantera Plana (Front Flap) */
+.flatFrontFlap {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 38px;
+  border-radius: 6px 6px 0 0;
+  background: var(--folder-color, #f5c64c);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-bottom: none;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.flatFolderTab.flatFolderActive .flatFrontFlap,
+.steppedTabActive .flatFrontFlap,
+.flatFolderTab[aria-selected="true"] .flatFrontFlap {
+  height: 40px;
+  filter: brightness(1.08);
+}
+
+.flatFolderTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  font-size: 0.8rem;
   font-weight: 700;
-  color: var(--color-primary, #6e0081);
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flatTabNum {
+  font-family: var(--font-code, monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.flatCountPill {
+  font-family: var(--font-code, monospace);
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  flex-shrink: 0;
 }
 
 .tabDot {
