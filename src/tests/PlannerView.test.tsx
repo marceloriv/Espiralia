@@ -202,5 +202,27 @@ describe('PlannerView integración semanal y metas', () => {
     expect(screen.getByText(/habit tracker semanal/i)).toBeInTheDocument();
     expect(screen.getByText(/discipline today, peace tomorrow/i)).toBeInTheDocument();
   });
+
+  it('incluye cruces micrométricas de registro, cinta marcapáginas de seda y pestañas técnicas de bitácora', () => {
+    const { container } = render(<PlannerView profileId={profileId} />);
+
+    const ribbon = container.querySelector('[class*="satinBookmarkRibbon"]');
+    expect(ribbon).toBeInTheDocument();
+    expect(ribbon).toHaveAttribute('aria-hidden', 'true');
+
+    const crosshairs = container.querySelectorAll('[class*="registrationCross"]');
+    expect(crosshairs.length).toBeGreaterThanOrEqual(2);
+    crosshairs.forEach(cross => {
+      expect(cross).toHaveAttribute('aria-hidden', 'true');
+    });
+
+    const technicalTabs = container.querySelectorAll('[class*="technicalTab"]');
+    expect(technicalTabs.length).toBeGreaterThanOrEqual(7);
+    technicalTabs.forEach(tab => {
+      expect(tab).toHaveAttribute('aria-hidden', 'true');
+    });
+
+    expect(screen.getByText(/folio tec-2026/i)).toBeInTheDocument();
+  });
 });
 

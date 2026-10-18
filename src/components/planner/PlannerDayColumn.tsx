@@ -23,6 +23,11 @@ export const PlannerDayColumn: React.FC<PlannerDayColumnProps> = ({
 }) => {
   return (
     <section className={styles.dayColumn} aria-label={`Columna ${dayName}`}>
+      {/* Pestaña técnica de archivador con código de cuadrícula */}
+      <div className={styles.technicalTab} aria-hidden="true">
+        <span className={styles.tabGridRef}>{`SEC-${dayName.slice(0, 3).toUpperCase()}`}</span>
+      </div>
+
       <div className={styles.columnHeader}>
         <div className={styles.dayInfo}>
           <h3 className={styles.dayName}>{dayName}</h3>

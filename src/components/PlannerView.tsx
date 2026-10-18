@@ -122,9 +122,24 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
   return (
     <div className={styles.plannerWrapper}>
+      {/* Cruces de calibración y registro micrométrico de plano técnico */}
+      <div className={`${styles.registrationCross} ${styles.registrationCrossTL}`} aria-hidden="true">
+        <div className={styles.crosshairH} />
+        <div className={styles.crosshairV} />
+      </div>
+      <div className={`${styles.registrationCross} ${styles.registrationCrossTR}`} aria-hidden="true">
+        <div className={styles.crosshairH} />
+        <div className={styles.crosshairV} />
+      </div>
+
       {/* Cabecera Editorial Stitch */}
       <div className={styles.editorialHeader}>
         <div className={styles.headerLeft}>
+          <div className={styles.logbookBadge} aria-hidden="true">
+            <span className={styles.badgeSerial}>FOLIO TEC-2026</span>
+            <span className={styles.badgeRule}>•</span>
+            <span className={styles.badgeStandard}>RETÍCULA DE PRECISIÓN ISO 128</span>
+          </div>
           <span className={styles.overlineTag}>ESPIRALIA TALLER • PLANIFICADOR SEMANAL</span>
           <h1 className={styles.plannerMainHeading}>focus plan & agenda semanal.</h1>
           <h2 className={styles.pageTitle}>Planner Semanal</h2>
@@ -155,8 +170,14 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
         </button>
       </div>
 
-      {/* Subheader con Navegación y Filtros */}
+      {/* Subheader con Navegación, Cinta Marcapáginas y Filtros */}
       <header className={styles.subHeader}>
+        {/* Cinta marcapáginas de seda de bitácora */}
+        <div className={styles.satinBookmarkRibbon} aria-hidden="true">
+          <div className={styles.ribbonShine} />
+          <div className={styles.ribbonTail} />
+        </div>
+
         <div className={styles.leftGroup}>
           <div className={styles.weekNavGroup}>
             <button
