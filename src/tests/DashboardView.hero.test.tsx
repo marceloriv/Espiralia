@@ -188,4 +188,81 @@ describe('DashboardView critical CSS & Hero Content', () => {
       expect(screen.getByText(/Día despejado • Sin eventos agendados para hoy/i)).toBeInTheDocument();
     });
   });
+
+  describe('Hitos de Áreas, Brain Dump y Reflexión Nocturna', () => {
+    it('Áreas Temáticas muestra las tareas reales del área y elimina mock de CONASET', async () => {
+      const { StorageService } = await import('../../src/services/storage');
+      const { within } = await import('@testing-library/react');
+      localStorage.clear();
+      StorageService.saveProfile(mockProfile);
+
+      const areas = StorageService.getAreas(mockProfile.id);
+      const personalArea = areas.find(a => a.name.toLowerCase() === 'personal') || areas[0];
+
+      StorageService.saveTodo({
+        id: 'todo-hito-1',
+        profileId: mockProfile.id,
+        title: 'Completar sesión de mindfulness',
+        areaId: personalArea.id,
+        priority: 'alta',
+        status: 'pendiente',
+        completed: false,
+        createdAt: '2026-10-17',
+      });
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+      const areaSection = screen.getByRole('region', { name: /áreas temáticas/i });
+      expect(within(areaSection).getByText('Completar sesión de mindfulness')).toBeInTheDocument();
+      expect(screen.queryByText(/Capítulo 1 a 6 leídos y sintetizados/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Examen: Noviembre 2026/i)).not.toBeInTheDocument();
+    });
+
+    it('guardar pliego de reflexión persiste una nota bujo real con tag #reflexion-diaria', async () => {
+      const { userEvent } = await import('@testing-library/user-event');
+      const { StorageService } = await import('../../src/services/storage');
+      const user = userEvent.setup();
+      localStorage.clear();
+      StorageService.saveProfile(mockProfile);
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+
+      const q1 = screen.getByPlaceholderText(/momentos de calma, avances o pequeñas victorias/i);
+      const q3 = screen.getByPlaceholderText(/primera acción precisa/i);
+
+      await user.type(q1, 'Logré mantener el enfoque por 2 horas sin distracciones.');
+      await user.type(q3, 'Comenzar a las 08:00 revisando la bitácora.');
+
+      const saveBtn = screen.getByRole('button', { name: /guardar pliego/i });
+      await user.click(saveBtn);
+
+      const savedNotes = StorageService.getNotes(mockProfile.id);
+      expect(savedNotes.length).toBeGreaterThan(0);
+      const lastNote = savedNotes[savedNotes.length - 1];
+      expect(lastNote.isReflection).toBe(true);
+      expect(lastNote.tags).toContain('reflexion-diaria');
+      expect(lastNote.content).toContain('Logré mantener el enfoque');
+      expect(lastNote.content).toContain('Comenzar a las 08:00');
+    });
+
+    it('Brain Dump muestra la nota más reciente real en lugar de texto estático', async () => {
+      const { StorageService } = await import('../../src/services/storage');
+      localStorage.clear();
+      StorageService.saveProfile(mockProfile);
+
+      StorageService.saveNote({
+        id: 'note-recent-1',
+        profileId: mockProfile.id,
+        title: 'Idea de Proyecto Espiralia',
+        content: 'Explorar diseño con papel rasgado auténtico.',
+        tags: ['diseño'],
+        createdAt: '2026-10-17T10:00:00Z',
+        updatedAt: '2026-10-17T10:00:00Z',
+      });
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+      expect(screen.getByText(/Idea de Proyecto Espiralia/i)).toBeInTheDocument();
+      expect(screen.getByText(/Explorar diseño con papel rasgado auténtico/i)).toBeInTheDocument();
+      expect(screen.queryByText(/Comprar cuaderno de tapas duras tamaño A5/i)).not.toBeInTheDocument();
+    });
+  });
 });

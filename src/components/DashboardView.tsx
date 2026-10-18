@@ -23,8 +23,9 @@ import {
   ArrowRight,
   X,
 } from 'lucide-react';
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem, Note } from '../types';
 import { StorageService } from '../services/storage';
+import { sileo } from 'sileo';
 import { toLocalDateStr } from '../utils/localDate';
 import { CATEGORY_COLORS, FILTER_LABELS, categoryOf, occursOn } from './agenda/eventMapping';
 import { criticalTodos, dueLabel, greetingFor, isCritical, todayEventsSorted, computeAreaSummaries } from './dashboard/dashboardData';
@@ -75,6 +76,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [isFocusModalOpen, setIsFocusModalOpen] = useState(false);
   const [distractions, setDistractions] = useState<string[]>(() => StorageService.getDistractions(profile.id));
   const [newDistractionText, setNewDistractionText] = useState('');
+  const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profile.id));
   const [now] = useState(() => new Date());
   const [energyState, setEnergyState] = useState<'calma' | 'plena' | 'neutra' | 'cansada'>('calma');
   const [reflection1, setReflection1] = useState('');
@@ -89,6 +91,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setAreas(StorageService.getAreas(profile.id));
     setHabits(StorageService.getHabits(profile.id));
     setDistractions(StorageService.getDistractions(profile.id));
+    setNotes(StorageService.getNotes(profile.id));
   }, [profile.id]);
 
   useEffect(() => {
@@ -148,6 +151,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     .sort((a, b) => (a.dueDate! > b.dueDate! ? 1 : -1))
     .slice(0, 4);
 
+  const sortedNotes = [...notes].sort((a, b) => {
+    const dateA = a.updatedAt || a.createdAt || '';
+    const dateB = b.updatedAt || b.createdAt || '';
+    return dateB.localeCompare(dateA);
+  });
+  const latestNote = sortedNotes[0] ?? null;
+
   // Compute week of the year
   const startOfYear = new Date(now.getFullYear(), 0, 1);
   const daysDiff = Math.floor((now.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
@@ -172,6 +182,46 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     const updated = distractions.filter((_, idx) => idx !== index);
     StorageService.saveDistractions(profile.id, updated);
     setDistractions(updated);
+  };
+
+  const handleSaveReflection = () => {
+    const hasText = reflection1.trim() || reflection2.trim() || reflection3.trim();
+    if (!hasText) {
+      sileo.error({ title: 'Escribe al menos una línea en la reflexión antes de guardar' });
+      return;
+    }
+
+    const lines: string[] = [];
+    if (reflection1.trim()) {
+      lines.push('### ¿Qué salió bien hoy?');
+      lines.push(reflection1.trim());
+    }
+    if (reflection2.trim()) {
+      lines.push('### ¿Qué puedo mejorar?');
+      lines.push(reflection2.trim());
+    }
+    if (reflection3.trim()) {
+      lines.push('### ¿Cuál será mi primer paso mañana?');
+      lines.push(reflection3.trim());
+    }
+
+    const newNote: Note = {
+      id: `note-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      profileId: profile.id,
+      title: `Reflexión Diaria — ${formatHeroDate(now)}`,
+      content: lines.join('\n\n'),
+      tags: ['reflexion-diaria', 'cierre-jornada'],
+      isReflection: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    StorageService.saveNote(newNote);
+    setNotes(StorageService.getNotes(profile.id));
+    setReflection1('');
+    setReflection2('');
+    setReflection3('');
+    sileo.success({ title: 'Pliego reflexivo guardado en tu cuaderno de notas' });
   };
 
   const totalHabitSlots = habits.length * 7;
@@ -900,39 +950,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <div className={styles.areasGrid}>
             {areaSummaries.map((s, idx) => {
-              const isEstudios = s.area.name.toLowerCase().includes('estudio') || idx === 0;
-              const isSalud = s.area.name.toLowerCase().includes('salud') || idx === 1;
-
-              const displayTitle = isEstudios
-                ? 'Estudios & Licencia Clase B'
-                : isSalud
-                ? 'Introspección & Terapia'
-                : `${s.area.name} — Plan 2026`;
-              const displayDesc = isEstudios
-                ? 'Preparación teórica exhaustiva con el Libro del Nuevo Conductor y simulador CONASET.'
-                : isSalud
-                ? 'Diario de autorregulación emocional, mapas cognitivos y bitácora clínica confidencial.'
-                : 'Recopilación de certificados, cartas de recomendación y portafolio de redacción.';
-              const milestone1 = isEstudios
-                ? 'Capítulo 1 a 6 leídos y sintetizados'
-                : isSalud
-                ? 'Registro de descompresión completado'
-                : 'Certificado de egreso digitalizado';
-              const milestone2 = isEstudios
-                ? '3 simulaciones pendientes esta semana'
-                : isSalud
-                ? '1 pliego por redactar antes del viernes'
-                : 'Borrador de carta en edición';
-              const deadline = isEstudios
-                ? 'Examen: Noviembre 2026'
-                : isSalud
-                ? 'Cita: Viernes 16:00'
-                : 'Plazo: 28 Noviembre';
-              const actionLabel = isEstudios
-                ? 'Abrir simulador'
-                : isSalud
-                ? 'Ver bitácora'
-                : 'Ver expediente';
+              const areaTodos = todos.filter(t => t.areaId === s.area.id);
+              const pendingAreaTodos = areaTodos.filter(t => (t.status ? t.status !== 'completada' : !t.completed));
+              const milestone1 = areaTodos[0]?.title ?? 'Sin tareas asignadas en esta carpeta';
+              const milestone2 = areaTodos[1]?.title ?? 'Espacio disponible para nuevos hitos';
+              const dueDates = pendingAreaTodos
+                .filter(t => Boolean(t.dueDate))
+                .map(t => t.dueDate!)
+                .sort();
+              const deadline = dueDates.length > 0 ? `Plazo: ${dueDates[0]}` : 'Sin fecha límite fijada';
+              const actionLabel = `Ver área`;
+              const displayTitle = s.area.name;
+              const displayDesc = s.area.description || 'Área activa de enfoque personal y seguimiento de proyectos.';
 
               return (
                 <div key={s.area.id} className={styles.areaFolderCard}>
@@ -967,11 +996,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     {/* Milestones Checklist */}
                     <div className={styles.areaMilestones}>
                       <div className={styles.milestoneItem}>
-                        <Check size={15} className={styles.milestoneCheckIcon} aria-hidden="true" />
+                        {areaTodos[0] && (areaTodos[0].status === 'completada' || areaTodos[0].completed) ? (
+                          <Check size={15} className={styles.milestoneCheckIcon} aria-hidden="true" />
+                        ) : (
+                          <span className={styles.milestonePendingDot} aria-hidden="true" />
+                        )}
                         <span>{milestone1}</span>
                       </div>
                       <div className={styles.milestoneItem}>
-                        <span className={styles.milestonePendingDot} aria-hidden="true" />
+                        {areaTodos[1] && (areaTodos[1].status === 'completada' || areaTodos[1].completed) ? (
+                          <Check size={15} className={styles.milestoneCheckIcon} aria-hidden="true" />
+                        ) : (
+                          <span className={styles.milestonePendingDot} aria-hidden="true" />
+                        )}
                         <span>{milestone2}</span>
                       </div>
                     </div>
@@ -1022,11 +1059,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         <div className={styles.paperGridContainer}>
-          <p className={styles.notesHandwriting}>
-            — Comprar cuaderno de tapas duras tamaño A5 para el módulo de dibujo técnico.<br />
-            — Recordar que el error en la rotonda fue ceder el paso cuando ya estaba dentro del anillo.<br />
-            — «Respirar 4 segundos antes de encender la pantalla».
-          </p>
+          {latestNote ? (
+            <div>
+              <strong style={{ display: 'block', marginBottom: '0.35rem', fontFamily: 'var(--font-heading)', color: 'var(--color-ink-primary)' }}>
+                {latestNote.title}
+              </strong>
+              <p className={styles.notesHandwriting}>
+                {latestNote.content}
+              </p>
+            </div>
+          ) : (
+            <p className={styles.notesHandwriting}>
+              «Cuaderno en blanco. Pulsa + Nueva Anotación Rápida para registrar pensamientos espontáneos o notas de paso.»
+            </p>
+          )}
           <div className={styles.autoSaveIndicator}>
             <Check size={14} aria-hidden="true" />
             <span>Guardado automáticamente</span>
@@ -1107,7 +1153,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <button
           type="button"
           className={styles.saveReflectionBtn}
-          onClick={() => onNavigate('notes')}
+          onClick={handleSaveReflection}
         >
           Guardar Pliego
         </button>
