@@ -518,17 +518,83 @@
   overflow: hidden;
 }
 
+.bentoCardWrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  filter: drop-shadow(0 6px 14px rgba(26, 25, 23, 0.08))
+          drop-shadow(0 2px 4px rgba(26, 25, 23, 0.04));
+  transform: rotate(-0.3deg);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), filter 0.22s ease;
+}
+
+@media (hover: hover) {
+  .bentoCardWrap:hover {
+    transform: rotate(0deg) translateY(-2px);
+    filter: drop-shadow(0 10px 20px rgba(26, 25, 23, 0.12))
+            drop-shadow(0 3px 6px rgba(26, 25, 23, 0.06));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bentoCardWrap {
+    transform: none;
+    transition: none;
+  }
+  .bentoCardWrap:hover {
+    transform: none;
+  }
+}
+
+.bentoCardTorn {
+  position: relative;
+  background-color: var(--bg-card, #fcf9f6);
+  background-image: radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.65px, transparent 0.65px);
+  background-size: 16px 16px;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 26px 22px 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  clip-path: polygon(
+    0% 10px, 3% 5px, 6% 11px, 9% 6px, 13% 12px, 17% 7px, 21% 11px, 25% 5px,
+    29% 12px, 34% 6px, 38% 10px, 42% 5px, 47% 11px, 51% 6px, 56% 12px, 60% 7px,
+    65% 11px, 69% 5px, 74% 12px, 78% 6px, 83% 11px, 87% 5px, 91% 12px, 95% 7px,
+    98% 10px, 100% 6px,
+    100% calc(100% - 9px), 98% calc(100% - 3px), 95% calc(100% - 10px), 91% calc(100% - 4px),
+    87% calc(100% - 11px), 82% calc(100% - 5px), 78% calc(100% - 12px), 73% calc(100% - 4px),
+    69% calc(100% - 10px), 64% calc(100% - 3px), 59% calc(100% - 11px), 55% calc(100% - 5px),
+    50% calc(100% - 12px), 46% calc(100% - 4px), 41% calc(100% - 11px), 36% calc(100% - 3px),
+    31% calc(100% - 10px), 27% calc(100% - 4px), 22% calc(100% - 11px), 18% calc(100% - 5px),
+    13% calc(100% - 12px), 9% calc(100% - 4px), 5% calc(100% - 10px), 2% calc(100% - 3px),
+    0% calc(100% - 8px)
+  );
+}
+
 .cardWashiSlate {
   position: absolute;
-  top: -8px;
+  top: -10px;
   right: 28px;
-  width: 72px;
-  height: 20px;
-  background: rgba(123, 140, 158, 0.45);
-  backdrop-filter: blur(2px);
-  border-radius: var(--radius-xs);
+  width: 76px;
+  height: 22px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-washi-slate, rgba(123, 140, 158, 0.25)),
+    var(--color-washi-slate, rgba(123, 140, 158, 0.25)) 6px,
+    rgba(180, 195, 210, 0.35) 6px,
+    rgba(180, 195, 210, 0.35) 12px
+  );
+  border-left: 2px dashed rgba(123, 140, 158, 0.45);
+  border-right: 2px dashed rgba(123, 140, 158, 0.45);
+  border-radius: var(--radius-xs, 4px);
+  box-shadow: 0 1px 3px rgba(26, 25, 23, 0.12);
   pointer-events: none;
   z-index: 10;
+  transform: rotate(1.2deg);
 }
 
 .cardWashiOrchid {
