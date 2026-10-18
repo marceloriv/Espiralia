@@ -129,4 +129,26 @@ describe('ProfileSettingsModal', () => {
       expect(onClose).toHaveBeenCalled();
     });
   });
+
+  it('renderiza el modal envuelto en contenedor de papel rasgado con cinta washi tape decorativa', () => {
+    render(
+      <ProfileSettingsModal
+        isOpen={true}
+        onClose={vi.fn()}
+        profile={baseProfile}
+        onProfileUpdated={vi.fn()}
+      />
+    );
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toBeInTheDocument();
+
+    const modalWrap = dialog.closest('div[class*="modalWrap"]');
+    expect(modalWrap).toBeInTheDocument();
+
+    const washiTape = modalWrap?.querySelector('div[class*="washiTape"]');
+    expect(washiTape).toBeInTheDocument();
+    expect(washiTape).toHaveAttribute('aria-hidden', 'true');
+  });
 });
+

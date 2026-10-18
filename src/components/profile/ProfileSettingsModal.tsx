@@ -110,12 +110,14 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
 
   return (
     <div className={styles.backdrop} role="presentation" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div
-        className={styles.modal}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="profile-settings-modal-title"
-      >
+      <div className={styles.modalWrap} onClick={e => e.target === e.currentTarget && onClose()}>
+        <div className={styles.washiTape} aria-hidden="true" />
+        <div
+          className={styles.modal}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="profile-settings-modal-title"
+        >
         <div className={styles.header}>
           <div className={styles.titleGroup}>
             <span className={styles.iconWrap} aria-hidden="true">
@@ -257,5 +259,6 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };
