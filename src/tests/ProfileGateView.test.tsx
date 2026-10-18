@@ -199,5 +199,30 @@ describe('ProfileGateView', () => {
     // Las cajas de PIN del fondo no deben haberse llenado
     expect(screen.queryAllByText('●')).toHaveLength(0);
   });
+
+  it('si existe un perfil protegido con PIN, escribir directamente el PIN y presionar Enter lo desbloquea', async () => {
+    const onSelectProfile = vi.fn();
+    StorageService.saveProfile({ id: 'p-auto', name: 'Laura', avatar: 'L', pin: '5678', createdAt: '2026-10-09' });
+    const user = userEvent.setup();
+    render(<ProfileGateView onSelectProfile={onSelectProfile} />);
+
+    // Escribir PIN directo con el teclado físico y Enter
+    await user.keyboard('5678{Enter}');
+
+    await waitFor(() => expect(onSelectProfile).toHaveBeenCalledTimes(1));
+    expect(onSelectProfile.mock.calls[0][0].id).toBe('p-auto');
+  });
+
+  it('al escribir o pegar en el input de PIN del modal solo conserva dígitos numéricos', async () => {
+    StorageService.saveProfile({ id: 'p-test', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
+    const user = userEvent.setup();
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    await user.click(screen.getByText('Carlos'));
+    const pinInput = screen.getByLabelText(/pin de acceso/i);
+
+    await user.type(pinInput, 'abc12de34');
+    expect(pinInput).toHaveValue('1234');
+  });
 });
 
