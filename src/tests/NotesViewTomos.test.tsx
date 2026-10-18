@@ -130,21 +130,25 @@ describe('NotesView - Tomos y Carpetas', () => {
 
     render(<NotesView profileId={profileId} />);
 
-    // Verificar las 3 carpetas de tomos
+    // Verificar los 3 archivadores de tomos
     const tomo1Btn = screen.getByRole('button', { name: /diario íntimo & terapia/i });
     const tomo2Btn = screen.getByRole('button', { name: /ideas & taller/i });
     const tomo3Btn = screen.getByRole('button', { name: /conaset & apuntes/i });
 
-    // Cada botón debe reflejar el estado activo
+    // Cada archivador debe reflejar el estado activo
     expect(tomo1Btn).toHaveAttribute('aria-current', 'page');
     expect(tomo2Btn).toHaveAttribute('aria-current', 'false');
     expect(tomo3Btn).toHaveAttribute('aria-current', 'false');
 
-    // Debe contener las hojas decorativas con aria-hidden="true"
-    const sheets = screen.getAllByTestId('flat-sheets');
-    expect(sheets.length).toBe(3);
+    // Porta-etiquetas metálicos con remaches en cada archivador
+    const labelFrames = screen.getAllByTestId('binder-label-frame');
+    expect(labelFrames.length).toBe(3);
 
-    // Contadores de notas en cada carpeta (2, 1, 0)
+    // Ojales metálicos de extracción (finger hole ring)
+    const fingerRings = screen.getAllByTestId('binder-finger-ring');
+    expect(fingerRings.length).toBe(3);
+
+    // Contadores de notas en cada archivador (2, 1, 0)
     expect(screen.getByTestId('count-tomo-01')).toHaveTextContent('2');
     expect(screen.getByTestId('count-tomo-02')).toHaveTextContent('1');
     expect(screen.getByTestId('count-tomo-03')).toHaveTextContent('0');

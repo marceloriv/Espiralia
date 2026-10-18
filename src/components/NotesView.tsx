@@ -348,16 +348,16 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
           <h2 className={styles.visuallyHidden}>Notas &amp; Reflexiones</h2>
         </div>
 
-        {/* Archival Index Folders / Solapas Superiores Planas Estilo Windows */}
-        <div className={styles.flatFoldersBar} role="tablist" aria-label="Carpetas de Tomos">
+        {/* Archival Binder Spines / Lomos de Archivador de Oficina */}
+        <div className={styles.binderCabinetRow} role="tablist" aria-label="Archivadores de Tomos">
           {TOMOS_CONFIG.map((tomo) => {
             const isActive = activeTomo === tomo.id;
-            const tomoStyleMap: Record<string, string> = {
-              '01': styles.tomoDiario,
-              '02': styles.tomoIdeas,
-              '03': styles.tomoConaset,
+            const binderTomoClassMap: Record<string, string> = {
+              '01': styles.binderTomo01,
+              '02': styles.binderTomo02,
+              '03': styles.binderTomo03,
             };
-            const tomoStyleClass = tomoStyleMap[tomo.id] ?? styles.tomoDiario;
+            const tomoStyleClass = binderTomoClassMap[tomo.id] ?? styles.binderTomo01;
             const count = tomoNoteCounts[tomo.id] ?? 0;
 
             return (
@@ -365,25 +365,34 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                 key={tomo.id}
                 type="button"
                 aria-current={isActive ? 'page' : 'false'}
-                className={`${styles.flatFolderTab} ${tomoStyleClass} ${isActive ? styles.flatFolderActive : ''}`}
+                className={`${styles.binderSpineBtn} ${tomoStyleClass} ${isActive ? styles.binderActive : ''}`}
                 onClick={() => setActiveTomo(tomo.id)}
               >
-                <div className={styles.flatBackFlap} aria-hidden="true" />
-                <div className={styles.flatSheets} data-testid="flat-sheets" aria-hidden="true">
-                  <div className={`${styles.sheetFlatLine} ${styles.sheetFlatAccent}`} />
-                  <div className={styles.sheetFlatLine} />
-                </div>
-                <div className={styles.flatFrontFlap}>
-                  <div className={styles.flatFolderTitle}>
-                    {tomo.iconName === 'book' && <BookOpen size={14} aria-hidden="true" />}
-                    {tomo.iconName === 'sparkles' && <Sparkles size={14} aria-hidden="true" />}
-                    {tomo.iconName === 'file' && <FileText size={14} aria-hidden="true" />}
-                    <span>{tomo.title}</span>
+                <div className={styles.binderTopCap} aria-hidden="true" />
+
+                {/* Porta-etiquetas metálico con remaches */}
+                <div className={styles.binderLabelFrame} data-testid="binder-label-frame">
+                  <div className={`${styles.binderRivet} ${styles.rivetTL}`} aria-hidden="true" />
+                  <div className={`${styles.binderRivet} ${styles.rivetTR}`} aria-hidden="true" />
+                  <div className={`${styles.binderRivet} ${styles.rivetBL}`} aria-hidden="true" />
+                  <div className={`${styles.binderRivet} ${styles.rivetBR}`} aria-hidden="true" />
+
+                  {/* Etiqueta de papel rotulada */}
+                  <div className={styles.binderLabelPaper}>
+                    {tomo.iconName === 'book' && <BookOpen size={13} aria-hidden="true" />}
+                    {tomo.iconName === 'sparkles' && <Sparkles size={13} aria-hidden="true" />}
+                    {tomo.iconName === 'file' && <FileText size={13} aria-hidden="true" />}
+                    <span className={styles.binderLabelText}>{tomo.title}</span>
                   </div>
-                  <span className={styles.flatCountPill} data-testid={`count-${tomo.folderId}`}>
-                    {count}
-                  </span>
                 </div>
+
+                {/* Ojal circular metálico de extracción */}
+                <div className={styles.binderFingerRing} data-testid="binder-finger-ring" aria-hidden="true" />
+
+                {/* Contador de notas en el lomo */}
+                <span className={styles.binderCountPill} data-testid={`count-${tomo.folderId}`}>
+                  {count}
+                </span>
               </button>
             );
           })}

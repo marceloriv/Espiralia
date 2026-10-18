@@ -89,229 +89,213 @@
   border: 0;
 }
 
+./* ========================================================================= */
+/* ESTANTE DE ARCHIVADORES FÍSICOS (Office Binder Spines / Biblioratos)      */
+/* ========================================================================= */
+
+.binderCabinetRow,
 .flatFoldersBar,
 .tomoTabsRow {
   display: flex;
   align-items: flex-end;
-  gap: 12px;
+  gap: 14px;
   overflow-x: auto;
-  padding: 8px 4px 0;
+  padding: 10px 6px 0;
   margin-bottom: -1px;
   position: relative;
   z-index: 10;
+  scrollbar-width: none;
 }
 
-/* Contenedor plano de la carpeta */
+.binderCabinetRow::-webkit-scrollbar,
+.flatFoldersBar::-webkit-scrollbar,
+.tomoTabsRow::-webkit-scrollbar {
+  display: none;
+}
+
+/* Lomo de archivador rígido (Office Lever-Arch Binder Spine) */
+.binderSpineBtn,
 .flatFolderTab,
 .tomoTab {
   position: relative;
-  width: 210px;
-  height: 52px;
-  background: transparent;
-  border: 0;
-  padding: 0;
+  width: 220px;
+  min-width: 190px;
+  height: 54px;
+  background: var(--binder-spine-bg, #2e2620);
+  border: 1px solid var(--binder-border, #1c1714);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: 0 10px;
   cursor: pointer;
   user-select: none;
-  transition: all 0.18s ease-out;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 
+.binderSpineBtn:hover,
 .flatFolderTab:hover,
 .tomoTab:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  filter: brightness(1.04);
 }
 
+.binderSpineBtn:focus-visible,
 .flatFolderTab:focus-visible,
 .tomoTab:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-.flatFolderTab.flatFolderActive,
-.flatFolderTab.tomoTabActive,
-.tomoTab.tomoTabActive,
-.flatFolderTab[aria-current="page"] {
-  height: 58px;
+.binderSpineBtn.binderActive,
+.binderSpineBtn.flatFolderActive,
+.binderSpineBtn[aria-current="page"] {
+  height: 60px;
   z-index: 20;
   transform: translateY(-2px);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.25);
+  border-color: var(--binder-border-active, #c29d59);
 }
 
-/* 1. Tapa Trasera Plana con Solapa Superior (Back Flap) */
-.flatBackFlap {
+/* Cantonera o refuerzo superior */
+.binderTopCap {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 100%;
-  border-radius: 8px 12px 0 0;
-  clip-path: polygon(0% 0%, 45% 0%, 54% 22%, 100% 22%, 100% 100%, 0% 100%);
-  border: 1px solid #D19C28;
-  border-bottom: none;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+  border-radius: 8px 8px 0 0;
   pointer-events: none;
 }
 
-/* 2. Hojas de Papel Blancas Planas asomando (Sheets) */
-.flatSheets {
-  position: absolute;
-  top: 6px;
-  left: 14px;
-  right: 14px;
-  height: 28px;
-  background: #FFFFFF;
-  border-radius: 4px 4px 0 0;
-  border: 1px solid #E5DFD5;
-  border-bottom: none;
-  z-index: 2;
+/* Porta-etiquetas metálico (Brass/Nickel Label Holder) con remaches */
+.binderLabelFrame {
+  position: relative;
+  flex: 1;
+  margin-right: 8px;
+  background: linear-gradient(135deg, #d8cbba 0%, #b8a892 50%, #9e8e79 100%);
+  border: 1px solid #7a6c58;
+  border-radius: 4px;
+  padding: 3px 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 3px;
-  padding: 0 8px;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  align-items: center;
+  overflow: hidden;
+}
+
+.binderRivet {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #5c4f3d;
+  border-radius: 50%;
+  box-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.5);
   pointer-events: none;
 }
+.rivetTL { top: 2px; left: 2px; }
+.rivetTR { top: 2px; right: 2px; }
+.rivetBL { bottom: 2px; left: 2px; }
+.rivetBR { bottom: 2px; right: 2px; }
 
-.flatFolderTab.flatFolderActive .flatSheets,
-.flatFolderTab[aria-current="page"] .flatSheets {
-  transform: translateY(-6px);
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.06);
-}
-
-.sheetFlatLine {
-  height: 2px;
-  background: #E2DBD0;
-  border-radius: 1px;
-  width: 85%;
-}
-
-.sheetFlatAccent {
-  background: var(--color-primary, #8E1EA2);
-  width: 60%;
-}
-
-/* 3. Tapa Delantera Plana (Front Flap) */
-.flatFrontFlap {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 38px;
-  border-radius: 6px 6px 0 0;
-  border: 1px solid #D19C28;
-  border-bottom: none;
-  z-index: 3;
+/* Etiqueta de cartulina blanca/crema insertada en el porta-etiquetas */
+.binderLabelPaper {
+  width: 100%;
+  background: #faf7f0;
+  border: 1px solid #d4c8b6;
+  border-radius: 2px;
+  padding: 2px 6px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  transition: all 0.15s ease;
-  box-sizing: border-box;
+  gap: 6px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-.flatFolderTab.flatFolderActive .flatFrontFlap,
-.flatFolderTab[aria-current="page"] .flatFrontFlap {
-  height: 40px;
-}
-
-.flatFolderTitle {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+.binderLabelText {
   font-family: var(--font-family-2);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: #382405;
+  color: #1c1917;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
-.flatCountPill {
+/* Orificio circular metálico de extracción (Finger ring hole con anillo remachado) */
+.binderFingerRing {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #b3a48e;
+  background: radial-gradient(circle at 35% 35%, #1c1815 0%, #0a0807 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.binderFingerRing::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 6px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transform: rotate(-30deg);
+}
+
+/* Píldora de conteo del archivador */
+.binderCountPill {
   font-family: var(--font-mono, monospace);
   font-size: 0.68rem;
   font-weight: 700;
-  background: rgba(0, 0, 0, 0.12);
-  color: #382405;
+  background: rgba(0, 0, 0, 0.25);
+  color: #f5f0e8;
   padding: 1px 6px;
-  border-radius: 999px;
+  border-radius: 9999px;
   flex-shrink: 0;
+  margin-left: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* --- Variaciones Temáticas de Tomos --- */
-/* Tomo 01: Dorado Ámbar (Diario & Terapia) */
-.tomoDiario .flatBackFlap {
-  background: #E5B23E;
-  border-color: #D19C28;
+/* --- Variaciones de Tomos de Archivador --- */
+/* Tomo 01: Archivador Burdeos / Cuero Terapéutico */
+.binderTomo01 {
+  --binder-spine-bg: #4a1525;
+  --binder-border: #310c17;
+  --binder-border-active: #c29d59;
 }
-.tomoDiario.flatFolderActive .flatBackFlap,
-.tomoDiario[aria-current="page"] .flatBackFlap {
-  background: #F3C34B;
-  border-color: #DDA622;
-}
-.tomoDiario .flatFrontFlap {
-  background: #F5C64C;
-  border-color: #D19C28;
-}
-.tomoDiario.flatFolderActive .flatFrontFlap,
-.tomoDiario[aria-current="page"] .flatFrontFlap {
-  background: #FFD45E;
-  border-color: #DDA622;
-}
-.tomoDiario .flatFolderTitle,
-.tomoDiario .flatCountPill {
-  color: #382405;
+.binderTomo01.binderActive,
+.binderTomo01[aria-current="page"] {
+  --binder-spine-bg: #5c1b2e;
 }
 
-/* Tomo 02: Mostaza / Ámbar Cálido (Ideas & Taller) */
-.tomoIdeas .flatBackFlap {
-  background: #D99B30;
-  border-color: #BF821B;
+/* Tomo 02: Archivador Ocre / Mostaza Taller */
+.binderTomo02 {
+  --binder-spine-bg: #422d0d;
+  --binder-border: #291c07;
+  --binder-border-active: #eab308;
 }
-.tomoIdeas.flatFolderActive .flatBackFlap,
-.tomoIdeas[aria-current="page"] .flatBackFlap {
-  background: #EAA835;
-  border-color: #CF8F1E;
-}
-.tomoIdeas .flatFrontFlap {
-  background: #E5A536;
-  border-color: #BF821B;
-}
-.tomoIdeas.flatFolderActive .flatFrontFlap,
-.tomoIdeas[aria-current="page"] .flatFrontFlap {
-  background: #F4B341;
-  border-color: #CF8F1E;
-}
-.tomoIdeas .flatFolderTitle,
-.tomoIdeas .flatCountPill {
-  color: #382405;
+.binderTomo02.binderActive,
+.binderTomo02[aria-current="page"] {
+  --binder-spine-bg: #523810;
 }
 
-/* Tomo 03: Esmeralda Plano (Conaset & Apuntes B) */
-.tomoConaset .flatBackFlap {
-  background: #2E9B70;
-  border-color: #23805B;
+/* Tomo 03: Archivador Verde Bosque / Conaset */
+.binderTomo03 {
+  --binder-spine-bg: #0f3529;
+  --binder-border: #09211a;
+  --binder-border-active: #34d399;
 }
-.tomoConaset.flatFolderActive .flatBackFlap,
-.tomoConaset[aria-current="page"] .flatBackFlap {
-  background: #38B282;
-  border-color: #2A956C;
-}
-.tomoConaset .flatFrontFlap {
-  background: #35A87B;
-  border-color: #23805B;
-}
-.tomoConaset.flatFolderActive .flatFrontFlap,
-.tomoConaset[aria-current="page"] .flatFrontFlap {
-  background: #41BF8D;
-  border-color: #2A956C;
-}
-.tomoConaset .flatFolderTitle,
-.tomoConaset .flatCountPill {
-  color: #0A3323;
-}
-.tomoConaset .flatCountPill {
-  background: rgba(0, 0, 0, 0.14);
+.binderTomo03.binderActive,
+.binderTomo03[aria-current="page"] {
+  --binder-spine-bg: #144434;
 }
 
 .tomoDot {
