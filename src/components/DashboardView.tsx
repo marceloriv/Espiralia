@@ -73,6 +73,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [editingHabit, setEditingHabit] = useState<HabitTrackerItem | null>(null);
   const [pinnedFocusTodoId, setPinnedFocusTodoId] = useState<string | null>(null);
   const [isFocusModalOpen, setIsFocusModalOpen] = useState(false);
+  const [distractions, setDistractions] = useState<string[]>(() => StorageService.getDistractions(profile.id));
+  const [newDistractionText, setNewDistractionText] = useState('');
   const [now] = useState(() => new Date());
   const [energyState, setEnergyState] = useState<'calma' | 'plena' | 'neutra' | 'cansada'>('calma');
   const [reflection1, setReflection1] = useState('');
@@ -86,6 +88,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     setTodos(StorageService.getTodos(profile.id));
     setAreas(StorageService.getAreas(profile.id));
     setHabits(StorageService.getHabits(profile.id));
+    setDistractions(StorageService.getDistractions(profile.id));
   }, [profile.id]);
 
   useEffect(() => {
@@ -120,6 +123,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const weekBlocks = allWeekBlocks.slice(0, 4);
   const areaSummaries = computeAreaSummaries(areas, todos);
 
+  const todayPlannerBlocks = planner.filter(b => b.date === todayStr);
+  const todayScheduleItems = [
+    ...todayEvents.map(e => ({
+      id: e.id,
+      time: e.startTime || '09:00',
+      title: e.title,
+      source: 'event' as const,
+      category: categoryOf(e),
+      completed: false,
+    })),
+    ...todayPlannerBlocks.map(b => ({
+      id: b.id,
+      time: b.timeSlot || '12:00',
+      title: b.title,
+      source: 'planner' as const,
+      category: undefined,
+      completed: Boolean(b.completed),
+    })),
+  ].sort((a, b) => a.time.localeCompare(b.time));
+
+  const reminderTodos = todos
+    .filter(t => !t.completed && (t.status ? t.status !== 'completada' : true) && Boolean(t.dueDate))
+    .sort((a, b) => (a.dueDate! > b.dueDate! ? 1 : -1))
+    .slice(0, 4);
+
   // Compute week of the year
   const startOfYear = new Date(now.getFullYear(), 0, 1);
   const daysDiff = Math.floor((now.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
@@ -128,6 +156,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const handleToggleTodo = (id: string) => {
     StorageService.toggleTodo(profile.id, id);
     loadData();
+  };
+
+  const handleAddDistraction = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = newDistractionText.trim();
+    if (!trimmed) return;
+    const updated = [...distractions, trimmed];
+    StorageService.saveDistractions(profile.id, updated);
+    setDistractions(updated);
+    setNewDistractionText('');
+  };
+
+  const handleRemoveDistraction = (index: number) => {
+    const updated = distractions.filter((_, idx) => idx !== index);
+    StorageService.saveDistractions(profile.id, updated);
+    setDistractions(updated);
   };
 
   const totalHabitSlots = habits.length * 7;
@@ -669,115 +713,91 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className={styles.metallicPaperclip} aria-hidden="true" />
             <div className={styles.distractionHeader}>
               <h4 className={styles.distractionTitle}>ELIMINATE DISTRACTIONS</h4>
-              <span className={styles.distractionCommitment}>Compromiso</span>
+              <span className={styles.distractionCommitment}>Compromisos ({distractions.length})</span>
             </div>
             <ul className={styles.distractionList}>
-              <li>
-                <span className={styles.distractionDot} />
-                <span>Dejar el teléfono inteligente en modo no molestar y en otra habitación.</span>
-              </li>
-              <li>
-                <span className={styles.distractionDot} />
-                <span>Cero pestañas de noticias abiertas durante el bloque de estudio técnico.</span>
-              </li>
-              <li>
-                <span className={styles.distractionDot} />
-                <span>Si surge una urgencia mental, anotarla en el Brain Dump inferior sin ejecutarla.</span>
-              </li>
+              {distractions.length === 0 ? (
+                <li style={{ color: 'var(--color-muted)', fontStyle: 'italic', padding: '6px 0' }}>
+                  Sin compromisos registrados. Agrega uno abajo.
+                </li>
+              ) : (
+                distractions.map((item, idx) => (
+                  <li key={idx} className={styles.distractionListItem}>
+                    <span className={styles.distractionDot} />
+                    <span style={{ flex: 1 }}>{item}</span>
+                    <button
+                      type="button"
+                      className={styles.distractionDelBtn}
+                      onClick={() => handleRemoveDistraction(idx)}
+                      aria-label={`Eliminar compromiso: ${item.toLowerCase()}`}
+                    >
+                      <X size={14} aria-hidden="true" />
+                    </button>
+                  </li>
+                ))
+              )}
             </ul>
+            <form onSubmit={handleAddDistraction} className={styles.distractionForm}>
+              <input
+                type="text"
+                className={styles.distractionInput}
+                placeholder="Nuevo compromiso (ej. Sin redes hasta las 18h)"
+                value={newDistractionText}
+                onChange={(e) => setNewDistractionText(e.target.value)}
+              />
+              <button
+                type="submit"
+                className={styles.distractionAddBtn}
+                aria-label="Agregar compromiso"
+                disabled={!newDistractionText.trim()}
+              >
+                +
+              </button>
+            </form>
           </div>
         </div>
 
         {/* Columna Lateral Derecha: Horario, Mini Reminders y Planner (5 cols) */}
         <div className={styles.mainRightCol}>
-          {/* Focus Schedule de Hoy (08:00 - 20:00) */}
+          {/* Focus Schedule de Hoy (Eventos de hoy + Bloques de planner) */}
           <section className={styles.card} aria-labelledby="dash-events">
             <div className={styles.cardHeader}>
               <h3 id="dash-events" className={styles.cardTitle}>
                 <Clock size={18} aria-hidden="true" />
                 <span>Focus Schedule de Hoy</span>
               </h3>
-              <span className={styles.cardMeta}>{countLabel(todayEventsTotal, 'evento', 'eventos')}</span>
+              <span className={styles.cardMeta}>{countLabel(todayScheduleItems.length, 'actividad', 'actividades')}</span>
             </div>
 
-            {/* Complete 7 Routine Timeline Slots from Stitch */}
-            <div className={styles.routineTimeline}>
-              <div className={styles.routineSlotDone}>
-                <span className={styles.routineTime}>08:00</span>
-                <span className={styles.routineDotDone} />
-                <span className={styles.routineTitleDone}>Lectura matutina &amp; té de menta</span>
-                <span className={styles.routineStatusTag}>Completado</span>
+            {todayScheduleItems.length === 0 ? (
+              <div className={styles.emptyPrioritiesState} style={{ padding: '24px 16px' }}>
+                <Clock size={20} className={styles.emptyPrioritiesIcon} aria-hidden="true" />
+                <p className={styles.emptyPrioritiesTitle}>Día despejado • Sin eventos agendados para hoy</p>
+                <p className={styles.emptyPrioritiesSub}>Puedes planificar una franja horaria de enfoque en la Agenda.</p>
+                <button
+                  type="button"
+                  className={styles.addHabitBtn}
+                  onClick={() => onNavigate('agenda')}
+                  aria-label="Abrir agenda"
+                >
+                  + Agendar Evento
+                </button>
               </div>
-
-              <div className={styles.routineSlotDone}>
-                <span className={styles.routineTime}>09:30</span>
-                <span className={styles.routineDotDone} />
-                <span className={styles.routineTitleDone}>Lecturas Módulo Epistemología</span>
-                <span className={styles.routineStatusTag}>Completado</span>
-              </div>
-
-              {/* 11:30 Active Session Pulse */}
-              <div className={styles.routineSlotActive}>
-                <span className={styles.routineTimeActive}>11:30</span>
-                <div className={styles.pulseDot} aria-hidden="true" />
-                <div className={styles.activeSlotBody}>
-                  <span className={styles.activeSlotTitle}>Test CONASET Clase B (3 ensayos)</span>
-                  <span className={styles.activeSlotBadge}>EN CURSO · 42 min restantes</span>
-                </div>
-              </div>
-
-              <div className={styles.routineSlotPending}>
-                <span className={styles.routineTime}>14:00</span>
-                <span className={styles.routineDotAmber} />
-                <span className={styles.routineTitle}>Almuerzo pausado &amp; digestión tranquila</span>
-                <span className={styles.routinePauseTag}>Pausa</span>
-              </div>
-
-              <div className={styles.routineSlotPending}>
-                <span className={styles.routineTime}>16:30</span>
-                <span className={styles.routineDotPurple} />
-                <span className={styles.routineTitle}>Borrador Carta Univ. 2026 (Pliego libre)</span>
-                <span className={styles.routineMutedTag}>60 min</span>
-              </div>
-
-              <div className={styles.routineSlotPending}>
-                <span className={styles.routineTime}>18:30</span>
-                <span className={styles.routineDotTeal} />
-                <span className={styles.routineTitle}>Bitácora semanal de terapia personal</span>
-                <span className={styles.routineMutedTag}>30 min</span>
-              </div>
-
-              <div className={styles.routineSlotPending}>
-                <span className={styles.routineTime}>20:00</span>
-                <span className={styles.routineDotGray} />
-                <span className={styles.routineTitle}>Cierre de cuaderno &amp; reflexión nocturna</span>
-                <span className={styles.routineMutedTag}>15 min</span>
-              </div>
-            </div>
-
-            {/* User Events from StorageService */}
-            {todayEvents.length === 0 ? (
-              <p className={styles.emptyNotice}>No hay eventos para hoy</p>
             ) : (
-              <ul className={styles.list} aria-label="Eventos de hoy">
-                {todayEvents.map(ev => {
-                  const category = categoryOf(ev);
-                  return (
-                    <li key={ev.id} className={styles.eventRow}>
-                      <span className={styles.timeBlock}>{ev.startTime ?? 'Todo el día'}</span>
-                      <div className={styles.rowBody}>
-                        <span className={styles.rowTitle}>{ev.title}</span>
-                        <span
-                          className={styles.badge}
-                          style={{ backgroundColor: CATEGORY_COLORS[category].color, color: CATEGORY_COLORS[category].textColor }}
-                        >
-                          {FILTER_LABELS[category]}
-                        </span>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+              <div className={styles.routineTimeline}>
+                {todayScheduleItems.map((item) => (
+                  <div key={item.id} className={item.completed ? styles.routineSlotDone : styles.routineSlotPending}>
+                    <span className={styles.routineTime}>{item.time}</span>
+                    <span className={item.completed ? styles.routineDotDone : styles.routineDotTeal} />
+                    <span className={item.completed ? styles.routineTitleDone : styles.routineTitle}>
+                      {item.title}
+                    </span>
+                    <span className={item.source === 'event' ? styles.routineStatusTag : styles.routineMutedTag}>
+                      {item.source === 'event' ? 'Evento' : 'Bloque'}
+                    </span>
+                  </div>
+                ))}
+              </div>
             )}
             <button type="button" className={styles.cardLink} onClick={() => onNavigate('agenda')}>
               Ver agenda completa →
@@ -792,22 +812,30 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <Bell size={16} style={{ color: 'var(--color-accent-amber)' }} aria-hidden="true" />
                 <span>Mini Reminders</span>
               </h4>
-              <span className={styles.cardMeta}>Recordatorios</span>
+              <span className={styles.cardMeta}>Recordatorios ({reminderTodos.length})</span>
             </div>
-            <div className={styles.remindersList}>
-              <div className={styles.reminderItem}>
-                <span>Imprimir lámina de señales de tránsito</span>
-                <span className={styles.reminderDatePill}>Hoy</span>
+            {reminderTodos.length === 0 ? (
+              <p style={{ margin: 0, padding: '12px 0', fontSize: 'var(--text-body-sm)', color: 'var(--color-muted)' }}>
+                Sin recordatorios con fecha próxima. Asigna fecha a tus tareas para verlas aquí.
+              </p>
+            ) : (
+              <div className={styles.remindersList}>
+                {reminderTodos.map(t => {
+                  const label = dueLabel(t.dueDate, todayStr) || t.dueDate;
+                  const isUrgent = label?.toLowerCase().includes('hoy') || label?.toLowerCase().includes('mañana');
+                  return (
+                    <div key={t.id} className={styles.reminderItem}>
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '240px' }}>
+                        {t.title}
+                      </span>
+                      <span className={isUrgent ? styles.reminderDatePill : styles.reminderDatePillMuted}>
+                        {label}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-              <div className={styles.reminderItem}>
-                <span>Confirmar sesión de terapia de este viernes</span>
-                <span className={styles.reminderDatePillMuted}>Jueves</span>
-              </div>
-              <div className={styles.reminderItem}>
-                <span>Revisar rúbrica de postulación universitaria</span>
-                <span className={styles.reminderDatePillMuted}>28 Nov</span>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Planner de la semana */}

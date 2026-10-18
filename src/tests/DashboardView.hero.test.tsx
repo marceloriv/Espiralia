@@ -149,4 +149,43 @@ describe('DashboardView critical CSS & Hero Content', () => {
       expect(screen.getByRole('heading', { level: 3, name: 'Estudio de Gramática Latina' })).toBeInTheDocument();
     });
   });
+
+  describe('Distracciones y Timeline de Eventos Reales', () => {
+    it('despliega los compromisos reales de StorageService y permite agregar y eliminar', async () => {
+      const { userEvent } = await import('@testing-library/user-event');
+      const { StorageService } = await import('../../src/services/storage');
+      const user = userEvent.setup();
+      localStorage.clear();
+      StorageService.saveProfile(mockProfile);
+      StorageService.saveDistractions(mockProfile.id, [
+        'No revisar WhatsApp hasta el almuerzo',
+      ]);
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+      expect(screen.getByText('No revisar WhatsApp hasta el almuerzo')).toBeInTheDocument();
+
+      // Agregar nuevo compromiso
+      const input = screen.getByPlaceholderText(/nuevo compromiso/i);
+      await user.type(input, 'Poner teléfono en modo avión{enter}');
+
+      expect(screen.getByText('Poner teléfono en modo avión')).toBeInTheDocument();
+      expect(StorageService.getDistractions(mockProfile.id)).toContain('Poner teléfono en modo avión');
+
+      // Eliminar el primer compromiso
+      const delBtn = screen.getByRole('button', { name: /eliminar compromiso: no revisar whatsapp hasta el almuerzo/i });
+      await user.click(delBtn);
+
+      expect(screen.queryByText('No revisar WhatsApp hasta el almuerzo')).not.toBeInTheDocument();
+      expect(StorageService.getDistractions(mockProfile.id)).not.toContain('No revisar WhatsApp hasta el almuerzo');
+    });
+
+    it('Focus Schedule muestra eventos reales y no renderiza los 7 slots estáticos de mock', () => {
+      localStorage.clear();
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+      expect(screen.queryByText(/Lectura matutina & té de menta/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Almuerzo pausado & digestión tranquila/i)).not.toBeInTheDocument();
+      expect(screen.getByText(/Día despejado • Sin eventos agendados para hoy/i)).toBeInTheDocument();
+    });
+  });
 });

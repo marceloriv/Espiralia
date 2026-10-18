@@ -1516,6 +1516,81 @@
   flex-shrink: 0;
 }
 
+.distractionListItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.distractionDelBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-muted, #726c63);
+  cursor: pointer;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.distractionDelBtn:hover {
+  opacity: 1;
+  color: var(--color-error, #b91c1c);
+}
+
+.distractionDelBtn:focus-visible {
+  outline: 2px solid var(--color-error, #b91c1c);
+  outline-offset: 2px;
+}
+
+.distractionForm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-left: 24px;
+}
+
+.distractionInput {
+  flex: 1;
+  height: 32px;
+  padding: 0 10px;
+  font-family: inherit;
+  font-size: var(--text-body-sm);
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--color-hairline, #e2dcd2);
+  border-radius: var(--radius-xs);
+  color: var(--color-ink, #23211e);
+}
+
+.distractionInput:focus {
+  outline: none;
+  border-color: var(--color-primary, #324b3e);
+}
+
+.distractionAddBtn {
+  height: 32px;
+  width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  background-color: var(--color-primary, #324b3e);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+
+.distractionAddBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* Focus Schedule (08:00 - 20:00) Routine Timeline */
 .routineTimeline {
   display: flex;
