@@ -27,7 +27,17 @@ import { StorageService } from '../services/storage';
 import { sileo } from 'sileo';
 import { toLocalDateStr } from '../utils/localDate';
 import { categoryOf } from './agenda/eventMapping';
-import { criticalTodos, dueLabel, greetingFor, isCritical, todayEventsSorted, computeAreaSummaries } from './dashboard/dashboardData';
+import {
+  criticalTodos,
+  dueLabel,
+  greetingFor,
+  isCritical,
+  todayEventsSorted,
+  computeAreaSummaries,
+  computeHabitStreak,
+  computeNetFocusHours,
+  computeTaskPerformance,
+} from './dashboard/dashboardData';
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
 import { HabitModal } from './habits/HabitModal';
@@ -126,6 +136,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
   const todayDayOfWeek = now.getDay() as DayOfWeek;
   const todayPlannerBlocks = planner.filter(b => b.dayOfWeek === todayDayOfWeek);
+  const todayHabitIdx = (todayDayOfWeek + 6) % 7;
+  const habitStreak = computeHabitStreak(habits, todayHabitIdx);
+  const netFocus = computeNetFocusHours(events, planner, todayStr, todayDayOfWeek);
+  const taskPerf = computeTaskPerformance(todos);
   interface ScheduleItem {
     id: string;
     time: string;
@@ -500,56 +514,62 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Card 2: Métricas de Serenidad */}
-        <div className={styles.bentoCard}>
+        {/* Card 2: Métricas de Serenidad (Papel Rasgado Editorial) */}
+        <div className={styles.bentoCardWrap}>
           <div className={styles.cardWashiSlate} aria-hidden="true" />
-          <div className={styles.bentoCardHeader}>
-            <span className={styles.bentoTag}>
-              <Sparkles size={16} aria-hidden="true" />
-              <span>Métricas de Serenidad</span>
-            </span>
-            <span className={styles.bentoBadge}>Privacidad local</span>
-          </div>
-
-          <div className={styles.metricsQuadGrid}>
-            <div className={styles.metricQuadTile}>
-              <span className={styles.metricTileLabel}>Racha Serena</span>
-              <div className={styles.metricTileValueBox}>
-                <span className={styles.metricTileValAccent}>14</span>
-                <span className={styles.metricTileUnit}>días</span>
-              </div>
-              <span className={styles.metricTileSub}>IndexedDB activo</span>
+          <div className={`${styles.bentoCard} ${styles.bentoCardTorn}`}>
+            <div className={styles.bentoCardHeader}>
+              <span className={styles.bentoTag}>
+                <Sparkles size={16} aria-hidden="true" />
+                <span>Métricas de Serenidad</span>
+              </span>
+              <span className={styles.bentoBadge}>Privacidad local</span>
             </div>
 
-            <div className={styles.metricQuadTile}>
-              <span className={styles.metricTileLabel}>Foco Neto Hoy</span>
-              <div className={styles.metricTileValueBox}>
-                <span className={styles.metricTileVal}>5.5</span>
-                <span className={styles.metricTileUnit}>horas</span>
+            <div className={styles.metricsQuadGrid}>
+              <div className={styles.metricQuadTile}>
+                <span className={styles.metricTileLabel}>Racha Serena</span>
+                <div className={styles.metricTileValueBox}>
+                  <span className={styles.metricTileValAccent}>{habitStreak}</span>
+                  <span className={styles.metricTileUnit}>días</span>
+                </div>
+                <span className={styles.metricTileSub}>{habitStreak > 0 ? 'Hábitos al día' : 'localStorage activo'}</span>
               </div>
-              <span className={styles.metricTileSub}>{allWeekBlocks.filter(b => b.completed).length} cumplidos hoy</span>
+
+              <div className={styles.metricQuadTile}>
+                <span className={styles.metricTileLabel}>Foco Neto Hoy</span>
+                <div className={styles.metricTileValueBox}>
+                  <span className={styles.metricTileVal}>{netFocus.hours}</span>
+                  <span className={styles.metricTileUnit}>horas</span>
+                </div>
+                <span className={styles.metricTileSub}>
+                  {netFocus.count > 0 ? `${netFocus.count} actividades hoy` : 'Día libre de foco'}
+                </span>
+              </div>
+
+              <div className={styles.metricQuadTile}>
+                <span className={styles.metricTileLabel}>Ruido Digital</span>
+                <div className={styles.metricTileValueBox}>
+                  <span className={styles.metricTileValTeal}>0%</span>
+                </div>
+                <span className={styles.metricTileSub}>0 rastreadores • 100% offline</span>
+              </div>
+
+              <div className={styles.metricQuadTile}>
+                <span className={styles.metricTileLabel}>Rendimiento</span>
+                <div className={styles.metricTileValueBox}>
+                  <span className={styles.metricTileValPurple}>{taskPerf.percentage}%</span>
+                </div>
+                <span className={styles.metricTileSub}>
+                  {taskPerf.total > 0 ? `${taskPerf.completed} de ${taskPerf.total} tareas logradas` : 'Sin tareas registradas'}
+                </span>
+              </div>
             </div>
 
-            <div className={styles.metricQuadTile}>
-              <span className={styles.metricTileLabel}>Ruido Digital</span>
-              <div className={styles.metricTileValueBox}>
-                <span className={styles.metricTileValTeal}>0%</span>
-              </div>
-              <span className={styles.metricTileSub}>0 rastreadores</span>
+            <div className={styles.bentoCardFooter}>
+              <span>Soberanía de datos</span>
+              <span className={styles.dataSovereigntyText}>100% en tu máquina</span>
             </div>
-
-            <div className={styles.metricQuadTile}>
-              <span className={styles.metricTileLabel}>Rendimiento</span>
-              <div className={styles.metricTileValueBox}>
-                <span className={styles.metricTileValPurple}>68%</span>
-              </div>
-              <span className={styles.metricTileSub}>Objetivo semestral</span>
-            </div>
-          </div>
-
-          <div className={styles.bentoCardFooter}>
-            <span>Soberanía de datos</span>
-            <span className={styles.dataSovereigntyText}>100% en tu máquina</span>
           </div>
         </div>
 

@@ -267,5 +267,40 @@ describe('DashboardView critical CSS & Hero Content', () => {
       expect(screen.getByText(/Explorar diseño con papel rasgado auténtico/i)).toBeInTheDocument();
       expect(screen.queryByText(/Comprar cuaderno de tapas duras tamaño A5/i)).not.toBeInTheDocument();
     });
+
+    it('Métricas de Serenidad despliega valores dinámicos calculados reales y elimina textos fijos de mock', async () => {
+      const { StorageService } = await import('../../src/services/storage');
+      localStorage.clear();
+      StorageService.saveProfile(mockProfile);
+
+      StorageService.saveTodo({
+        id: 't-perf-1',
+        profileId: mockProfile.id,
+        areaId: 'default',
+        title: 'Tarea Real 1',
+        priority: 'media',
+        status: 'completada',
+        completed: true,
+        createdAt: '2026-10-17',
+      });
+      StorageService.saveTodo({
+        id: 't-perf-2',
+        profileId: mockProfile.id,
+        areaId: 'default',
+        title: 'Tarea Real 2',
+        priority: 'alta',
+        status: 'pendiente',
+        completed: false,
+        createdAt: '2026-10-17',
+      });
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+
+      expect(screen.getAllByText('50%')[0]).toBeInTheDocument();
+      expect(screen.getByText(/1 de 2 tareas logradas/i)).toBeInTheDocument();
+      expect(screen.queryByText('IndexedDB activo')).not.toBeInTheDocument();
+      expect(screen.queryByText('Objetivo semestral')).not.toBeInTheDocument();
+      expect(screen.getByText(/0 rastreadores • 100% offline/i)).toBeInTheDocument();
+    });
   });
 });
