@@ -1056,6 +1056,172 @@
   background-color: var(--color-primary);
 }
 
+.focusHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.changeFocusBtn {
+  font-family: var(--font-family-3, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary, #324b3e);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #d6dbe0;
+  border-radius: var(--radius-xs);
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.changeFocusBtn:hover {
+  background-color: #ffffff;
+  border-color: var(--color-primary, #324b3e);
+}
+
+.changeFocusBtn:focus-visible {
+  outline: 2px solid var(--color-primary, #324b3e);
+  outline-offset: 2px;
+}
+
+.emptyPrioritiesState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+  gap: 8px;
+}
+
+.emptyPrioritiesIcon {
+  color: var(--color-success, #5a826d);
+  opacity: 0.85;
+}
+
+.emptyPrioritiesTitle {
+  margin: 0;
+  font-family: var(--font-primary, serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink, #23211e);
+}
+
+.emptyPrioritiesSub {
+  margin: 0 0 8px 0;
+  font-size: var(--text-body-sm, 13px);
+  color: var(--color-muted, #726c63);
+  max-width: 340px;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(20, 20, 19, 0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.focusModalCard {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--bg-card, #fcf9f6);
+  border: 1px solid var(--color-hairline, #e2dcd2);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 14px 28px rgba(26, 25, 23, 0.16);
+  padding: 20px;
+}
+
+.focusModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--color-hairline, #e2dcd2);
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.focusModalTitle {
+  margin: 0;
+  font-family: var(--font-primary, serif);
+  font-size: 1.15rem;
+  color: var(--color-ink, #23211e);
+}
+
+.focusModalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.focusModalDesc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--color-muted, #726c63);
+}
+
+.focusModalList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.focusModalItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--color-hairline, #e2dcd2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--color-ink, #23211e);
+  text-align: left;
+  transition: all 0.12s ease;
+  min-height: 44px;
+}
+
+.focusModalItem:hover {
+  background-color: var(--color-surface-soft, #f4efe8);
+  border-color: var(--color-primary, #324b3e);
+}
+
+.focusModalItemActive {
+  background-color: var(--color-surface-soft, #f4efe8);
+  border-color: var(--color-primary, #324b3e);
+  font-weight: 600;
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-muted, #726c63);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.closeBtn:hover {
+  background-color: var(--color-surface-soft, #f4efe8);
+  color: var(--color-ink, #23211e);
+}
+
 .priorityHighBadge {
   padding: 2px 8px;
   border-radius: var(--radius-xs);

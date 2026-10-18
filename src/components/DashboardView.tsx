@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   Edit,
   ArrowRight,
+  X,
 } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem } from '../types';
 import { StorageService } from '../services/storage';
@@ -70,9 +71,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [habits, setHabits] = useState<HabitTrackerItem[]>(() => StorageService.getHabits(profile.id));
   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<HabitTrackerItem | null>(null);
+  const [pinnedFocusTodoId, setPinnedFocusTodoId] = useState<string | null>(null);
+  const [isFocusModalOpen, setIsFocusModalOpen] = useState(false);
   const [now] = useState(() => new Date());
   const [energyState, setEnergyState] = useState<'calma' | 'plena' | 'neutra' | 'cansada'>('calma');
-  const [mainFocusChecked, setMainFocusChecked] = useState(false);
   const [reflection1, setReflection1] = useState('');
   const [reflection2, setReflection2] = useState('');
   const [reflection3, setReflection3] = useState('');
@@ -100,6 +102,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const pendingCount = todos.filter(t => (t.status ? t.status !== 'completada' : !t.completed)).length;
   const criticalCount = todos.filter(isCritical).length;
   const critical = criticalTodos(todos);
+  const pendingTodosList = todos.filter(t => (t.status ? t.status !== 'completada' : !t.completed));
+  const activeFocusTodo = (pinnedFocusTodoId ? todos.find(t => t.id === pinnedFocusTodoId) : null)
+    ?? critical[0]
+    ?? pendingTodosList[0]
+    ?? null;
+  const isFocusDone = activeFocusTodo ? (activeFocusTodo.status === 'completada' || Boolean(activeFocusTodo.completed)) : false;
+  const focusAreaName = activeFocusTodo
+    ? (areas.find(a => a.id === activeFocusTodo.areaId)?.name || activeFocusTodo.category || 'General')
+    : 'General';
+  const focusPriorityLabel = activeFocusTodo?.priority === 'alta'
+    ? 'Alta Prioridad'
+    : activeFocusTodo?.priority === 'media'
+    ? 'Media Prioridad'
+    : 'Baja Prioridad';
   const allWeekBlocks = planner.filter(b => b.period === 'semanal');
   const weekBlocks = allWeekBlocks.slice(0, 4);
   const areaSummaries = computeAreaSummaries(areas, todos);
@@ -526,35 +542,68 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className={styles.mainLeftCol}>
           {/* Banner Today's Main Focus */}
           <div className={styles.focusBanner}>
-            <div className={styles.washiTapeBadge} aria-hidden="true">
-              <Star size={14} />
-              <span>TODAY'S MAIN FOCUS</span>
+            <div className={styles.focusHeaderRow}>
+              <div className={styles.washiTapeBadge} aria-hidden="true">
+                <Star size={14} />
+                <span>TODAY'S MAIN FOCUS</span>
+              </div>
+              {pendingTodosList.length > 0 && (
+                <button
+                  type="button"
+                  className={styles.changeFocusBtn}
+                  onClick={() => setIsFocusModalOpen(true)}
+                  aria-label="Cambiar foco del día"
+                >
+                  Cambiar Foco
+                </button>
+              )}
             </div>
-            <div className={styles.focusInnerCard}>
-              <input
-                type="checkbox"
-                id="main-focus-checkbox"
-                className={styles.focusCheckbox}
-                checked={mainFocusChecked}
-                onChange={(e) => setMainFocusChecked(e.target.checked)}
-                aria-label="Marcar foco principal completado"
-              />
-              <div className={styles.focusDetails}>
-                <h3 className={`${styles.focusTitle} ${mainFocusChecked ? styles.rowTitleDone : ''}`}>
-                  Completar 3 test CONASET Clase B y registrar fallos de virajes en rotondas
-                </h3>
-                <div className={styles.focusChipsRow}>
-                  <span className={styles.focusChipArea}>
-                    <span className={styles.focusChipDot} />
-                    <span>Área: Licencia de Conducir</span>
-                  </span>
-                  <span className={styles.metaDot}>•</span>
-                  <span>Estimado: 90 min</span>
-                  <span className={styles.metaDot}>•</span>
-                  <span className={styles.priorityHighBadge}>Alta Prioridad</span>
+
+            {activeFocusTodo ? (
+              <div className={styles.focusInnerCard}>
+                <input
+                  type="checkbox"
+                  id="main-focus-checkbox"
+                  className={styles.focusCheckbox}
+                  checked={isFocusDone}
+                  onChange={() => handleToggleTodo(activeFocusTodo.id)}
+                  aria-label="Marcar foco principal completado"
+                />
+                <div className={styles.focusDetails}>
+                  <h3 className={`${styles.focusTitle} ${isFocusDone ? styles.rowTitleDone : ''}`}>
+                    {activeFocusTodo.title}
+                  </h3>
+                  <div className={styles.focusChipsRow}>
+                    <span className={styles.focusChipArea}>
+                      <span className={styles.focusChipDot} />
+                      <span>Área: {focusAreaName}</span>
+                    </span>
+                    <span className={styles.metaDot}>•</span>
+                    <span className={styles.priorityHighBadge}>{focusPriorityLabel}</span>
+                    {activeFocusTodo.dueDate && (
+                      <>
+                        <span className={styles.metaDot}>•</span>
+                        <span>Plazo: {dueLabel(activeFocusTodo.dueDate, todayStr) || activeFocusTodo.dueDate}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className={styles.focusInnerCard} style={{ justifyContent: 'center', textAlign: 'center', padding: '24px' }}>
+                <div>
+                  <p style={{ margin: '0 0 10px 0', color: 'var(--color-muted)' }}>Sin tareas pendientes en el cuaderno</p>
+                  <button
+                    type="button"
+                    className={styles.addHabitBtn}
+                    onClick={() => onNavigate('todo')}
+                    aria-label="Fijar foco del día"
+                  >
+                    + Fijar foco del día
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Top Priorities no negociables */}
@@ -573,45 +622,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
 
             {critical.length === 0 ? (
-              <div className={styles.prioritiesContainer}>
-                {/* Visual Stitch Default Priorities when zero critical tasks are registered */}
-                <div className={styles.stitchPriorityRow}>
-                  <span className={styles.priorityNumHighlight}>01.</span>
-                  <input type="checkbox" defaultChecked className={styles.checkbox} aria-label="Prioridad 1 completada" />
-                  <div className={styles.stitchPriorityText}>
-                    <span className={`${styles.rowTitle} ${styles.rowTitleDone}`}>
-                      Revisión de lecturas del Módulo Epistemología para la sesión de terapia
-                    </span>
-                    <span className={styles.priorityDoneSub}>Completado a las 09:30 · 45 min foco</span>
-                  </div>
-                  <CheckCircle size={18} className={styles.priorityDoneCheck} aria-hidden="true" />
-                </div>
-
-                <div className={styles.stitchPriorityRow}>
-                  <span className={styles.priorityNum}>02.</span>
-                  <input type="checkbox" className={styles.checkbox} aria-label="Prioridad 2 pendiente" />
-                  <div className={styles.stitchPriorityText}>
-                    <span className={styles.rowTitle}>
-                      Borrador preliminar de la Carta de Motivación (Postulación Univ. 2026)
-                    </span>
-                    <span className={styles.priorityPendingSub}>Fase: Estructura de 3 párrafos y objetivos</span>
-                  </div>
-                  <span className={styles.timeTagSmall}>16:30 hrs</span>
-                </div>
-
-                <div className={styles.stitchPriorityRow}>
-                  <span className={styles.priorityNum}>03.</span>
-                  <input type="checkbox" className={styles.checkbox} aria-label="Prioridad 3 pendiente" />
-                  <div className={styles.stitchPriorityText}>
-                    <span className={styles.rowTitle}>
-                      Caminata silenciosa de 30 minutos sin auriculares (Reajuste sensorial)
-                    </span>
-                    <span className={styles.priorityPendingSub}>Autocuidado · Parque Quinta Normal</span>
-                  </div>
-                  <span className={styles.timeTagSmall}>19:00 hrs</span>
-                </div>
-
-                <p className={styles.emptyNotice}>Nada crítico pendiente</p>
+              <div className={styles.emptyPrioritiesState}>
+                <CheckCircle size={22} className={styles.emptyPrioritiesIcon} aria-hidden="true" />
+                <p className={styles.emptyPrioritiesTitle}>Todo al día • Ninguna tarea crítica pendiente</p>
+                <p className={styles.emptyPrioritiesSub}>Excelente momento para avanzar en tareas secundarias o tomar una pausa consciente.</p>
+                <button
+                  type="button"
+                  className={styles.addHabitBtn}
+                  onClick={() => onNavigate('todo')}
+                  aria-label="Registrar pendiente en To-Do"
+                >
+                  + Nueva Tarea
+                </button>
               </div>
             ) : (
               <ul className={styles.list} aria-label="No olvidar">
@@ -1084,6 +1106,60 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         onSave={handleSaveHabit}
         onDelete={handleDeleteHabit}
       />
+
+      {isFocusModalOpen && (
+        <div
+          className={styles.modalBackdrop}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsFocusModalOpen(false);
+          }}
+        >
+          <div className={styles.focusModalCard} role="dialog" aria-modal="true" aria-labelledby="focus-select-title">
+            <div className={styles.focusModalHeader}>
+              <h3 id="focus-select-title" className={styles.focusModalTitle}>Seleccionar Foco del Día</h3>
+              <button
+                type="button"
+                className={styles.closeBtn}
+                onClick={() => setIsFocusModalOpen(false)}
+                aria-label="Cerrar selector de foco"
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+            </div>
+            <div className={styles.focusModalBody}>
+              <p className={styles.focusModalDesc}>Elige la tarea en la que volcarás tu mayor energía durante la jornada:</p>
+              <div className={styles.focusModalList}>
+                <button
+                  type="button"
+                  className={`${styles.focusModalItem} ${!pinnedFocusTodoId ? styles.focusModalItemActive : ''}`}
+                  onClick={() => {
+                    setPinnedFocusTodoId(null);
+                    setIsFocusModalOpen(false);
+                  }}
+                >
+                  <Sparkles size={16} aria-hidden="true" />
+                  <span>Foco automático (tarea más urgente de la lista)</span>
+                </button>
+                {pendingTodosList.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    className={`${styles.focusModalItem} ${pinnedFocusTodoId === t.id ? styles.focusModalItemActive : ''}`}
+                    onClick={() => {
+                      setPinnedFocusTodoId(t.id);
+                      setIsFocusModalOpen(false);
+                    }}
+                  >
+                    <CheckCircle size={16} aria-hidden="true" />
+                    <span style={{ textAlign: 'left', flex: 1 }}>{t.title}</span>
+                    <span className={styles.priorityHighBadge} style={{ fontSize: '10px' }}>{t.priority}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

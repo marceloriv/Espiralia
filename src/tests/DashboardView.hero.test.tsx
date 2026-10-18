@@ -71,4 +71,82 @@ describe('DashboardView critical CSS & Hero Content', () => {
       expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
   });
+
+  describe('Foco Principal y Top Priorities reales', () => {
+    it('Today\'s Main Focus refleja la tarea crítica real y permite completarla', async () => {
+      const { userEvent } = await import('@testing-library/user-event');
+      const { StorageService } = await import('../../src/services/storage');
+      const user = userEvent.setup();
+      localStorage.clear();
+      StorageService.saveProfile(mockProfile);
+
+      const criticalTodo = {
+        id: 'todo-crit-1',
+        profileId: mockProfile.id,
+        title: 'Redactar informe final de tesis',
+        priority: 'alta' as const,
+        status: 'pendiente' as const,
+        completed: false,
+        createdAt: '2026-10-17',
+      };
+      StorageService.saveTodo(criticalTodo);
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+      expect(screen.getByRole('heading', { level: 3, name: 'Redactar informe final de tesis' })).toBeInTheDocument();
+      expect(screen.queryByText(/Completar 3 test CONASET Clase B/i)).not.toBeInTheDocument();
+
+      const checkbox = screen.getByRole('checkbox', { name: /Marcar foco principal completado/i });
+      expect(checkbox).not.toBeChecked();
+      await user.click(checkbox);
+
+      expect(StorageService.getTodos(mockProfile.id).find(t => t.id === 'todo-crit-1')?.completed).toBe(true);
+    });
+
+    it('Top Priorities muestra estado limpio sin textos de epistemología cuando critical está vacío', () => {
+      localStorage.clear();
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+      expect(screen.queryByText(/Revisión de lecturas del Módulo Epistemología/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Carta de Motivación/i)).not.toBeInTheDocument();
+      expect(screen.getByText(/Todo al día • Ninguna tarea crítica pendiente/i)).toBeInTheDocument();
+    });
+
+    it('permite cambiar el foco diario manualmente a otra tarea pendiente', async () => {
+      const { userEvent } = await import('@testing-library/user-event');
+      const { StorageService } = await import('../../src/services/storage');
+      const user = userEvent.setup();
+      localStorage.clear();
+      StorageService.saveProfile(mockProfile);
+
+      StorageService.saveTodo({
+        id: 'todo-crit-1',
+        profileId: mockProfile.id,
+        title: 'Tarea Crítica Automática',
+        priority: 'alta',
+        status: 'pendiente',
+        completed: false,
+        createdAt: '2026-10-17',
+      });
+      StorageService.saveTodo({
+        id: 'todo-opt-2',
+        profileId: mockProfile.id,
+        title: 'Estudio de Gramática Latina',
+        priority: 'media',
+        status: 'pendiente',
+        completed: false,
+        createdAt: '2026-10-17',
+      });
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+      expect(screen.getByRole('heading', { level: 3, name: 'Tarea Crítica Automática' })).toBeInTheDocument();
+
+      const changeBtn = screen.getByRole('button', { name: /cambiar foco del día/i });
+      await user.click(changeBtn);
+
+      const targetTodoBtn = screen.getByRole('button', { name: /Estudio de Gramática Latina/i });
+      await user.click(targetTodoBtn);
+
+      expect(screen.getByRole('heading', { level: 3, name: 'Estudio de Gramática Latina' })).toBeInTheDocument();
+    });
+  });
 });
