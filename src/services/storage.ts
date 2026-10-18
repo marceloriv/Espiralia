@@ -31,6 +31,15 @@ function deleteScopedItem<T extends { id: string }>(key: string, id: string): vo
   localStorage.setItem(key, JSON.stringify(list));
 }
 
+function getScopedData<T>(key: string, fallback: T): T {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 const DEFAULT_AREAS = [
   { name: 'Estudios', color: '#3b82f6' },
   { name: 'Personal', color: '#10b981' },
@@ -52,7 +61,7 @@ export const StorageService = {
     deleteScopedItem<Profile>(PROFILES_KEY, id);
 
     // Cascade delete profile data
-    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links', 'habits', 'moods'];
+    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links', 'habits', 'moods', 'distractions', 'daily_energy'];
     for (const d of domains) {
       localStorage.removeItem(getScopedKey(id, d));
     }
@@ -319,6 +328,28 @@ export const StorageService = {
     deleteScopedItem<HabitTrackerItem>(getScopedKey(profileId, 'habits'), habitId);
   },
 
+  toggleHabitDay(profileId: string, habitId: string, dayIndex: number): void {
+    const habits = this.getHabits(profileId);
+    const habit = habits.find(h => h.id === habitId);
+    if (!habit) return;
+
+    const days = [...(habit.daysCompleted ?? [false, false, false, false, false, false, false])];
+    while (days.length < 7) {
+      days.push(false);
+    }
+    days[dayIndex] = !days[dayIndex];
+    this.saveHabit({ ...habit, daysCompleted: days });
+  },
+
+  // Distractions
+  getDistractions(profileId: string): string[] {
+    return getScopedData<string[]>(getScopedKey(profileId, 'distractions'), []);
+  },
+
+  saveDistractions(profileId: string, items: string[]): void {
+    localStorage.setItem(getScopedKey(profileId, 'distractions'), JSON.stringify(items));
+  },
+
   // Moods
   getMoods(profileId: string): MoodEntry[] {
     return getScopedList<MoodEntry>(getScopedKey(profileId, 'moods'));
@@ -326,6 +357,18 @@ export const StorageService = {
 
   saveMood(mood: MoodEntry): void {
     saveScopedItem(getScopedKey(mood.profileId, 'moods'), mood);
+  },
+
+  getTodayMood(profileId: string, dateStr: string): string | undefined {
+    const data = getScopedData<Record<string, string>>(getScopedKey(profileId, 'daily_energy'), {});
+    return data[dateStr];
+  },
+
+  setTodayMood(profileId: string, dateStr: string, energy: string): void {
+    const key = getScopedKey(profileId, 'daily_energy');
+    const data = getScopedData<Record<string, string>>(key, {});
+    data[dateStr] = energy;
+    localStorage.setItem(key, JSON.stringify(data));
   },
 
   seedInitialProfileData(profileId: string): void {
@@ -428,6 +471,46 @@ export const StorageService = {
         updatedAt: new Date().toISOString(),
       };
       this.saveNote(initialNote);
+    }
+
+    const currentHabits = this.getHabits(profileId);
+    if (currentHabits.length === 0) {
+      const initialHabits: HabitTrackerItem[] = [
+        {
+          id: `habit-seed-1`,
+          profileId,
+          name: 'Lectura diaria (20 min)',
+          category: estudiosArea.name,
+          daysCompleted: [true, true, false, true, false, false, false],
+        },
+        {
+          id: `habit-seed-2`,
+          profileId,
+          name: 'Práctica de enfoque / Pomodoro',
+          category: estudiosArea.name,
+          daysCompleted: [true, false, true, true, false, false, false],
+        },
+        {
+          id: `habit-seed-3`,
+          profileId,
+          name: 'Caminata y desconexión',
+          category: personalArea.name,
+          daysCompleted: [false, true, true, true, false, false, false],
+        },
+      ];
+      for (const h of initialHabits) {
+        this.saveHabit(h);
+      }
+    }
+
+    const currentDistractions = this.getDistractions(profileId);
+    if (currentDistractions.length === 0) {
+      const initialDistractions = [
+        'Teléfono en otra habitación durante bloques de enfoque',
+        'Cerrar pestañas secundarias y redes sociales',
+        'Silenciar notificaciones innecesarias',
+      ];
+      this.saveDistractions(profileId, initialDistractions);
     }
   },
 };
