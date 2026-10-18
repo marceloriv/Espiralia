@@ -48,6 +48,25 @@ describe('LandingDeskPreview', () => {
     expect(completedText).toBeInTheDocument();
   });
 
+  it('recalcula la tasa de serenidad y actualiza el contador de módulos al alternar tareas', async () => {
+    const user = userEvent.setup();
+    render(<LandingDeskPreview />);
+
+    // Inicialmente 1 tarea de 3 completada (73% Serenidad)
+    expect(screen.getByText(/73% serenidad/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 de 3/i)).toBeInTheDocument();
+
+    const secondTask = screen.getByRole('checkbox', { name: /postulación universitaria 2026/i });
+    await user.click(secondTask);
+
+    // Con 2 de 3 completadas -> 87% Serenidad
+    expect(screen.getByText(/87% serenidad/i)).toBeInTheDocument();
+    expect(screen.getByText(/2 de 3/i)).toBeInTheDocument();
+
+    const statusBadge = screen.getByRole('status');
+    expect(statusBadge).toHaveAttribute('aria-live', 'polite');
+  });
+
   it('despliega la tarjeta de estado vital y la nota táctil de captura rápida', () => {
     render(<LandingDeskPreview />);
     expect(screen.getByText(/estado vital & ritmo/i)).toBeInTheDocument();

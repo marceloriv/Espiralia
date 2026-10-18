@@ -38,6 +38,11 @@ export const LandingDeskPreview: React.FC = () => {
 
   const [activeMood, setActiveMood] = useState<string>('calma');
 
+  const completedCount = tasks.filter(task => task.completed).length;
+  const totalTasks = tasks.length;
+  const serenityPercentage = Math.round(60 + (completedCount / totalTasks) * 40);
+  const completionPercentage = Math.round((completedCount / totalTasks) * 100);
+
   const handleToggleTask = (id: string) => {
     setTasks(prev =>
       prev.map(task =>
@@ -170,7 +175,14 @@ export const LandingDeskPreview: React.FC = () => {
                   Estado Vital & Ritmo
                 </h3>
               </div>
-              <span className={styles.vitalBadge}>84% Serenidad</span>
+              <span
+                className={styles.vitalBadge}
+                role="status"
+                aria-live="polite"
+                aria-label={`${serenityPercentage}% de serenidad alcanzada`}
+              >
+                {serenityPercentage}% Serenidad
+              </span>
             </div>
 
             {/* Selector de estado anímico/lunar */}
@@ -232,10 +244,22 @@ export const LandingDeskPreview: React.FC = () => {
               <div className={styles.metricRow}>
                 <div className={styles.metricLabelGroup}>
                   <span className={styles.metricLabel}>Módulos Completados</span>
-                  <span className={styles.metricValue}>3 de 4</span>
+                  <span className={styles.metricValue}>
+                    {completedCount} de {totalTasks}
+                  </span>
                 </div>
-                <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={75} aria-valuemin={0} aria-valuemax={100} aria-label="Módulos completados">
-                  <div className={styles.progressBarFillAmber} />
+                <div
+                  className={styles.progressBarTrack}
+                  role="progressbar"
+                  aria-valuenow={completionPercentage}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label="Módulos completados"
+                >
+                  <div
+                    className={styles.progressBarFillAmber}
+                    style={{ width: `${completionPercentage}%`, transition: 'width 240ms ease' }}
+                  />
                 </div>
               </div>
             </div>
