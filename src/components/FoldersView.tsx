@@ -9,7 +9,7 @@ import {
   Printer,
   Shield,
   FileText,
-  Car,
+  BookOpen,
   Brain,
   GraduationCap,
   PiggyBank,
@@ -43,42 +43,42 @@ const DEFAULT_CURATED_FOLDERS: CuratedFolder[] = [
   {
     id: 'curated-01',
     num: '01',
-    name: 'Clase B Conaset',
+    name: 'Proyectos & Estudio',
     color: '#3b82f6',
-    desc: 'Preparación de examen teórico municipal, legislación vial 2025 y psicotécnico.',
-    specs: '8 Docs • 3 Enlaces',
-    icon: <Car size={26} aria-hidden="true" />,
-    tag: '01 / TRÁFICO',
+    desc: 'Planificación de proyectos, bitácoras de aprendizaje y documentación técnica.',
+    specs: 'Curada • General',
+    icon: <BookOpen size={26} aria-hidden="true" />,
+    tag: '01 / PROYECTOS',
   },
   {
     id: 'curated-02',
     num: '02',
-    name: 'Proceso Terapéutico',
+    name: 'Personal & Bienestar',
     color: '#10b981',
-    desc: 'Bitácora de sesiones, audios y reflexiones quincenales.',
-    specs: '6 Docs • 2 Enlaces',
+    desc: 'Hábitos diarios, reflexiones, salud integral y registros personales.',
+    specs: 'Curada • Bienestar',
     icon: <Brain size={26} aria-hidden="true" />,
-    tag: '02 / TERAPIA',
+    tag: '02 / BIENESTAR',
   },
   {
     id: 'curated-03',
     num: '03',
-    name: 'Admisión Univ. 2026',
+    name: 'Archivo & Referencias',
     color: '#8b5cf6',
-    desc: 'Ponderaciones PAES, temarios DEMRE y postulaciones becas.',
-    specs: '14 Docs • 4 Enlaces',
+    desc: 'Material de consulta, enlaces de interés, manuales y lecturas de largo plazo.',
+    specs: 'Curada • Archivo',
     icon: <GraduationCap size={26} aria-hidden="true" />,
-    tag: '03 / ACADÉMICO',
+    tag: '03 / REFERENCIAS',
   },
   {
     id: 'curated-04',
     num: '04',
-    name: 'Finanzas & Vida',
+    name: 'Finanzas & Administración',
     color: '#f59e0b',
-    desc: 'Presupuestos mensuales, pólizas y contratos de alquiler.',
-    specs: '9 Docs • 3 Enlaces',
+    desc: 'Presupuestos, comprobantes, pólizas y gestión administrativa.',
+    specs: 'Curada • Finanzas',
     icon: <PiggyBank size={26} aria-hidden="true" />,
-    tag: '04 / PATRIMONIO',
+    tag: '04 / FINANZAS',
   },
 ];
 
@@ -830,175 +830,127 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
               className={`${styles.pillBtn} ${activeFilter === 'all' ? styles.pillBtnActive : ''}`}
               onClick={() => setActiveFilter('all')}
             >
-              Todos ({links.length + 3})
+              Todos ({links.length})
             </button>
             <button
               type="button"
               className={`${styles.pillBtn} ${activeFilter === 'official' ? styles.pillBtnActive : ''}`}
               onClick={() => setActiveFilter('official')}
             >
-              Oficiales (4)
+              Oficiales (0)
             </button>
             <button
               type="button"
               className={`${styles.pillBtn} ${activeFilter === 'reading' ? styles.pillBtnActive : ''}`}
               onClick={() => setActiveFilter('reading')}
             >
-              Lecturas (8)
+              Lecturas (0)
             </button>
             <button
               type="button"
               className={`${styles.pillBtn} ${activeFilter === 'tools' ? styles.pillBtnActive : ''}`}
               onClick={() => setActiveFilter('tools')}
             >
-              Herramientas (6)
+              Herramientas (0)
             </button>
           </div>
         </div>
 
         {/* Bento Grid of Ephemeral Bookmarks */}
         <div className={styles.bookmarkGrid}>
-          {/* Bookmark Card 1: CONASET (with washi tape) */}
-          <div className={styles.bookmarkCardWrapper}>
-            <div className={styles.washiCardStrip} aria-hidden="true"></div>
-            <div className={styles.bookmarkCard}>
-              <div>
-                <div className={styles.bookmarkTop}>
-                  <span className={styles.bookmarkAreaBadge}>01. CLASE B CONASET</span>
-                  <a
-                    href="https://conaset.cl/simulador"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.bookmarkLinkAnchor}
-                    aria-label="Abrir Simulador Oficial de Examen Teórico CONASET"
-                  >
-                    <ExternalLink size={16} aria-hidden="true" />
-                  </a>
-                </div>
-                <h4 className={styles.bookmarkCardTitle}>Simulador Oficial de Examen Teórico CONASET</h4>
-                <p className={styles.bookmarkCardSnippet}>
-                  Plataforma estatal con el banco de preguntas aleatorias para licencias no profesionales clase B. Con temporizador real de 45 minutos.
-                </p>
-              </div>
-              <div className={styles.bookmarkCardFooter}>
-                <span className={styles.bookmarkDomain}>conaset.cl/simulador</span>
-                <span className={styles.bookmarkExtra}>35 Preguntas</span>
-              </div>
+          {links.length === 0 ? (
+            <div
+              style={{
+                gridColumn: '1 / -1',
+                padding: '36px 20px',
+                textAlign: 'center',
+                backgroundColor: 'var(--color-surface-card)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px dashed var(--color-hairline)',
+                color: 'var(--color-ink-muted)',
+              }}
+            >
+              <BookmarkPlus size={32} style={{ margin: '0 auto 12px auto', opacity: 0.6 }} aria-hidden="true" />
+              <p style={{ margin: '0 0 6px 0', fontSize: '0.9375rem', fontWeight: 600, color: 'var(--color-ink)' }}>
+                Sin marcadores guardados todavía
+              </p>
+              <p style={{ margin: '0 0 16px 0', fontSize: '0.8125rem' }}>
+                Guarda tus enlaces y referencias web para tenerlos a mano en tu escritorio.
+              </p>
+              <button
+                type="button"
+                className={styles.pillBtn}
+                style={{ margin: '0 auto' }}
+                onClick={() => {
+                  setEditingLink(null);
+                  setIsLinkModalOpen(true);
+                }}
+              >
+                + Guardar Enlace
+              </button>
             </div>
-          </div>
+          ) : (
+            links.map((link, idx) => {
+              const folder = folders.find(f => f.id === link.folderId);
+              const badgeText = folder ? folder.name.toUpperCase() : 'VÍNCULO LOCAL';
+              const domain = link.url.replace(/^https?:\/\//, '').split('/')[0];
+              const isEven = idx % 2 === 0;
 
-          {/* Bookmark Card 2: DEMRE (with pushpin chincheta) */}
-          <div className={styles.bookmarkCardWrapper}>
-            <div className={styles.pushpinBadge} aria-hidden="true"></div>
-            <div className={styles.bookmarkCard}>
-              <div>
-                <div className={styles.bookmarkTop}>
-                  <span className={`${styles.bookmarkAreaBadge} ${styles.bookmarkAreaBadgePurple}`}>
-                    03. ADMISIÓN 2026
-                  </span>
-                  <a
-                    href="https://demre.cl/publicaciones"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.bookmarkLinkAnchor}
-                    aria-label="Abrir Portal DEMRE Modelo de Pruebas & Claves PAES"
-                  >
-                    <ExternalLink size={16} aria-hidden="true" />
-                  </a>
-                </div>
-                <h4 className={styles.bookmarkCardTitle}>Portal DEMRE • Modelo de Pruebas &amp; Claves PAES</h4>
-                <p className={styles.bookmarkCardSnippet}>
-                  Descarga oficial de ensayos en PDF para Matemática M1, Comprensión Lectora e Historia con pautas corregidas paso a paso.
-                </p>
-              </div>
-              <div className={styles.bookmarkCardFooter}>
-                <span className={styles.bookmarkDomain}>demre.cl/publicaciones</span>
-                <span className={styles.bookmarkExtra}>PDFs Liberados</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bookmark Card 3: Mindfulness & Therapy (with washi tape) */}
-          <div className={styles.bookmarkCardWrapper}>
-            <div className={styles.washiCardStrip} style={{ left: '2rem', right: 'auto', transform: 'rotate(-2deg)' }} aria-hidden="true"></div>
-            <div className={styles.bookmarkCard}>
-              <div>
-                <div className={styles.bookmarkTop}>
-                  <span className={`${styles.bookmarkAreaBadge} ${styles.bookmarkAreaBadgeTeal}`}>
-                    02. TERAPIA
-                  </span>
-                  <a
-                    href="https://terapia-anotaciones.local"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.bookmarkLinkAnchor}
-                    aria-label="Abrir Guías de Meditación Somática & Audio-anclaje"
-                  >
-                    <ExternalLink size={16} aria-hidden="true" />
-                  </a>
-                </div>
-                <h4 className={styles.bookmarkCardTitle}>Guías de Meditación Somática &amp; Audio-anclaje</h4>
-                <p className={styles.bookmarkCardSnippet}>
-                  Ejercicios de respiración diafragmática para momentos de sobrecarga cognitiva. Duraciones de 5, 10 y 20 minutos sin pantallas.
-                </p>
-              </div>
-              <div className={styles.bookmarkCardFooter}>
-                <span className={styles.bookmarkDomain}>terapia-anotaciones.local</span>
-                <span className={styles.bookmarkExtra}>Audio Flac</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Dynamic User Links */}
-          {links.map((link) => (
-            <div key={link.id} className={styles.bookmarkCardWrapper}>
-              <div className={styles.washiCardStrip} aria-hidden="true"></div>
-              <div className={styles.bookmarkCard}>
-                <div>
-                  <div className={styles.bookmarkTop}>
-                    <span className={`${styles.bookmarkAreaBadge} ${styles.bookmarkAreaBadgePurple}`}>
-                      VÍNCULO LOCAL
-                    </span>
-                    <div className={styles.userLinkActions}>
-                      <a
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.bookmarkLinkAnchor}
-                        aria-label={`Abrir ${link.title}`}
-                      >
-                        <ExternalLink size={16} aria-hidden="true" />
-                      </a>
-                      <button
-                        type="button"
-                        className={styles.iconBtn}
-                        onClick={() => handleOpenEditLink(link)}
-                        aria-label={`Editar vínculo ${link.title}`}
-                      >
-                        <Pencil size={14} aria-hidden="true" />
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.iconBtn}
-                        onClick={() => handleDeleteLink(link)}
-                        aria-label={`Eliminar vínculo ${link.title}`}
-                      >
-                        <Trash2 size={14} aria-hidden="true" />
-                      </button>
+              return (
+                <div key={link.id} className={styles.bookmarkCardWrapper}>
+                  {isEven ? (
+                    <div className={styles.washiCardStrip} aria-hidden="true" />
+                  ) : (
+                    <div className={styles.pushpinBadge} aria-hidden="true" />
+                  )}
+                  <div className={styles.bookmarkCard}>
+                    <div>
+                      <div className={styles.bookmarkTop}>
+                        <span className={`${styles.bookmarkAreaBadge} ${styles.bookmarkAreaBadgePurple}`}>
+                          {badgeText}
+                        </span>
+                        <div className={styles.userLinkActions}>
+                          <a
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.bookmarkLinkAnchor}
+                            aria-label={`Abrir ${link.title}`}
+                          >
+                            <ExternalLink size={16} aria-hidden="true" />
+                          </a>
+                          <button
+                            type="button"
+                            className={styles.iconBtn}
+                            onClick={() => handleOpenEditLink(link)}
+                            aria-label={`Editar vínculo ${link.title}`}
+                          >
+                            <Pencil size={14} aria-hidden="true" />
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.iconBtn}
+                            onClick={() => handleDeleteLink(link)}
+                            aria-label={`Eliminar vínculo ${link.title}`}
+                          >
+                            <Trash2 size={14} aria-hidden="true" />
+                          </button>
+                        </div>
+                      </div>
+                      <h4 className={styles.bookmarkCardTitle}>{link.title}</h4>
+                      <p className={styles.bookmarkCardSnippet}>
+                        {link.description || 'Vínculo web guardado en tu cartulina local.'}
+                      </p>
+                    </div>
+                    <div className={styles.bookmarkCardFooter}>
+                      <span className={styles.bookmarkDomain}>{domain}</span>
+                      <span className={styles.bookmarkExtra}>{folder ? folder.name : 'Local'}</span>
                     </div>
                   </div>
-                  <h4 className={styles.bookmarkCardTitle}>{link.title}</h4>
-                  <p className={styles.bookmarkCardSnippet}>
-                    {link.description || 'Vínculo web guardado en tu cartulina local.'}
-                  </p>
                 </div>
-                <div className={styles.bookmarkCardFooter}>
-                  <span className={styles.bookmarkDomain}>{link.url}</span>
-                  <span className={styles.bookmarkExtra}>Local</span>
-                </div>
-              </div>
-            </div>
-          ))}
+              );
+            })
+          )}
         </div>
       </section>
 

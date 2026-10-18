@@ -63,7 +63,7 @@ describe('FoldersView', () => {
     const sheets = screen.getAllByTestId('folder-flat-sheets');
     expect(sheets.length).toBeGreaterThanOrEqual(4);
 
-    const activeTab = screen.getByRole('tab', { name: /clase b conaset/i });
+    const activeTab = screen.getByRole('tab', { name: /proyectos & estudio/i });
     expect(activeTab).toHaveAttribute('aria-selected', 'true');
     expect(activeTab.querySelector('[data-front-flap="true"]')).toBeInTheDocument();
   });
@@ -135,6 +135,35 @@ describe('FoldersView', () => {
       expect(screen.getByText(/esta carpeta no contiene notas ni enlaces vinculados todavía/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /\+ nueva nota/i })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /\+ nuevo enlace/i })).toBeInTheDocument();
+    });
+  });
+
+  describe('Marcadores Destacados Vivos', () => {
+    it('muestra enlaces reales de storage en la cuadrícula de marcadores y elimina mock conaset/demre', async () => {
+      const { StorageService } = await import('../services/storage');
+      StorageService.saveLink({
+        id: 'link-real-1',
+        profileId,
+        title: 'Documentación Oficial MDN Web',
+        url: 'https://developer.mozilla.org',
+        description: 'Referencia viva de APIs web, JavaScript y estándares abiertos.',
+        createdAt: '2026-10-17',
+      });
+
+      render(<FoldersView profileId={profileId} />);
+
+      expect(screen.getByText('Documentación Oficial MDN Web')).toBeInTheDocument();
+      expect(screen.getByText(/developer\.mozilla\.org/i)).toBeInTheDocument();
+      expect(screen.queryByText(/Simulador Oficial de Examen Teórico CONASET/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Portal DEMRE • Modelo de Pruebas & Claves PAES/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Guías de Meditación Somática & Audio-anclaje/i)).not.toBeInTheDocument();
+    });
+
+    it('muestra estado vacío y botón para guardar enlace cuando no hay marcadores', () => {
+      render(<FoldersView profileId={profileId} />);
+
+      expect(screen.getByText(/sin marcadores guardados todavía/i)).toBeInTheDocument();
+      expect(screen.getAllByRole('button', { name: /\+ guardar enlace/i }).length).toBeGreaterThanOrEqual(2);
     });
   });
 });
