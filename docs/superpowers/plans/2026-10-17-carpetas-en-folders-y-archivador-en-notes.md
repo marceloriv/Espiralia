@@ -41,7 +41,7 @@
   - `.flatFoldersRow`: contenedor de solapas de carpetas
   - `.flatFolderTab`: botón interactivo de carpeta con solapa trapezoidal trasera (`.flatBackFlap`), hojas interiores asomando (`.flatSheets`) y tapa delantera de bolsillo (`.flatFrontFlap`) con icono, título y píldora de conteo
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Agregar caso en `src/tests/FoldersView.test.tsx`:
 ```tsx
@@ -57,12 +57,12 @@ it('renderiza las carpetas del fichero con estructura de carpeta plana moderna (
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm exec vitest run src/tests/FoldersView.test.tsx`
 Expected: FAIL esperando `folder-flat-sheets` o estructura de carpetas planas.
 
-- [ ] **Step 3: Implement flat modern folders in `FoldersView.module.css` and `FoldersView.tsx`**
+- [x] **Step 3: Implement flat modern folders in `FoldersView.module.css` and `FoldersView.tsx`**
 
 1. En `FoldersView.module.css`:
    - Definir `.flatFoldersRow`, `.flatFolderTab`, `.flatBackFlap`, `.flatSheets`, `.sheetLine`, `.sheetAccent`, `.flatFrontFlap`, `.flatFolderHeader`, `.flatFolderTitle`, `.flatSpecsPill`.
@@ -71,12 +71,12 @@ Expected: FAIL esperando `folder-flat-sheets` o estructura de carpetas planas.
 2. En `FoldersView.tsx`:
    - Actualizar el mapeo de `displayFolders` dentro de `steppedTabsWrapper` (o nuevo contenedor `flatFoldersRow`) para renderizar la solapa trasera, hojas interiores (`data-testid="folder-flat-sheets"`), y tapa frontal con número, título y contador.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm exec vitest run src/tests/FoldersView.test.tsx src/tests/ui-a11y-focus.test.tsx`
 Expected: PASS en ambos archivos.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/FoldersView.tsx src/components/FoldersView.module.css src/tests/FoldersView.test.tsx
@@ -102,7 +102,7 @@ git commit -m ":art: style(folders): implementar estetica de carpetas planas mod
   - `.binderFingerRing`: ojal metálico circular de extracción con anillo de acero
   - `.binderSpinePill`: contador de notas archivadas en el lomo
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Actualizar `src/tests/NotesViewTomos.test.tsx` para validar la estructura de archivadores:
 ```tsx
@@ -123,12 +123,12 @@ it('renderiza las solapas de tomos con estetica de archivador de oficina (porta-
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm exec vitest run src/tests/NotesViewTomos.test.tsx`
 Expected: FAIL esperando `binder-label-frame` y `binder-finger-ring`.
 
-- [ ] **Step 3: Implement Binder Spines in `NotesView.module.css` and `NotesView.tsx`**
+- [x] **Step 3: Implement Binder Spines in `NotesView.module.css` and `NotesView.tsx`**
 
 1. En `NotesView.module.css`:
    - Crear estilos `.binderCabinetRow`: estante de archivadores con línea base metálica.
@@ -142,12 +142,12 @@ Expected: FAIL esperando `binder-label-frame` y `binder-finger-ring`.
 2. En `NotesView.tsx`:
    - Actualizar el bloque de botones de tomos para renderizar la estructura del archivador con `data-testid="binder-label-frame"` y `data-testid="binder-finger-ring"`.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm exec vitest run src/tests/NotesViewTomos.test.tsx`
 Expected: PASS en los 3 tests de `NotesViewTomos.test.tsx`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/NotesView.tsx src/components/NotesView.module.css src/tests/NotesViewTomos.test.tsx
@@ -170,7 +170,7 @@ git commit -m ":art: style(notes): redisenar tomos con estetica de archivadores 
   - `.binderRing`: anilla de acero plateada con brillo curvo
   - `.binderPunchHoles`: orificios perforados circulares en el papel con refuerzo perimetral
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Agregar comprobación en `src/tests/NotesViewActivePliego.test.tsx`:
 ```tsx
@@ -184,12 +184,12 @@ it('el pliego superior abierto despliega el mecanismo de anillas metalicas del a
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm exec vitest run src/tests/NotesViewActivePliego.test.tsx`
 Expected: FAIL esperando `binder-mechanism`.
 
-- [ ] **Step 3: Implement Binder Rings & Punched Sheets in `NotesView.module.css` and `NotesView.tsx`**
+- [x] **Step 3: Implement Binder Rings & Punched Sheets in `NotesView.module.css` and `NotesView.tsx`**
 
 1. En `NotesView.module.css`:
    - `.binderMechanism`: barra vertical izquierda fija que emula el lomo de acero de la palanca de anillas.
@@ -199,12 +199,12 @@ Expected: FAIL esperando `binder-mechanism`.
 2. En `NotesView.tsx`:
    - Renderizar el mecanismo de anillas y perforaciones dentro de `.folioContainer` con `aria-hidden="true"` para accesibilidad.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm exec vitest run src/tests/NotesViewActivePliego.test.tsx src/tests/NotesView.test.tsx`
 Expected: PASS en ambos archivos.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/NotesView.tsx src/components/NotesView.module.css src/tests/NotesViewActivePliego.test.tsx
@@ -219,17 +219,17 @@ git commit -m ":art: style(notes): incorporar mecanismo de anillas de acero y pe
 - Test: `src/tests/FoldersView.test.tsx`, `src/tests/NotesViewTomos.test.tsx`, `src/tests/NotesView.test.tsx`, `src/tests/NotesViewActivePliego.test.tsx`
 - Build: `pnpm build`
 
-- [ ] **Step 1: Run complete test suite**
+- [x] **Step 1: Run complete test suite**
 
 Run: `pnpm exec vitest run`
 Expected: Todos los 69 archivos de prueba en verde sin regresiones.
 
-- [ ] **Step 2: Run production build check**
+- [x] **Step 2: Run production build check**
 
 Run: `pnpm build`
 Expected: `tsc -b && vite build` finaliza con código de salida 0.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git commit --allow-empty -m ":white_check_mark: test(archiver): verificacion integral de carpetas en folders y archivador en notes"
