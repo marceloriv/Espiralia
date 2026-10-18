@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Lock, Plus, ArrowRight } from 'lucide-react';
+import { Plus, ArrowRight } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
@@ -149,7 +149,12 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
                   </div>
                 </div>
                 {isPinProtected(profile) ? (
-                  <Lock size={18} className={styles.lockIcon} aria-hidden="true" />
+                  <div className={styles.brassPadlock} aria-hidden="true">
+                    <div className={styles.padlockShackle} />
+                    <div className={styles.padlockBody}>
+                      <div className={styles.padlockKeyhole} />
+                    </div>
+                  </div>
                 ) : (
                   <ArrowRight size={18} className={styles.arrowIcon} aria-hidden="true" />
                 )}
@@ -190,13 +195,17 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
             <span className={styles.pinOverline}>ACCESO A CUADERNO PERSONAL</span>
             <h2 className={styles.pinTitle}>Introduce tu PIN Maestro</h2>
 
-            {/* Cajas de dígitos PIN */}
-            <div className={styles.pinBoxes}>
-              {[0, 1, 2, 3].map(i => (
-                <div key={i} className={styles.pinBox}>
-                  {pinInput[i] ? '●' : ''}
-                </div>
-              ))}
+            {/* Cajas de dígitos PIN enmarcadas en cilindro de combinación de latón */}
+            <div className={styles.combinationLockFrame} aria-hidden="true">
+              <div className={styles.tumblerNotchTop} />
+              <div className={styles.pinBoxes}>
+                {[0, 1, 2, 3].map(i => (
+                  <div key={i} className={styles.pinBox}>
+                    {pinInput[i] ? '●' : ''}
+                  </div>
+                ))}
+              </div>
+              <div className={styles.tumblerNotchBottom} />
             </div>
 
             {/* Teclado numérico táctil 3x4 */}

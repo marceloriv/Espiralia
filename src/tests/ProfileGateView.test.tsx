@@ -132,5 +132,18 @@ describe('ProfileGateView', () => {
     expect(screen.getByRole('button', { name: '1' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '9' })).toBeInTheDocument();
   });
+
+  it('renderiza candado de latón artesanal en perfiles protegidos y cerradura de combinación cilíndrica en el PIN', () => {
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
+    const { container } = render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    const padlock = container.querySelector('[class*="brassPadlock"]');
+    expect(padlock).toBeInTheDocument();
+    expect(padlock).toHaveAttribute('aria-hidden', 'true');
+
+    const combinationLock = container.querySelector('[class*="combinationLockFrame"]');
+    expect(combinationLock).toBeInTheDocument();
+    expect(combinationLock).toHaveAttribute('aria-hidden', 'true');
+  });
 });
 
