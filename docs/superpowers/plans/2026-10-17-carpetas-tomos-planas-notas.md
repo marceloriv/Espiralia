@@ -40,7 +40,7 @@
   - Helper `getNoteTomoId(note: Note): string` (resuelve `folderId` o tags `terapia`/`conaset`/`ideas`)
   - Estado `activeTomo` conectado al filtrado de `filteredNotes`, creación de notas y pliego contextual
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Crear `src/tests/NotesViewTomos.test.tsx`:
 1. Renderiza las 3 carpetas de Tomos (`01. Diario & Terapia`, `02. Ideas & Taller`, `03. Conaset & Apuntes B`) con sus contadores respectivos.
@@ -48,12 +48,12 @@ Crear `src/tests/NotesViewTomos.test.tsx`:
 3. Al pulsar nuevamente `01. Diario & Terapia`, las notas del Tomo 01 reaparecen intactas (sin pérdida de datos).
 4. Al crear una nota mientras `activeTomo` es `02`, la nota guardada recibe `folderId: 'tomo-02'` y aparece inmediatamente en el Tomo 02.
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm exec vitest run src/tests/NotesViewTomos.test.tsx`
 Expected: FAIL porque las solapas de tomos actualmente solo alternan una clase CSS y no filtran las notas ni asocian carpetas.
 
-- [ ] **Step 3: Implement Tomo logic in `NotesView.tsx`**
+- [x] **Step 3: Implement Tomo logic in `NotesView.tsx`**
 
 1. Definir configuración de tomos:
    - `01`: `folderId: 'tomo-01'`, nombre: `01. Diario & Terapia`, icono: `BookOpen`, tag: `terapia`.
@@ -65,12 +65,12 @@ Expected: FAIL porque las solapas de tomos actualmente solo alternan una clase C
 5. En `handleSaveNote` y `handleSavePliego`, asignar automáticamente `folderId: tomoConfig.folderId` y el tag correspondiente al tomo activo.
 6. Al cambiar de tomo, si el nuevo tomo tiene notas, activar su nota más reciente; si está vacío, ofrecer el pliego listo para redactar en ese tomo.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm exec vitest run src/tests/NotesViewTomos.test.tsx src/tests/NotesView.test.tsx`
 Expected: PASS en ambos archivos.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/NotesView.tsx src/tests/NotesViewTomos.test.tsx
@@ -89,18 +89,18 @@ git commit -m ":sparkles: feat(notes): conectar solapas de tomos a carpetas real
 - Consumes: Clases CSS `.flatFolderTab`, `.flatBackFlap`, `.flatSheets`, `.flatFrontFlap`, `.flatCountPill`
 - Produces: Representación visual plana moderna de las carpetas de tomos con solapa trasera, hojas interiores y tapa frontal de bolsillo.
 
-- [ ] **Step 1: Write the failing visual integration test**
+- [x] **Step 1: Write the failing visual integration test**
 
 Agregar caso en `src/tests/NotesViewTomos.test.tsx`:
 1. Verifica que cada carpeta de tomo incluye los elementos estructurales accesibles: botón con rol tab/botón, texto descriptivo, hojas decorativas con `aria-hidden="true"`, y badge de conteo.
 2. Verifica que la carpeta activa recibe la clase/atributo de selección correspondiente (`active` / `aria-current="true"`).
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pnpm exec vitest run src/tests/NotesViewTomos.test.tsx`
 Expected: FAIL esperando los nuevos elementos de estructura de carpeta.
 
-- [ ] **Step 3: Implement Flat Folder CSS in `NotesView.module.css` and update markup**
+- [x] **Step 3: Implement Flat Folder CSS in `NotesView.module.css` and update markup**
 
 1. Reemplazar `.tomoTabsRow` y `.tomoTab` con las clases del diseño plano moderno:
    - `.flatFoldersBar`: contenedor horizontal de carpetas.
@@ -109,12 +109,12 @@ Expected: FAIL esperando los nuevos elementos de estructura de carpeta.
    - Estado `.active`: elevación sutil de 2px, hojas interiores asomando 6px hacia arriba, y tono frontal iluminado.
    - Focus visible accesible con `outline: 2px solid var(--color-primary)` (WCAG 2.4.7).
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `pnpm exec vitest run src/tests/NotesViewTomos.test.tsx src/tests/ui-a11y-focus.test.tsx`
 Expected: PASS sin advertencias ni regresiones de accesibilidad.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/components/NotesView.module.css src/components/NotesView.tsx src/tests/NotesViewTomos.test.tsx
@@ -129,17 +129,17 @@ git commit -m ":art: style(notes): implementar estetica de carpetas planas moder
 - Test: Suite completa del proyecto (`pnpm exec vitest run`)
 - Build: Compilación de producción (`pnpm build`)
 
-- [ ] **Step 1: Run complete test suite**
+- [x] **Step 1: Run complete test suite**
 
 Run: `pnpm exec vitest run`
 Expected: Todos los archivos de prueba en verde (69 test files, 395+ tests).
 
-- [ ] **Step 2: Run production build check**
+- [x] **Step 2: Run production build check**
 
 Run: `pnpm build`
 Expected: `tsc -b && vite build` finaliza con código 0 sin errores de tipos ni CSS.
 
-- [ ] **Step 3: Commit final documentation or ledger update if needed**
+- [x] **Step 3: Commit final documentation or ledger update if needed**
 
 ```bash
 git commit --allow-empty -m ":white_check_mark: test(notes): validacion integral de carpetas de tomos y build de produccion"
