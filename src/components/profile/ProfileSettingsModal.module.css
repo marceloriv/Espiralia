@@ -10,27 +10,74 @@
   padding: 16px;
 }
 
-.modal {
+.modalWrap {
+  position: relative;
   width: 100%;
   max-width: 480px;
-  background-color: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+  filter: drop-shadow(0 14px 28px rgba(26, 25, 23, 0.16))
+          drop-shadow(0 3px 6px rgba(26, 25, 23, 0.10));
+  animation: modalEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  animation: modalEnter 0.18s ease-out;
+  align-items: center;
+}
+
+.washiTape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  width: 120px;
+  height: 24px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-washi-primary, rgba(142, 30, 162, 0.18)),
+    var(--color-washi-primary, rgba(142, 30, 162, 0.18)) 6px,
+    rgba(237, 150, 215, 0.25) 6px,
+    rgba(237, 150, 215, 0.25) 12px
+  );
+  border-left: 2px dashed rgba(142, 30, 162, 0.3);
+  border-right: 2px dashed rgba(142, 30, 162, 0.3);
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(26, 25, 23, 0.12);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.modal {
+  width: 100%;
+  background-color: var(--bg-card, #fcf9f6);
+  background-image: radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.65px, transparent 0.65px);
+  background-size: 18px 18px;
+  /* Polígono rasgado asimétrico: micro-dientes de rotura irregular arriba y abajo */
+  clip-path: polygon(
+    0% 12px, 3% 6px, 6% 13px, 9% 7px, 13% 14px, 17% 8px, 21% 13px, 25% 6px,
+    29% 14px, 34% 7px, 38% 12px, 42% 6px, 47% 13px, 51% 7px, 56% 14px, 60% 8px,
+    65% 13px, 69% 6px, 74% 14px, 78% 7px, 83% 13px, 87% 6px, 91% 14px, 95% 8px,
+    98% 12px, 100% 7px,
+    100% calc(100% - 10px), 98% calc(100% - 4px), 95% calc(100% - 11px), 91% calc(100% - 5px),
+    87% calc(100% - 12px), 82% calc(100% - 6px), 78% calc(100% - 13px), 73% calc(100% - 5px),
+    69% calc(100% - 11px), 64% calc(100% - 4px), 59% calc(100% - 12px), 55% calc(100% - 6px),
+    50% calc(100% - 13px), 46% calc(100% - 5px), 41% calc(100% - 12px), 36% calc(100% - 4px),
+    31% calc(100% - 11px), 27% calc(100% - 5px), 22% calc(100% - 12px), 18% calc(100% - 6px),
+    13% calc(100% - 13px), 9% calc(100% - 5px), 5% calc(100% - 11px), 2% calc(100% - 4px),
+    0% calc(100% - 9px)
+  );
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+  padding-bottom: 12px;
+  transform: rotate(-0.4deg);
 }
 
 @keyframes modalEnter {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(6px);
+    transform: scale(0.95) translateY(10px) rotate(-1.5deg);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1) translateY(0) rotate(0deg);
   }
 }
 
@@ -39,8 +86,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  border-bottom: 1px solid var(--color-hairline);
-  background-color: var(--color-surface-card);
+  border-bottom: 1px dashed var(--color-hairline);
+  background-color: transparent;
 }
 
 .titleGroup {
