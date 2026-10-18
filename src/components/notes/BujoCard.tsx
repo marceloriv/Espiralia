@@ -74,6 +74,11 @@ export const BujoCard: React.FC<BujoCardProps> = ({
       tabIndex={0}
       aria-selected={isActive}
     >
+      {isActive && (
+        <div className={styles.activeCornerClip} aria-hidden="true">
+          <div className={styles.activeClipLoop} />
+        </div>
+      )}
       <div
         className={styles.ribbon}
         style={{ backgroundColor: ribbonColor }}

@@ -494,6 +494,23 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                 aria-hidden="true"
               />
 
+              {/* Margen de encuadernación cosida con hilo de taller */}
+              <div className={styles.bookbindingGutter} aria-hidden="true">
+                <div className={styles.stitchKnot} style={{ top: '12%' }} />
+                <div className={styles.stitchKnot} style={{ top: '37%' }} />
+                <div className={styles.stitchKnot} style={{ top: '63%' }} />
+                <div className={styles.stitchKnot} style={{ top: '88%' }} />
+                <div className={styles.marginGuideRule} />
+              </div>
+
+              {/* Clip de latón de sujeción superior */}
+              <div className={styles.bujoBrassClip} aria-hidden="true">
+                <svg fill="none" height="42" viewBox="0 0 24 48" width="22" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 18V36C7 40.4 10.6 44 15 44C19.4 44 23 40.4 23 36V11C23 5.5 18.5 1 13 1C7.5 1 3 5.5 3 11V33C3 35.8 5.2 38 8 38C10.8 38 13 35.8 13 33V14" stroke="#cfb53b" strokeLinecap="round" strokeWidth="2.5" />
+                  <path d="M6 18V36C6 39 9 42.5 14 42.5" stroke="#fef08a" strokeLinecap="round" strokeWidth="1" />
+                </svg>
+              </div>
+
               {isEditingPliego ? (
                 <div className={styles.pliegoEditorContainer}>
                   <input

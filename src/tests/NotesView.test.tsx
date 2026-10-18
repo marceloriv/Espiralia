@@ -23,6 +23,18 @@ describe('NotesView', () => {
     expect(screen.getByText(/vaciado rápido/i)).toBeInTheDocument();
   });
 
+  it('incluye elementos táctiles de encuadernación artesanal y clip de latón en el pliego verjurado', () => {
+    const { container } = render(<NotesView profileId={profileId} />);
+
+    const bookbindingGutter = container.querySelector('[class*="bookbindingGutter"]');
+    expect(bookbindingGutter).toBeInTheDocument();
+    expect(bookbindingGutter).toHaveAttribute('aria-hidden', 'true');
+
+    const bujoBrassClip = container.querySelector('[class*="bujoBrassClip"]');
+    expect(bujoBrassClip).toBeInTheDocument();
+    expect(bujoBrassClip).toHaveAttribute('aria-hidden', 'true');
+  });
+
   it('renderiza la vista y permite crear una nueva reflexión terapéutica', async () => {
     const user = userEvent.setup();
     render(<NotesView profileId={profileId} />);

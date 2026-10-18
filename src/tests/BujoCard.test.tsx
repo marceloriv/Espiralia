@@ -165,4 +165,20 @@ describe('BujoCard', () => {
 
     expect(card.className).toMatch(/cardActive/);
   });
+
+  it('despliega el clip de latón superior cuando la tarjeta está activa', () => {
+    const { container } = render(
+      <BujoCard
+        note={mockNote}
+        isActive={true}
+        onSelect={vi.fn()}
+        onEdit={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    const cornerClip = container.querySelector('[class*="activeCornerClip"]');
+    expect(cornerClip).toBeInTheDocument();
+    expect(cornerClip).toHaveAttribute('aria-hidden', 'true');
+  });
 });
