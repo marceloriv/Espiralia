@@ -534,8 +534,16 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               <div className={styles.tornEdgeBottom} aria-hidden="true" />
             </div>
 
-            {/* 3.3 Lista Detallada de Tareas */}
+            {/* 3.3 Libreta Escolar de Tareas (Cuaderno Rayado con Grapas y Margen) */}
             <div className={styles.detailedTasksSection}>
+              {/* Grapas de alambre metálico de encuadernación */}
+              <div className={styles.schoolStaplesBar} aria-hidden="true">
+                <span className={styles.schoolStapleLeft} />
+                <span className={styles.schoolStapleRight} />
+              </div>
+              {/* Margen rojo guía escolar */}
+              <div className={styles.schoolMarginGuide} aria-hidden="true" />
+
               <div className={styles.detailedHeader}>
                 <h3 className={styles.detailedTitle}>
                   <span>Tareas que importan (Tasks that matter)</span>
@@ -642,6 +650,13 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                             )}
                           </div>
                         </div>
+
+                        {/* Sello de tinta carmín cuando la tarea está completada */}
+                        {isDone && (
+                          <div className={styles.stampCompletedSeal} aria-hidden="true">
+                            <span className={styles.stampText}>HECHO</span>
+                          </div>
+                        )}
 
                         {/* Botón Eliminar Tarea */}
                         <button

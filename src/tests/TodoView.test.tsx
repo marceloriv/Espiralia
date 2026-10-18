@@ -325,5 +325,33 @@ describe('TodoView', () => {
       expect(screen.getByText(/todo al día • ninguna prioridad crítica pendiente/i)).toBeInTheDocument();
       expect(screen.queryByText(/Estudio Conaset/i)).not.toBeInTheDocument();
     });
+
+    it('incluye grapas de alambre, margen rojo escolar y sello carmín al completar tarea', () => {
+      StorageService.saveTodo({
+        id: 'todo-staple-test',
+        profileId,
+        areaId: 'default',
+        title: 'Caligrafía y apunte escolar',
+        priority: 'media',
+        status: 'completada',
+        completed: true,
+        createdAt: '2026-10-18',
+      });
+
+      const { container } = render(<TodoView profileId={profileId} />);
+
+      const staples = container.querySelector('[class*="schoolStaplesBar"]');
+      expect(staples).toBeInTheDocument();
+      expect(staples).toHaveAttribute('aria-hidden', 'true');
+
+      const margin = container.querySelector('[class*="schoolMarginGuide"]');
+      expect(margin).toBeInTheDocument();
+      expect(margin).toHaveAttribute('aria-hidden', 'true');
+
+      const stamp = container.querySelector('[class*="stampCompletedSeal"]');
+      expect(stamp).toBeInTheDocument();
+      expect(stamp).toHaveAttribute('aria-hidden', 'true');
+      expect(stamp).toHaveTextContent('HECHO');
+    });
   });
 });
