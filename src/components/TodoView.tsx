@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Sparkles, Check, Heart, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType } from '../types';
+import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
 import { dueLabel } from './dashboard/dashboardData';
@@ -18,7 +18,15 @@ type FilterStatus = 'todas' | 'pendientes' | 'en_progreso' | 'completadas';
 
 const COLOR_PALETTE = ['#e8a55a', '#8e1ea2', '#5db8a6', '#3b82f6', '#10b981', '#ef4444'];
 
-export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
+const getEventDayParts = (dateStr?: string) => {
+  if (!dateStr) return { dayName: 'HOY', dayNum: '--' };
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dObj = new Date(y, m - 1, d);
+  const dayName = dObj.toLocaleDateString('es-CL', { weekday: 'short' }).toUpperCase().replace('.', '');
+  return { dayName, dayNum: String(d).padStart(2, '0') };
+};
+
+export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, profile, onNavigate }) => {
   const profileId = profile?.id ?? propProfileId ?? '';
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profileId));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profileId));
@@ -39,15 +47,18 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
   // Edición rápida de fecha en fila
   const [editingDueDateId, setEditingDueDateId] = useState<string | null>(null);
 
+  const todayStr = toLocalDateStr(new Date());
+
   // Nivel de energía en tarjeta mini reminders
-  const [energyLevel, setEnergyLevel] = useState<string>('✨');
+  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || '✨');
+  const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
 
   const isFirstMount = useRef(true);
-  const todayStr = toLocalDateStr(new Date());
 
   const loadData = useCallback(() => {
     setAreas(StorageService.getAreas(profileId));
     setTodos(StorageService.getTodos(profileId));
+    setEvents(StorageService.getEvents(profileId));
   }, [profileId]);
 
   useEffect(() => {
@@ -117,6 +128,20 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
     setEditingDueDateId(null);
     loadData();
   };
+
+  const handleSelectEnergy = (icon: string) => {
+    setEnergyLevel(icon);
+    StorageService.setTodayMood(profileId, todayStr, icon);
+  };
+
+  const upcomingEvents = events
+    .filter(e => Boolean(e.date))
+    .sort((a, b) => {
+      const cmpDate = (a.date ?? '').localeCompare(b.date ?? '');
+      if (cmpDate !== 0) return cmpDate;
+      return (a.startTime ?? '').localeCompare(b.startTime ?? '');
+    })
+    .slice(0, 3);
 
   const handleCreateArea = (e: React.FormEvent) => {
     e.preventDefault();
@@ -727,50 +752,43 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               </div>
 
               <div className={styles.associatedEventsList}>
-                {/* Evento 1 */}
-                <div className={`${styles.eventItem} ${styles.eventBorderAmber}`}>
-                  <div className={styles.eventDateCol}>
-                    <span className={styles.eventDayName} style={{ color: '#e8a55a' }}>VIE</span>
-                    <span className={styles.eventDayNum}>24</span>
-                  </div>
-                  <div className={styles.eventInfo}>
-                    <h4 className={styles.eventTitle}>Simulacro Conaset &amp; Práctica en Calle</h4>
-                    <p className={styles.eventMeta}>16:00 - 17:30 hrs · Circuito San Joaquín</p>
-                    <span className={styles.eventAreaTag}>01. Estudios &amp; Clase B</span>
-                  </div>
-                </div>
+                {upcomingEvents.length === 0 ? (
+                  <p style={{ padding: '0.75rem 0', fontStyle: 'italic', fontSize: '0.8125rem', color: 'var(--color-ink-muted)' }}>
+                    Sin eventos agendados próximamente.
+                  </p>
+                ) : (
+                  upcomingEvents.map(event => {
+                    const { dayName, dayNum } = getEventDayParts(event.date);
+                    const eventArea = areas.find(a => a.id === event.areaId);
+                    const areaColor = eventArea?.color || '#e8a55a';
+                    const areaName = eventArea?.name || event.category || 'General';
+                    const timeMeta = `${event.startTime ? `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''} hrs` : 'Todo el día'}${event.location ? ` · ${event.location}` : ''}`;
 
-                {/* Evento 2 */}
-                <div className={`${styles.eventItem} ${styles.eventBorderPurple}`}>
-                  <div className={styles.eventDateCol}>
-                    <span className={styles.eventDayName} style={{ color: '#8e1ea2' }}>MAR</span>
-                    <span className={styles.eventDayNum}>28</span>
-                  </div>
-                  <div className={styles.eventInfo}>
-                    <h4 className={styles.eventTitle}>Sesión Terapia Clínica Presencial</h4>
-                    <p className={styles.eventMeta}>11:45 - 12:45 hrs · Dra. Morales</p>
-                    <span className={styles.eventAreaTag}>02. Introspección &amp; Terapia</span>
-                  </div>
-                </div>
-
-                {/* Evento 3 */}
-                <div className={`${styles.eventItem} ${styles.eventBorderTeal}`}>
-                  <div className={styles.eventDateCol}>
-                    <span className={styles.eventDayName} style={{ color: '#5db8a6' }}>LUN</span>
-                    <span className={styles.eventDayNum}>03</span>
-                  </div>
-                  <div className={styles.eventInfo}>
-                    <h4 className={styles.eventTitle}>Cierre de Envío Cartas Recomendación</h4>
-                    <p className={styles.eventMeta}>23:59 hrs · Plataforma Admisión 2026</p>
-                    <span className={styles.eventAreaTag}>03. Postulación Universitaria</span>
-                  </div>
-                </div>
+                    return (
+                      <div key={event.id} className={styles.eventItem} style={{ borderLeftColor: areaColor }}>
+                        <div className={styles.eventDateCol}>
+                          <span className={styles.eventDayName} style={{ color: areaColor }}>{dayName}</span>
+                          <span className={styles.eventDayNum}>{dayNum}</span>
+                        </div>
+                        <div className={styles.eventInfo}>
+                          <h4 className={styles.eventTitle}>{event.title}</h4>
+                          <p className={styles.eventMeta}>{timeMeta}</p>
+                          <span className={styles.eventAreaTag}>{areaName}</span>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
 
               <div className={styles.agendaCardFooter}>
-                <span className={styles.agendaFooterLink}>
+                <button
+                  type="button"
+                  className={styles.agendaFooterLink}
+                  onClick={() => onNavigate?.('agenda')}
+                >
                   Ver vista semanal extendida en Agenda →
-                </span>
+                </button>
               </div>
             </div>
 
@@ -825,8 +843,9 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                       key={icon}
                       type="button"
                       className={`${styles.energyBtn} ${energyLevel === icon ? styles.energyBtnActive : ''}`}
-                      onClick={() => setEnergyLevel(icon)}
+                      onClick={() => handleSelectEnergy(icon)}
                       title={`Nivel ${icon}`}
+                      aria-label={`Nivel ${icon}`}
                     >
                       {icon}
                     </button>

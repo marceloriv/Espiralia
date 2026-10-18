@@ -1311,6 +1311,9 @@
   color: var(--color-primary);
   cursor: pointer;
   text-decoration: underline;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 /* 4.2 Brain Dump Bujo Dot Grid */

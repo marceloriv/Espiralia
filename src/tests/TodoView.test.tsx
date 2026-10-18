@@ -263,4 +263,37 @@ describe('TodoView', () => {
     expect(screen.queryByText('Solo Perfil 1')).not.toBeInTheDocument();
     expect(screen.queryByText('Tarea confidencial 1')).not.toBeInTheDocument();
   });
+
+  describe('Agenda Asociada y Energía Diaria en TodoView', () => {
+    it('conecta Agenda Asociada a los eventos reales del perfil y elimina eventos estáticos de mock', () => {
+      StorageService.saveEvent({
+        id: 'ev-real-1',
+        profileId,
+        title: 'Revisión Técnica de Vehículo',
+        date: '2026-10-20',
+        startTime: '10:00',
+        endTime: '11:00',
+        category: 'personal',
+        createdAt: '2026-10-17',
+      });
+
+      render(<TodoView profileId={profileId} />);
+
+      expect(screen.getByText('Revisión Técnica de Vehículo')).toBeInTheDocument();
+      expect(screen.queryByText(/Simulacro Conaset & Práctica en Calle/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Sesión Terapia Clínica Presencial/i)).not.toBeInTheDocument();
+    });
+
+    it('persiste el nivel de energía diario seleccionado en StorageService', async () => {
+      const { toLocalDateStr } = await import('../../src/utils/localDate');
+      const user = userEvent.setup();
+      render(<TodoView profileId={profileId} />);
+
+      const sunBtn = screen.getByRole('button', { name: /nivel ☀️/i });
+      await user.click(sunBtn);
+
+      const todayStr = toLocalDateStr(new Date());
+      expect(StorageService.getTodayMood(profileId, todayStr)).toBe('☀️');
+    });
+  });
 });
