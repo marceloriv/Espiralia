@@ -34,6 +34,20 @@ describe('LandingDeskPreview', () => {
     expect(secondTaskCheckbox).toBeChecked();
   });
 
+  it('aplica la clase de trazo caligráfico de tinta al completar una tarea de prioridad', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<LandingDeskPreview />);
+
+    const secondTaskCheckbox = screen.getByRole('checkbox', { name: /postulación universitaria 2026/i });
+    expect(secondTaskCheckbox).not.toBeChecked();
+
+    await user.click(secondTaskCheckbox);
+    expect(secondTaskCheckbox).toBeChecked();
+
+    const completedText = container.querySelector('[class*="priorityTextCompleted"]');
+    expect(completedText).toBeInTheDocument();
+  });
+
   it('despliega la tarjeta de estado vital y la nota táctil de captura rápida', () => {
     render(<LandingDeskPreview />);
     expect(screen.getByText(/estado vital & ritmo/i)).toBeInTheDocument();

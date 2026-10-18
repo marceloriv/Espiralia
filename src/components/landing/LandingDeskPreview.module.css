@@ -271,16 +271,50 @@
 }
 
 .priorityText {
+  position: relative;
+  display: inline-block;
   font-family: var(--font-body, sans-serif);
   font-size: 0.875rem;
   color: var(--color-body-strong, #252523);
   font-weight: 500;
-  transition: color 150ms ease;
+  transition: color 240ms ease;
 }
 
 .priorityTextCompleted {
-  text-decoration: line-through;
+  text-decoration: none;
   color: var(--color-muted, #6c6a64);
+}
+
+.priorityTextCompleted::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  top: 52%;
+  height: 2px;
+  background: linear-gradient(90deg, #7B188E 0%, #9426A8 65%, #7B188E 100%);
+  transform: translateY(-50%) rotate(-0.4deg);
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: inkStrokeDraw 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes inkStrokeDraw {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0.7;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .priorityTextCompleted::after {
+    animation: none;
+    clip-path: inset(0 0 0 0);
+  }
 }
 
 .priorityDurationBadge {
