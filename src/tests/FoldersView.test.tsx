@@ -40,19 +40,19 @@ describe('FoldersView', () => {
     const saveLinkBtn = screen.getByRole('button', { name: /guardar vínculo/i });
     await user.click(saveLinkBtn);
 
-    expect(screen.getByText('Test de Señales')).toBeInTheDocument();
+    expect(screen.getAllByText('Test de Señales')[0]).toBeInTheDocument();
     const anchor = screen.getByRole('link', { name: /abrir test de señales/i });
     expect(anchor).toHaveAttribute('href', 'https://conaset.cl');
     expect(anchor).toHaveAttribute('target', '_blank');
     expect(anchor).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('renderiza el fichero archival con solapas escalonadas, sello archivado localmente, tabla de fichas y medidor indexeddb', () => {
+  it('renderiza el fichero archival con solapas escalonadas, sello archivado localmente y tabla de fichas viva', () => {
     render(<FoldersView profileId="p-test" />);
 
     expect(screen.getByRole('heading', { level: 1, name: /explorador de carpetas & vínculos/i })).toBeInTheDocument();
     expect(screen.getByText(/archivado localmente/i)).toBeInTheDocument();
-    expect(screen.getByText(/libro del nuevo conductor clase b/i)).toBeInTheDocument();
+    expect(screen.getByText(/fichas & manuscritos en esta carpeta/i)).toBeInTheDocument();
     expect(screen.getByText(/captura veloz de enlace/i)).toBeInTheDocument();
     expect(screen.getByText(/almacenamiento local \(indexeddb\)/i)).toBeInTheDocument();
   });
@@ -66,6 +66,75 @@ describe('FoldersView', () => {
     const activeTab = screen.getByRole('tab', { name: /clase b conaset/i });
     expect(activeTab).toHaveAttribute('aria-selected', 'true');
     expect(activeTab.querySelector('[data-front-flap="true"]')).toBeInTheDocument();
+  });
+
+  describe('Tabla de Fichas & Manuscritos Viva', () => {
+    it('lista notas y enlaces reales de la carpeta activa y elimina mock de conaset', async () => {
+      const { StorageService } = await import('../services/storage');
+      const { within } = await import('@testing-library/react');
+      const user = userEvent.setup();
+
+      const folderId = 'folder-investigacion';
+      StorageService.saveFolder({
+        id: folderId,
+        profileId,
+        name: 'Investigación & Ensayos',
+        color: '#8b5cf6',
+        createdAt: '2026-10-17',
+      });
+
+      StorageService.saveNote({
+        id: 'note-inv-1',
+        profileId,
+        folderId,
+        title: 'Borrador Ensayo Fenomenología',
+        content: 'Exploración de la percepción y el espacio vivido.',
+        tags: ['filosofía'],
+        createdAt: '2026-10-17',
+      });
+
+      StorageService.saveLink({
+        id: 'link-inv-1',
+        profileId,
+        folderId,
+        title: 'Stanford Encyclopedia of Philosophy',
+        url: 'https://plato.stanford.edu',
+        createdAt: '2026-10-17',
+      });
+
+      render(<FoldersView profileId={profileId} />);
+
+      const table = screen.getByRole('table');
+      expect(within(table).getByText('Borrador Ensayo Fenomenología')).toBeInTheDocument();
+      expect(within(table).getByText('Stanford Encyclopedia of Philosophy')).toBeInTheDocument();
+      expect(screen.queryByText(/Libro del Nuevo Conductor Clase B 2025\.pdf/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Resumen Mnemotécnico: Velocidades/i)).not.toBeInTheDocument();
+
+      // Abrir NoteModal al pulsar Ver Ficha de la nota
+      const viewNoteBtn = screen.getByRole('button', { name: /ver ficha borrador ensayo fenomenología/i });
+      await user.click(viewNoteBtn);
+
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Borrador Ensayo Fenomenología')).toBeInTheDocument();
+    });
+
+    it('muestra estado vacío amable cuando la carpeta no tiene elementos', async () => {
+      const { StorageService } = await import('../services/storage');
+      const folderId = 'folder-vacia';
+      StorageService.saveFolder({
+        id: folderId,
+        profileId,
+        name: 'Carpeta Vacía',
+        color: '#f59e0b',
+        createdAt: '2026-10-17',
+      });
+
+      render(<FoldersView profileId={profileId} />);
+
+      expect(screen.getByText(/esta carpeta no contiene notas ni enlaces vinculados todavía/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /\+ nueva nota/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /\+ nuevo enlace/i })).toBeInTheDocument();
+    });
   });
 });
 

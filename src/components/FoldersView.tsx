@@ -21,6 +21,7 @@ import type { Folder, LinkItem, Note, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
+import { NoteModal } from './notes/NoteModal';
 import styles from './FoldersView.module.css';
 
 interface FoldersViewProps {
@@ -101,6 +102,9 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
   const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<LinkItem | null>(null);
 
+  const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
+
   const loadData = useCallback(() => {
     setFolders(StorageService.getFolders(profileId));
     setLinks(StorageService.getLinks(profileId));
@@ -152,6 +156,101 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     if (!activeFolder) return [];
     return notes.filter((n) => n.folderId === activeFolder.id);
   }, [notes, activeFolder]);
+
+  // Enlaces asociados a la carpeta activa
+  const folderLinks = useMemo(() => {
+    if (!activeFolder) return [];
+    return links.filter((l) => l.folderId === activeFolder.id);
+  }, [links, activeFolder]);
+
+  // Elementos unificados para la tabla de fichas
+  const folderItems = useMemo(() => {
+    const items: Array<
+      | { type: 'note'; id: string; code: string; title: string; format: string; date: string; note: Note }
+      | { type: 'link'; id: string; code: string; title: string; format: string; date: string; link: LinkItem }
+    > = [];
+
+    folderNotes.forEach((n, idx) => {
+      const dateStr = n.updatedAt || n.createdAt || '';
+      const dateFormatted = dateStr ? dateStr.slice(0, 10) : 'Hoy';
+      items.push({
+        type: 'note',
+        id: n.id,
+        code: `DOC-N.${idx + 1}`,
+        title: n.title || 'Nota sin título',
+        format: n.isReflection ? 'Pliego Reflexivo' : 'Nota de Bitácora',
+        date: dateFormatted,
+        note: n,
+      });
+    });
+
+    folderLinks.forEach((l, idx) => {
+      const dateStr = l.createdAt || '';
+      const dateFormatted = dateStr ? dateStr.slice(0, 10) : 'Hoy';
+      items.push({
+        type: 'link',
+        id: l.id,
+        code: `LNK-${idx + 1}`,
+        title: l.title || l.url,
+        format: 'Vínculo Web',
+        date: dateFormatted,
+        link: l,
+      });
+    });
+
+    return items;
+  }, [folderNotes, folderLinks]);
+
+  const handleOpenNewNote = () => {
+    setEditingNote(null);
+    setIsNoteModalOpen(true);
+  };
+
+  const handleOpenViewNote = (note: Note) => {
+    setEditingNote(note);
+    setIsNoteModalOpen(true);
+  };
+
+  const handleOpenViewLink = (link: LinkItem) => {
+    if (link.url) {
+      window.open(link.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const handleSaveNote = (noteData: {
+    title: string;
+    content: string;
+    isReflection: boolean;
+    folderId?: string;
+    tags: string[];
+  }) => {
+    if (editingNote) {
+      const updated: Note = {
+        ...editingNote,
+        ...noteData,
+        updatedAt: new Date().toISOString(),
+      };
+      StorageService.saveNote(updated);
+      try {
+        sileo.success({ title: 'Nota actualizada', description: `Se guardaron los cambios en ${noteData.title}` });
+      } catch {}
+    } else {
+      const newNote: Note = {
+        id: `note-${Date.now()}`,
+        profileId,
+        folderId: noteData.folderId || activeFolder?.id,
+        ...noteData,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      StorageService.saveNote(newNote);
+      try {
+        sileo.success({ title: 'Nota creada', description: `Se creó la nota ${noteData.title}` });
+      } catch {}
+    }
+    setIsNoteModalOpen(false);
+    loadData();
+  };
 
   // Handlers para carpetas
   const handleOpenNewFolder = () => {
@@ -492,94 +591,69 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                       </tr>
                     </thead>
                     <tbody>
-                      {/* Curated Ledger Rows */}
-                      <tr className={styles.ledgerRow}>
-                        <td className={`${styles.ledgerTd} ${styles.docCode}`}>DOC-01.1</td>
-                        <td className={styles.ledgerTd}>
-                          <div className={styles.docTitleBox}>
-                            <FileText size={18} color="#c64545" aria-hidden="true" />
-                            <span className={styles.docTitle}>Libro del Nuevo Conductor Clase B 2025.pdf</span>
-                          </div>
-                        </td>
-                        <td className={styles.ledgerTd}>
-                          <span className={styles.docFormatPill}>Manual Oficial</span>
-                        </td>
-                        <td className={`${styles.ledgerTd} ${styles.docDate}`}>14 Mar</td>
-                        <td className={styles.ledgerTd} style={{ textAlign: 'right' }}>
-                          <button type="button" className={styles.btnActionTable}>Ver Ficha</button>
-                        </td>
-                      </tr>
-
-                      <tr className={styles.ledgerRow}>
-                        <td className={`${styles.ledgerTd} ${styles.docCode}`}>DOC-01.2</td>
-                        <td className={styles.ledgerTd}>
-                          <div className={styles.docTitleBox}>
-                            <FileText size={18} color="#e8a55a" aria-hidden="true" />
-                            <span className={styles.docTitle}>Resumen Mnemotécnico: Velocidades y Distancias de Frenado</span>
-                          </div>
-                        </td>
-                        <td className={styles.ledgerTd}>
-                          <span className={styles.docFormatPill}>Apunte a Mano</span>
-                        </td>
-                        <td className={`${styles.ledgerTd} ${styles.docDate}`}>16 Mar</td>
-                        <td className={styles.ledgerTd} style={{ textAlign: 'right' }}>
-                          <button type="button" className={styles.btnActionTable}>Ver Ficha</button>
-                        </td>
-                      </tr>
-
-                      <tr className={styles.ledgerRow}>
-                        <td className={`${styles.ledgerTd} ${styles.docCode}`}>DOC-01.3</td>
-                        <td className={styles.ledgerTd}>
-                          <div className={styles.docTitleBox}>
-                            <CheckCircle size={18} color="#5db8a6" aria-hidden="true" />
-                            <span className={styles.docTitle}>Test Psicotécnico: Ejercicios de Punteado y Palanca</span>
-                          </div>
-                        </td>
-                        <td className={styles.ledgerTd}>
-                          <span className={styles.docFormatPill}>Guía Práctica</span>
-                        </td>
-                        <td className={`${styles.ledgerTd} ${styles.docDate}`}>18 Mar</td>
-                        <td className={styles.ledgerTd} style={{ textAlign: 'right' }}>
-                          <button type="button" className={styles.btnActionTable}>Ver Ficha</button>
-                        </td>
-                      </tr>
-
-                      <tr className={styles.ledgerRow}>
-                        <td className={`${styles.ledgerTd} ${styles.docCode}`}>DOC-01.4</td>
-                        <td className={styles.ledgerTd}>
-                          <div className={styles.docTitleBox}>
-                            <Receipt size={18} color="#6c6a64" aria-hidden="true" />
-                            <span className={styles.docTitle}>Comprobante Turno Examen Dirección de Tránsito</span>
-                          </div>
-                        </td>
-                        <td className={styles.ledgerTd}>
-                          <span className={styles.docFormatPill}>Trámite</span>
-                        </td>
-                        <td className={`${styles.ledgerTd} ${styles.docDate}`}>Ayer</td>
-                        <td className={styles.ledgerTd} style={{ textAlign: 'right' }}>
-                          <button type="button" className={styles.btnActionTable}>Ver Ficha</button>
-                        </td>
-                      </tr>
-
-                      {/* Dynamic Notes from user */}
-                      {folderNotes.map((note, idx) => (
-                        <tr key={note.id} className={styles.ledgerRow}>
-                          <td className={`${styles.ledgerTd} ${styles.docCode}`}>DOC-N.{idx + 1}</td>
-                          <td className={styles.ledgerTd}>
-                            <div className={styles.docTitleBox}>
-                              <FileText size={18} color="var(--color-primary, #6e0081)" aria-hidden="true" />
-                              <span className={styles.docTitle}>{note.title}</span>
+                      {folderItems.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className={styles.emptyTableTd}>
+                            <div className={styles.emptyTableBox}>
+                              <p className={styles.emptyTableText}>
+                                Esta carpeta no contiene notas ni enlaces vinculados todavía.
+                              </p>
+                              <div className={styles.emptyTableActions}>
+                                <button
+                                  type="button"
+                                  className={styles.emptyTableBtn}
+                                  onClick={handleOpenNewNote}
+                                >
+                                  + Nueva Nota
+                                </button>
+                                <button
+                                  type="button"
+                                  className={styles.emptyTableBtn}
+                                  onClick={handleOpenNewLink}
+                                >
+                                  + Nuevo Enlace
+                                </button>
+                              </div>
                             </div>
                           </td>
-                          <td className={styles.ledgerTd}>
-                            <span className={styles.docFormatPill}>Nota Local</span>
-                          </td>
-                          <td className={`${styles.ledgerTd} ${styles.docDate}`}>Hoy</td>
-                          <td className={styles.ledgerTd} style={{ textAlign: 'right' }}>
-                            <button type="button" className={styles.btnActionTable}>Ver Ficha</button>
-                          </td>
                         </tr>
-                      ))}
+                      ) : (
+                        folderItems.map((item) => (
+                          <tr key={item.id} className={styles.ledgerRow}>
+                            <td className={`${styles.ledgerTd} ${styles.docCode}`}>{item.code}</td>
+                            <td className={styles.ledgerTd}>
+                              <div className={styles.docTitleBox}>
+                                {item.type === 'note' ? (
+                                  <FileText size={18} color="var(--color-primary, #6e0081)" aria-hidden="true" />
+                                ) : (
+                                  <ExternalLink size={18} color="var(--color-accent-teal, #5db8a6)" aria-hidden="true" />
+                                )}
+                                <span className={styles.docTitle}>{item.title}</span>
+                              </div>
+                            </td>
+                            <td className={styles.ledgerTd}>
+                              <span className={styles.docFormatPill}>{item.format}</span>
+                            </td>
+                            <td className={`${styles.ledgerTd} ${styles.docDate}`}>{item.date}</td>
+                            <td className={styles.ledgerTd} style={{ textAlign: 'right' }}>
+                              <button
+                                type="button"
+                                className={styles.btnActionTable}
+                                onClick={() => {
+                                  if (item.type === 'note') {
+                                    handleOpenViewNote(item.note);
+                                  } else {
+                                    handleOpenViewLink(item.link);
+                                  }
+                                }}
+                                aria-label={`Ver ficha ${item.title}`}
+                              >
+                                Ver Ficha
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -957,6 +1031,14 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         onSave={handleSaveLink}
         initialLink={editingLink}
         defaultFolderId={activeFolder?.id}
+        folders={folders}
+      />
+
+      <NoteModal
+        isOpen={isNoteModalOpen}
+        onClose={() => setIsNoteModalOpen(false)}
+        onSave={handleSaveNote}
+        initialNote={editingNote}
         folders={folders}
       />
     </div>
