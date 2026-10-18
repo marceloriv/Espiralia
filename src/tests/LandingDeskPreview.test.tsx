@@ -10,15 +10,17 @@ describe('LandingDeskPreview', () => {
     expect(screen.getByText(/mesa de trabajo en vivo/i)).toBeInTheDocument();
   });
 
-  it('despliega el pliego diario A4 con prioridades, cronograma horario y nota de papel', () => {
-    render(<LandingDeskPreview />);
+  it('despliega el pliego diario A4 con pila de hojas superpuestas y broche archivador metálico', () => {
+    const { container } = render(<LandingDeskPreview />);
     expect(screen.getByText(/plan de foco • hoy/i)).toBeInTheDocument();
     expect(screen.getByText(/estudio licencia clase b/i)).toBeInTheDocument();
-    expect(screen.getByText(/postulación universitaria 2026/i)).toBeInTheDocument();
-    expect(screen.getByText(/sesión de diario/i)).toBeInTheDocument();
-    expect(screen.getByText(/07:30 - 09:00/i)).toBeInTheDocument();
-    expect(screen.getByText(/bloque alpha: revisión teórica conaset/i)).toBeInTheDocument();
     expect(screen.getByText(/papel libre de ácido • 120 gsm/i)).toBeInTheDocument();
+
+    const paperStack = container.querySelector('[data-papercraft="paper-stack"]');
+    const binderClip = container.querySelector('[data-papercraft="binder-clip"]');
+    expect(paperStack).toBeInTheDocument();
+    expect(binderClip).toBeInTheDocument();
+    expect(binderClip).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('permite alternar el estado de completado en las tareas interactivas', async () => {
@@ -32,11 +34,9 @@ describe('LandingDeskPreview', () => {
     expect(secondTaskCheckbox).toBeChecked();
   });
 
-  it('despliega la tarjeta de estado vital y la nota táctil con chincheta', () => {
+  it('despliega la tarjeta de estado vital y la nota táctil de captura rápida', () => {
     render(<LandingDeskPreview />);
     expect(screen.getByText(/estado vital & ritmo/i)).toBeInTheDocument();
-    expect(screen.getByText(/horas de foco silencioso/i)).toBeInTheDocument();
-    expect(screen.getByText(/serenidad mental/i)).toBeInTheDocument();
     expect(screen.getByText(/captura rápida/i)).toBeInTheDocument();
     expect(screen.getByText(/no confundir movimiento con progreso/i)).toBeInTheDocument();
   });

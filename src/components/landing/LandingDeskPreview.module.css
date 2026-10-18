@@ -62,7 +62,28 @@
   }
 }
 
-/* Columna Izquierda: Pliego A4 Papercraft */
+/* Columna Izquierda: Pliego A4 Papercraft con Pila de Hojas */
+.paperSheetWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Hoja posterior de la pila analógica */
+.paperSheetUnderlay {
+  position: absolute;
+  top: 6px;
+  left: 4px;
+  right: -5px;
+  bottom: -6px;
+  background-color: var(--color-surface-warm, #f5f0e8);
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  border-radius: var(--radius-md, 8px);
+  transform: rotate(0.8deg);
+  box-shadow: 0 1px 2px rgba(26, 25, 23, 0.08), 0 4px 0 -1px #FAF6F0, 0 8px 20px -3px rgba(26, 25, 23, 0.08);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .paperSheet {
   background-color: var(--color-canvas, #faf9f5);
   border: 1px solid var(--color-hairline, #e6dfd8);
@@ -70,6 +91,7 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
   position: relative;
   padding: 2.25rem 2rem 1.75rem;
+  z-index: 1;
 }
 
 /* Cinta Washi Sage Superior */
@@ -88,18 +110,30 @@
   z-index: 2;
 }
 
-/* Clip metálico */
+/* Broche archivador metálico con doble asa */
 .binderClip {
   position: absolute;
-  top: -14px;
+  top: -16px;
   left: 36px;
-  width: 28px;
-  height: 24px;
-  background: linear-gradient(135deg, #d4af37 0%, #aa820a 100%);
+  width: 32px;
+  height: 26px;
+  background: linear-gradient(135deg, #d4af37 0%, #aa820a 60%, #f3e5ab 100%);
   border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.22);
   pointer-events: none;
   z-index: 3;
+}
+
+.binderClip::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 6px;
+  width: 18px;
+  height: 14px;
+  border: 2px solid #d4af37;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
 }
 
 .binderClip::after {

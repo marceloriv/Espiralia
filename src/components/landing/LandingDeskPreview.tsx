@@ -63,93 +63,101 @@ export const LandingDeskPreview: React.FC = () => {
       </div>
 
       <div className={styles.deskGrid}>
-        {/* Columna Izquierda (7 cols): Pliego A4 Papercraft */}
-        <article className={styles.paperSheet} aria-labelledby="sheet-title">
-          <div className={styles.washiTape} aria-hidden="true" />
-          <div className={styles.binderClip} aria-hidden="true" />
+        {/* Columna Izquierda (7 cols): Pliego A4 Papercraft con Pila de Hojas */}
+        <div className={styles.paperSheetWrapper} data-papercraft="paper-stack">
+          <div className={styles.paperSheetUnderlay} aria-hidden="true" />
 
-          <div className={styles.sheetHeader}>
-            <div className={styles.sheetTitleGroup}>
-              <h3 id="sheet-title" className={styles.sheetTitle}>
-                PLAN DE FOCO • HOY
-              </h3>
-              <span className={styles.sheetDate}>Martes, 14 Oct</span>
+          <article className={styles.paperSheet} aria-labelledby="sheet-title">
+            <div className={styles.washiTape} aria-hidden="true" />
+            <div
+              className={styles.binderClip}
+              data-papercraft="binder-clip"
+              aria-hidden="true"
+            />
+
+            <div className={styles.sheetHeader}>
+              <div className={styles.sheetTitleGroup}>
+                <h3 id="sheet-title" className={styles.sheetTitle}>
+                  PLAN DE FOCO • HOY
+                </h3>
+                <span className={styles.sheetDate}>Martes, 14 Oct</span>
+              </div>
+              <span className={styles.sheetWeekBadge}>Semana 42</span>
             </div>
-            <span className={styles.sheetWeekBadge}>Semana 42</span>
-          </div>
 
-          {/* Prioridades */}
-          <div className={styles.sectionBlockTitle}>
-            Prioridades del Día (Máximo 3)
-          </div>
+            {/* Prioridades */}
+            <div className={styles.sectionBlockTitle}>
+              Prioridades del Día (Máximo 3)
+            </div>
 
-          <div className={styles.prioritiesList} role="list">
-            {tasks.map(task => (
-              <label
-                key={task.id}
-                htmlFor={task.id}
-                className={styles.priorityItem}
-              >
-                <div className={styles.priorityLabelGroup}>
-                  <input
-                    type="checkbox"
-                    id={task.id}
-                    checked={task.completed}
-                    onChange={() => handleToggleTask(task.id)}
-                    className={styles.priorityCheckbox}
-                    aria-label={task.title}
-                  />
-                  <span
-                    className={`${styles.priorityText} ${
-                      task.completed ? styles.priorityTextCompleted : ''
-                    }`}
-                  >
-                    {task.title}
+            <div className={styles.prioritiesList} role="list">
+              {tasks.map(task => (
+                <label
+                  key={task.id}
+                  htmlFor={task.id}
+                  className={styles.priorityItem}
+                >
+                  <div className={styles.priorityLabelGroup}>
+                    <input
+                      type="checkbox"
+                      id={task.id}
+                      checked={task.completed}
+                      onChange={() => handleToggleTask(task.id)}
+                      className={styles.priorityCheckbox}
+                      aria-label={task.title}
+                    />
+                    <span
+                      className={`${styles.priorityText} ${
+                        task.completed ? styles.priorityTextCompleted : ''
+                      }`}
+                    >
+                      {task.title}
+                    </span>
+                  </div>
+                  <span className={styles.priorityDurationBadge}>
+                    {task.duration}
                   </span>
-                </div>
-                <span className={styles.priorityDurationBadge}>
-                  {task.duration}
-                </span>
-              </label>
-            ))}
-          </div>
+                </label>
+              ))}
+            </div>
 
-          {/* Cronograma Horario */}
-          <div className={styles.sectionBlockTitle}>
-            Bloques de Atención Profunda
-          </div>
+            {/* Cronograma Horario */}
+            <div className={styles.sectionBlockTitle}>
+              Bloques de Atención Profunda
+            </div>
 
-          <div className={styles.scheduleList}>
-            <div className={styles.scheduleRow}>
-              <span className={styles.scheduleTime}>07:30 - 09:00</span>
-              <span className={styles.scheduleTitle}>Bloque Alpha: Revisión teórica CONASET</span>
-              <span className={styles.scheduleTag}>Enfoque Profundo</span>
+            <div className={styles.scheduleList}>
+              <div className={styles.scheduleRow}>
+                <span className={styles.scheduleTime}>07:30 - 09:00</span>
+                <span className={styles.scheduleTitle}>Bloque Alpha: Revisión teórica CONASET</span>
+                <span className={styles.scheduleTag}>Enfoque Profundo</span>
+              </div>
+              <div className={`${styles.scheduleRow} ${styles.scheduleRowAmber}`}>
+                <span className={styles.scheduleTime}>11:00 - 12:30</span>
+                <span className={styles.scheduleTitle}>Documentación Académica & Ensayos</span>
+                <span className={styles.scheduleTag}>Estratégico</span>
+              </div>
+              <div className={`${styles.scheduleRow} ${styles.scheduleRowTeal}`}>
+                <span className={styles.scheduleTime}>16:00 - 17:00</span>
+                <span className={styles.scheduleTitle}>Práctica en circuito / Conducción real</span>
+                <span className={styles.scheduleTag}>Acción</span>
+              </div>
+              <div className={`${styles.scheduleRow} ${styles.scheduleRowNeutral}`}>
+                <span className={styles.scheduleTime}>20:00 - 20:30</span>
+                <span className={styles.scheduleTitle}>Cierre del día & Reflexión nocturna</span>
+                <span className={styles.scheduleTag}>Pausa</span>
+              </div>
             </div>
-            <div className={`${styles.scheduleRow} ${styles.scheduleRowAmber}`}>
-              <span className={styles.scheduleTime}>11:00 - 12:30</span>
-              <span className={styles.scheduleTitle}>Documentación Académica & Ensayos</span>
-              <span className={styles.scheduleTag}>Estratégico</span>
-            </div>
-            <div className={`${styles.scheduleRow} ${styles.scheduleRowTeal}`}>
-              <span className={styles.scheduleTime}>16:00 - 17:00</span>
-              <span className={styles.scheduleTitle}>Práctica en circuito / Conducción real</span>
-              <span className={styles.scheduleTag}>Acción</span>
-            </div>
-            <div className={`${styles.scheduleRow} ${styles.scheduleRowNeutral}`}>
-              <span className={styles.scheduleTime}>20:00 - 20:30</span>
-              <span className={styles.scheduleTitle}>Cierre del día & Reflexión nocturna</span>
-              <span className={styles.scheduleTag}>Pausa</span>
-            </div>
-          </div>
 
-          <footer className={styles.sheetFooter}>
-            <span>Papel libre de ácido • 120 gsm • Sincronización local instantánea</span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-              <Check size={12} color="var(--color-primary)" aria-hidden="true" />
-              <span>Aprobado en Bóveda</span>
-            </span>
-          </footer>
-        </article>
+            <footer className={styles.sheetFooter}>
+              <span>Papel libre de ácido • 120 gsm • Sincronización local instantánea</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Check size={12} color="var(--color-primary)" aria-hidden="true" />
+                <span>Aprobado en Bóveda</span>
+              </span>
+            </footer>
+          </article>
+        </div>
 
         {/* Columna Derecha (5 cols): Bento Biorritmos + Nota Táctil */}
         <div className={styles.bentoStack}>
