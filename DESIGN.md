@@ -8,94 +8,136 @@
 
 ---
 
-## 0. Dirección de Impacto Visual: el cuaderno de espiral
+## 0. Dirección de Impacto Visual: el cuaderno de espiral (plan v2)
 
-> Estado: **propuesta de diseño, aún no implementada**. Lo que dice el resto de este documento (§1 a §6) es lo vigente en el código. Cada punto de esta sección marca si es *vigente* o *por implementar*. Restricción dura: nada de esto cambia claves, formas ni valores guardados en `localStorage`; es solo presentación.
+> Estado: **plan en ejecución**. Implementado hasta hoy: el componente `Pliego` aplicado a "Prioridades de hoy" del Dashboard (commit `ef8acfd`) y el acceso por PIN unificado en un solo diálogo (`0dc8f1a`). Todo lo demás de esta sección es *por implementar*. El resto del documento (§1 a §6) describe lo vigente en el código. Restricción dura: nada de esto cambia claves, formas ni valores guardados en `localStorage`; es solo presentación.
 
 ### 0.1 Tesis
 
-El marfil cálido con serif de alto contraste y acento magenta es el aspecto que cualquier página "de papelería" tendría. Espiralia ya tiene una idea propia en el nombre: **la espiral**. El producto es un cuaderno de espiral que vive en el navegador. La dirección es hacer que esa encuadernación sea lo único memorable, y mantener todo lo demás quieto y legible.
+El marfil cálido con serif de alto contraste y acento magenta es lo que cualquier página "de papelería" tendría. La idea propia de Espiralia está en su nombre: es un cuaderno de espiral que vive en el navegador, y un cuaderno real se compone de **papeles distintos con trabajos distintos**. La dirección v2 convierte eso en un sistema de materiales: pocos, con significado, y con un solo gesto memorable (las anillas).
 
-### 0.2 Firma: el pliego encuadernado
+### 0.2 Qué cambió respecto de la v1 y por qué
 
-Un pliego de papel con **perforaciones y anillas de alambre** a lo largo de su borde izquierdo (en móvil, a lo largo del borde superior, como un bloc).
+| Problema de la v1 | Corrección en la v2 |
+| :--- | :--- |
+| Dos firmas compitiendo: anillas en el pliego y papeles rasgados en diez elementos del mock. Se perdía la regla "una sola cosa memorable". | Sistema de **tres materiales** con trabajos distintos (§0.3). Las anillas siguen siendo la firma; el papel rasgado es un material secundario con presupuesto. |
+| Los tintes de los papeles eran decorativos y aleatorios. | **El color codifica el módulo** (§0.4): el mismo tinte significa lo mismo en toda la app. |
+| La v1 vendía las fuentes autoalojadas como mejora estética. En realidad `index.html` carga hoy Caveat, Inter, JetBrains Mono y Newsreader desde Google Fonts: la app no funciona del todo sin red y hace una petición a un tercero, lo que contradice "100% local". | Autoalojar las fuentes pasa a ser el **paso 0**, independiente de la estética y sin cambio visual (§0.8). La tipografía nueva llega después, con peso medido. |
+| El borde rasgado del mock se generaba con JavaScript al medir el DOM, con `mix-blend-mode` y un filtro SVG por elemento. Costoso en móviles y frágil. | Un único primitivo `Papel` con formas de borde precalculadas en CSS (se reutiliza el `clip-path` de `bentoCardTorn`, que hoy está duplicado en `HabitModal` y en la landing) y una sola textura de fondo. Sin JavaScript de medición ni mezcla de capas. |
+| La fecha enorme empujaba la tarea principal fuera de la primera pantalla en móvil. | Criterio medible: la primera tarea crítica empieza dentro de los primeros 600px a 375x812 (§0.10). |
+| La doble tinta (sombra desplazada) en titulares corridos puede fatigar la lectura. | La doble tinta se limita a **un solo elemento: el numeral de la fecha**. |
+| Presupuestos ("un pliego por pantalla") solo escritos. | Se vuelven **tests** que cuentan usos por vista (§0.10). |
+| El aforismo post-it está en inglés en una app en español. | Decisión abierta: traducirlo (§0.9). |
+
+### 0.3 Los tres materiales
 
 ```
- desktop (borde izquierdo)            móvil (borde superior)
- ┌──┬───────────────────────┐         ○ ○ ○ ○ ○ ○ ○ ○ ○ ○ ○ ○
- ◦══│  jueves                │        ┌──────────────────────────┐
- ◦══│  22   octubre 2026     │        │  jueves                  │
- ◦══│  ─────────────────     │        │  22   octubre 2026       │
- ◦══│  Prioridades de hoy    │        └──────────────────────────┘
- └──┴───────────────────────┘
+ PLIEGO              PAPEL (rasgado + tinte)           CARTULINA
+ anillas, sombra     bordes arriba/abajo irregulares   borde recto, sin textura
+ de apilado          cuadrícula bujo, tinte de módulo  sombra de papel simple
+ la tarea            lo que se lee de un vistazo       lo que se edita o se decide
+ principal de hoy    (resúmenes, vacíos, métricas)     (foco, formularios, modales)
+ máx. 1 por vista    máx. 4 por pantalla               sin límite
 ```
 
-- **Vigente:** nada. Hoy cada tarjeta lleva clips, washi y notas adhesivas sueltos, sin un hilo común.
-- **Por implementar:** un único componente de superficie (`.pliego`) con las anillas hechas en SVG de fondo repetido cada 28px, con perforación, anilla de alambre que sobresale del borde y sombra de papel multicapa (§4). Sin imágenes externas.
-- **Regla de gasto:** como máximo **un pliego encuadernado por pantalla**, el que contiene la tarea principal de esa vista. Los demás contenedores quedan lisos (cartulina, ficha o lista). Las notas adhesivas, clips de latón y cintas washi pasan a ser excepciones puntuales, no una capa en cada tarjeta.
-- **Logo:** el monograma "Es" (§6) se dibuja con dos anillas a la izquierda del cuadrado magenta: la misma firma en pequeño.
+- **Pliego** (vigente, `src/components/common/Pliego.tsx`): contiene la tarea principal de la vista. Anillas laterales en escritorio y superiores en móvil. Un solo pliego por vista.
+- **Papel** (por implementar, `src/components/common/Papel.tsx`): superficie de lectura. Se extrae del `bentoCardTorn` actual: bordes superior e inferior rasgados, cuadrícula de puntos (`--color-grid-bujo`) y un tinte claro. Recibe el módulo para elegir el tinte. Hoy hay tres copias del `clip-path` rasgado (`DashboardView`, `HabitModal`, `LandingHeroCard`); el primitivo las reemplaza.
+- **Cartulina**: el contenedor liso de hoy (`.card`). Se reserva para lo que la persona edita o decide: foco principal, formularios, modales. Así se distingue de lo que solo se lee.
+- **Pestañas, etiquetas y la hoja de la fecha** son piezas pequeñas de Papel (borde rasgado en uno o dos lados, sin cuadrícula). Cuentan dentro del presupuesto de 4 por pantalla.
+- Clips de latón, cintas washi y notas adhesivas dejan de ser una capa por tarjeta. Queda como máximo **un** clip por pantalla.
 
-### 0.3 La fecha como titular
+### 0.4 El color codifica el módulo
 
-La estructura debe llevar información real. Cada vista abre con la **fecha del día en grande**, como la hoja de un calendario de escritorio: numeral serif de 96 a 160px, día de la semana y mes en mayúsculas pequeñas, semana ISO (`isoWeekNumber`) en monoespaciada. Sustituye a los numerales decorativos "01 / 02 / 03" de fondo, que no codifican nada.
-
-- **Vigente:** la fecha existe en la barra superior, pequeña, y la semana ISO se calcula bien (Dashboard, Agenda, To-Do).
-- **Por implementar:** cabecera de pliego con fecha en el Dashboard, la Agenda y el Planner. En la landing, el pliego del hero muestra la fecha de hoy, no una fecha de ejemplo.
-
-### 0.4 Tipografía
-
-Se descartan los valores por defecto (Newsreader + Inter + Caveat son la combinación más repetida de este estilo). Todo se sirve **desde el propio sitio** (la app funciona sin red), con fuentes variables en `woff2`, subconjunto latino, y `font-display: swap`.
-
-| Rol | Familia | Cómo se usa |
-| :--- | :--- | :--- |
-| Display | **Fraunces** (variable: `opsz`, `SOFT` 100, `WONK` 1) | Fecha, titulares y citas. Con `opsz` alto en los titulares grandes y `SOFT` para redondear los remates; el peso 300 a 400 evita el aspecto de periódico. |
-| Cuerpo | **Atkinson Hyperlegible Next** | Listas, formularios, controles. Se eligió por legibilidad medible (R-25) y porque no es la sans que todos eligen por reflejo. |
-| Manuscrito | **Reenie Beanie** | Solo aforismos y notas, a 22px o más. Nunca para datos ni controles. |
-| Técnica | **Spline Sans Mono** | Semana ISO, horas, almacenamiento, metadatos. |
-
-Escala fluida (sustituye los saltos fijos de §3): `display-xl: clamp(3rem, 1.5rem + 6vw, 6rem)`, `display-lg: clamp(2.25rem, 1.4rem + 3.5vw, 4rem)`, `display-md: clamp(1.75rem, 1.3rem + 2vw, 2.5rem)`. El cuerpo no baja de 15px y el mínimo absoluto sigue siendo `--text-micro` (11px).
-
-### 0.5 Color: una tinta, no un degradado
-
-Se conservan los tokens de §2. La novedad es cómo se usan:
-
-- **Doble tinta en titulares grandes.** El texto va en `--color-ink` (contraste AA garantizado) con un desplazamiento de `1.5px` en pizarra `#7B8C9E` al 55 % detrás, como un mal registro de impresión de dos colores. Solo en `display-xl` y `display-lg`. Con `prefers-contrast: more` o `forced-colors: active` se quita el desplazamiento.
-- **El magenta se gasta en un solo gesto por pantalla:** la anilla activa, el CTA primario o el subrayado de la fecha. No en iconos, bordes y píldoras a la vez.
-- **Grano de papel:** una trama de ruido (SVG `feTurbulence` en un `data:` URI, 3 % de opacidad, tesela de 200px) sobre `--color-canvas`. Sin gradientes, sin brillos, sin desenfoque.
-
-### 0.6 Movimiento: una sola escena
-
-Se mantiene MOTION 1. La única escena orquestada es **pasar la página** al cambiar de vista: el pliego saliente se desplaza 8px a la izquierda y se desvanece en 240ms mientras entra el siguiente. Se implementa con la View Transitions API que `index.css` ya declara (`@view-transition`). Se desactiva con `prefers-reduced-motion`. No hay más animaciones, ni en bucle ni de entrada escalonada.
-
-### 0.7 Mapa de aplicación
-
-| Pantalla | Pliego encuadernado | Fecha como titular | Nota |
+| Módulo | Tinte | Base (token) | Mezcla con `--color-canvas` |
 | :--- | :--- | :--- | :--- |
-| Landing (hero) | Sí, es el hero | Sí, fecha de hoy | La mesa de trabajo de ejemplo queda lisa. |
-| Dashboard | Sí, el bloque "Prioridades de hoy" | Sí | Las métricas quedan en fichas lisas. |
-| Agenda | Sí, el almanaque | Semana ISO en mono | |
-| Planner | Sí, la semana | Semana ISO en mono | |
-| Notas | Sí, el pliego activo | No | La nota abierta es el único pliego. |
-| To-Do, Carpetas, Integraciones | No | No | Fichas y listas lisas. |
-| Acceso (PIN) | Sí, la tarjeta del teclado | No | |
-| Modales | No | No | Cartulina lisa con sombra de papel. |
+| Dashboard, neutro | Arena | `--color-surface-card` | sin mezcla |
+| Agenda y fechas | Pizarra | `--color-accent-slate` | 14 % |
+| Planner | Salvia | `--color-accent-sage` | 14 % |
+| To-Do y prioridad | Terracota | `--color-accent-terracotta` | 12 % |
+| Notas | Ámbar | `--color-accent-amber` | 16 % |
+| Carpetas | Rosa | `--color-primary-soft` | 16 % |
+| Integraciones | Turquesa | `--color-accent-teal` | 14 % |
 
-### 0.8 Qué se descartó y por qué
+- Una tarjeta resumen del Dashboard lleva el tinte del módulo que resume (Horario: pizarra; Planner de la semana: salvia; Recordatorios: terracota).
+- Las piezas pequeñas (etiqueta, pestaña) llevan una versión más intensa (28 a 42 %) del mismo tinte.
+- Los tintes se declaran como tokens (`--papel-arena`, `--papel-pizarra`, etc.) calculados con `color-mix` sobre los tokens base; no se escriben hex nuevos.
+- El texto sobre cualquier tinte usa `--color-ink` o `--color-body` y debe pasar 4.5:1 (test en `textTokensContrast.test.ts`).
+- **El magenta queda reservado para acciones y para el subrayado de la fecha.** No se usa como tinte de superficie.
+
+### 0.5 La fecha como hoja de calendario
+
+Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va sobre una pieza de Papel arena rasgada por arriba, como una hoja arrancada de un taco. Es la única pieza con doble tinta: sombra desplazada 2px en pizarra al 55 %. Junto a la hoja: etiqueta de Agenda (pizarra) con día de la semana y semana ISO (`isoWeekNumber`) en monoespaciada, el mes en el titular y un subrayado magenta.
+
+- Agenda y Planner **no** repiten el numeral: ya muestran la fecha en su propio calendario. Solo suman la semana ISO en monoespaciada.
+- Con `prefers-contrast: more` y `forced-colors: active` se quita la sombra desplazada.
+
+### 0.6 Tipografía (después del paso 0)
+
+| Rol | Familia | Uso |
+| :--- | :--- | :--- |
+| Display | **Fraunces** (variable; ejes `opsz` y `wght`, `SOFT` fijo en 100) | Fecha, titulares y citas. |
+| Cuerpo | **Atkinson Hyperlegible Next** | Listas, formularios, controles. Reemplaza a Inter, que es la sans por defecto de este tipo de interfaz. |
+| Manuscrito | **Reenie Beanie** | Aforismos y notas, a 22px o más. Reemplaza a Caveat. |
+| Técnica | **Spline Sans Mono** | Semana ISO, horas, almacenamiento, metadatos. Reemplaza a JetBrains Mono. |
+
+- Las cuatro familias se publican con licencia abierta (OFL); se confirma al descargar cada una.
+- Se sirven desde el sitio, en `woff2`, con subconjunto latino y `font-display: swap`. Para bajar el peso se fijan los ejes que no se usan (`WONK`, `SOFT`) con `fonttools`.
+- **El presupuesto se mide antes de comprometerlo.** Hasta tener el número real, la ruta crítica (display y cuerpo) no supera 120KB; el manuscrito y la monoespaciada se cargan por `unicode-range` solo si se usan.
+- Escala fluida: `display-xl: clamp(3rem, 1.5rem + 6vw, 6rem)`, `display-lg: clamp(2.25rem, 1.4rem + 3.5vw, 4rem)`, `display-md: clamp(1.75rem, 1.3rem + 2vw, 2.5rem)`. Cuerpo mínimo de 15px; el mínimo absoluto sigue siendo `--text-micro` (11px).
+
+### 0.7 Movimiento y grano
+
+- **Una sola escena: pasar la página** al cambiar de vista (240ms, desplazamiento de 8px), con la View Transitions API como mejora progresiva. Sin soporte o con `prefers-reduced-motion`, no hay transición. Es el último paso del plan.
+- **Grano de papel** al 3 %: una textura SVG como `background-image` del `body` (no una capa fija a pantalla completa, para no repintar al hacer scroll). Sin degradados, sin brillos, sin desenfoque, sin `mix-blend-mode`.
+
+### 0.8 Orden de ejecución (cada paso se puede entregar y revertir por separado)
+
+| Paso | Qué | Cómo se verifica |
+| :--- | :--- | :--- |
+| 0 | **Autoalojar las fuentes actuales** (Newsreader, Inter, JetBrains Mono, Caveat), sin cambio visual. Quitar los enlaces a Google Fonts de `index.html`. | Cero peticiones a dominios externos al cargar la app. Se mide el peso real de las fuentes. |
+| 1 | **Primitivos**: `Papel` (extraído de `bentoCardTorn`), tokens `--papel-*`, `Pliego` (hecho) y los tests de presupuesto. | Tests rojos antes, verdes después; los tres `clip-path` duplicados convergen en uno. |
+| 2 | **Dashboard**: recortar ornamentos, tintes por módulo, hoja de la fecha. | Capturas a 375, 768 y 1440px; comparación con el mock. **Punto de revisión con la persona dueña.** |
+| 3 | **Acceso**: pliego en la tarjeta de cuadernos y panel derecho con papeles de datos reales. | Idem. **Punto de revisión.** |
+| 4 | **Resto de vistas**, una por commit: Agenda, Planner, To-Do, Notas, Carpetas, Integraciones. | Suite completa y capturas por vista. |
+| 5 | **Tipografía nueva** (§0.6). | Peso medido contra el presupuesto; contraste y escala sin regresiones. |
+| 6 | **Pasar la página** (§0.7). | Con y sin `prefers-reduced-motion`. |
+
+### 0.9 Mapa de aplicación y decisiones abiertas
+
+| Pantalla | Pliego | Papel (máx. 4) | Cartulina | Fecha |
+| :--- | :--- | :--- | :--- | :--- |
+| Dashboard | Prioridades de hoy | Hoja de fecha, Horario, Recordatorios, Planner de la semana | Foco principal | Hoja, solo aquí |
+| Landing (hero) | Hero | Etiquetas y vacíos | Formularios | Hoja con la fecha de hoy |
+| Acceso | La tarjeta de cuadernos registrados | Los papeles de datos del panel derecho | Diálogo del PIN | No |
+| Agenda | El almanaque | Resumen lateral (pizarra) | Formulario de evento | Semana ISO en mono |
+| Planner | La semana | Metas (salvia) | Formulario de bloque | Semana ISO en mono |
+| Notas | La nota abierta | Tarjetas de nota (ámbar) | Editor | No |
+| To-Do, Carpetas, Integraciones | No | Tarjetas de cada módulo con su tinte | Formularios | No |
+
+Decisiones abiertas, para confirmar con la persona dueña:
+1. **Aforismo:** traducir "discipline today, peace tomorrow" al español, o mantenerlo en inglés como cita.
+2. **Texto del respaldo** en el acceso: "Respalda tu bóveda y restáurala en otro equipo". La restauración existe (`VaultModal`, pestaña de importar), así que el texto es veraz.
+3. **Cantidad de tintes en pantalla:** si 4 piezas de Papel por pantalla resulta demasiado, el presupuesto baja a 3.
+
+### 0.10 Criterios de aceptación (verificables)
+
+1. Como máximo un `<Pliego` por archivo de vista y cuatro `<Papel` por pantalla (tests que cuentan usos).
+2. Texto sobre cada tinte: 4.5:1 como mínimo, medido con la fórmula WCAG en `textTokensContrast.test.ts`.
+3. Ningún control menor de 44x44px; foco visible con 3:1 contra su entorno.
+4. A 375, 768 y 1440px: sin desborde horizontal. A 375x812, la primera tarea crítica del Dashboard empieza dentro de los primeros 600px.
+5. Cero peticiones a dominios externos al cargar cualquier ruta; peso de fuentes medido y dentro del presupuesto fijado en el paso 5.
+6. Con `prefers-reduced-motion` no hay transición de página; con `prefers-contrast: more` y `forced-colors: active`, sin sombra desplazada, y los papeles conservan un borde visible (`border` de respaldo, `clip-path: none`).
+7. Sin `mix-blend-mode` ni más de cuatro `filter: drop-shadow` por pantalla. La pantalla se desplaza sin saltos en una grabación de rendimiento en emulación móvil.
+8. Los datos guardados antes de este cambio se leen igual (`src/tests/legacyDataCompat.test.tsx` sigue en verde).
+
+### 0.11 Qué se descartó y por qué
 
 - **Fondo casi negro con un acento ácido:** no tiene relación con un cuaderno de papel; el pliego nocturno del manifiesto (§5.C.7) ya cubre el uso nocturno.
-- **Diseño tipo periódico (columnas densas, filetes finos, esquinas rectas):** es el segundo estilo más repetido y choca con el tono íntimo.
-- **Seguir con Newsreader, Inter y Caveat:** funcionan, pero no son una decisión de este producto.
-- **Más washi, más clips y más notas adhesivas:** decoración sin función; competiría con la firma.
-
-### 0.9 Criterios de aceptación (verificables)
-
-1. Un solo pliego encuadernado por pantalla, según §0.7.
-2. Texto sobre cualquier superficie: 4.5:1 como mínimo; el desplazamiento de doble tinta no cuenta como texto.
-3. Ningún control menor de 44x44px; foco visible con 3:1 contra su entorno.
-4. A 375px, 768px y 1440px: sin desborde horizontal; las anillas pasan al borde superior en móvil.
-5. Las fuentes se cargan desde el sitio y el peso total de fuentes de una pantalla no supera 120KB.
-6. Con `prefers-reduced-motion`, no hay transición de página; con `prefers-contrast: more`, sin desplazamiento de tinta.
-7. Los datos guardados antes de este cambio se leen igual (`src/tests/legacyDataCompat.test.tsx` sigue en verde).
+- **Diseño tipo periódico (columnas densas, filetes finos, esquinas rectas):** choca con el tono íntimo.
+- **Un tinte distinto por tarjeta sin criterio:** se ve festivo y no enseña nada; por eso el color codifica el módulo.
+- **Borde rasgado generado con JavaScript:** mide el DOM en cada cambio de tamaño y no escala a todas las vistas.
+- **Más washi, clips y notas adhesivas en cada tarjeta:** competiría con la firma.
+- **Doble tinta en titulares corridos:** reduce la legibilidad sin aportar información.
 
 ---
 
