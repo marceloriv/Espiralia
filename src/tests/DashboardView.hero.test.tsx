@@ -300,7 +300,8 @@ describe('DashboardView critical CSS & Hero Content', () => {
       expect(screen.getByText(/1 de 2 tareas logradas/i)).toBeInTheDocument();
       expect(screen.queryByText('IndexedDB activo')).not.toBeInTheDocument();
       expect(screen.queryByText('Objetivo semestral')).not.toBeInTheDocument();
-      expect(screen.getByText(/0 rastreadores • 100% offline/i)).toBeInTheDocument();
+      expect(screen.getByText('Almacenamiento')).toBeInTheDocument();
+      expect(screen.getByText(/en este navegador/i)).toBeInTheDocument();
     });
   });
 });
