@@ -72,10 +72,6 @@ export const LandingIntentionWidget: React.FC = () => {
   return (
     <section className={styles.widgetContainer} aria-labelledby="intention-heading">
       <div className={styles.widgetHeader}>
-        <div className={styles.badge}>
-          <Sparkles size={14} aria-hidden="true" />
-          <span>Brújula Interior Inmediata</span>
-        </div>
         <h2 id="intention-heading" className={styles.title}>
           Elige tu intención para hoy
         </h2>

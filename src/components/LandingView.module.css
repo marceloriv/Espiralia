@@ -75,6 +75,10 @@
 }
 
 .logoTitle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   font-family: var(--font-primary, serif);
   font-size: 1.5rem;
   font-weight: 600;
@@ -108,6 +112,9 @@
 }
 
 .navLink {
+  background: none;
+  border: none;
+  cursor: pointer;
   color: var(--color-body, #3d3d3a);
   font-family: var(--font-body, sans-serif);
   font-size: 0.9375rem;
@@ -203,6 +210,17 @@
 .heroSecondaryLink:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* A 375px la barra no cabe con dos botones: el CTA del hero queda justo debajo. */
+@media (max-width: 640px) {
+  .topBar {
+    padding: 0 var(--spacing-md);
+  }
+
+  .actionButtons .primaryCtaBtn {
+    display: none;
+  }
 }
 
 /* 2. Hero Section con Retícula Japonesa y Guía de Margen */
@@ -304,6 +322,7 @@
 }
 
 .heroSecondaryLink {
+  cursor: pointer;
   min-height: var(--tap-min);
   padding: 8px 18px;
   background-color: var(--color-surface-soft, #f5f0e8);
@@ -602,6 +621,10 @@
 }
 
 .footerLink {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
   color: var(--color-muted);
   font-size: var(--text-caption);
   text-decoration: none;

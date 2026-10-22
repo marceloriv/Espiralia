@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Compass,
   Sunrise,
   Sun,
   Sunset,
@@ -60,10 +59,6 @@ export const LandingRitmosSection: React.FC = () => {
   return (
     <section className={styles.ritmosSection} aria-labelledby="ritmos-heading">
       <div className={styles.sectionHeader}>
-        <div className={styles.sectionBadge}>
-          <Compass size={14} aria-hidden="true" />
-          <span>Cadencia Vital</span>
-        </div>
         <h2 id="ritmos-heading" className={styles.sectionTitle}>
           Una Cadencia Vital que Respeta tus Límites
         </h2>

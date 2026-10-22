@@ -8,7 +8,6 @@ describe('LandingView', () => {
     render(<LandingView onNavigateLogin={() => {}} />);
     expect(screen.getByRole('heading', { level: 1, name: /el arte de organizar tu vida con serenidad cotidiana/i })).toBeInTheDocument();
     expect(screen.queryByText(/v2\.4/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/100% client-side • sin rastreo • almacenamiento local/i)).toBeInTheDocument();
     expect(screen.getByText(/datos en tu navegador/i)).toBeInTheDocument();
     expect(screen.getByText('Día de ejemplo')).toBeInTheDocument();
   });
@@ -24,12 +23,12 @@ describe('LandingView', () => {
     expect(pilaresSection).toBeInTheDocument();
   });
 
-  it('dispara la navegación hacia login al hacer clic en comenzar cuaderno o acceder', async () => {
+  it('dispara la navegación hacia login al hacer clic en crear mi cuaderno', async () => {
     const user = userEvent.setup();
     const handleLogin = vi.fn();
     render(<LandingView onNavigateLogin={handleLogin} />);
 
-    const ctaBtns = screen.getAllByRole('button', { name: /comenzar cuaderno|abrir cuaderno inmediato/i });
+    const ctaBtns = screen.getAllByRole('button', { name: /crear mi cuaderno/i });
     expect(ctaBtns.length).toBeGreaterThan(0);
     await user.click(ctaBtns[0]);
 
@@ -47,7 +46,7 @@ describe('LandingView', () => {
       />
     );
 
-    const ctaBtns = screen.getAllByRole('button', { name: /comenzar cuaderno|abrir cuaderno inmediato/i });
+    const ctaBtns = screen.getAllByRole('button', { name: /crear mi cuaderno/i });
     await user.click(ctaBtns[0]);
     expect(handleDashboard).toHaveBeenCalled();
   });

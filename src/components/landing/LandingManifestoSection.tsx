@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Feather,
   ShieldCheck,
   Cpu,
   Lock,
@@ -20,7 +19,7 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
     <section
       id="manifiesto"
       className={styles.nocturnoWrapper}
-      aria-labelledby="manifiesto-heading"
+      aria-label="Manifiesto de soberanía personal"
     >
       <div className={styles.nocturnoContent}>
         {/* 1. Manifiesto Display Quote */}
@@ -28,11 +27,6 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
           <div className={styles.notarySeal} aria-hidden="true">
             §
           </div>
-          <div className={styles.manifestoBadge}>
-            <Feather size={14} aria-hidden="true" />
-            <span id="manifiesto-heading">Manifiesto de Soberanía Personal</span>
-          </div>
-
           <blockquote className={styles.manifestoQuote}>
             “Tu tiempo te pertenece: cada hora es el espacio donde decides qué construir.”
           </blockquote>
@@ -111,7 +105,7 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
               className={styles.primaryCtaBtn}
               onClick={onAction}
             >
-              <span>Comenzar Cuaderno</span>
+              <span>Crear mi cuaderno</span>
               <ArrowRight size={16} aria-hidden="true" />
             </button>
           </div>

@@ -9,7 +9,7 @@ describe('LandingManifestoSection', () => {
     expect(
       screen.getByText(/tu tiempo te pertenece: cada hora es el espacio donde decides qué construir\./i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/manifiesto de soberanía personal/i)).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: /manifiesto de soberanía personal/i })).toBeInTheDocument();
   });
 
   it('despliega los 3 pilares del certificado de soberanía local-first', () => {
@@ -28,7 +28,7 @@ describe('LandingManifestoSection', () => {
     expect(screen.getByText(/tu cuaderno te espera/i)).toBeInTheDocument();
     expect(screen.queryByText(/plantillas imprimibles/i)).not.toBeInTheDocument();
 
-    const ctaButton = screen.getByRole('button', { name: /comenzar cuaderno/i });
+    const ctaButton = screen.getByRole('button', { name: /crear mi cuaderno/i });
     await user.click(ctaButton);
     expect(handleAction).toHaveBeenCalled();
   });

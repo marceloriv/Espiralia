@@ -6,9 +6,14 @@
   width: 100%;
 }
 
+/* RHYTHM 2: el primer pilar ocupa el ancho completo y los otros dos van en pareja. */
 @media (min-width: 900px) {
   .folderCardsGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .folderCard:first-child {
+    grid-column: 1 / -1;
   }
 }
 
@@ -49,7 +54,8 @@
   pointer-events: none;
 }
 
-.folderCard:hover .innerSheet {
+.folderCard:hover .innerSheet,
+.folderCard:focus-within .innerSheet {
   transform: translateY(-6px);
 }
 

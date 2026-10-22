@@ -38,7 +38,7 @@ describe('App integración general', () => {
 
     render(<App />);
 
-    const openLandingBtns = await screen.findAllByRole('button', { name: /abrir cuaderno inmediato|comenzar cuaderno/i });
+    const openLandingBtns = await screen.findAllByRole('button', { name: /crear mi cuaderno/i });
     await user.click(openLandingBtns[0]);
 
     const openCreateBtn = await screen.findByRole('button', { name: /nuevo perfil/i });
@@ -67,7 +67,7 @@ describe('App integración general', () => {
 
     render(<App />);
 
-    const openLandingBtns = await screen.findAllByRole('button', { name: /abrir cuaderno inmediato|comenzar cuaderno/i });
+    const openLandingBtns = await screen.findAllByRole('button', { name: /crear mi cuaderno/i });
     await user.click(openLandingBtns[0]);
 
     const openCreateBtn = await screen.findByRole('button', { name: /nuevo perfil/i });

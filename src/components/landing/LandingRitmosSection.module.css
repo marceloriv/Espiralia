@@ -50,9 +50,11 @@
   padding-top: 1rem;
 }
 
+/* RHYTHM 2: los tres momentos se leen como una lista vertical, no como tres tarjetas iguales. */
 @media (min-width: 860px) {
   .ritmosGrid {
-    grid-template-columns: repeat(3, 1fr);
+    max-width: 720px;
+    margin-inline: auto;
   }
 }
 
