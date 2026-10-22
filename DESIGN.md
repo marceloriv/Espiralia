@@ -8,6 +8,97 @@
 
 ---
 
+## 0. Dirección de Impacto Visual: el cuaderno de espiral
+
+> Estado: **propuesta de diseño, aún no implementada**. Lo que dice el resto de este documento (§1 a §6) es lo vigente en el código. Cada punto de esta sección marca si es *vigente* o *por implementar*. Restricción dura: nada de esto cambia claves, formas ni valores guardados en `localStorage`; es solo presentación.
+
+### 0.1 Tesis
+
+El marfil cálido con serif de alto contraste y acento magenta es el aspecto que cualquier página "de papelería" tendría. Espiralia ya tiene una idea propia en el nombre: **la espiral**. El producto es un cuaderno de espiral que vive en el navegador. La dirección es hacer que esa encuadernación sea lo único memorable, y mantener todo lo demás quieto y legible.
+
+### 0.2 Firma: el pliego encuadernado
+
+Un pliego de papel con **perforaciones y anillas de alambre** a lo largo de su borde izquierdo (en móvil, a lo largo del borde superior, como un bloc).
+
+```
+ desktop (borde izquierdo)            móvil (borde superior)
+ ┌──┬───────────────────────┐         ○ ○ ○ ○ ○ ○ ○ ○ ○ ○ ○ ○
+ ◦══│  jueves                │        ┌──────────────────────────┐
+ ◦══│  22   octubre 2026     │        │  jueves                  │
+ ◦══│  ─────────────────     │        │  22   octubre 2026       │
+ ◦══│  Prioridades de hoy    │        └──────────────────────────┘
+ └──┴───────────────────────┘
+```
+
+- **Vigente:** nada. Hoy cada tarjeta lleva clips, washi y notas adhesivas sueltos, sin un hilo común.
+- **Por implementar:** un único componente de superficie (`.pliego`) con las anillas hechas en SVG de fondo repetido cada 28px, con perforación, anilla de alambre que sobresale del borde y sombra de papel multicapa (§4). Sin imágenes externas.
+- **Regla de gasto:** como máximo **un pliego encuadernado por pantalla**, el que contiene la tarea principal de esa vista. Los demás contenedores quedan lisos (cartulina, ficha o lista). Las notas adhesivas, clips de latón y cintas washi pasan a ser excepciones puntuales, no una capa en cada tarjeta.
+- **Logo:** el monograma "Es" (§6) se dibuja con dos anillas a la izquierda del cuadrado magenta: la misma firma en pequeño.
+
+### 0.3 La fecha como titular
+
+La estructura debe llevar información real. Cada vista abre con la **fecha del día en grande**, como la hoja de un calendario de escritorio: numeral serif de 96 a 160px, día de la semana y mes en mayúsculas pequeñas, semana ISO (`isoWeekNumber`) en monoespaciada. Sustituye a los numerales decorativos "01 / 02 / 03" de fondo, que no codifican nada.
+
+- **Vigente:** la fecha existe en la barra superior, pequeña, y la semana ISO se calcula bien (Dashboard, Agenda, To-Do).
+- **Por implementar:** cabecera de pliego con fecha en el Dashboard, la Agenda y el Planner. En la landing, el pliego del hero muestra la fecha de hoy, no una fecha de ejemplo.
+
+### 0.4 Tipografía
+
+Se descartan los valores por defecto (Newsreader + Inter + Caveat son la combinación más repetida de este estilo). Todo se sirve **desde el propio sitio** (la app funciona sin red), con fuentes variables en `woff2`, subconjunto latino, y `font-display: swap`.
+
+| Rol | Familia | Cómo se usa |
+| :--- | :--- | :--- |
+| Display | **Fraunces** (variable: `opsz`, `SOFT` 100, `WONK` 1) | Fecha, titulares y citas. Con `opsz` alto en los titulares grandes y `SOFT` para redondear los remates; el peso 300 a 400 evita el aspecto de periódico. |
+| Cuerpo | **Atkinson Hyperlegible Next** | Listas, formularios, controles. Se eligió por legibilidad medible (R-25) y porque no es la sans que todos eligen por reflejo. |
+| Manuscrito | **Reenie Beanie** | Solo aforismos y notas, a 22px o más. Nunca para datos ni controles. |
+| Técnica | **Spline Sans Mono** | Semana ISO, horas, almacenamiento, metadatos. |
+
+Escala fluida (sustituye los saltos fijos de §3): `display-xl: clamp(3rem, 1.5rem + 6vw, 6rem)`, `display-lg: clamp(2.25rem, 1.4rem + 3.5vw, 4rem)`, `display-md: clamp(1.75rem, 1.3rem + 2vw, 2.5rem)`. El cuerpo no baja de 15px y el mínimo absoluto sigue siendo `--text-micro` (11px).
+
+### 0.5 Color: una tinta, no un degradado
+
+Se conservan los tokens de §2. La novedad es cómo se usan:
+
+- **Doble tinta en titulares grandes.** El texto va en `--color-ink` (contraste AA garantizado) con un desplazamiento de `1.5px` en pizarra `#7B8C9E` al 55 % detrás, como un mal registro de impresión de dos colores. Solo en `display-xl` y `display-lg`. Con `prefers-contrast: more` o `forced-colors: active` se quita el desplazamiento.
+- **El magenta se gasta en un solo gesto por pantalla:** la anilla activa, el CTA primario o el subrayado de la fecha. No en iconos, bordes y píldoras a la vez.
+- **Grano de papel:** una trama de ruido (SVG `feTurbulence` en un `data:` URI, 3 % de opacidad, tesela de 200px) sobre `--color-canvas`. Sin gradientes, sin brillos, sin desenfoque.
+
+### 0.6 Movimiento: una sola escena
+
+Se mantiene MOTION 1. La única escena orquestada es **pasar la página** al cambiar de vista: el pliego saliente se desplaza 8px a la izquierda y se desvanece en 240ms mientras entra el siguiente. Se implementa con la View Transitions API que `index.css` ya declara (`@view-transition`). Se desactiva con `prefers-reduced-motion`. No hay más animaciones, ni en bucle ni de entrada escalonada.
+
+### 0.7 Mapa de aplicación
+
+| Pantalla | Pliego encuadernado | Fecha como titular | Nota |
+| :--- | :--- | :--- | :--- |
+| Landing (hero) | Sí, es el hero | Sí, fecha de hoy | La mesa de trabajo de ejemplo queda lisa. |
+| Dashboard | Sí, el bloque "Prioridades de hoy" | Sí | Las métricas quedan en fichas lisas. |
+| Agenda | Sí, el almanaque | Semana ISO en mono | |
+| Planner | Sí, la semana | Semana ISO en mono | |
+| Notas | Sí, el pliego activo | No | La nota abierta es el único pliego. |
+| To-Do, Carpetas, Integraciones | No | No | Fichas y listas lisas. |
+| Acceso (PIN) | Sí, la tarjeta del teclado | No | |
+| Modales | No | No | Cartulina lisa con sombra de papel. |
+
+### 0.8 Qué se descartó y por qué
+
+- **Fondo casi negro con un acento ácido:** no tiene relación con un cuaderno de papel; el pliego nocturno del manifiesto (§5.C.7) ya cubre el uso nocturno.
+- **Diseño tipo periódico (columnas densas, filetes finos, esquinas rectas):** es el segundo estilo más repetido y choca con el tono íntimo.
+- **Seguir con Newsreader, Inter y Caveat:** funcionan, pero no son una decisión de este producto.
+- **Más washi, más clips y más notas adhesivas:** decoración sin función; competiría con la firma.
+
+### 0.9 Criterios de aceptación (verificables)
+
+1. Un solo pliego encuadernado por pantalla, según §0.7.
+2. Texto sobre cualquier superficie: 4.5:1 como mínimo; el desplazamiento de doble tinta no cuenta como texto.
+3. Ningún control menor de 44x44px; foco visible con 3:1 contra su entorno.
+4. A 375px, 768px y 1440px: sin desborde horizontal; las anillas pasan al borde superior en móvil.
+5. Las fuentes se cargan desde el sitio y el peso total de fuentes de una pantalla no supera 120KB.
+6. Con `prefers-reduced-motion`, no hay transición de página; con `prefers-contrast: more`, sin desplazamiento de tinta.
+7. Los datos guardados antes de este cambio se leen igual (`src/tests/legacyDataCompat.test.tsx` sigue en verde).
+
+---
+
 ## 1. Filosofía & Principios Visuales
 
 1. **Metáfora del Escritorio Analógico (*Papercraft UI*)**:
@@ -25,7 +116,7 @@
    - Identidad de marca Espiralia en **Magenta Orquídea** (`#8E1EA2`, `#C654C3`), complementada con matices de papelería clásica: azul pizarra suave (`#7B8C9E`), terracota cálido (`#9C4A3B`), verde salvia botánico (`#5A826D`), crema tostado (`#EFE9DE` / `#F6F2EC`) y carbón nocturno (`#1A1817`).
 
 4. **Soberanía y Serenidad Local**:
-   - Representación visual de la arquitectura *100% Client-Side* (sin registro en la nube, IndexedDB reactivo, cero telemetría externa) mediante insignias, certificados tipográficos y timbres de imprenta que transmiten privacidad íntima.
+   - Representación visual de la arquitectura *100% Client-Side* (sin registro en la nube, datos en el `localStorage` del navegador, cero telemetría externa) con textos que dicen lo que la app hace, sin certificaciones ni cifrado que no existan. Los timbres de imprenta quedan como recurso decorativo y nunca afirman seguridad.
 
 ---
 
@@ -205,16 +296,16 @@
 
 ## 6. Reglas de Oro del Sistema (Do's and Don'ts)
 
-### ✅ Hacer (Do)
+### Hacer (Do)
 - **Mantener el pliego marfil cálido (`#FCF9F6`)**: El lienzo unificador de toda la plataforma debe sentirse como papel bond/lino artesanal.
 - **Armonizar control operativo y serenidad emocional**: Acompañar siempre las listas de tareas y tablas de tiempo con lemas inspiradores, aforismos diarios y sellos de racha.
 - **Respetar la jerarquía tríadica**: Serif para cabeceras y citas, sans para lectura y control operativo, script para notas afectivas, mono para metadatos y bóveda.
-- **Garantizar soporte de exportación/impresión**: Diagramación limpia con soporte para impresión o exportación a PDF para quienes combinan soporte digital y físico.
+- **Soporte de exportación e impresión** *(por implementar: hoy solo existe la exportación de la agenda a `.ics` y el respaldo de la bóveda; no hay hoja de estilos de impresión)*: diagramación limpia con `@media print` para quienes combinan soporte digital y físico.
 - **Un solo logo**: el monograma "Es" (serif, sobre el cuadrado magenta `--color-primary`) en la barra superior de la landing, la barra lateral y la pantalla de acceso. No usar otros glifos ni iconos como marca.
 - **Objetivo táctil mínimo de 44x44px**: botones, inputs, selects, tabs y enlaces con clase usan `--tap-min` (regla global en `src/index.css`). Decisión del dueño, 2026-10-22: sube el 40px anterior.
 - **Preservar los tokens exactos**: Usar siempre las variables documentadas (`--color-primary`, `--color-canvas`, etc.) para consistencia absoluta en todo el proyecto.
 
-### ❌ No Hacer (Don't)
+### No Hacer (Don't)
 - **No utilizar fondos blancos clínicos (`#FFFFFF` puro) como fondo general de página**: El blanco queda restringido exclusivamente a cartulinas y notas superpuestas.
 - **No emplear sombras oscuras, duras o plásticas**: Emplear siempre sombras multicapa difusas que simulen hojas de papel reposando sobre un escritorio.
 - **No omitir las frases y aforismos motivacionales**: Son parte nuclear de la experiencia de calma y bienestar solicitada por el usuario.
