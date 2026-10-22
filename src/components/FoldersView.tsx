@@ -66,7 +66,7 @@ const DEFAULT_CURATED_FOLDERS: CuratedFolder[] = [
     id: 'curated-03',
     num: '03',
     name: 'Archivo & Referencias',
-    color: '#8b5cf6',
+    color: '#6d28d9',
     desc: 'Material de consulta, enlaces de interés, manuales y lecturas de largo plazo.',
     specs: 'Curada • Archivo',
     icon: <GraduationCap size={26} aria-hidden="true" />,

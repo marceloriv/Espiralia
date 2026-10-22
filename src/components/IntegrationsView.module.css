@@ -86,7 +86,7 @@
   font-size: var(--text-micro);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #8C7A4A;
+  color: var(--color-text-amber);
   margin-bottom: 0.25rem;
 }
 
@@ -102,7 +102,7 @@
   display: block;
   font-family: 'Caveat', cursive;
   font-size: 0.8125rem;
-  color: #8C7A4A;
+  color: var(--color-text-amber);
   margin-top: 0.35rem;
   text-align: right;
 }
