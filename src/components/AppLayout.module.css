@@ -200,7 +200,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #10b981;
+  background-color: var(--color-success);
   display: inline-block;
   box-shadow: 0 0 4px rgba(16, 185, 129, 0.5);
   animation: pulseDot 2s infinite ease-in-out;

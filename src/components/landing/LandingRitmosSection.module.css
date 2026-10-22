@@ -37,7 +37,7 @@
 .sectionSubtitle {
   font-family: var(--font-body, sans-serif);
   font-size: 1rem;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   max-width: 640px;
   margin: 0 auto;
   line-height: 1.6;
@@ -61,7 +61,7 @@
 /* Boleto de Turno / Pliego Cortado Artesanal */
 .ritmoTicket {
   position: relative;
-  background-color: var(--color-surface-card, #ffffff);
+  background-color: var(--color-surface-card);
   background-image: radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.5px, transparent 0.5px);
   background-size: 14px 14px;
   padding: 2.25rem 1.5rem 1.5rem;
@@ -178,7 +178,7 @@
   font-family: var(--font-code, monospace);
   font-size: 0.625rem;
   letter-spacing: 0.08em;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   text-transform: uppercase;
   margin-top: -0.5rem;
   margin-bottom: 0.75rem;
@@ -219,7 +219,7 @@
   gap: 8px;
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   padding-top: 0.25rem;
 }
 

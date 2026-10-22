@@ -57,8 +57,8 @@ function getScopedData<T>(key: string, fallback: T): T {
 }
 
 const DEFAULT_AREAS = [
-  { name: 'Estudios', color: '#3b82f6' },
-  { name: 'Personal', color: '#10b981' },
+  { name: 'Estudios', color: '#7b8c9e' },
+  { name: 'Personal', color: '#5a826d' },
   { name: 'Universidad', color: '#8b5cf6' },
   { name: 'General', color: '#6b7280' },
 ];

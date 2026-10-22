@@ -254,9 +254,9 @@
   transform: translateX(-50%);
   width: 28px;
   height: 40px;
-  border: 2.5px solid #d97706;
+  border: 2.5px solid var(--color-accent-amber);
   border-radius: 9999px;
-  background: linear-gradient(180deg, #fef08a 0%, #fde047 50%, #d97706 100%);
+  background: linear-gradient(180deg, #fef08a 0%, #fde047 50%, var(--color-accent-amber) 100%);
   box-shadow: var(--shadow-sm);
   z-index: 20;
   pointer-events: none;
@@ -268,8 +268,8 @@
 .brassInnerLoop {
   width: 14px;
   height: 24px;
-  border-bottom: 2px solid #b45309;
-  border-left: 2px solid #b45309;
+  border-bottom: 2px solid var(--color-accent-amber);
+  border-left: 2px solid var(--color-accent-amber);
   border-radius: 0 0 9999px 9999px;
 }
 
@@ -492,7 +492,7 @@
 
 .quickIconEvent {
   background-color: rgba(232, 165, 90, 0.2);
-  color: #b45309;
+  color: var(--color-text-amber);
 }
 
 .quickIconNote {
@@ -968,8 +968,8 @@
 }
 
 .habitPillEmpty {
-  border: 1px solid var(--color-hairline, #e2dcd2);
-  background-color: var(--color-surface-soft, #f4efe8);
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-surface-soft);
   color: transparent;
 }
 
@@ -980,7 +980,7 @@
 
 .habitPillChecked:focus-visible,
 .habitPillEmpty:focus-visible {
-  outline: 2px solid var(--color-primary, #324b3e);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -988,9 +988,9 @@
   font-family: var(--font-family-3, sans-serif);
   font-size: 11px;
   font-weight: 600;
-  color: var(--color-primary, #324b3e);
+  color: var(--color-primary);
   background: transparent;
-  border: 1px solid var(--color-hairline, #e2dcd2);
+  border: 1px solid var(--color-hairline);
   border-radius: 4px;
   padding: 3px 8px;
   cursor: pointer;
@@ -1001,12 +1001,12 @@
 }
 
 .addHabitBtn:hover {
-  background-color: var(--color-surface-soft, #f4efe8);
-  border-color: var(--color-primary, #324b3e);
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-primary);
 }
 
 .addHabitBtn:focus-visible {
-  outline: 2px solid var(--color-primary, #324b3e);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -1022,7 +1022,7 @@
 }
 
 .habitEditBtn:focus-visible {
-  outline: 2px solid var(--color-primary, #324b3e);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -1183,7 +1183,7 @@
   font-family: var(--font-family-3, sans-serif);
   font-size: 11px;
   font-weight: 600;
-  color: var(--color-primary, #324b3e);
+  color: var(--color-primary);
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid #d6dbe0;
   border-radius: var(--radius-xs);
@@ -1197,11 +1197,11 @@
 
 .changeFocusBtn:hover {
   background-color: #ffffff;
-  border-color: var(--color-primary, #324b3e);
+  border-color: var(--color-primary);
 }
 
 .changeFocusBtn:focus-visible {
-  outline: 2px solid var(--color-primary, #324b3e);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
@@ -1225,13 +1225,13 @@
   font-family: var(--font-primary, serif);
   font-size: 15px;
   font-weight: 600;
-  color: var(--color-ink, #23211e);
+  color: var(--color-ink);
 }
 
 .emptyPrioritiesSub {
   margin: 0 0 8px 0;
   font-size: var(--text-body-sm, 13px);
-  color: var(--color-muted, #726c63);
+  color: var(--color-muted);
   max-width: 340px;
 }
 
@@ -1251,7 +1251,7 @@
   width: 100%;
   max-width: 480px;
   background-color: var(--bg-card, #fcf9f6);
-  border: 1px solid var(--color-hairline, #e2dcd2);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
   box-shadow: 0 14px 28px rgba(26, 25, 23, 0.16);
   padding: 20px;
@@ -1261,7 +1261,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px dashed var(--color-hairline, #e2dcd2);
+  border-bottom: 1px dashed var(--color-hairline);
   padding-bottom: 12px;
   margin-bottom: 14px;
 }
@@ -1270,7 +1270,7 @@
   margin: 0;
   font-family: var(--font-primary, serif);
   font-size: 1.15rem;
-  color: var(--color-ink, #23211e);
+  color: var(--color-ink);
 }
 
 .focusModalBody {
@@ -1282,7 +1282,7 @@
 .focusModalDesc {
   margin: 0;
   font-size: 0.88rem;
-  color: var(--color-muted, #726c63);
+  color: var(--color-muted);
 }
 
 .focusModalList {
@@ -1298,25 +1298,25 @@
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: var(--bg-card, #ffffff);
-  border: 1px solid var(--color-hairline, #e2dcd2);
+  background: var(--bg-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.9rem;
-  color: var(--color-ink, #23211e);
+  color: var(--color-ink);
   text-align: left;
   transition: all 0.12s ease;
   min-height: 44px;
 }
 
 .focusModalItem:hover {
-  background-color: var(--color-surface-soft, #f4efe8);
-  border-color: var(--color-primary, #324b3e);
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-primary);
 }
 
 .focusModalItemActive {
-  background-color: var(--color-surface-soft, #f4efe8);
-  border-color: var(--color-primary, #324b3e);
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -1328,14 +1328,14 @@
   height: 36px;
   background: transparent;
   border: 1px solid transparent;
-  color: var(--color-muted, #726c63);
+  color: var(--color-muted);
   border-radius: 6px;
   cursor: pointer;
 }
 
 .closeBtn:hover {
-  background-color: var(--color-surface-soft, #f4efe8);
-  color: var(--color-ink, #23211e);
+  background-color: var(--color-surface-soft);
+  color: var(--color-ink);
 }
 
 .priorityHighBadge {
@@ -1660,7 +1660,7 @@
 .distractionDelBtn {
   background: transparent;
   border: none;
-  color: var(--color-muted, #726c63);
+  color: var(--color-muted);
   cursor: pointer;
   padding: 4px;
   display: inline-flex;
@@ -1673,11 +1673,11 @@
 
 .distractionDelBtn:hover {
   opacity: 1;
-  color: var(--color-error, #b91c1c);
+  color: var(--color-error);
 }
 
 .distractionDelBtn:focus-visible {
-  outline: 2px solid var(--color-error, #b91c1c);
+  outline: 2px solid var(--color-error);
   outline-offset: 2px;
 }
 
@@ -1695,15 +1695,15 @@
   padding: 0 10px;
   font-family: inherit;
   font-size: var(--text-body-sm);
-  background: var(--bg-card, #ffffff);
-  border: 1px solid var(--color-hairline, #e2dcd2);
+  background: var(--bg-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-xs);
-  color: var(--color-ink, #23211e);
+  color: var(--color-ink);
 }
 
 .distractionInput:focus {
   outline: none;
-  border-color: var(--color-primary, #324b3e);
+  border-color: var(--color-primary);
   box-shadow: var(--focus-ring);
 }
 
@@ -1715,7 +1715,7 @@
   justify-content: center;
   font-weight: 600;
   font-size: 16px;
-  background-color: var(--color-primary, #324b3e);
+  background-color: var(--color-primary);
   color: #ffffff;
   border: none;
   border-radius: var(--radius-xs);
@@ -1803,7 +1803,7 @@
   width: 8px;
   height: 8px;
   border-radius: 9999px;
-  background-color: #f59e0b;
+  background-color: var(--color-accent-amber);
   flex-shrink: 0;
 }
 
@@ -2234,7 +2234,7 @@
   width: 7px;
   height: 7px;
   border-radius: 9999px;
-  background-color: #d97706;
+  background-color: var(--color-accent-amber);
   flex-shrink: 0;
   margin-left: 4px;
   margin-right: 4px;

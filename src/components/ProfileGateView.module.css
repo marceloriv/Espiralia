@@ -17,7 +17,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--color-primary) 0%, #d97706 50%, #0d9488 100%);
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent-amber) 50%, #0d9488 100%);
   z-index: 50;
 }
 
@@ -75,7 +75,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #10b981;
+  background-color: var(--color-success);
 }
 
 .mainSheet {
@@ -371,8 +371,8 @@
 }
 
 .redStamp {
-  border: 1.5px solid #b91c1c;
-  color: #b91c1c;
+  border: 1.5px solid var(--color-error);
+  color: var(--color-text-error);
   font-family: var(--font-mono, monospace);
   font-size: 9px;
   font-weight: 700;
@@ -629,7 +629,7 @@
 .errorMessage {
   margin-top: 6px;
   font-size: 12px;
-  color: var(--color-accent-red, #b91c1c);
+  color: var(--color-accent-red, var(--color-error));
 }
 
 .modalActions {

@@ -31,6 +31,7 @@
 - Sin dependencias nuevas. Sin `—` (em dash) en texto de UI (R-02). Colores solo desde tokens de `src/index.css` (`DESIGN.md` §6).
 - Objetivo táctil mínimo `--tap-min: 44px` (decisión del dueño, 2026-10-22).
 - Rama: se continúa en `feature/stitch-visual-fidelity`; un commit por tarea. Integración a `develop` solo por PR (`AGENTS.md` §11.3 y §12). No hacer push ni PR sin pedirlo.
+- **Datos de usuarios existentes** (restricción del dueño, 2026-10-22): hay personas usando la app. Ningún cambio renombra claves de `localStorage` ni cambia la forma o el valor de lo ya guardado (emoji de `daily_energy`, `color` de áreas, `folderId` y `tags` de notas, formato del respaldo). Lo guardado se sigue leyendo igual; solo cambia cómo se muestra. `src/tests/legacyDataCompat.test.tsx` fija el contrato y debe seguir en verde.
 - Los textos de la UI no pueden afirmar cifrado en reposo, certificaciones, versiones ni métricas que la app no calcula.
 
 ## Review Focus

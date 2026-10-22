@@ -330,7 +330,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
             {loadedBackup && (
               <div className={styles.infoCard}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <CheckCircle2 size={16} color="#10b981" />
+                  <CheckCircle2 size={16} color="var(--color-success)" />
                   <strong>Respaldo válido: {loadedBackup.profile.name}</strong>
                 </div>
                 <div className={styles.infoGrid} style={{ marginBottom: 12 }}>

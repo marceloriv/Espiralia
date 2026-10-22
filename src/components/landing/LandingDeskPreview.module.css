@@ -41,7 +41,7 @@
 .deskSubtitle {
   font-family: var(--font-body, sans-serif);
   font-size: 1rem;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   max-width: 680px;
   margin: 0 auto;
   line-height: 1.6;
@@ -75,7 +75,7 @@
   left: 4px;
   right: -5px;
   bottom: -6px;
-  background-color: var(--color-surface-warm, #f5f0e8);
+  background-color: var(--color-surface-warm);
   border: 1px solid var(--color-hairline, #e6dfd8);
   border-radius: var(--radius-md, 8px);
   transform: rotate(0.8deg);
@@ -198,7 +198,7 @@
   background-color: var(--color-surface-soft, #f5f0e8);
   border: 1px solid var(--color-hairline, #e6dfd8);
   border-radius: var(--radius-pill, 9999px);
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 .sectionBlockTitle {
@@ -206,7 +206,7 @@
   font-size: 0.6875rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
@@ -292,7 +292,7 @@
 
 .priorityTextCompleted {
   text-decoration: none;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 .priorityTextCompleted::after {
@@ -388,7 +388,7 @@
   padding: 2px 6px;
   border-radius: var(--radius-pill, 9999px);
   background-color: var(--color-surface-soft, #f5f0e8);
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   font-weight: 500;
 }
 
@@ -400,7 +400,7 @@
   justify-content: space-between;
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 /* Columna Derecha: Stack Bento */
@@ -471,7 +471,7 @@
   padding: 6px 4px;
   border-radius: var(--radius-sm, 6px);
   cursor: pointer;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   transition: all 150ms ease;
   display: flex;
   flex-direction: column;

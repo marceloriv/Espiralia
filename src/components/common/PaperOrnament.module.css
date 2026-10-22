@@ -89,7 +89,7 @@
   width: 58px;
   height: 58px;
   border-radius: 42% 58% 48% 52% / 53% 43% 57% 47%;
-  background: radial-gradient(circle at 35% 35%, #9b111e 0%, #6e0081 60%, #380042 100%);
+  background: radial-gradient(circle at 35% 35%, #9b111e 0%, var(--color-primary) 60%, #380042 100%);
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.3),
     0 8px 16px rgba(74, 4, 4, 0.35),

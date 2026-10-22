@@ -19,7 +19,7 @@
 
 .folderCard {
   position: relative;
-  background-color: var(--color-surface-card, #ffffff);
+  background-color: var(--color-surface-card);
   background-image: radial-gradient(rgba(26, 25, 23, 0.04) 0.65px, transparent 0.65px);
   background-size: 14px 14px;
   border: 1px solid var(--color-hairline, #e6dfd8);
@@ -106,7 +106,7 @@
 
 /* Variantes temáticas por carpeta */
 .accentSlate .tabDot {
-  background-color: #3b82f6;
+  background-color: var(--color-accent-slate);
 }
 
 .accentSage .tabDot {
@@ -154,7 +154,7 @@
   font-size: 5rem;
   font-weight: 800;
   line-height: 1;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   opacity: 0.10;
   pointer-events: none;
   user-select: none;
@@ -191,7 +191,7 @@
   font-size: 0.625rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   text-transform: uppercase;
 }
 

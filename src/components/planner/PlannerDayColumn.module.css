@@ -3,8 +3,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  background: var(--bg-card, #FFFFFF);
-  border: 1px solid var(--border-hairline, var(--color-hairline, #DDD5C6));
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
   border-radius: var(--radius-lg, 0.5rem);
   box-shadow: 0 1px 3px rgba(35, 30, 25, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.85);
   padding: 0.65rem 0.75rem 0.75rem;
@@ -54,7 +54,7 @@
 .dateLabel {
   font-family: var(--font-family-3, monospace);
   font-size: 0.6875rem;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 .countBadge {
@@ -62,7 +62,7 @@
   font-size: 0.6875rem;
   padding: 0.15rem 0.4rem;
   background: var(--color-surface-card, #efe9de);
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   border-radius: var(--radius-sm, 0.25rem);
 }
 
@@ -78,7 +78,7 @@
   padding: 0.45rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   cursor: pointer;
   margin-bottom: 0.65rem;
   min-height: 44px;
@@ -87,7 +87,7 @@
 
 .addBlockBtn:hover {
   border-color: var(--color-primary-soft, #ed96d7);
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   background: rgba(142, 30, 162, 0.04);
 }
 
@@ -100,7 +100,7 @@
 
 .emptyDayText {
   font-size: 0.75rem;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   text-align: center;
   padding: 1.5rem 0.5rem;
   font-style: italic;

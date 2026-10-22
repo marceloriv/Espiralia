@@ -56,7 +56,7 @@
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -65,7 +65,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--color-primary, #6e0081);
+  background-color: var(--color-primary);
 }
 
 .title {
@@ -366,7 +366,7 @@
   right: 0;
   height: 38px;
   border-radius: 6px 6px 0 0;
-  background: var(--folder-color, #f5c64c);
+  background: var(--folder-color);
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-bottom: none;
   z-index: 3;
@@ -421,7 +421,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-primary, #6e0081);
+  background: var(--color-primary);
 }
 
 .tabCountMini {
@@ -570,7 +570,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -649,7 +649,7 @@
 .metaValAccent {
   font-family: var(--font-code, monospace);
   font-size: 0.8125rem;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -771,7 +771,7 @@
 .btnActionTable {
   background: none;
   border: none;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
@@ -833,8 +833,8 @@
 }
 
 .btnSubAction:hover {
-  color: var(--color-primary, #6e0081);
-  border-color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 /* Stacked Folders Strip (Other Inactive Folders) */
@@ -864,7 +864,7 @@
 }
 
 .miniFolderCard:hover {
-  border-color: var(--color-primary, #6e0081);
+  border-color: var(--color-primary);
   transform: translateY(-2px);
   background: var(--color-surface-card, #efe9de);
 }
@@ -1063,7 +1063,7 @@
   font-family: var(--font-code, monospace);
   font-size: 0.625rem;
   background: rgba(237, 150, 215, 0.2);
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   padding: 0.15rem 0.5rem;
   border-radius: 0.25rem;
   font-weight: 700;
@@ -1095,7 +1095,7 @@
 
 .inputUrl:focus {
   outline: none;
-  border-color: var(--color-primary, #6e0081);
+  border-color: var(--color-primary);
   box-shadow: var(--focus-ring);
 }
 
@@ -1115,7 +1115,7 @@
 }
 
 .btnArchivar {
-  background: var(--color-primary, #6e0081);
+  background: var(--color-primary);
   color: #ffffff;
   border: none;
   border-radius: 0.5rem;
@@ -1155,7 +1155,7 @@
 .storageValue {
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -1171,7 +1171,7 @@
 
 .storageProgressFill {
   height: 100%;
-  background: var(--color-primary, #6e0081);
+  background: var(--color-primary);
   border-radius: 9999px;
   transition: width 0.3s ease;
 }
@@ -1194,7 +1194,7 @@
 .btnBackupLink {
   background: none;
   border: none;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   font-size: 0.6875rem;
   font-weight: 600;
   cursor: pointer;
@@ -1237,7 +1237,7 @@
   height: 36px;
   border-radius: 0.5rem;
   background: rgba(237, 150, 215, 0.2);
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1279,7 +1279,7 @@
 
 .pillBtnActive {
   background: var(--color-surface-card, #efe9de);
-  border-color: var(--color-primary, #6e0081);
+  border-color: var(--color-primary);
   color: var(--color-ink, #141413);
   font-weight: 600;
 }
@@ -1375,7 +1375,7 @@
 .bookmarkAreaBadgePurple {
   background: rgba(237, 150, 215, 0.2);
   border-color: rgba(142, 30, 162, 0.2);
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
 }
 
 .bookmarkAreaBadgeTeal {
@@ -1393,7 +1393,7 @@
 }
 
 .bookmarkLinkAnchor:hover {
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
 }
 
 .bookmarkCardTitle {
@@ -1546,7 +1546,7 @@
 
 .emptyTableBtn:hover {
   background: #ffffff;
-  border-color: var(--color-primary, #6e0081);
-  color: var(--color-primary, #6e0081);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 

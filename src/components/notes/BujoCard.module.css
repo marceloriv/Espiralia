@@ -2,7 +2,7 @@
   position: relative;
   padding: 18px 20px 16px;
   border-radius: 12px;
-  background-color: var(--bg-card, #FCFAF6);
+  background-color: var(--bg-card);
   /* Papel verjurado para fichas de archivo */
   background-image: 
     repeating-linear-gradient(0deg, transparent, transparent 21px, rgba(142, 30, 162, 0.02) 21px, rgba(142, 30, 162, 0.02) 22px),
@@ -139,7 +139,7 @@
   padding: 2px 8px;
   border-radius: var(--radius-pill, 9999px);
   background-color: var(--color-surface-soft, #F5F0E8);
-  color: var(--color-muted, #6C6A64);
+  color: var(--color-muted);
   font-family: var(--font-family-3, monospace);
   font-size: 0.68rem;
   border: 1px solid var(--color-hairline, #E6DFD8);
@@ -171,7 +171,7 @@
 .tag {
   font-family: var(--font-family-3, monospace);
   font-size: 0.68rem;
-  color: var(--color-muted, #6C6A64);
+  color: var(--color-muted);
   background-color: var(--color-surface-card, #EFE9DE);
   padding: 2px 7px;
   border-radius: 4px;
@@ -209,7 +209,7 @@
 .dateInfo {
   font-family: var(--font-family-3, monospace);
   font-size: 0.7rem;
-  color: var(--color-muted, #6C6A64);
+  color: var(--color-muted);
 }
 
 .cardActions {
@@ -222,7 +222,7 @@
   padding: 6px;
   border: none;
   background: transparent;
-  color: var(--color-muted, #6C6A64);
+  color: var(--color-muted);
   cursor: pointer;
   border-radius: 6px;
   display: inline-flex;

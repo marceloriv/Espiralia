@@ -52,7 +52,7 @@
   left: 18px;
   width: 18px;
   height: 46px;
-  background: linear-gradient(180deg, #7a008f 0%, #6e0081 70%, #520061 100%);
+  background: linear-gradient(180deg, #7a008f 0%, var(--color-primary) 70%, color-mix(in srgb, var(--color-primary) 60%, #000) 100%);
   box-shadow: 1px 4px 10px rgba(110, 0, 129, 0.3), 1px 2px 4px rgba(0, 0, 0, 0.15);
   z-index: 25;
   pointer-events: none;
@@ -74,8 +74,8 @@
   left: 0;
   width: 0;
   height: 0;
-  border-left: 9px solid #520061;
-  border-right: 9px solid #520061;
+  border-left: 9px solid color-mix(in srgb, var(--color-primary) 60%, #000);
+  border-right: 9px solid color-mix(in srgb, var(--color-primary) 60%, #000);
   border-bottom: 8px solid transparent;
 }
 
@@ -120,7 +120,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -179,7 +179,7 @@
   font-family: var(--font-family-3, monospace);
   font-size: 0.6875rem;
   font-weight: 500;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   padding: 0.3rem 0.55rem;
   cursor: pointer;
   min-height: 44px;
@@ -195,9 +195,9 @@
 }
 
 .priorityPillActive {
-  background: var(--color-primary, #6e0081);
+  background: var(--color-primary);
   color: #ffffff !important;
-  border-color: var(--color-primary, #6e0081);
+  border-color: var(--color-primary);
 }
 
 .rightGroup {
@@ -221,7 +221,7 @@
   font-family: var(--font-family-3, monospace);
   font-size: 0.6875rem;
   text-transform: uppercase;
-  color: var(--color-muted, #6c6a64);
+  color: var(--color-muted);
   font-weight: 600;
 }
 
@@ -245,7 +245,7 @@
   font-family: var(--font-family-3, monospace);
   font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
 }
 
 .mainContent {
@@ -268,7 +268,7 @@
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   padding: 1.25rem;
-  background-color: var(--color-canvas, #FAF8F4);
+  background-color: var(--color-canvas);
   /* Retícula técnica milimetrada de bitácora de ingeniería */
   background-image:
     repeating-linear-gradient(0deg, rgba(30, 58, 95, 0.035) 0px, rgba(30, 58, 95, 0.035) 1px, transparent 1px, transparent 20px),
@@ -412,7 +412,7 @@
 
 .areaPillAmber {
   background: rgba(217, 119, 6, 0.1);
-  color: #b45309;
+  color: var(--color-text-amber);
   border: 1px solid rgba(217, 119, 6, 0.25);
   font-size: 11px;
   font-weight: 600;

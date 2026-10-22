@@ -45,7 +45,7 @@ const DEFAULT_CURATED_FOLDERS: CuratedFolder[] = [
     id: 'curated-01',
     num: '01',
     name: 'Proyectos & Estudio',
-    color: '#3b82f6',
+    color: '#7b8c9e',
     desc: 'Planificación de proyectos, bitácoras de aprendizaje y documentación técnica.',
     specs: 'Curada • General',
     icon: <BookOpen size={26} aria-hidden="true" />,
@@ -55,7 +55,7 @@ const DEFAULT_CURATED_FOLDERS: CuratedFolder[] = [
     id: 'curated-02',
     num: '02',
     name: 'Personal & Bienestar',
-    color: '#10b981',
+    color: '#5a826d',
     desc: 'Hábitos diarios, reflexiones, salud integral y registros personales.',
     specs: 'Curada • Bienestar',
     icon: <Brain size={26} aria-hidden="true" />,
@@ -75,7 +75,7 @@ const DEFAULT_CURATED_FOLDERS: CuratedFolder[] = [
     id: 'curated-04',
     num: '04',
     name: 'Finanzas & Administración',
-    color: '#f59e0b',
+    color: '#e8a55a',
     desc: 'Presupuestos, comprobantes, pólizas y gestión administrativa.',
     specs: 'Curada • Finanzas',
     icon: <PiggyBank size={26} aria-hidden="true" />,
@@ -125,7 +125,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         id: f.id,
         num: String(idx + 1).padStart(2, '0'),
         name: f.name,
-        color: f.color || '#3b82f6',
+        color: f.color || '#7b8c9e',
         desc: 'Carpeta temática archivada en tu navegador local.',
         specs: `${links.filter((l) => l.folderId === f.id).length + notes.filter((n) => n.folderId === f.id).length} Elementos`,
         icon: <FolderIcon size={26} aria-hidden="true" />,
@@ -457,7 +457,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         <section className={styles.ficheroSection}>
           <div className={styles.ficheroTopBar}>
             <div className={styles.ficheroBrand}>
-              <FolderIcon size={20} color="var(--color-primary, #6e0081)" aria-hidden="true" />
+              <FolderIcon size={20} color="var(--color-primary)" aria-hidden="true" />
               <span className={styles.ficheroTitle}>Fichero de Índice Manuscrito</span>
               <span className={styles.countBadge}>{displayFolders.length} Carpetas Activas</span>
             </div>
@@ -635,7 +635,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                             <td className={styles.ledgerTd}>
                               <div className={styles.docTitleBox}>
                                 {item.type === 'note' ? (
-                                  <FileText size={18} color="var(--color-primary, #6e0081)" aria-hidden="true" />
+                                  <FileText size={18} color="var(--color-primary)" aria-hidden="true" />
                                 ) : (
                                   <ExternalLink size={18} color="var(--color-accent-teal, #5db8a6)" aria-hidden="true" />
                                 )}
@@ -758,7 +758,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             <div className={styles.quickCaptureCard}>
               <div className={styles.quickCaptureHeader}>
                 <div className={styles.quickCaptureLead}>
-                  <BookmarkPlus size={20} color="var(--color-primary, #6e0081)" aria-hidden="true" />
+                  <BookmarkPlus size={20} color="var(--color-primary)" aria-hidden="true" />
                   <h4 className={styles.quickCaptureTitle}>Captura Veloz de Enlace</h4>
                 </div>
                 <span className={styles.clipboardBadge}>CLIPBOARD</span>

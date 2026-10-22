@@ -17,7 +17,7 @@ interface TodoViewProps {
 
 type FilterStatus = 'todas' | 'pendientes' | 'en_progreso' | 'completadas';
 
-const COLOR_PALETTE = ['#e8a55a', '#8e1ea2', '#5db8a6', '#3b82f6', '#10b981', '#ef4444'];
+const COLOR_PALETTE = ['#e8a55a', '#8e1ea2', '#5db8a6', '#7b8c9e', '#5a826d', '#9c4a3b'];
 
 const getEventDayParts = (dateStr?: string) => {
   if (!dateStr) return { dayName: 'HOY', dayNum: '--' };

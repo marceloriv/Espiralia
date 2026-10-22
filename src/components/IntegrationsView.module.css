@@ -11,7 +11,7 @@
 /* Master Paper Planner Sheet (Heavy Cardstock with 3D Contact Shadows) */
 .masterPaperSheet {
   position: relative;
-  background-color: var(--bg-card, #FAF7F2);
+  background-color: var(--bg-card);
   border: 1px solid var(--border-hairline, #DDD5C6);
   border-radius: 1rem;
   padding: 1.5rem;
@@ -151,7 +151,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   background-color: rgba(237, 150, 215, 0.25);
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   border: 1px solid rgba(110, 0, 129, 0.2);
 }
 
@@ -244,7 +244,7 @@
 .italicTerm {
   font-style: normal;
   font-weight: 600;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
 }
 
 /* Inner App Workspace Layout */
@@ -297,14 +297,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
 }
 
 .sidebarTitle {
   font-family: var(--font-headline, serif);
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   margin: 0;
 }
 
@@ -337,12 +337,12 @@
 
 .sidebarNavItem:hover {
   background: rgba(255, 255, 255, 0.6);
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
 }
 
 .sidebarNavItemActive {
   background: #ffffff;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   font-weight: 700;
   border-color: #DDD5C5;
   box-shadow: 0 1px 2px rgba(20, 20, 19, 0.04);
@@ -352,7 +352,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-primary, #6e0081);
+  background: var(--color-primary);
   margin-left: auto;
 }
 
@@ -382,7 +382,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.35rem;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   font-weight: 600;
   font-size: 0.75rem;
   padding-top: 0.25rem;
@@ -399,7 +399,7 @@
   width: 100%;
   background: #FAF7F2;
   border: 1px solid #DDD5C7;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   font-size: 0.75rem;
   font-weight: 500;
   padding: 0.45rem 0.75rem;
@@ -437,7 +437,7 @@
 }
 
 .sidebarFooterLink:hover {
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
 }
 
 /* Right Workbench Content */
@@ -512,7 +512,7 @@
   font-family: var(--font-headline, serif);
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
 }
 
 .tagZeroBytes {
@@ -543,7 +543,7 @@
   border-radius: 0.5rem;
   background: #ffffff;
   border: 1px solid #DDD5C5;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
@@ -670,7 +670,7 @@
   border-radius: 0.5rem;
   background: #FAF7F2;
   border: 1px solid #DDD5C6;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -681,7 +681,7 @@
   font-family: var(--font-headline, serif);
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
 }
 
 .cardSubtitle {
@@ -720,7 +720,7 @@
   font-family: var(--font-headline, serif);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -777,12 +777,12 @@
   border-radius: 0.5rem;
   padding: 0.5rem 0.75rem;
   font-size: 0.75rem;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   outline: none;
 }
 
 .selectInput:focus {
-  border-color: var(--color-primary, #6e0081);
+  border-color: var(--color-primary);
   box-shadow: var(--focus-ring);
 }
 
@@ -841,7 +841,7 @@
 }
 
 .dropzone:hover {
-  border-color: var(--color-primary, #6e0081);
+  border-color: var(--color-primary);
 }
 
 .dropzoneIconWrapper {
@@ -860,7 +860,7 @@
 .dropzoneText {
   margin: 0;
   font-size: 0.75rem;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   font-weight: 500;
 }
 
@@ -871,7 +871,7 @@
   border: 1px solid #DDD5C6;
   padding: 0.1rem 0.4rem;
   border-radius: 0.25rem;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
 }
 
 .dropzoneHint {
@@ -910,7 +910,7 @@
   margin: 0;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
 }
 
 .quickLinkMeta {
@@ -927,7 +927,7 @@
   border-radius: 0.25rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -938,7 +938,7 @@
 
 .btnSecondaryAction:hover {
   background: #F2ECE1;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
 }
 
 /* Right Column: Gmail & Auditoría (5 Cols) */
@@ -984,7 +984,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   font-weight: 600;
   font-size: 0.75rem;
   margin-bottom: 0.25rem;
@@ -1018,7 +1018,7 @@
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
   background: rgba(237, 150, 215, 0.25);
-  color: var(--color-primary, #6e0081);
+  color: var(--color-primary);
   border: 1px solid rgba(110, 0, 129, 0.2);
   font-weight: 500;
 }
@@ -1039,7 +1039,7 @@
   font-family: var(--font-headline, serif);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   margin: 0 0 0.35rem;
 }
 
@@ -1062,7 +1062,7 @@
   border-radius: 0.5rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   text-decoration: none;
   box-shadow: 0 1px 2px rgba(20, 20, 19, 0.04);
   transition: all 0.12s ease;
@@ -1091,7 +1091,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   font-weight: 500;
 }
 
@@ -1108,7 +1108,7 @@
   border: 1px solid #DDD5C6;
   border-radius: 0.5rem;
   font-size: 0.75rem;
-  color: var(--color-ink, #232b2b);
+  color: var(--color-ink);
   font-weight: 600;
   display: flex;
   align-items: center;

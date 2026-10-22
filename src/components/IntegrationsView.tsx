@@ -248,7 +248,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                 <span>Personal</span>
               </span>
               <span className={styles.chipItem}>
-                <span className={styles.chipDot} style={{ backgroundColor: 'var(--color-primary, #6e0081)' }} />
+                <span className={styles.chipDot} style={{ backgroundColor: 'var(--color-primary)' }} />
                 <span>Universidad 2026</span>
               </span>
             </div>
@@ -308,7 +308,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
               <div className={styles.sidebarBackupCard}>
                 <div className={styles.backupWashi} aria-hidden="true"></div>
                 <div className={styles.backupCardHeader}>
-                  <CheckCircle size={16} color="var(--color-primary, #6e0081)" aria-hidden="true" />
+                  <CheckCircle size={16} color="var(--color-primary)" aria-hidden="true" />
                   <span>Copia de Respaldo</span>
                 </div>
                 <p className={styles.backupCardDesc}>
@@ -409,7 +409,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                 <div className={styles.optionSection}>
                   <div className={styles.optionHeaderRow}>
                     <div className={styles.optionLabel}>
-                      <span className={styles.optionDot} style={{ backgroundColor: 'var(--color-primary, #6e0081)' }} />
+                      <span className={styles.optionDot} style={{ backgroundColor: 'var(--color-primary)' }} />
                       <span>Opción A: Generar Archivo de Exportación (.ics)</span>
                     </div>
                     <span className={styles.optionTimestamp}>Último archivo: Hoy, 09:41 AM</span>
@@ -484,7 +484,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click();
                     }}
-                    style={{ borderColor: isDragging ? 'var(--color-primary, #6e0081)' : undefined }}
+                    style={{ borderColor: isDragging ? 'var(--color-primary)' : undefined }}
                   >
                     <input
                       ref={fileInputRef}
@@ -502,7 +502,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     </div>
                     <p className={styles.dropzoneText}>
                       Arrastra tu archivo <code className={styles.codeBadge}>.ics</code> aquí o{' '}
-                      <span style={{ color: 'var(--color-primary, #6e0081)', textDecoration: 'underline' }}>
+                      <span style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>
                         explora tu equipo
                       </span>
                     </p>
@@ -607,7 +607,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <Mail size={16} color="var(--color-primary, #6e0081)" aria-hidden="true" />
+                      <Mail size={16} color="var(--color-primary)" aria-hidden="true" />
                       <span>Abrir borrador en Gmail</span>
                     </a>
                   </div>
@@ -685,7 +685,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                       <span className={styles.waxSealMonogram}>E</span>
                     </div>
 
-                    <Download size={16} color="var(--color-primary, #6e0081)" aria-hidden="true" />
+                    <Download size={16} color="var(--color-primary)" aria-hidden="true" />
                     <span>Descargar Copia Completa (JSON + .ics)</span>
                   </button>
                   <p className={styles.vaultSubhint}>
@@ -701,7 +701,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
         <div className={styles.sheetBottomMantra}>
           <div className={styles.mantraStorage}>
             <span className={styles.greenDot}></span>
-            <span>Almacenamiento Local: <strong style={{ color: 'var(--color-ink, #232b2b)' }}>{formatBytes(storageBytes)} de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)}</strong> (localStorage)</span>
+            <span>Almacenamiento Local: <strong style={{ color: 'var(--color-ink)' }}>{formatBytes(storageBytes)} de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)}</strong> (localStorage)</span>
           </div>
           <p className={styles.mantraQuote}>
             « Tus datos soberanos residen en tu equipo, sin intermediarios. »
