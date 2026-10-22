@@ -28,6 +28,44 @@ const ratio = (a: string, b: string): number => {
 const SURFACES = ['color-canvas', 'color-surface-card', 'color-surface-warm', 'color-surface-cream-strong'].map(token).concat('#ffffff');
 const TEXT_TOKENS = ['color-muted', 'color-text-success', 'color-text-teal', 'color-text-amber', 'color-text-primary-active'];
 
+// DESIGN.md §0.4: color-mix(in srgb, <base> N%, <canvas>) interpola los canales sRGB; se resuelve aquí sin navegador.
+const mixHex = (base: string, pct: number, over: string): string =>
+  '#' + [1, 3, 5].map(i => {
+    const a = parseInt(base.slice(i, i + 2), 16);
+    const b = parseInt(over.slice(i, i + 2), 16);
+    return Math.round(a * (pct / 100) + b * (1 - pct / 100)).toString(16).padStart(2, '0');
+  }).join('');
+
+const papelTint = (name: string): string => {
+  const m = tokensCss.match(new RegExp(String.raw`--${name}:\s*([^;]+);`));
+  if (!m) throw new Error(`token --${name} no encontrado`);
+  const mix = m[1].match(/color-mix\(in srgb,\s*var\(--([\w-]+)\)\s+(\d+)%,\s*var\(--([\w-]+)\)\)/);
+  if (mix) return mixHex(token(mix[1]), Number(mix[2]), token(mix[3]));
+  const alias = m[1].match(/var\(--([\w-]+)\)/);
+  if (alias) return token(alias[1]);
+  throw new Error(`--${name} no es color-mix ni alias`);
+};
+
+const TINTES = ['arena', 'pizarra', 'salvia', 'terracota', 'ambar', 'rosa', 'turquesa'];
+
+describe('Tintes de Papel con contraste AA', () => {
+  const textos = ['color-ink', 'color-body'].map(token);
+
+  it.each(TINTES.flatMap(t => [`papel-${t}`, `papel-${t}-fuerte`]))('%s deja leer el texto de tinta y de cuerpo', name => {
+    const bg = papelTint(name);
+    for (const fg of textos) {
+      expect(ratio(fg, bg), `${fg} sobre ${name} (${bg})`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('el tinte fuerte es más intenso que el claro en cada módulo', () => {
+    const canvas = token('color-canvas');
+    for (const t of TINTES.filter(x => x !== 'arena')) {
+      expect(ratio(papelTint(`papel-${t}-fuerte`), canvas), t).toBeGreaterThan(ratio(papelTint(`papel-${t}`), canvas));
+    }
+  });
+});
+
 describe('Tokens de texto con contraste AA', () => {
   it.each(TEXT_TOKENS)('%s alcanza 4.5:1 sobre todas las superficies', name => {
     const fg = token(name);

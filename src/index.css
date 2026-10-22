@@ -178,6 +178,22 @@
   --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-primary);
   --tap-min: 44px;
 
+  /* Tintes de Papel (DESIGN.md §0.4): el color codifica el módulo. Claro para superficies, fuerte para piezas pequeñas. */
+  --papel-arena: var(--color-surface-card);
+  --papel-arena-fuerte: var(--color-surface-cream-strong);
+  --papel-pizarra: color-mix(in srgb, var(--color-accent-slate) 14%, var(--color-canvas));
+  --papel-pizarra-fuerte: color-mix(in srgb, var(--color-accent-slate) 30%, var(--color-canvas));
+  --papel-salvia: color-mix(in srgb, var(--color-accent-sage) 14%, var(--color-canvas));
+  --papel-salvia-fuerte: color-mix(in srgb, var(--color-accent-sage) 28%, var(--color-canvas));
+  --papel-terracota: color-mix(in srgb, var(--color-accent-terracotta) 12%, var(--color-canvas));
+  --papel-terracota-fuerte: color-mix(in srgb, var(--color-accent-terracotta) 22%, var(--color-canvas));
+  --papel-ambar: color-mix(in srgb, var(--color-accent-amber) 16%, var(--color-canvas));
+  --papel-ambar-fuerte: color-mix(in srgb, var(--color-accent-amber) 42%, var(--color-canvas));
+  --papel-rosa: color-mix(in srgb, var(--color-primary-soft) 16%, var(--color-canvas));
+  --papel-rosa-fuerte: color-mix(in srgb, var(--color-primary-soft) 38%, var(--color-canvas));
+  --papel-turquesa: color-mix(in srgb, var(--color-accent-teal) 14%, var(--color-canvas));
+  --papel-turquesa-fuerte: color-mix(in srgb, var(--color-accent-teal) 32%, var(--color-canvas));
+
   /* Tokens de compatibilidad y alias historicos */
   --color-surface: var(--color-surface-soft);
   --color-background: var(--bg-card);
