@@ -72,7 +72,7 @@
 
 .dossierSeal {
   font-family: var(--font-code, monospace);
-  font-size: 0.625rem;
+  font-size: var(--text-micro);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(142, 30, 162, 0.65);
@@ -164,7 +164,7 @@
 
 .stampSeal {
   font-family: var(--font-code, monospace);
-  font-size: 0.625rem;
+  font-size: var(--text-micro);
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.1em;

@@ -258,7 +258,7 @@
 
 .certSignatureLabel {
   font-family: var(--font-code, monospace);
-  font-size: 0.625rem;
+  font-size: var(--text-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #a8a29e;
@@ -287,7 +287,7 @@
 }
 
 .certSealSerial {
-  font-size: 0.5625rem;
+  font-size: var(--text-micro);
   font-weight: 500;
   color: #a8a29e;
   letter-spacing: 0.06em;

@@ -127,7 +127,7 @@
 
 .overlineTag {
   font-family: var(--font-mono, monospace);
-  font-size: 10px;
+  font-size: var(--text-micro);
   font-weight: 700;
   color: var(--color-primary);
   letter-spacing: 0.1em;
@@ -224,7 +224,7 @@
 }
 
 .activePill {
-  font-size: 8px;
+  font-size: var(--text-micro);
   font-weight: 700;
   background-color: var(--color-primary);
   color: var(--color-on-primary);
@@ -374,7 +374,7 @@
   border: 1.5px solid var(--color-error);
   color: var(--color-text-error);
   font-family: var(--font-mono, monospace);
-  font-size: 9px;
+  font-size: var(--text-micro);
   font-weight: 700;
   letter-spacing: 0.12em;
   padding: 2px 8px;
@@ -396,7 +396,7 @@
 
 .pinOverline {
   font-family: var(--font-mono, monospace);
-  font-size: 9px;
+  font-size: var(--text-micro);
   color: var(--color-muted);
   letter-spacing: 0.08em;
   margin-bottom: 4px;
@@ -532,7 +532,7 @@
 }
 
 .keypadHint {
-  font-size: 10px;
+  font-size: var(--text-micro);
   color: var(--color-muted);
   margin-top: 4px;
 }

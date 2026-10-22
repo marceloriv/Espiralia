@@ -290,7 +290,7 @@
   }
 
   .flatCountPill {
-    font-size: 0.62rem;
+    font-size: var(--text-micro);
     padding: 1px 4px;
   }
 }
@@ -408,7 +408,7 @@
 
 .flatCountPill {
   font-family: var(--font-code, monospace);
-  font-size: 0.68rem;
+  font-size: var(--text-micro);
   font-weight: 700;
   background: rgba(0, 0, 0, 0.2);
   color: #ffffff;
@@ -597,7 +597,7 @@
 
 .hankoSeal {
   font-family: var(--font-code, monospace);
-  font-size: 0.625rem;
+  font-size: var(--text-micro);
   font-weight: 700;
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
@@ -1061,7 +1061,7 @@
 
 .clipboardBadge {
   font-family: var(--font-code, monospace);
-  font-size: 0.625rem;
+  font-size: var(--text-micro);
   background: rgba(237, 150, 215, 0.2);
   color: var(--color-primary);
   padding: 0.15rem 0.5rem;
@@ -1363,7 +1363,7 @@
 
 .bookmarkAreaBadge {
   font-family: var(--font-code, monospace);
-  font-size: 0.625rem;
+  font-size: var(--text-micro);
   font-weight: 700;
   padding: 0.15rem 0.5rem;
   border-radius: 0.25rem;

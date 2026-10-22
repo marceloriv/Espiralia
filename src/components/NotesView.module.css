@@ -201,7 +201,7 @@
   }
 
   .binderCountPill {
-    font-size: 0.62rem;
+    font-size: var(--text-micro);
     padding: 1px 4px;
   }
 }
@@ -298,7 +298,7 @@
 /* Píldora de conteo del archivador */
 .binderCountPill {
   font-family: var(--font-mono, monospace);
-  font-size: 0.68rem;
+  font-size: var(--text-micro);
   font-weight: 700;
   background: rgba(0, 0, 0, 0.25);
   color: #f5f0e8;
@@ -635,7 +635,7 @@
 
 .hankoText {
   font-family: var(--font-family-3);
-  font-size: 0.55rem;
+  font-size: var(--text-micro);
   font-weight: 700;
   letter-spacing: 0.08em;
   margin-top: 2px;
@@ -643,7 +643,7 @@
 
 .hankoSub {
   font-family: var(--font-family-3);
-  font-size: 0.5rem;
+  font-size: var(--text-micro);
   letter-spacing: 0.06em;
 }
 
@@ -729,7 +729,7 @@
 
 .activePliegoBadge {
   font-family: var(--font-family-3);
-  font-size: 0.65rem;
+  font-size: var(--text-micro);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1127,7 +1127,7 @@
 .stickyOverline {
   display: block;
   font-family: var(--font-family-3);
-  font-size: 0.65rem;
+  font-size: var(--text-micro);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -1212,7 +1212,7 @@
 
 .scaleLabel {
   font-family: var(--font-family-3);
-  font-size: 0.65rem;
+  font-size: var(--text-micro);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1251,7 +1251,7 @@
 
 .scaleBtnText {
   font-family: var(--font-family-2);
-  font-size: 0.6rem;
+  font-size: var(--text-micro);
   margin-top: 2px;
 }
 
@@ -1666,7 +1666,7 @@
   padding: 2px 8px;
   border-radius: var(--radius-pill);
   font-family: var(--font-family-3);
-  font-size: 0.65rem;
+  font-size: var(--text-micro);
 }
 
 .reflectionBadge {
@@ -1702,7 +1702,7 @@
 
 .tag {
   font-family: var(--font-family-3);
-  font-size: 0.65rem;
+  font-size: var(--text-micro);
   color: var(--color-muted);
   background-color: var(--color-surface-card);
   padding: 2px 6px;

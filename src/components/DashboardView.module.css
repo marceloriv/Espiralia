@@ -314,7 +314,7 @@
 
 .postItMottoLabel {
   font-family: var(--font-family-3);
-  font-size: 10px;
+  font-size: var(--text-micro);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -878,7 +878,7 @@
 
 .metricTileSub {
   font-family: var(--font-family-3);
-  font-size: 10px;
+  font-size: var(--text-micro);
   color: var(--color-muted);
 }
 
@@ -958,7 +958,7 @@
 .habitPillChecked {
   background-color: #5a826d;
   color: #ffffff;
-  font-size: 10px;
+  font-size: var(--text-micro);
   font-weight: bold;
   border: none;
 }
@@ -1084,7 +1084,7 @@
   display: inline-block;
   padding: 2px 8px;
   font-family: var(--font-family-3);
-  font-size: 10px;
+  font-size: var(--text-micro);
   font-weight: bold;
   letter-spacing: 0.08em;
   background-color: rgba(142, 30, 162, 0.15);
@@ -1872,26 +1872,26 @@
 
 .activeSlotBadge {
   font-family: var(--font-family-3);
-  font-size: 10px;
+  font-size: var(--text-micro);
   color: var(--color-primary);
   font-weight: 600;
 }
 
 .routineStatusTag {
   font-family: var(--font-family-3);
-  font-size: 10px;
+  font-size: var(--text-micro);
   color: var(--color-text-success);
 }
 
 .routinePauseTag {
   font-family: var(--font-family-3);
-  font-size: 10px;
+  font-size: var(--text-micro);
   color: var(--color-muted);
 }
 
 .routineMutedTag {
   font-family: var(--font-family-3);
-  font-size: 10px;
+  font-size: var(--text-micro);
   color: var(--color-muted);
 }
 

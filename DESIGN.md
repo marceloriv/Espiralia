@@ -102,7 +102,7 @@
 | **body-md** | 15px – 16px | 1.55 | 0 | Sans 400 | `--text-body-md` |
 | **body-sm** | 13px – 14px | 1.50 – 1.55 | 0 | Sans 400/500 | `--text-body-sm` |
 | **script-quote** | 17px – 21px | 1.40 | 0.01em | Script 400 | `--text-script-quote` |
-| **caption** | 11px – 13px | 1.40 | 0 | Sans 500/600 | `--text-caption` |
+| **caption** | 11px – 13px | 1.40 | 0 | Sans 500/600 | `--text-caption` (13px) y `--text-micro` (11px, mínimo absoluto de la interfaz) |
 | **caption-uppercase** | 11px – 12px | 1.40 | 1.5px (0.08em) | Sans 600 Uppercase | `--text-caption-uppercase` |
 | **button** | 14px | 1.00 | 0 | Sans 500/600 | `--text-button` |
 | **nav-link** | 14px | 1.40 | 0 | Sans 500 | `--text-nav-link` |

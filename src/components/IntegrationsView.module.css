@@ -83,7 +83,7 @@
 .postitLabel {
   display: block;
   font-family: var(--font-code, monospace);
-  font-size: 0.5625rem;
+  font-size: var(--text-micro);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #8C7A4A;
@@ -640,7 +640,7 @@
 
 .cardTopWashiText {
   font-family: var(--font-code, monospace);
-  font-size: 0.5625rem;
+  font-size: var(--text-micro);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #564e3c;
@@ -1150,7 +1150,7 @@
 
 .vaultSubhint {
   font-family: var(--font-code, monospace);
-  font-size: 0.625rem;
+  font-size: var(--text-micro);
   color: var(--color-ink-muted, #6c6a64);
   text-align: center;
   margin: 0.35rem 0 0;
