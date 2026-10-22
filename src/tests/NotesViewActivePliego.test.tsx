@@ -16,8 +16,8 @@ describe('NotesView - Pliego Bujo Superior Activo', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /diario de autoobservación & desahogo/i })).toBeInTheDocument();
     expect(screen.getByText(/pregunta ancla de la semana/i)).toBeInTheDocument();
-    expect(screen.getByText(/descompresión mental & autoobservación/i)).toBeInTheDocument();
-    expect(screen.getByText(/avance conaset - simulacro clase b/i)).toBeInTheDocument();
+    expect(screen.getByText(/tu primera entrada/i)).toBeInTheDocument();
+    expect(screen.queryByText(/avance conaset/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/pliego activo de trabajo/i)).not.toBeInTheDocument();
   });
 

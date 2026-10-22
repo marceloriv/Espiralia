@@ -197,7 +197,7 @@ describe('PlannerView integración semanal y metas', () => {
     render(<PlannerView profileId={profileId} />);
 
     expect(screen.getByRole('heading', { level: 1, name: /focus plan & agenda semanal\./i })).toBeInTheDocument();
-    expect(screen.getByText(/01\. estudios & clase b/i)).toBeInTheDocument();
+    expect(screen.getByText(/01\. estudios/i)).toBeInTheDocument();
     expect(screen.getByText(/prioridades de la semana/i)).toBeInTheDocument();
     expect(screen.getByText(/habit tracker semanal/i)).toBeInTheDocument();
     expect(screen.getByText(/discipline today, peace tomorrow/i)).toBeInTheDocument();
@@ -222,7 +222,7 @@ describe('PlannerView integración semanal y metas', () => {
       expect(tab).toHaveAttribute('aria-hidden', 'true');
     });
 
-    expect(screen.getByText(/folio tec-2026/i)).toBeInTheDocument();
+    expect(screen.queryByText(/folio tec-2026/i)).not.toBeInTheDocument();
   });
 });
 

@@ -68,7 +68,7 @@ const FolderModalContent: React.FC<FolderModalProps> = ({
               className={styles.input}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ej: Conducción Clase B, Universidad..."
+              placeholder="Ej: Proyectos, Universidad..."
               required
               autoFocus
             />

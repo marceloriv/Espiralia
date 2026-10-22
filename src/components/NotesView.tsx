@@ -18,15 +18,8 @@ type TabType = 'all' | 'reflections' | 'quick';
 
 const DEFAULT_THERAPEUTIC_TITLE = 'Descompresión mental & Autoobservación';
 
-const DEFAULT_THERAPEUTIC_CONTENT = `§ 1. Descompresión mental & Autoobservación
-Hoy inicié la mañana con esa típica tensión en el diafragma. Me descubrí pensando simultáneamente en tres horizontes divergentes: el simulacro de conducción clase B del sábado, la validación del certificado médico y los requerimientos preliminares de ponderación para la postulación universitaria 2026. Al escribirlo aquí, me doy cuenta de que la ansiedad es solo exceso de futuro agolpándose en un día que apenas comienza.
-
-En la sesión de terapia anterior revisamos que la necesidad de control absoluto sobre los resultados suele enmascarar miedo a ser evaluada. Hoy decido soltar la expectativa de perfección. Concluir el día con calma vale más que tachar doce casillas con taquicardia.
-
-[caja: 🚗 Avance Conaset - Simulacro Clase B | 32 / 35 Aprobado (91%) | Puntos críticos a repasar antes de salir a la vía: distancia de frenado en calzada húmeda (coeficiente de adherencia) y prioridad en rotondas de tres pistas. Ya no siento pánico frente al embrague en subida; la memoria muscular se está asentando con naturalidad.]
-
-§ 2. Planes de Postulación 2026 (Diseño & Humanidades)
-Conversado con el orientador: mantener el ritmo de lectura pausada. La meta no es devorar manuales de admisión como si fueran un trámite punitivo, sino reconectar con la curiosidad genuina por la tipografía, la historia editorial y la arquitectura de la información. Mi valor personal no depende de una tabla de percentiles.`;
+const DEFAULT_THERAPEUTIC_CONTENT = `§ 1. Tu primera entrada
+Este tomo aún no tiene notas. Pulsa "Nueva Nota" para escribir la primera: lo que escribas se guarda solo en este navegador.`;
 
 export interface TomoConfig {
   id: string;
@@ -42,7 +35,7 @@ export const TOMOS_CONFIG: TomoConfig[] = [
   {
     id: '01',
     folderId: 'tomo-01',
-    title: '01. Diario Íntimo & Terapia',
+    title: '01. Diario Íntimo',
     iconName: 'book',
     tag: 'terapia',
     defaultTitle: DEFAULT_THERAPEUTIC_TITLE,
@@ -71,7 +64,7 @@ export const TOMOS_CONFIG: TomoConfig[] = [
 export function getNoteTomo(note: Note): string {
   if (note.folderId === 'tomo-02' || note.folderId === '02') return '02';
   if (note.folderId === 'tomo-03' || note.folderId === '03') return '03';
-  return '01'; // Por defecto pertenece a Tomo 01 (Diario & Terapia)
+  return '01'; // Por defecto pertenece a Tomo 01 (Diario Íntimo)
 }
 
 export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
@@ -219,7 +212,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         }
       }
     }
-    return 'Jueves, 24 de Octubre de 2026';
+    return new Date().toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   }, [activeNote]);
 
   const activeWordCount = useMemo(() => {
@@ -336,12 +329,12 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
           <div className={styles.overlineRow}>
             <span className={styles.overlineTag}>Espiralia • Cuaderno Analógico Local</span>
             <span className={styles.bullet}>•</span>
-            <span className={styles.overlineSub}>Tomo IV (Octubre - Noviembre 2026)</span>
+            <span className={styles.overlineSub}>{currentTomoConfig.title}</span>
           </div>
 
           <h1 className={styles.editorialH1}>
             Diario de Autoobservación &amp; Desahogo
-            <span className={styles.cifradoBadge}>Cifrado Local</span>
+            <span className={styles.cifradoBadge}>Guardado local</span>
           </h1>
 
           {/* Título accesible para tests que buscan 'notas & reflexiones' */}
@@ -464,7 +457,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                 )}
                 <span className={styles.metaItem}>
                   <Sparkles size={14} className={styles.iconTeal} aria-hidden="true" />
-                  <span>{activeNote ? activeNote.title : 'Sesión Semanal #14'}</span>
+                  <span>{activeNote ? activeNote.title : 'Nueva nota'}</span>
                 </span>
                 {activeNote && (
                   <span className={styles.metaItem}>
@@ -651,34 +644,11 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               </div>
             </div>
 
-            {/* 3. Bloc Lavanda: Brain Dump Rápido */}
-            <div className={styles.brainDumpBox}>
-              <div className={styles.brainDumpWashi} aria-hidden="true" />
-              <div className={styles.brainDumpHeader}>
-                <span className={styles.brainDumpTitle}>Vaciado Rápido</span>
-                <Sparkles size={14} className={styles.iconPrimary} aria-hidden="true" />
-              </div>
-              <ul className={styles.brainDumpList}>
-                <li>
-                  <span className={styles.bulletDot}>•</span>
-                  <span>Pedir comprobante oftalmológico para el examen psicotécnico municipal.</span>
-                </li>
-                <li>
-                  <span className={styles.bulletDot}>•</span>
-                  <span>Descargar el temario de Competencia Lectora PAES en PDF limpio.</span>
-                </li>
-                <li>
-                  <span className={styles.bulletDot}>•</span>
-                  <span>No olvidar comprar tinta color berenjena para la pluma estilográfica.</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* 4. Sello Notarial de Bóveda Local */}
+            {/* 4. Sello de datos locales */}
             <div className={styles.vaultStampCard}>
               <ShieldCheck size={20} className={styles.iconPrimary} aria-hidden="true" />
               <div>
-                <span className={styles.vaultTitle}>Cuaderno de Terapia Privado</span>
+                <span className={styles.vaultTitle}>Notas privadas</span>
                 <p className={styles.vaultDesc}>
                   Registros guardados solo en este navegador.
                 </p>

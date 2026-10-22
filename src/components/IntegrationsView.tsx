@@ -19,6 +19,7 @@ import { sileo } from 'sileo';
 import type { Profile, AgendaEvent, Area, ViewType } from '../types';
 import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { formatBytes } from '../utils/formatBytes';
+import { toLocalDateStr } from '../utils/localDate';
 import { IcsService } from '../services/icsService';
 import styles from './IntegrationsView.module.css';
 
@@ -36,8 +37,13 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
     createdAt: new Date().toISOString(),
   };
   const storageBytes = StorageService.getProfileStorageBytes(profile.id);
+  const todayStr = toLocalDateStr(new Date());
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profile.id));
+  const upcomingEvents = events
+    .filter(ev => ev.date >= todayStr)
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, 2);
   const [selectedRange, setSelectedRange] = useState('semestre');
   const [selectedArea, setSelectedArea] = useState('todas');
   const [isDragging, setIsDragging] = useState(false);
@@ -235,7 +241,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
             <div className={styles.categoryChipsLegend} aria-label="Áreas de integración">
               <span className={styles.chipItem}>
                 <span className={styles.chipDot} style={{ backgroundColor: '#5db8a6' }} />
-                <span>Estudios / Clase B</span>
+                <span>Estudios</span>
               </span>
               <span className={styles.chipItem}>
                 <span className={styles.chipDot} style={{ backgroundColor: '#e8a55a' }} />
@@ -522,53 +528,33 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                   </p>
 
                   <div className={styles.quickLinksList}>
-                    <div className={styles.quickLinkCard}>
-                      <div className={styles.quickLinkInfo}>
-                        <span className={styles.optionDot} style={{ backgroundColor: 'var(--color-primary, #6e0081)' }} />
-                        <div>
-                          <p className={styles.quickLinkTitle}>Entrega Memoria de Tesis Semestre II</p>
-                          <p className={styles.quickLinkMeta}>15 Octubre 2026 • 23:59 hrs • Universidad</p>
+                    {upcomingEvents.length === 0 ? (
+                      <p className={styles.optionDesc}>Aún no tienes eventos próximos para añadir. Crea uno en Agenda.</p>
+                    ) : (
+                      upcomingEvents.map(ev => (
+                        <div key={ev.id} className={styles.quickLinkCard}>
+                          <div className={styles.quickLinkInfo}>
+                            <span className={styles.optionDot} style={{ backgroundColor: 'var(--color-primary)' }} />
+                            <div>
+                              <p className={styles.quickLinkTitle}>{ev.title}</p>
+                              <p className={styles.quickLinkMeta}>
+                                {ev.date}
+                                {ev.startTime ? ` • ${ev.startTime} hrs` : ''}
+                              </p>
+                            </div>
+                          </div>
+                          <a
+                            className={styles.btnSecondaryAction}
+                            href={formatGoogleCalendarUrl(ev.title, ev.date, ev.startTime ?? '09:00', ev.notes ?? '')}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <span>Añadir a Google</span>
+                            <ExternalLink size={14} aria-hidden="true" />
+                          </a>
                         </div>
-                      </div>
-                      <a
-                        className={styles.btnSecondaryAction}
-                        href={formatGoogleCalendarUrl(
-                          'Entrega Memoria de Tesis Semestre II',
-                          '2026-10-15',
-                          '23:59',
-                          'Convocatoria académica 2026-II'
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <span>Añadir a Google</span>
-                        <ExternalLink size={14} aria-hidden="true" />
-                      </a>
-                    </div>
-
-                    <div className={styles.quickLinkCard}>
-                      <div className={styles.quickLinkInfo}>
-                        <span className={styles.optionDot} style={{ backgroundColor: '#5db8a6' }} />
-                        <div>
-                          <p className={styles.quickLinkTitle}>Examen Oral: Seminario de Lectura B</p>
-                          <p className={styles.quickLinkMeta}>22 Octubre 2026 • 10:00 hrs • Estudios</p>
-                        </div>
-                      </div>
-                      <a
-                        className={styles.btnSecondaryAction}
-                        href={formatGoogleCalendarUrl(
-                          'Examen Oral: Seminario de Lectura B',
-                          '2026-10-22',
-                          '10:00',
-                          'Simulacros y banco de preguntas'
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <span>Añadir a Google</span>
-                        <ExternalLink size={14} aria-hidden="true" />
-                      </a>
-                    </div>
+                      ))
+                    )}
                   </div>
                 </div>
               </article>
@@ -617,7 +603,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     </p>
                     <a
                       className={styles.btnFullWidth}
-                      href="mailto:coordinacion@universidad.edu?subject=Consulta%20Convocatoria%202026-II%20Espiralia&body=Estimado%20Comit%C3%A9%20Acad%C3%A9mico%2C%0A%0AAdjunto%20mi%20registro%20de%20avance%20acad%C3%A9mico%20generado%20desde%20mi%20b%C3%B3veda%20local.%0A%0ASaludos%20cordiales."
+                      href="mailto:?subject=Consulta%20Convocatoria%202026-II%20Espiralia&body=Estimado%20Comit%C3%A9%20Acad%C3%A9mico%2C%0A%0AAdjunto%20mi%20registro%20de%20avance%20acad%C3%A9mico%20generado%20desde%20mi%20b%C3%B3veda%20local.%0A%0ASaludos%20cordiales."
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -637,7 +623,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     </p>
                     <a
                       className={styles.btnFullWidth}
-                      href="mailto:me@personal.vault?subject=Resumen%20Espiralia%20del%20D%C3%ADa&body=Notas%20pendientes%20de%20revisi%C3%B3n%20editorial."
+                      href="mailto:?subject=Resumen%20Espiralia%20del%20D%C3%ADa&body=Notas%20pendientes%20de%20revisi%C3%B3n%20editorial."
                       target="_blank"
                       rel="noopener noreferrer"
                     >

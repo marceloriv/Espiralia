@@ -151,7 +151,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
                   className={styles.input}
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  placeholder="Ej. Avanzar módulos Clase B"
+                  placeholder="Ej. Avanzar módulos del curso"
                   required
                   autoFocus
                 />

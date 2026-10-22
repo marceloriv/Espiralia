@@ -9,7 +9,7 @@ import esLocale from '@fullcalendar/react/locales/es';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
-import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Sparkles } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { AgendaEvent, EventCategory, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
@@ -260,11 +260,11 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <div className={styles.toolbarLegend}>
               <span className={styles.legendItem}>
                 <span className={`${styles.legendDot} ${styles.dotPrimary}`} />
-                Terapia / Clave
+                Clave
               </span>
               <span className={styles.legendItem}>
                 <span className={`${styles.legendDot} ${styles.dotEmerald}`} />
-                Trámites &amp; Conaset
+                Trámites
               </span>
               <span className={styles.legendItem}>
                 <span className={`${styles.legendDot} ${styles.dotBlue}`} />
@@ -636,63 +636,6 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             </div>
           </div>
         </aside>
-      </div>
-
-      {/* 4. Bottom Section: The Weekly Flow & Quick Capture */}
-      <div className={styles.weeklyFlowSection}>
-        <div className={styles.weeklyFlowHeader}>
-          <div className={styles.weeklyFlowTitleGroup}>
-            <span className={styles.wfAvatarBadge}>WF</span>
-            <div>
-              <h3 className={styles.weeklyFlowTitle}>The Weekly Flow &amp; Quick Capture</h3>
-              <p className={styles.weeklyFlowDesc}>
-                Alineación de objetivos de la semana con ritmo biológico y descanso.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.capsulesGrid}>
-          {/* Day Capsule: Lunes */}
-          <div className={styles.dayCapsule}>
-            <div className={styles.capsuleTop}>
-              <span className={styles.capsuleDate}>Lunes 14</span>
-              <CheckCircle2 size={16} className={styles.iconSuccess} aria-hidden="true" />
-            </div>
-            <p className={styles.capsuleTitle}>Planificación Semanal</p>
-            <span className={styles.capsuleMeta}>1.5 hrs • Foco Alto</span>
-          </div>
-
-          {/* Day Capsule: Martes */}
-          <div className={styles.dayCapsule}>
-            <div className={styles.capsuleTop}>
-              <span className={styles.capsuleDate}>Martes 15</span>
-              <CheckCircle2 size={16} className={styles.iconSuccess} aria-hidden="true" />
-            </div>
-            <p className={styles.capsuleTitle}>Simulación Ensayo</p>
-            <span className={styles.capsuleMeta}>2.0 hrs • Análisis</span>
-          </div>
-
-          {/* Day Capsule: Miércoles (Hoy) */}
-          <div className={`${styles.dayCapsule} ${styles.capsuleToday}`}>
-            <div className={styles.capsuleTop}>
-              <span className={styles.capsuleDateToday}>Miércoles 16 (Hoy)</span>
-              <span className={styles.pulsingDot} aria-hidden="true" />
-            </div>
-            <p className={styles.capsuleTitle}>Conaset + Terapia</p>
-            <span className={styles.capsuleMetaToday}>3 eventos agendados</span>
-          </div>
-
-          {/* Day Capsule: Jueves */}
-          <div className={`${styles.dayCapsule} ${styles.capsuleUpcoming}`}>
-            <div className={styles.capsuleTop}>
-              <span className={styles.capsuleDate}>Jueves 17</span>
-              <span className={styles.capsuleCircle} aria-hidden="true" />
-            </div>
-            <p className={styles.capsuleTitle}>Lecturas de Taller</p>
-            <span className={styles.capsuleMeta}>Programado</span>
-          </div>
-        </div>
       </div>
     </div>
   );

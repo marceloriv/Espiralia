@@ -762,11 +762,8 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
                 <div className={styles.dotGridCanvas}>
                   <p className={styles.dotGridScript}>
-                    "No anticipar el tráfico antes de subir al auto. Respirar tres veces antes de soltar el embrague. La calma se practica segundo a segundo."
+                    Tus notas rápidas aparecerán aquí. Crea la primera en Notas.
                   </p>
-                  <div className={styles.dotGridTagRow}>
-                    <span className={styles.dotGridTag}>vinculado a #ClaseB · 10:14 AM</span>
-                  </div>
                   <span className={styles.dotGridHeart} aria-hidden="true">♡</span>
                 </div>
 

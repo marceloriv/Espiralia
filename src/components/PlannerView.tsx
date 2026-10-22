@@ -17,6 +17,9 @@ interface PlannerViewProps {
 export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
   const profileId = profile?.id ?? propProfileId ?? '';
   const [blocks, setBlocks] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profileId));
+  const weekPriorities = StorageService.getTodos(profileId)
+    .filter(t => t.status !== 'completada' && t.priority === 'alta')
+    .slice(0, 3);
   const [weekOffset, setWeekOffset] = useState(0);
   const [priorityFilter, setPriorityFilter] = useState<'todas' | Priority>('todas');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -135,11 +138,6 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
       {/* Cabecera Editorial Stitch */}
       <div className={styles.editorialHeader}>
         <div className={styles.headerLeft}>
-          <div className={styles.logbookBadge} aria-hidden="true">
-            <span className={styles.badgeSerial}>FOLIO TEC-2026</span>
-            <span className={styles.badgeRule}>•</span>
-            <span className={styles.badgeStandard}>RETÍCULA DE PRECISIÓN ISO 128</span>
-          </div>
           <span className={styles.overlineTag}>ESPIRALIA TALLER • PLANIFICADOR SEMANAL</span>
           <h1 className={styles.plannerMainHeading}>focus plan & agenda semanal.</h1>
           <h2 className={styles.pageTitle}>Planner Semanal</h2>
@@ -155,9 +153,9 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
       {/* Píldoras de Filtro por Área y Botón Principal */}
       <div className={styles.areaFilterBar}>
         <div className={styles.areaTagsGroup}>
-          <span className={styles.areaPillAmber}>01. Estudios & Clase B</span>
-          <span className={styles.areaPillEmerald}>02. Introspección & Terapia</span>
-          <span className={styles.areaPillViolet}>03. Universidad & Admisión</span>
+          <span className={styles.areaPillAmber}>01. Estudios</span>
+          <span className={styles.areaPillEmerald}>02. Personal</span>
+          <span className={styles.areaPillViolet}>03. Universidad</span>
         </div>
 
         <button
@@ -294,18 +292,18 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
             <div className={styles.brassClip} aria-hidden="true" />
             <h3 className={styles.topPrioritiesTitle}>PRIORIDADES DE LA SEMANA</h3>
             <ul className={styles.prioritiesList}>
-              <li className={styles.priorityItem}>
-                <span className={styles.priorityBox}>01</span>
-                <span>Repaso intensivo Conaset B & Señalética</span>
-              </li>
-              <li className={styles.priorityItem}>
-                <span className={styles.priorityBox}>02</span>
-                <span>Sesión de autorregulación y terapia</span>
-              </li>
-              <li className={styles.priorityItem}>
-                <span className={styles.priorityBox}>03</span>
-                <span>Avance marco metodológico Universidad</span>
-              </li>
+              {weekPriorities.length === 0 ? (
+                <li className={styles.priorityItem}>
+                  <span>Sin prioridades registradas. Agrégalas en To-Do.</span>
+                </li>
+              ) : (
+                weekPriorities.map((t, idx) => (
+                  <li key={t.id} className={styles.priorityItem}>
+                    <span className={styles.priorityBox}>{String(idx + 1).padStart(2, '0')}</span>
+                    <span>{t.title}</span>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
 

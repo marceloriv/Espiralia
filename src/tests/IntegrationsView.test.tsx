@@ -45,6 +45,7 @@ describe('IntegrationsView (Stitch screen)', () => {
   });
 
   it('despliega atajos directos a Google Calendar Web con action=TEMPLATE seguros', () => {
+    StorageService.saveEvent({ id: 'e-atajo', profileId: profile.id, title: 'Evento de prueba', date: '2099-01-01', startTime: '10:00' });
     render(<IntegrationsView profile={profile} />);
     const gCalLinks = screen.getAllByRole('link', { name: /añadir a google/i });
     expect(gCalLinks.length).toBeGreaterThan(0);

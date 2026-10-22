@@ -82,7 +82,7 @@ const LinkModalContent: React.FC<LinkModalProps> = ({
               className={styles.input}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Ej: Simulador Conaset, Portal Postulaciones..."
+              placeholder="Ej: Portal de la universidad, Recursos de estudio..."
               required
               autoFocus
             />

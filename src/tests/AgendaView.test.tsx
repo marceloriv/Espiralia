@@ -29,7 +29,7 @@ describe('AgendaView', () => {
     expect(screen.getByText(/formato imprenta/i)).toBeInTheDocument();
     expect(screen.getByText(/agenda diaria/i)).toBeInTheDocument();
     expect(screen.getByText(/energy & mood rhythm tracker/i)).toBeInTheDocument();
-    expect(screen.getByText(/the weekly flow & quick capture/i)).toBeInTheDocument();
+    expect(screen.queryByText(/the weekly flow/i)).not.toBeInTheDocument();
   });
 
   // Técnica: partición de equivalencia sobre datos de entrada (perfil propio, ajeno, esquema viejo).

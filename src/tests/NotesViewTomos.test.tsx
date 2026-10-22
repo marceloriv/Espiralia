@@ -54,7 +54,7 @@ describe('NotesView - Tomos y Carpetas', () => {
     expect(screen.queryByText('Nota de Diario Íntimo')).not.toBeInTheDocument();
 
     // Volver a Tomo 01
-    const tomo1Btn = screen.getByRole('button', { name: /diario íntimo & terapia/i });
+    const tomo1Btn = screen.getByRole('button', { name: /diario íntimo/i });
     await user.click(tomo1Btn);
 
     // Las notas de Tomo 01 reaparecen intactas
@@ -93,7 +93,7 @@ describe('NotesView - Tomos y Carpetas', () => {
     expect(conasetNote?.folderId).toBe('tomo-03');
 
     // Cambiar a Tomo 01: la nota de Conaset no debe estar visible allí
-    const tomo1Btn = screen.getByRole('button', { name: /diario íntimo & terapia/i });
+    const tomo1Btn = screen.getByRole('button', { name: /diario íntimo/i });
     await user.click(tomo1Btn);
     expect(screen.queryByText('Prioridad en Rotondas y Frenado')).not.toBeInTheDocument();
   });
@@ -131,7 +131,7 @@ describe('NotesView - Tomos y Carpetas', () => {
     render(<NotesView profileId={profileId} />);
 
     // Verificar los 3 archivadores de tomos
-    const tomo1Btn = screen.getByRole('button', { name: /diario íntimo & terapia/i });
+    const tomo1Btn = screen.getByRole('button', { name: /diario íntimo/i });
     const tomo2Btn = screen.getByRole('button', { name: /ideas & taller/i });
     const tomo3Btn = screen.getByRole('button', { name: /estudio & ensayos/i });
 

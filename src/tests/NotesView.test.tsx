@@ -16,11 +16,11 @@ describe('NotesView', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /diario de autoobservación & desahogo/i })).toBeInTheDocument();
     expect(screen.getByText(/pregunta ancla de la semana/i)).toBeInTheDocument();
-    expect(screen.getByText(/descompresión mental & autoobservación/i)).toBeInTheDocument();
-    expect(screen.getByText(/avance conaset - simulacro clase b/i)).toBeInTheDocument();
+    expect(screen.getByText(/tu primera entrada/i)).toBeInTheDocument();
+    expect(screen.queryByText(/avance conaset/i)).not.toBeInTheDocument();
     expect(screen.getByText(/¿qué fluyó bien hoy\?/i)).toBeInTheDocument();
     expect(screen.getByText(/modo estilográfica: activo/i)).toBeInTheDocument();
-    expect(screen.getByText(/vaciado rápido/i)).toBeInTheDocument();
+    expect(screen.queryByText(/vaciado rápido/i)).not.toBeInTheDocument();
   });
 
   it('incluye elementos táctiles de encuadernación artesanal y clip de latón en el pliego verjurado', () => {
