@@ -10,7 +10,7 @@
 
 ## 0. Dirección de Impacto Visual: el cuaderno de espiral (plan v2)
 
-> Estado: **plan en ejecución**. Implementado hasta hoy: el componente `Pliego` aplicado a "Prioridades de hoy" del Dashboard (commit `ef8acfd`) y el acceso por PIN unificado en un solo diálogo (`0dc8f1a`). Todo lo demás de esta sección es *por implementar*. El resto del documento (§1 a §6) describe lo vigente en el código. Restricción dura: nada de esto cambia claves, formas ni valores guardados en `localStorage`; es solo presentación.
+> Estado: **plan en ejecución, pasos 0 a 2 hechos** (§0.8). Implementado: fuentes autoalojadas (`9bcc46a`), `Pliego` (`ef8acfd`), acceso por PIN en un solo diálogo (`0dc8f1a`), respaldo del acceso alineado con la bóveda (`9dd66a5`), primitivo `Papel` y tokens `--papel-*` (`c6647af`) y el Dashboard con Papel por módulo y fecha como hoja (`b6791eb`). Lo demás de esta sección es *por implementar*. El resto del documento (§1 a §6) describe lo vigente en el código. Restricción dura: nada de esto cambia claves, formas ni valores guardados en `localStorage`; es solo presentación.
 
 ### 0.1 Tesis
 
@@ -23,7 +23,7 @@ El marfil cálido con serif de alto contraste y acento magenta es lo que cualqui
 | Dos firmas compitiendo: anillas en el pliego y papeles rasgados en diez elementos del mock. Se perdía la regla "una sola cosa memorable". | Sistema de **tres materiales** con trabajos distintos (§0.3). Las anillas siguen siendo la firma; el papel rasgado es un material secundario con presupuesto. |
 | Los tintes de los papeles eran decorativos y aleatorios. | **El color codifica el módulo** (§0.4): el mismo tinte significa lo mismo en toda la app. |
 | La v1 vendía las fuentes autoalojadas como mejora estética. En realidad `index.html` carga hoy Caveat, Inter, JetBrains Mono y Newsreader desde Google Fonts: la app no funciona del todo sin red y hace una petición a un tercero, lo que contradice "100% local". | Autoalojar las fuentes pasa a ser el **paso 0**, independiente de la estética y sin cambio visual (§0.8). La tipografía nueva llega después, con peso medido. |
-| El borde rasgado del mock se generaba con JavaScript al medir el DOM, con `mix-blend-mode` y un filtro SVG por elemento. Costoso en móviles y frágil. | Un único primitivo `Papel` con formas de borde precalculadas en CSS (se reutiliza el `clip-path` de `bentoCardTorn`, que hoy está duplicado en `HabitModal` y en la landing) y una sola textura de fondo. Sin JavaScript de medición ni mezcla de capas. |
+| El borde rasgado del mock se generaba con JavaScript al medir el DOM, con `mix-blend-mode` y un filtro SVG por elemento. Costoso en móviles y frágil. | Un único primitivo `Papel` con formas de borde precalculadas en CSS (la forma de `bentoCardTorn`) y una sola textura de fondo. Sin JavaScript de medición ni mezcla de capas. |
 | La fecha enorme empujaba la tarea principal fuera de la primera pantalla en móvil. | Criterio medible: la primera tarea crítica empieza dentro de los primeros 600px a 375x812 (§0.10). |
 | La doble tinta (sombra desplazada) en titulares corridos puede fatigar la lectura. | La doble tinta se limita a **un solo elemento: el numeral de la fecha**. |
 | Presupuestos ("un pliego por pantalla") solo escritos. | Se vuelven **tests** que cuentan usos por vista (§0.10). |
@@ -37,13 +37,13 @@ El marfil cálido con serif de alto contraste y acento magenta es lo que cualqui
  de apilado          cuadrícula bujo, tinte de módulo  sombra de papel simple
  la tarea            lo que se lee de un vistazo       lo que se edita o se decide
  principal de hoy    (resúmenes, vacíos, métricas)     (foco, formularios, modales)
- máx. 1 por vista    máx. 4 por pantalla               sin límite
+ máx. 1 por vista    máx. 4 tarjetas y 3 piezas               sin límite
 ```
 
 - **Pliego** (vigente, `src/components/common/Pliego.tsx`): contiene la tarea principal de la vista. Anillas laterales en escritorio y superiores en móvil. Un solo pliego por vista.
-- **Papel** (por implementar, `src/components/common/Papel.tsx`): superficie de lectura. Se extrae del `bentoCardTorn` actual: bordes superior e inferior rasgados, cuadrícula de puntos (`--color-grid-bujo`) y un tinte claro. Recibe el módulo para elegir el tinte. Hoy hay tres copias del `clip-path` rasgado (`DashboardView`, `HabitModal`, `LandingHeroCard`); el primitivo las reemplaza.
+- **Papel** (por implementar, `src/components/common/Papel.tsx`): superficie de lectura. Se extrae del `bentoCardTorn` actual: bordes superior e inferior rasgados, cuadrícula de puntos (`--color-grid-bujo`) y un tinte claro. Recibe el tinte (`TINTE_DE_MODULO` lo asigna por módulo) y tiene dos formas: `tarjeta` (cuadrícula bujo, bordes superior e inferior rasgados) y `pieza` (etiqueta, pestaña u hoja pequeña, rasgada en los lados). `HabitModal` conserva su propio recorte, casi igual a la forma `tarjeta` (2px de diferencia), y la tira de la landing conserva una forma más suave: no están rotos y no se tocan.
 - **Cartulina**: el contenedor liso de hoy (`.card`). Se reserva para lo que la persona edita o decide: foco principal, formularios, modales. Así se distingue de lo que solo se lee.
-- **Pestañas, etiquetas y la hoja de la fecha** son piezas pequeñas de Papel (borde rasgado en uno o dos lados, sin cuadrícula). Cuentan dentro del presupuesto de 4 por pantalla.
+- **Pestañas, etiquetas y la hoja de la fecha** son piezas pequeñas de Papel (`forma="pieza"`, sin cuadrícula). **Presupuesto por vista: 4 tarjetas y 3 piezas**, medido por `src/tests/papelBudget.test.ts` (cuenta los `<Papel` de cada archivo de vista; las listas de tarjetas repetidas, como las notas, usan sus propios componentes y no cuentan).
 - Clips de latón, cintas washi y notas adhesivas dejan de ser una capa por tarjeta. Queda como máximo **un** clip por pantalla.
 
 ### 0.4 El color codifica el módulo
@@ -95,9 +95,9 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 
 | Paso | Qué | Cómo se verifica |
 | :--- | :--- | :--- |
-| 0 | **Autoalojar las fuentes actuales** (Newsreader, Inter, JetBrains Mono, Caveat), sin cambio visual. Quitar los enlaces a Google Fonts de `index.html`. | Cero peticiones a dominios externos al cargar la app. Se mide el peso real de las fuentes. |
-| 1 | **Primitivos**: `Papel` (extraído de `bentoCardTorn`), tokens `--papel-*`, `Pliego` (hecho) y los tests de presupuesto. | Tests rojos antes, verdes después; los tres `clip-path` duplicados convergen en uno. |
-| 2 | **Dashboard**: recortar ornamentos, tintes por módulo, hoja de la fecha. | Capturas a 375, 768 y 1440px; comparación con el mock. **Punto de revisión con la persona dueña.** |
+| 0 | **Autoalojar las fuentes actuales**, sin cambio visual. **Hecho** (`9bcc46a`): Caveat, Inter y JetBrains Mono, solo latino, 151 KB en total. Newsreader se descartó porque nunca se usaba (solo era respaldo de una variable siempre definida). | Medido: un solo host (`localhost`) en 5 rutas, y las tres fuentes cargan. Test `noExternalRequests.test.ts`. |
+| 1 | **Primitivos**: `Papel`, tokens `--papel-*`, `Pliego` y los tests de presupuesto. **Hecho** (`c6647af`). | Tests rojos antes y verdes después; 14 tintes con 4.5:1 sobre la tinta y el texto de cuerpo. |
+| 2 | **Dashboard**: recortar ornamentos, tintes por módulo, hoja de la fecha. **Hecho** (`b6791eb`), con una excepción medida en §0.10 (criterio 4). | Capturas a 375 y 1440px; suite de 90 archivos y 657 tests en verde. **Punto de revisión con la persona dueña (pendiente).** |
 | 3 | **Acceso**: pliego en la tarjeta de cuadernos, panel derecho con papeles de datos reales, aforismo en español y corrección de los textos falsos del respaldo y del PIN olvidado (§0.9). | Idem, más tests de texto. **Punto de revisión.** |
 | 4 | **Resto de vistas**, una por commit: Agenda, Planner, To-Do, Notas, Carpetas, Integraciones. | Suite completa y capturas por vista. |
 | 5 | **Tipografía nueva** (§0.6). | Peso medido contra el presupuesto; contraste y escala sin regresiones. |
@@ -134,12 +134,17 @@ Consecuencias para el plan (paso 3, Acceso), con revisión de la persona dueña 
 - **Aviso de PIN olvidado:** reemplazar el texto falso por «Espiralia no puede restablecer un PIN: solo guarda su hash en este navegador.» Es un cambio de texto; no cambia ningún dato.
 - **Botón "Exportar bóveda local" del Acceso:** quitarlo del Acceso (propuesta) o alinear su formato con el de `VaultModal`. Decisión pendiente: quitarlo deja sin copia a quien no pueda entrar; alinearlo implica un cambio de comportamiento y un test de ida y vuelta.
 
+**Decisión pendiente tras el paso 2: orden del Dashboard en móvil.** El criterio de §0.10.4 no se cumple porque, antes de las prioridades, el Dashboard muestra el encabezado completo, el aforismo, el lema del día, los cuatro accesos rápidos y las tres tarjetas de serenidad (pliego a 2436px en móvil). Opciones:
+- **A. Solo reordenar:** en móvil, las tres tarjetas de serenidad pasan después de las prioridades (CSS `order`, sin tocar el contenido). Mejora, pero el encabezado sigue siendo largo y no alcanza los 600px.
+- **B. Reordenar y compactar (recomendada):** en móvil el encabezado queda en fecha, saludo y contadores; el aforismo, el lema, los accesos rápidos y las tarjetas de serenidad van después de Foco y Prioridades. Cumple el criterio y no cambia el contenido ni el orden en escritorio.
+- **C. Relajar el criterio:** en el Dashboard se acepta que las prioridades queden más abajo, a cambio de conservar el encabezado completo.
+
 ### 0.10 Criterios de aceptación (verificables)
 
-1. Como máximo un `<Pliego` por archivo de vista y cuatro `<Papel` por pantalla (tests que cuentan usos).
+1. Como máximo un `<Pliego`, cuatro tarjetas y tres piezas de `<Papel` por archivo de vista (`papelBudget.test.ts`).
 2. Texto sobre cada tinte: 4.5:1 como mínimo, medido con la fórmula WCAG en `textTokensContrast.test.ts`.
 3. Ningún control menor de 44x44px; foco visible con 3:1 contra su entorno.
-4. A 375, 768 y 1440px: sin desborde horizontal. A 375x812, la primera tarea crítica del Dashboard empieza dentro de los primeros 600px.
+4. A 375, 768 y 1440px: sin desborde horizontal (**cumplido** en el Dashboard a 375 y 1440). A 375x812, la primera tarea crítica del Dashboard empieza dentro de los primeros 600px (**no cumplido**: medido a 2436px en móvil y 1380px en escritorio; antes del pliego van el encabezado, el aforismo, el lema, los cuatro accesos y las tres tarjetas de serenidad). Decisión pendiente en §0.9.
 5. Cero peticiones a dominios externos al cargar cualquier ruta; peso de fuentes medido y dentro del presupuesto fijado en el paso 5.
 6. Con `prefers-reduced-motion` no hay transición de página; con `prefers-contrast: more` y `forced-colors: active`, sin sombra desplazada, y los papeles conservan un borde visible (`border` de respaldo, `clip-path: none`).
 7. Sin `mix-blend-mode` ni más de cuatro `filter: drop-shadow` por pantalla. La pantalla se desplaza sin saltos en una grabación de rendimiento en emulación móvil.
