@@ -23,9 +23,10 @@ import {
   X,
 } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem, Note, DayOfWeek } from '../types';
-import { StorageService } from '../services/storage';
+import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
+import { formatBytes } from '../utils/formatBytes';
 import { sileo } from 'sileo';
-import { toLocalDateStr } from '../utils/localDate';
+import { isoWeekNumber, semesterLabel, toLocalDateStr } from '../utils/localDate';
 import { categoryOf } from './agenda/eventMapping';
 import {
   criticalTodos,
@@ -186,9 +187,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const latestNote = sortedNotes[0] ?? null;
 
   // Compute week of the year
-  const startOfYear = new Date(now.getFullYear(), 0, 1);
-  const daysDiff = Math.floor((now.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
-  const currentWeekNumber = Math.ceil((daysDiff + startOfYear.getDay() + 1) / 7);
+  const currentWeekNumber = isoWeekNumber(now);
+  const semester = semesterLabel(now);
+  const storageBytes = StorageService.getProfileStorageBytes(profile.id);
 
   const handleToggleTodo = (id: string) => {
     StorageService.toggleTodo(profile.id, id);
@@ -314,7 +315,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <span className={styles.metaDot}>•</span>
               <span className={styles.metaDateItem}>FECHA: {String(now.getDate()).padStart(2, '0')}.{String(now.getMonth() + 1).padStart(2, '0')}.{now.getFullYear()}</span>
               <span className={styles.metaDot}>•</span>
-              <span>Semestre: 2026-II</span>
+              <span>Semestre: {semester}</span>
               <span className={styles.metaDot}>•</span>
               <span className={styles.metaWeek}>Semana: #{currentWeekNumber}</span>
             </div>
@@ -554,17 +555,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </div>
 
               <div className={styles.metricQuadTile}>
-                <span className={styles.metricTileLabel}>Ruido Digital</span>
+                <span className={styles.metricTileLabel}>Almacenamiento</span>
                 <div className={styles.metricTileValueBox}>
-                  <span className={styles.metricTileValTeal}>0%</span>
+                  <span className={styles.metricTileValTeal}>{formatBytes(storageBytes)}</span>
                 </div>
-                <span className={styles.metricTileSub}>0 rastreadores • 100% offline</span>
+                <span className={styles.metricTileSub}>de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)} en este navegador</span>
               </div>
 
               <div className={styles.metricQuadTile}>
                 <span className={styles.metricTileLabel}>Rendimiento</span>
                 <div className={styles.metricTileValueBox}>
-                  <span className={styles.metricTileValPurple}>{taskPerf.percentage}%</span>
+                  <span className={styles.metricTileValPurple}>
+                    {taskPerf.percentage === null ? '—' : `${taskPerf.percentage}%`}
+                  </span>
                 </div>
                 <span className={styles.metricTileSub}>
                   {taskPerf.total > 0 ? `${taskPerf.completed} de ${taskPerf.total} tareas logradas` : 'Sin tareas registradas'}
@@ -966,7 +969,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 Progreso por Áreas Temáticas
               </h2>
               <p className={styles.areasSubTitle}>
-                Carpetas activas de vida y proyectos en curso (Plan 2026-II)
+                Carpetas activas de vida y proyectos en curso (Plan {semester})
               </p>
             </div>
             <div className={styles.areasHeaderRight}>
@@ -983,8 +986,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
 
+          {todos.length === 0 && (
+            <p className={styles.areasEmpty}>Aún no hay tareas por área. Crea la primera en To-Do.</p>
+          )}
+
           <div className={styles.areasGrid}>
-            {areaSummaries.map((s, idx) => {
+            {(todos.length === 0 ? [] : areaSummaries).map((s, idx) => {
               const areaTodos = todos.filter(t => t.areaId === s.area.id);
               const pendingAreaTodos = areaTodos.filter(t => (t.status ? t.status !== 'completada' : !t.completed));
               const milestone1 = areaTodos[0]?.title ?? 'Sin tareas asignadas en esta carpeta';

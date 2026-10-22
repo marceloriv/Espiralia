@@ -4,7 +4,7 @@ import { sileo } from 'sileo';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
 import { StorageService } from '../services/storage';
-import { toLocalDateStr } from '../utils/localDate';
+import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
 import { dueLabel, criticalTodos } from './dashboard/dashboardData';
 import { AreaIntegratedWorkspace } from './todo/AreaIntegratedWorkspace';
 import styles from './TodoView.module.css';
@@ -240,7 +240,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
             <div className={styles.overlineRow}>
               <span className={styles.overlineTag}>Cuaderno de Tareas Semestral · Mis tareas</span>
               <span className={styles.overlineDivider}>|</span>
-              <span className={styles.overlineSub}>Otoño 2026 · Semana 42</span>
+              <span className={styles.overlineSub}>Semana {isoWeekNumber(new Date())}</span>
             </div>
 
             <h1 className={styles.editorialH1}>
@@ -790,7 +790,6 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               <div className={styles.energyMeterBox}>
                 <div className={styles.energyMeterHeader}>
                   <span className={styles.energyLabel}>Nivel de Energía / Presencia:</span>
-                  <span className={styles.energyStatus}>80% · Lúcida</span>
                 </div>
                 <div className={styles.energyButtonsRow}>
                   {['☁️', '☕', '🌱', '✨', '☀️'].map(icon => (

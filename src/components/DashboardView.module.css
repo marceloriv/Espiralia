@@ -2053,6 +2053,17 @@
   margin-bottom: 24px;
 }
 
+.areasEmpty {
+  margin: 0 0 var(--spacing-md);
+  padding: var(--spacing-lg);
+  border: 1px dashed var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-warm);
+  color: var(--color-muted);
+  font-size: var(--text-body-sm);
+  text-align: center;
+}
+
 .areasSubTitle {
   margin: 4px 0 0;
   font-family: var(--font-family-2);

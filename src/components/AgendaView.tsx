@@ -13,7 +13,7 @@ import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Sparkles, CheckC
 import { sileo } from 'sileo';
 import type { AgendaEvent, EventCategory, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
-import { defaultEndTime, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
+import { defaultEndTime, isoWeekNumber, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
 import { MAX_TITLE_LENGTH, emptyEventForm, eventFormFromEvent, validateEventForm } from './agenda/eventForm';
 import type { EventFormState } from './agenda/eventForm';
 import {
@@ -184,7 +184,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <span className={styles.bullet}>•</span>
             <span>Tomo Primavera-Verano</span>
             <span className={styles.bullet}>•</span>
-            <span className={styles.weekTag}>Semana 42</span>
+            <span className={styles.weekTag}>Semana {isoWeekNumber(new Date())}</span>
           </div>
 
           <div className={styles.titleRow}>
@@ -576,14 +576,16 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 <Moon size={16} className={styles.iconPrimary} aria-hidden="true" />
                 <h4 className={styles.rhythmTitle}>Energy &amp; Mood Rhythm Tracker</h4>
               </div>
-              <span className={styles.rhythmDateBadge}>OCT 16</span>
+              <span className={styles.rhythmDateBadge}>
+                {new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'short' }).toUpperCase()}
+              </span>
             </div>
 
             {/* Fases de Energía Vital */}
             <div className={styles.vitalEnergyBox}>
               <div className={styles.vitalHeaderRow}>
                 <span className={styles.vitalLabel}>NIVEL DE ENERGÍA VITAL</span>
-                <span className={styles.vitalStatus}>80% Óptima</span>
+                <span className={styles.vitalStatus}>{energyLevel}</span>
               </div>
               <div className={styles.energyButtonsGrid}>
                 {[
@@ -646,12 +648,6 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               <p className={styles.weeklyFlowDesc}>
                 Alineación de objetivos de la semana con ritmo biológico y descanso.
               </p>
-            </div>
-          </div>
-          <div className={styles.weeklyFlowProgress}>
-            <span className={styles.progressText}>4 de 6 completados</span>
-            <div className={styles.progressBarTrack}>
-              <div className={styles.progressBarFill} style={{ width: '66%' }} />
             </div>
           </div>
         </div>

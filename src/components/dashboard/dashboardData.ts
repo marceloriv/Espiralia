@@ -134,7 +134,8 @@ export const computeNetFocusHours = (
 };
 
 export interface TaskPerformanceResult {
-  percentage: number;
+  /** `null` cuando no hay tareas: un porcentaje sin base sería inventado. */
+  percentage: number | null;
   completed: number;
   total: number;
 }
@@ -145,7 +146,7 @@ export interface TaskPerformanceResult {
 export const computeTaskPerformance = (todos: TodoItem[]): TaskPerformanceResult => {
   const total = todos.length;
   if (total === 0) {
-    return { percentage: 100, completed: 0, total: 0 };
+    return { percentage: null, completed: 0, total: 0 };
   }
   const completed = todos.filter(t => t.completed || t.status === 'completada').length;
   const percentage = Math.round((completed / total) * 100);

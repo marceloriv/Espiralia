@@ -17,7 +17,8 @@ import {
 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile, AgendaEvent, Area, ViewType } from '../types';
-import { StorageService } from '../services/storage';
+import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
+import { formatBytes } from '../utils/formatBytes';
 import { IcsService } from '../services/icsService';
 import styles from './IntegrationsView.module.css';
 
@@ -34,6 +35,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
     avatar: 'U',
     createdAt: new Date().toISOString(),
   };
+  const storageBytes = StorageService.getProfileStorageBytes(profile.id);
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profile.id));
   const [selectedRange, setSelectedRange] = useState('semestre');
@@ -716,7 +718,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
         <div className={styles.sheetBottomMantra}>
           <div className={styles.mantraStorage}>
             <span className={styles.greenDot}></span>
-            <span>Almacenamiento Local: <strong style={{ color: 'var(--color-ink, #232b2b)' }}>1.4 MB / 50 MB</strong> (IndexedDB)</span>
+            <span>Almacenamiento Local: <strong style={{ color: 'var(--color-ink, #232b2b)' }}>{formatBytes(storageBytes)} de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)}</strong> (IndexedDB)</span>
           </div>
           <p className={styles.mantraQuote}>
             « Tus datos soberanos residen en tu equipo, sin intermediarios. »

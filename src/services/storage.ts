@@ -7,6 +7,9 @@ const getScopedKey = (profileId: string, domain: string) => `espiralia_${profile
 
 export const STORAGE_ERROR_EVENT = 'espiralia:storage-error';
 
+/** Cuota típica de localStorage por origen en navegadores de escritorio y móvil. */
+export const LOCALSTORAGE_QUOTA_BYTES = 5 * 1024 * 1024;
+
 /** Escribe en localStorage sin lanzar: ante QuotaExceededError avisa con STORAGE_ERROR_EVENT y devuelve false. */
 function writeItem(key: string, value: string): boolean {
   try {
@@ -82,6 +85,17 @@ export const StorageService = {
     if (this.getActiveProfileId() === id) {
       this.clearActiveProfileId();
     }
+  },
+
+  /** Bytes que ocupa un perfil en localStorage (UTF-16: 2 bytes por carácter de clave y valor). */
+  getProfileStorageBytes(profileId: string): number {
+    const prefix = `espiralia_${profileId}_`;
+    let chars = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith(prefix)) chars += key.length + (localStorage.getItem(key)?.length ?? 0);
+    }
+    return chars * 2;
   },
 
   getActiveProfileId(): string | null {

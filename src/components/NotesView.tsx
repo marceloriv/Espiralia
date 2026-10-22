@@ -466,10 +466,12 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                   <Sparkles size={14} className={styles.iconTeal} aria-hidden="true" />
                   <span>{activeNote ? activeNote.title : 'Sesión Semanal #14'}</span>
                 </span>
-                <span className={styles.metaItem}>
-                  <BookOpen size={14} className={styles.iconPrimary} aria-hidden="true" />
-                  <span>{activeNote ? `${activeWordCount} palabras` : '42 min de escritura'}</span>
-                </span>
+                {activeNote && (
+                  <span className={styles.metaItem}>
+                    <BookOpen size={14} className={styles.iconPrimary} aria-hidden="true" />
+                    <span>{`${activeWordCount} palabras`}</span>
+                  </span>
+                )}
               </div>
             </div>
 
@@ -645,39 +647,6 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                       <span className={styles.scaleBtnText}>{level}</span>
                     </button>
                   ))}
-                </div>
-              </div>
-
-              {/* Barras de Estado */}
-              <div className={styles.energyBars}>
-                <div className={styles.barItem}>
-                  <div className={styles.barHeader}>
-                    <span>Foco y Claridad Mental</span>
-                    <span className={styles.barValPrimary}>78%</span>
-                  </div>
-                  <div className={styles.barTrack}>
-                    <div className={styles.barFillPrimary} style={{ width: '78%' }} />
-                  </div>
-                </div>
-
-                <div className={styles.barItem}>
-                  <div className={styles.barHeader}>
-                    <span>Calma / Regulación Nerviosa</span>
-                    <span className={styles.barValTeal}>85%</span>
-                  </div>
-                  <div className={styles.barTrack}>
-                    <div className={styles.barFillTeal} style={{ width: '85%' }} />
-                  </div>
-                </div>
-
-                <div className={styles.barItem}>
-                  <div className={styles.barHeader}>
-                    <span>Cansancio Somático</span>
-                    <span className={styles.barValAmber}>40%</span>
-                  </div>
-                  <div className={styles.barTrack}>
-                    <div className={styles.barFillAmber} style={{ width: '40%' }} />
-                  </div>
                 </div>
               </div>
             </div>

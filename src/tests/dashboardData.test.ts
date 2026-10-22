@@ -236,7 +236,7 @@ describe('Métricas de Serenidad — funciones de cálculo', () => {
 
     // Sin tareas
     const empty = computeTaskPerformance([]);
-    expect(empty.percentage).toBe(100);
+    expect(empty.percentage).toBeNull();
     expect(empty.completed).toBe(0);
     expect(empty.total).toBe(0);
   });

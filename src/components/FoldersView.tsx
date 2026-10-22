@@ -16,7 +16,8 @@ import {
 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Folder, LinkItem, Note, Profile, ViewType } from '../types';
-import { StorageService } from '../services/storage';
+import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
+import { formatBytes } from '../utils/formatBytes';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
 import { NoteModal } from './notes/NoteModal';
@@ -148,6 +149,8 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
   const activeFolder = useMemo(() => {
     return displayFolders.find((f) => f.id === selectedFolderId) || displayFolders[0];
   }, [displayFolders, selectedFolderId]);
+
+  const storageBytes = StorageService.getProfileStorageBytes(profileId);
 
   // Notas asociadas a la carpeta activa
   const folderNotes = useMemo(() => {
@@ -567,11 +570,6 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                 {/* Folder Meta Specs */}
                 <div className={styles.folderMetaSpecs}>
                   <div className={styles.metaCol}>
-                    <span className={styles.metaLabel}>ÚLTIMA MODIFICACIÓN</span>
-                    <span className={styles.metaVal}>18 Mar 2025, 11:42</span>
-                  </div>
-                  <div className={styles.metaDivider}></div>
-                  <div className={styles.metaCol}>
                     <span className={styles.metaLabel}>INVENTARIO</span>
                     <span className={styles.metaValAccent}>{activeFolder?.specs}</span>
                   </div>
@@ -802,10 +800,13 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
           <div className={styles.storageWidget}>
             <div className={styles.storageHeader}>
               <span className={styles.storageTitle}>Almacenamiento Local (IndexedDB)</span>
-              <span className={styles.storageValue}>42.8 MB / 500 MB</span>
+              <span className={styles.storageValue}>{formatBytes(storageBytes)} de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)}</span>
             </div>
             <div className={styles.storageProgressBar}>
-              <div className={styles.storageProgressFill} style={{ width: '14%' }}></div>
+              <div
+                className={styles.storageProgressFill}
+                style={{ width: `${Math.min(100, (storageBytes / LOCALSTORAGE_QUOTA_BYTES) * 100)}%` }}
+              ></div>
             </div>
             <div className={styles.storageFooter}>
               <span className={styles.shieldText}>
