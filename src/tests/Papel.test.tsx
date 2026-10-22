@@ -56,6 +56,26 @@ describe('Papel', () => {
       expect(css).not.toMatch(/linear-gradient|mix-blend-mode|blur\(|animation:|infinite/);
     });
 
+    it('la fibra de papel es un fondo del propio papel: sin capas extra ni mezcla', () => {
+      expect(css).toMatch(/--fibra:\s*url\("data:image\/svg\+xml/);
+      expect(css).toMatch(/\.papel\s*\{[^}]*background-image:\s*var\(--fibra\)/);
+      expect(css).toMatch(/\.papel\[data-forma='tarjeta'\]\s*\{[^}]*background-image:\s*radial-gradient\([^;]*var\(--fibra\)/);
+      expect(css).not.toMatch(/::before|::after/);
+    });
+
+    it('solo las tarjetas usan filter: las piezas llevan sombra rectangular para respetar el tope de sombras', () => {
+      const pieza = css.match(/\.sombra\[data-forma='pieza'\]\s*\{[^}]*\}/)?.[0] ?? '';
+      expect(pieza).toMatch(/filter:\s*none/);
+      expect(pieza).toMatch(/box-shadow:/);
+      const base = css.match(/\.sombra\s*\{[^}]*\}/)?.[0] ?? '';
+      expect(base).toMatch(/drop-shadow/);
+    });
+
+    it('la tarjeta marca el borde rasgado con un filo claro', () => {
+      const base = css.match(/\.sombra\s*\{[^}]*\}/)?.[0] ?? '';
+      expect(base).toMatch(/drop-shadow\(0 -1px 0 [^)]*surface-bright/);
+    });
+
     it('en forced-colors conserva un borde visible y quita el recorte', () => {
       const block = css.match(/@media \(forced-colors: active\) \{[\s\S]*?\n\}/)?.[0] ?? '';
       expect(block).toMatch(/clip-path:\s*none/);
