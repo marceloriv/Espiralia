@@ -682,14 +682,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             {activeFocusTodo ? (
               <div className={styles.focusInnerCard}>
-                <input
-                  type="checkbox"
-                  id="main-focus-checkbox"
-                  className={styles.focusCheckbox}
-                  checked={isFocusDone}
-                  onChange={() => handleToggleTodo(activeFocusTodo.id)}
-                  aria-label="Marcar foco principal completado"
-                />
+                <label className={styles.focusCheckboxHit} htmlFor="main-focus-checkbox">
+                  <input
+                    type="checkbox"
+                    id="main-focus-checkbox"
+                    className={styles.focusCheckbox}
+                    checked={isFocusDone}
+                    onChange={() => handleToggleTodo(activeFocusTodo.id)}
+                    aria-label="Marcar foco principal completado"
+                  />
+                </label>
                 <div className={styles.focusDetails}>
                   <h3 className={`${styles.focusTitle} ${isFocusDone ? styles.rowTitleDone : ''}`}>
                     {activeFocusTodo.title}

@@ -147,7 +147,7 @@
 }
 
 .loginBtn {
-  min-height: 40px;
+  min-height: var(--tap-min);
   padding: 6px 14px;
   background: var(--color-surface-bright, #fcf9f6);
   border: 1px solid var(--color-hairline, #e6dfd8);
@@ -169,7 +169,7 @@
 }
 
 .primaryCtaBtn {
-  min-height: 42px;
+  min-height: var(--tap-min);
   padding: 9px 20px;
   background: linear-gradient(180deg, #8E1EA2 0%, #761088 100%);
   border: 1px solid #5a006b;
@@ -304,7 +304,7 @@
 }
 
 .heroSecondaryLink {
-  min-height: 40px;
+  min-height: var(--tap-min);
   padding: 8px 18px;
   background-color: var(--color-surface-soft, #f5f0e8);
   border: 1px solid var(--color-hairline, #e6dfd8);

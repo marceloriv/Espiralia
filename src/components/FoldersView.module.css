@@ -96,7 +96,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  min-height: 42px;
+  min-height: var(--tap-min);
   padding: 0.5rem 1.25rem;
   background: var(--color-primary);
   color: #ffffff;
@@ -118,7 +118,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  min-height: 42px;
+  min-height: var(--tap-min);
   padding: 0.5rem 1.15rem;
   background: var(--bg-card, var(--color-surface-card, #efe9de));
   border: 1px solid var(--border-hairline, var(--color-hairline, #e6dfd8));
@@ -1445,7 +1445,7 @@
 }
 
 .iconBtn {
-  min-height: 36px;
+  min-height: var(--tap-min);
   min-width: 36px;
   display: inline-flex;
   align-items: center;

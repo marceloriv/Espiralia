@@ -148,20 +148,20 @@
 ### A. Botones & Acciones Interactivas
 
 1. **Button Primary (`--btn-primary`)**:
-   - `bg: var(--color-primary)` (`#8E1EA2`), `color: #FFFFFF`, `border-radius: var(--radius-md)` (8px), `padding: 12px 20px`, `height: 40px`, `font: var(--text-button)`. Hover: `bg: var(--color-primary-active)` (`#C654C3`), escala sutil `active:scale-[0.98]`.
+   - `bg: var(--color-primary)` (`#8E1EA2`), `color: #FFFFFF`, `border-radius: var(--radius-md)` (8px), `padding: 12px 20px`, `min-height: 44px`, `font: var(--text-button)`. Hover: `bg: var(--color-primary-active)` (`#C654C3`), escala sutil `active:scale-[0.98]`.
 2. **Button Secondary (`--btn-secondary`)**:
    - `bg: var(--color-canvas)`, `border: 1px solid var(--color-hairline)`, `color: var(--color-ink)`, `border-radius: var(--radius-md)`, `padding: 12px 20px`.
 3. **Button Secondary on Dark (`--btn-secondary-dark`)**:
    - `bg: var(--color-surface-dark-elevated)` (`#252320`), `color: var(--color-on-dark)`, `border: 1px solid rgba(255,255,255,0.1)`.
 4. **Button Icon Circular**:
-   - `size: 36px`, `border-radius: full`, `bg: var(--color-canvas)`, `border: 1px solid var(--color-hairline)`.
+   - `size: 44px`, `border-radius: full`, `bg: var(--color-canvas)`, `border: 1px solid var(--color-hairline)`.
 5. **Text Link**:
    - `color: var(--color-primary)`, `hover:underline`, `font: var(--text-body-md)`.
 
 ### B. Elementos de Formulario & Captura
 
 1. **Text Input & Focused**:
-   - `bg: var(--color-canvas-paper)`, `border: 1px solid var(--color-hairline)`, `border-radius: var(--radius-md)`, `padding: 10px 14px`, `height: 40px`, `font: var(--text-body-md)`. En foco: `border-color: var(--color-primary)`, sombra de anillo `box-shadow: 0 0 0 3px rgba(142, 30, 162, 0.12)`.
+   - `bg: var(--color-canvas-paper)`, `border: 1px solid var(--color-hairline)`, `border-radius: var(--radius-md)`, `padding: 10px 14px`, `min-height: 44px`, `font: var(--text-body-md)`. En foco: `border-color: var(--color-primary)`, sombra de anillo `box-shadow: 0 0 0 3px rgba(142, 30, 162, 0.12)`.
 2. **Category Tabs & Active State**:
    - Tab inactivo: `color: var(--color-muted)`, `hover:color: var(--color-ink)`.
    - Tab activo: `bg: var(--color-surface-warm)`, `border-bottom: 2px solid var(--color-primary)`, `color: var(--color-primary)`.
@@ -204,6 +204,7 @@
 - **Armonizar control operativo y serenidad emocional**: Acompañar siempre las listas de tareas y tablas de tiempo con lemas inspiradores, aforismos diarios y sellos de racha.
 - **Respetar la jerarquía tríadica**: Serif para cabeceras y citas, sans para lectura y control operativo, script para notas afectivas, mono para metadatos y bóveda.
 - **Garantizar soporte de exportación/impresión**: Diagramación limpia con soporte para impresión o exportación a PDF para quienes combinan soporte digital y físico.
+- **Objetivo táctil mínimo de 44x44px**: botones, inputs, selects, tabs y enlaces con clase usan `--tap-min` (regla global en `src/index.css`). Decisión del dueño, 2026-10-22: sube el 40px anterior.
 - **Preservar los tokens exactos**: Usar siempre las variables documentadas (`--color-primary`, `--color-canvas`, etc.) para consistencia absoluta en todo el proyecto.
 
 ### ❌ No Hacer (Don't)

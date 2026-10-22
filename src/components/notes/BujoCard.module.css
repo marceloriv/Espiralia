@@ -230,7 +230,7 @@
   justify-content: center;
   transition: all 0.15s ease;
   min-width: 28px;
-  min-height: 28px;
+  min-height: var(--tap-min);
 }
 
 .iconBtn:hover {

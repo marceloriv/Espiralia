@@ -101,7 +101,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  min-height: 32px;
+  min-height: var(--tap-min);
   padding: 0.25rem 0.6rem;
   background-color: var(--color-canvas, #faf9f5);
   border: 1px solid var(--color-hairline, #e6dfd8);

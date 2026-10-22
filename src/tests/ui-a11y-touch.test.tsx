@@ -33,4 +33,12 @@ describe('Touch targets >= 44px (WCAG 2.5.5 / 2.5.8 & HIG/Material)', () => {
     expect(parseInt(widthMatch![1], 10)).toBeGreaterThanOrEqual(44);
     expect(parseInt(heightMatch![1], 10)).toBeGreaterThanOrEqual(44);
   });
+
+  it('index.css define --tap-min 44px y lo aplica a button, select e input', () => {
+    const content = fs.readFileSync(path.resolve(__dirname, '../index.css'), 'utf-8');
+
+    expect(content).toMatch(/--tap-min:\s*44px/);
+    expect(content).toMatch(/button,[^{]*\{[^}]*min-height:\s*var\(--tap-min\)/);
+    expect(content).toMatch(/select,[^{]*\{[^}]*min-height:\s*var\(--tap-min\)/);
+  });
 });

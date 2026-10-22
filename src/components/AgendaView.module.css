@@ -102,7 +102,7 @@
 }
 
 .filterBtn {
-  min-height: 38px;
+  min-height: var(--tap-min);
   padding: 0 14px;
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-pill);
@@ -130,7 +130,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 38px;
+  min-height: var(--tap-min);
   padding: 0 14px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-hairline);
@@ -334,7 +334,7 @@
 
 /* Touch targets para FullCalendar */
 .calendarCard button {
-  min-height: 40px;
+  min-height: var(--tap-min);
 }
 
 .calendarFooterNote {
@@ -731,6 +731,7 @@
 .checkRow {
   display: flex;
   align-items: center;
+  min-height: var(--tap-min);
   gap: 8px;
   font-family: var(--font-family-2);
   font-size: var(--text-body-sm);
