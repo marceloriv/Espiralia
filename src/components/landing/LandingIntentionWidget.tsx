@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Target, Compass, Heart } from 'lucide-react';
+import { Leaf, Target, Compass, Heart } from 'lucide-react';
 import styles from './LandingIntentionWidget.module.css';
 
 export type IntentionType = 'calma' | 'foco' | 'claridad' | 'gratitud';
@@ -21,7 +21,7 @@ interface IntentionData {
 const INTENTIONS: Record<IntentionType, IntentionData> = {
   calma: {
     label: 'Calma mental',
-    icon: Sparkles,
+    icon: Leaf,
     quote: '“No tienes que resolver toda tu vida hoy. Solo necesitas habitar con serenidad este instante presente y dar el siguiente paso honesto.”',
     author: 'Cuaderno de Calma • Espiralia',
     steps: [

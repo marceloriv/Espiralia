@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Feather, GraduationCap } from 'lucide-react';
+import { ListChecks, Feather, GraduationCap } from 'lucide-react';
 import styles from './LandingFolderCards.module.css';
 
 interface PillarFolder {
@@ -23,7 +23,7 @@ const PILLARS: PillarFolder[] = [
     tabPosition: 'left',
     title: '1. Estudios & Foco Práctico',
     desc: 'Tareas, bloques de estudio y enlaces a tus recursos de preparación.',
-    metricIcon: <Sparkles size={14} color="var(--color-primary)" aria-hidden="true" />,
+    metricIcon: <ListChecks size={14} color="var(--color-primary)" aria-hidden="true" />,
     metricText: 'Tareas y bloques por área',
     accentClass: styles.accentSlate,
     decorType: 'clip',

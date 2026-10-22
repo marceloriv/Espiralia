@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus, BookOpen, FileText, Pencil, Sparkles, ShieldCheck } from 'lucide-react';
+import { Plus, BookOpen, FileText, Pencil, Lightbulb, Feather, Activity, ShieldCheck, Cloud, Coffee, Leaf, Flame, Sun, type LucideIcon } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Note, Folder, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
@@ -20,6 +20,13 @@ const DEFAULT_THERAPEUTIC_TITLE = 'Descompresión mental & Autoobservación';
 
 const DEFAULT_THERAPEUTIC_CONTENT = `§ 1. Tu primera entrada
 Este tomo aún no tiene notas. Pulsa "Nueva Nota" para escribir la primera: lo que escribas se guarda solo en este navegador.`;
+
+const BASAL_ICONS: Record<string, LucideIcon> = { Baja: Cloud, Neutro: Coffee, Sereno: Leaf, Enérgico: Flame, Radiante: Sun };
+
+const BasalIcon: React.FC<{ level: string }> = ({ level }) => {
+  const Icon = BASAL_ICONS[level] ?? Cloud;
+  return <Icon size={16} aria-hidden="true" />;
+};
 
 export interface TomoConfig {
   id: string;
@@ -48,7 +55,7 @@ export const TOMOS_CONFIG: TomoConfig[] = [
     iconName: 'sparkles',
     tag: 'ideas',
     defaultTitle: 'Bocetos, Ideas de Taller & Proyectos',
-    defaultContent: `§ 1. Lluvia de Ideas y Arquitectura de Información\nEspacio de prototipado rápido y diseño divergente. Captura conceptos antes de que se evaporen.\n\n[caja: 💡 Hito de Proyecto | En desarrollo | Definir flujo de interacción y estética de libreta analógica.]`,
+    defaultContent: `§ 1. Lluvia de Ideas y Arquitectura de Información\nEspacio de prototipado rápido y diseño divergente. Captura conceptos antes de que se evaporen.\n\n[caja: Hito de Proyecto | En desarrollo | Definir flujo de interacción y estética de libreta analógica.]`,
   },
   {
     id: '03',
@@ -57,7 +64,7 @@ export const TOMOS_CONFIG: TomoConfig[] = [
     iconName: 'file',
     tag: 'estudio',
     defaultTitle: 'Bitácora de Estudio & Ensayos',
-    defaultContent: `§ 1. Objetivos de Aprendizaje & Notas de Lectura\nSíntesis de conceptos clave, referencias bibliográficas y reflexiones de estudio activo.\n\n[caja: 📖 Sesión de Estudio | Meta: Comprensión profunda | Tomar apuntes en tus propias palabras y sintetizar las ideas principales.]`,
+    defaultContent: `§ 1. Objetivos de Aprendizaje & Notas de Lectura\nSíntesis de conceptos clave, referencias bibliográficas y reflexiones de estudio activo.\n\n[caja: Sesión de Estudio | Meta: Comprensión profunda | Tomar apuntes en tus propias palabras y sintetizar las ideas principales.]`,
   },
 ];
 
@@ -373,7 +380,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                   {/* Etiqueta de papel rotulada */}
                   <div className={styles.binderLabelPaper}>
                     {tomo.iconName === 'book' && <BookOpen size={13} aria-hidden="true" />}
-                    {tomo.iconName === 'sparkles' && <Sparkles size={13} aria-hidden="true" />}
+                    {tomo.iconName === 'sparkles' && <Lightbulb size={13} aria-hidden="true" />}
                     {tomo.iconName === 'file' && <FileText size={13} aria-hidden="true" />}
                     <span className={styles.binderLabelText}>{tomo.title}</span>
                   </div>
@@ -456,7 +463,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                   <span className={styles.activePliegoBadge}>Pliego Activo de Trabajo</span>
                 )}
                 <span className={styles.metaItem}>
-                  <Sparkles size={14} className={styles.iconTeal} aria-hidden="true" />
+                  <Feather size={14} className={styles.iconTeal} aria-hidden="true" />
                   <span>{activeNote ? activeNote.title : 'Nueva nota'}</span>
                 </span>
                 {activeNote && (
@@ -470,7 +477,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
 
             {/* Pregunta Ancla Terapéutica */}
             <div className={styles.anchorPromptBanner}>
-              <Sparkles size={18} className={styles.iconPrimary} aria-hidden="true" />
+              <Feather size={18} className={styles.iconPrimary} aria-hidden="true" />
               <div>
                 <h4 className={styles.anchorPromptTitle}>Pregunta Ancla de la Semana:</h4>
                 <p className={styles.anchorPromptText}>
@@ -620,10 +627,12 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
             <div className={styles.moodTrackerCard}>
               <div className={styles.moodHeader}>
                 <span className={styles.moodTitle}>
-                  <Sparkles size={16} className={styles.iconPrimary} aria-hidden="true" />
+                  <Activity size={16} className={styles.iconPrimary} aria-hidden="true" />
                   Ritmo &amp; Estado de Ánimo
                 </span>
-                <span className={styles.moodDate}>Oct 24</span>
+                <span className={styles.moodDate}>
+                  {new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}
+                </span>
               </div>
 
               <div className={styles.energyScale}>
@@ -636,7 +645,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                       className={`${styles.scaleBtn} ${basalEnergy === level ? styles.scaleBtnActive : ''}`}
                       onClick={() => setBasalEnergy(level)}
                     >
-                      <span>{level === 'Baja' ? '☁️' : level === 'Neutro' ? '☕' : level === 'Sereno' ? '🌿' : level === 'Enérgico' ? '✨' : '☀️'}</span>
+                      <BasalIcon level={level} />
                       <span className={styles.scaleBtnText}>{level}</span>
                     </button>
                   ))}

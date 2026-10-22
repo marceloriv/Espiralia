@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Sparkles, Check, Heart, ShieldCheck } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag, Feather, Coffee, Check, Heart, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
 import { useEscapeKey } from '../utils/useEscapeKey';
+import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE, energyLabel } from '../utils/energyLevels';
 import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
 import { StorageService } from '../services/storage';
 import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
@@ -52,7 +53,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
   const todayStr = toLocalDateStr(new Date());
 
   // Nivel de energía en tarjeta mini reminders
-  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || '✨');
+  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
 
   const isFirstMount = useRef(true);
@@ -253,7 +254,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
             <div className={styles.metaRow}>
               <span className={styles.metaItem}>
-                <Sparkles size={15} className={styles.iconAmber} aria-hidden="true" />
+                <Flag size={15} className={styles.iconAmber} aria-hidden="true" />
                 <span>{criticalList.length} {criticalList.length === 1 ? 'prioridad capital' : 'prioridades capitales'}</span>
               </span>
               <span className={styles.bullet}>•</span>
@@ -400,7 +401,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               <div className={styles.quickAddBody}>
                 <div className={styles.quickAddHeader}>
                   <span className={styles.quickAddTitle}>
-                    <Sparkles size={16} className={styles.iconPrimary} aria-hidden="true" />
+                    <Plus size={16} className={styles.iconPrimary} aria-hidden="true" />
                     Entrada Rápida al Taller
                   </span>
                   <span className={styles.quickAddAreaPill}>
@@ -754,7 +755,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               <div className={styles.brainDumpBody}>
                 <div className={styles.brainDumpHeader}>
                   <div className={styles.brainDumpTitleGroup}>
-                    <Sparkles size={16} className={styles.iconPrimary} aria-hidden="true" />
+                    <Feather size={16} className={styles.iconPrimary} aria-hidden="true" />
                     <h3 className={styles.brainDumpTitle}>Notas &amp; Vaciado Mental</h3>
                   </div>
                   <span className={styles.brainDumpSub}>Bujo Dot Grid</span>
@@ -781,24 +782,26 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
               <div className={styles.miniRemindersHeader}>
                 <h3 className={styles.miniRemindersTitle}>Mini Reminders &amp; Energy</h3>
-                <span className={styles.remindersSub}>☕</span>
+                <Coffee size={16} className={styles.remindersSub} aria-hidden="true" />
               </div>
 
               <div className={styles.energyMeterBox}>
                 <div className={styles.energyMeterHeader}>
                   <span className={styles.energyLabel}>Nivel de Energía / Presencia:</span>
+                  <span className={styles.energyStatus}>{energyLabel(energyLevel)}</span>
                 </div>
                 <div className={styles.energyButtonsRow}>
-                  {['☁️', '☕', '🌱', '✨', '☀️'].map(icon => (
+                  {ENERGY_LEVELS.map(({ value, label, icon: Icon }) => (
                     <button
-                      key={icon}
+                      key={value}
                       type="button"
-                      className={`${styles.energyBtn} ${energyLevel === icon ? styles.energyBtnActive : ''}`}
-                      onClick={() => handleSelectEnergy(icon)}
-                      title={`Nivel ${icon}`}
-                      aria-label={`Nivel ${icon}`}
+                      className={`${styles.energyBtn} ${energyLevel === value ? styles.energyBtnActive : ''}`}
+                      onClick={() => handleSelectEnergy(value)}
+                      title={`Nivel ${label}`}
+                      aria-label={`Nivel ${label}`}
+                      aria-pressed={energyLevel === value}
                     >
-                      {icon}
+                      <Icon size={18} aria-hidden="true" />
                     </button>
                   ))}
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Sparkles,
+  PenLine,
   Activity,
   ShieldCheck,
   Check,
@@ -56,7 +56,7 @@ export const LandingDeskPreview: React.FC = () => {
       {/* Encabezado editorial */}
       <div className={styles.deskHeader}>
         <div className={styles.deskBadge}>
-          <Sparkles size={14} aria-hidden="true" />
+          <PenLine size={14} aria-hidden="true" />
           <span>Mesa de Trabajo en Vivo</span>
         </div>
         <h2 id="desk-preview-heading" className={styles.deskTitle}>

@@ -9,7 +9,11 @@ import {
   Quote,
   Heart,
   Zap,
-  Sparkles,
+  Target,
+  Activity,
+  Leaf,
+  Cloud,
+  BatteryLow,
   CheckCircle,
   Coffee,
   Star,
@@ -57,7 +61,7 @@ const getHabitIcon = (category?: string) => {
   if (cat.includes('estudio') || cat.includes('lectura')) return BookOpen;
   if (cat.includes('salud') || cat.includes('bienestar')) return Heart;
   if (cat.includes('pausa') || cat.includes('descanso')) return Coffee;
-  if (cat.includes('enfoque') || cat.includes('pomodoro')) return Sparkles;
+  if (cat.includes('enfoque') || cat.includes('pomodoro')) return Target;
   return CheckCircle;
 };
 
@@ -483,7 +487,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               className={`${styles.energyBtn} ${energyState === 'plena' ? styles.energyBtnActive : ''}`}
               onClick={() => setEnergyState('plena')}
             >
-              <span className={styles.energyEmoji}>🌿</span>
+              <Leaf size={18} className={styles.energyEmoji} aria-hidden="true" />
               <span className={styles.energyLabel}>Plena</span>
             </button>
             <button
@@ -491,7 +495,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               className={`${styles.energyBtn} ${energyState === 'calma' ? styles.energyBtnActive : ''}`}
               onClick={() => setEnergyState('calma')}
             >
-              <span className={styles.energyEmoji}>☕</span>
+              <Coffee size={18} className={styles.energyEmoji} aria-hidden="true" />
               <span className={styles.energyLabel}>En Calma</span>
             </button>
             <button
@@ -499,7 +503,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               className={`${styles.energyBtn} ${energyState === 'neutra' ? styles.energyBtnActive : ''}`}
               onClick={() => setEnergyState('neutra')}
             >
-              <span className={styles.energyEmoji}>☁️</span>
+              <Cloud size={18} className={styles.energyEmoji} aria-hidden="true" />
               <span className={styles.energyLabel}>Neutra</span>
             </button>
             <button
@@ -507,7 +511,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               className={`${styles.energyBtn} ${energyState === 'cansada' ? styles.energyBtnActive : ''}`}
               onClick={() => setEnergyState('cansada')}
             >
-              <span className={styles.energyEmoji}>🕯️</span>
+              <BatteryLow size={18} className={styles.energyEmoji} aria-hidden="true" />
               <span className={styles.energyLabel}>Cansada</span>
             </button>
           </div>
@@ -527,7 +531,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className={`${styles.bentoCard} ${styles.bentoCardTorn}`}>
             <div className={styles.bentoCardHeader}>
               <span className={styles.bentoTag}>
-                <Sparkles size={16} aria-hidden="true" />
+                <Activity size={16} aria-hidden="true" />
                 <span>Métricas de Serenidad</span>
               </span>
               <span className={styles.bentoBadge}>Privacidad local</span>
@@ -1254,7 +1258,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     setIsFocusModalOpen(false);
                   }}
                 >
-                  <Sparkles size={16} aria-hidden="true" />
+                  <Target size={16} aria-hidden="true" />
                   <span>Foco automático (tarea más urgente de la lista)</span>
                 </button>
                 {pendingTodosList.map((t) => (

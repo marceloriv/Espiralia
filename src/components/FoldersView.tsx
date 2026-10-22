@@ -13,6 +13,7 @@ import {
   Brain,
   GraduationCap,
   PiggyBank,
+  Pin,
 } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Folder, LinkItem, Note, Profile, ViewType } from '../types';
@@ -740,7 +741,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             <div className={styles.stickyNote}>
               <div className={styles.stickyHeader}>
                 <span className={styles.stickyLabel}>MANIFIESTO DEL TALLER</span>
-                <span style={{ fontSize: '13px' }}>📌</span>
+                <Pin size={13} aria-hidden="true" />
               </div>
               <p className={styles.stickyQuote}>
                 “Tus documentos y enlaces organizados como en un fichero de roble físico, 100% en tu navegador.”

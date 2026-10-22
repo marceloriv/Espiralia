@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Plus, ArrowRight } from 'lucide-react';
+import { Plus, ArrowRight, BookOpen } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
@@ -185,7 +185,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 
       <header className={styles.header}>
         <div className={styles.brandRow}>
-          <span className={styles.brandIcon} aria-hidden="true">📖</span>
+          <BookOpen size={20} className={styles.brandIcon} aria-hidden="true" />
           <span className={styles.brandName}>Espiralia</span>
         </div>
         <p className={styles.tagline}>TALLER DE ESCRITORIO • CUADERNO PERSONAL</p>

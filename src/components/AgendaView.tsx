@@ -9,7 +9,8 @@ import esLocale from '@fullcalendar/react/locales/es';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
-import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Sparkles } from 'lucide-react';
+import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Bell, Smile, Leaf, Meh, BatteryLow } from 'lucide-react';
+import { ENERGY_LEVELS } from '../utils/energyLevels';
 import { sileo } from 'sileo';
 import type { AgendaEvent, EventCategory, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
@@ -71,7 +72,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   const [isNarrow] = useState(() => window.matchMedia(NARROW_QUERY).matches);
 
   // Estados interactivos para Rhythm & Mood Tracker de Stitch
-  const [energyLevel, setEnergyLevel] = useState<string>('Activa');
+  const [energyLevel, setEnergyLevel] = useState<string>('Alta');
   const [moodState, setMoodState] = useState<string>('En Calma');
 
   const reload = () => setEvents(StorageService.getEvents(activeProfileId));
@@ -298,15 +299,8 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
 
           {/* Ficha inferior notarial adherida al almanaque */}
           <div className={styles.calendarFooterNote}>
-            <div className={styles.cycleInfo}>
-              <Sparkles size={15} className={styles.iconMuted} aria-hidden="true" />
-              <span>
-                Ciclo actual: <strong className={styles.cycleStrong}>Crecimiento sereno &amp; Foco oposiciones</strong>
-              </span>
-            </div>
             <div className={styles.syncStatus}>
-              <span className={styles.syncText}>Sincronizado con iCloud &amp; Google Cal (RFC 5545)</span>
-              <span className={styles.statusDotGreen} />
+              <span className={styles.syncText}>Exportable a .ics para Google Calendar y Apple Calendario (RFC 5545)</span>
             </div>
           </div>
         </div>
@@ -415,7 +409,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <div className={styles.quickReminderDashed}>
               <div className={styles.reminderHeader}>
                 <span>RECORDATORIO RÁPIDO</span>
-                <Sparkles size={12} aria-hidden="true" />
+                <Bell size={12} aria-hidden="true" />
               </div>
               <p className={styles.reminderText}>
                 Comprar papel kraft gramaje 180g y cinta washi verde salvia en librería central.
@@ -588,22 +582,17 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 <span className={styles.vitalStatus}>{energyLevel}</span>
               </div>
               <div className={styles.energyButtonsGrid}>
-                {[
-                  { id: 'Baja', icon: '🌑' },
-                  { id: 'Suave', icon: '🌘' },
-                  { id: 'Media', icon: '🌗' },
-                  { id: 'Activa', icon: '🌕' },
-                  { id: 'Plena', icon: '☀️' },
-                ].map(level => (
+                {ENERGY_LEVELS.map(({ label, icon: Icon }) => (
                   <button
-                    key={level.id}
+                    key={label}
                     type="button"
-                    className={`${styles.energyLevelBtn} ${energyLevel === level.id ? styles.energyLevelActive : ''}`}
-                    onClick={() => setEnergyLevel(level.id)}
-                    title={`Nivel: ${level.id}`}
+                    className={`${styles.energyLevelBtn} ${energyLevel === label ? styles.energyLevelActive : ''}`}
+                    onClick={() => setEnergyLevel(label)}
+                    title={`Nivel: ${label}`}
+                    aria-pressed={energyLevel === label}
                   >
-                    <span>{level.icon}</span>
-                    <span className={styles.levelName}>{level.id}</span>
+                    <Icon size={18} aria-hidden="true" />
+                    <span className={styles.levelName}>{label}</span>
                   </button>
                 ))}
               </div>
@@ -617,10 +606,10 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               </div>
               <div className={styles.moodButtonsGrid}>
                 {[
-                  { id: 'Plena', emoji: '😊' },
-                  { id: 'En Calma', emoji: '🌿' },
-                  { id: 'Neutra', emoji: '😐' },
-                  { id: 'Cansada', emoji: '🥱' },
+                  { id: 'Plena', Icon: Smile },
+                  { id: 'En Calma', Icon: Leaf },
+                  { id: 'Neutra', Icon: Meh },
+                  { id: 'Cansada', Icon: BatteryLow },
                 ].map(mood => (
                   <button
                     key={mood.id}
@@ -628,7 +617,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                     className={`${styles.moodBtn} ${moodState === mood.id ? styles.moodBtnActive : ''}`}
                     onClick={() => setMoodState(mood.id)}
                   >
-                    <span className={styles.moodEmoji}>{mood.emoji}</span>
+                    <mood.Icon size={18} className={styles.moodEmoji} aria-hidden="true" />
                     <span className={styles.moodLabelText}>{mood.id}</span>
                   </button>
                 ))}

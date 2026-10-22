@@ -71,7 +71,7 @@ describe('NoteModal - Modal Editorial Verjurado', () => {
     );
 
     expect(screen.getByRole('button', { name: /\+ § Sección/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /\+ 🚗 Caja\/Hito/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /\+ Caja\/Hito/i })).toBeInTheDocument();
   });
 
   it('al hacer clic en + § Sección, inserta automáticamente "\\n§ Nueva Sección\\n" al final del textarea', async () => {
@@ -119,7 +119,7 @@ describe('NoteModal - Modal Editorial Verjurado', () => {
     expect(textarea.value).toBe('Inicio del texto. \n§ Nueva Sección\nFin del texto.');
   });
 
-  it('al hacer clic en + 🚗 Caja/Hito, inserta snippet bujo de caja/hito en el textarea', async () => {
+  it('al hacer clic en + Caja/Hito, inserta snippet bujo de caja/hito en el textarea', async () => {
     const user = userEvent.setup();
     render(
       <NoteModal
@@ -130,10 +130,10 @@ describe('NoteModal - Modal Editorial Verjurado', () => {
     );
 
     const textarea = screen.getByLabelText(/contenido/i) as HTMLTextAreaElement;
-    const btnBox = screen.getByRole('button', { name: /\+ 🚗 Caja\/Hito/i });
+    const btnBox = screen.getByRole('button', { name: /\+ Caja\/Hito/i });
     await user.click(btnBox);
 
-    expect(textarea.value).toContain('[caja: 🚗 Hito / Recuadro | Detalle]');
+    expect(textarea.value).toContain('[caja: Hito / Recuadro | Detalle]');
   });
 
   it('muestra contador dinámico de palabras en la barra inferior del modal', async () => {

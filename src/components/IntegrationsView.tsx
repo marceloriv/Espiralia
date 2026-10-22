@@ -325,16 +325,6 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
               </div>
             </div>
 
-            <div className={styles.sidebarFooter}>
-              <a className={styles.sidebarFooterLink} href="#docs">
-                <span>📖</span>
-                <span>Documentación Offline</span>
-              </a>
-              <a className={styles.sidebarFooterLink} href="#lock">
-                <span>🔒</span>
-                <span>Cerrar Bóveda</span>
-              </a>
-            </div>
           </aside>
 
           {/* Right Workbench Content */}

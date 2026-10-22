@@ -87,7 +87,7 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
   };
 
   const handleInsertBox = () => {
-    handleInsertSnippet('\n[caja: 🚗 Hito / Recuadro | Detalle]\n');
+    handleInsertSnippet('\n[caja: Hito / Recuadro | Detalle]\n');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -195,7 +195,7 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={handleInsertBox}
                 >
-                  + 🚗 Caja/Hito
+                  + Caja/Hito
                 </button>
               </div>
             </div>

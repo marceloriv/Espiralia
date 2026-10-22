@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Sparkles, Smile, Sun, Moon, BatteryCharging } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Leaf, Smile, Sun, Moon, BatteryCharging } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { PlannerBlock, DayOfWeek, TimeSlot, Priority, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
@@ -334,7 +334,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
             <div className={styles.moodIcons}>
               <button type="button" className={styles.moodBtn} aria-label="Energía Baja"><Moon size={16} /></button>
               <button type="button" className={styles.moodBtn} aria-label="Energía Neutra"><Smile size={16} /></button>
-              <button type="button" className={`${styles.moodBtn} ${styles.moodBtnActive}`} aria-label="Energía Serena"><Sparkles size={16} /></button>
+              <button type="button" className={`${styles.moodBtn} ${styles.moodBtnActive}`} aria-label="Energía Serena"><Leaf size={16} /></button>
               <button type="button" className={styles.moodBtn} aria-label="Energía Foco"><BatteryCharging size={16} /></button>
               <button type="button" className={styles.moodBtn} aria-label="Energía Radiante"><Sun size={16} /></button>
             </div>
