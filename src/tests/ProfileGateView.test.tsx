@@ -11,20 +11,43 @@ describe('ProfileGateView', () => {
     vi.restoreAllMocks();
   });
 
-  it('sin perfiles no muestra Introduce tu PIN Maestro y invita a crear uno', () => {
+  it('sin perfiles no muestra el diálogo de PIN y invita a crear uno', () => {
     render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
-    expect(screen.queryByText(/introduce tu pin maestro/i)).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: '5' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: /ingresa tu pin/i })).not.toBeInTheDocument();
     expect(screen.getByText(/crea un perfil para empezar/i)).toBeInTheDocument();
   });
 
-  it('con un perfil protegido seleccionado sí muestra el teclado de PIN', () => {
+  it('con un perfil protegido seleccionado muestra un único acceso de PIN: el diálogo con su input', () => {
     StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
     render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
-    expect(screen.getByText(/introduce tu pin maestro/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '5' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: /ingresa tu pin/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/pin de acceso/i)).toHaveFocus();
+    expect(screen.queryByRole('button', { name: '5' })).not.toBeInTheDocument();
+    expect(screen.queryByText(/introduce tu pin maestro/i)).not.toBeInTheDocument();
+  });
+
+  it('la acción principal de los diálogos se ve como acción principal, no como el botón punteado de lista', async () => {
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
+    const user = userEvent.setup();
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    expect(screen.getByRole('button', { name: 'Desbloquear' }).className).toMatch(/btnSubmit/);
+
+    await user.keyboard('{Escape}');
+    await user.click(screen.getByRole('button', { name: /nuevo perfil/i }));
+    expect(screen.getByRole('button', { name: 'Crear perfil' }).className).toMatch(/btnSubmit/);
+  });
+
+  it('Escape cierra el diálogo de PIN', async () => {
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
+    const user = userEvent.setup();
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog', { name: /ingresa tu pin/i })).not.toBeInTheDocument();
   });
 
   it('permite crear un nuevo perfil sin PIN y seleccionarlo', async () => {
@@ -138,19 +161,17 @@ describe('ProfileGateView', () => {
     expect(onSelectProfile.mock.calls[0][0].id).toBe('p-pin');
   });
 
-  it('renderiza la interfaz de desbloqueo con pliego papercraft, teclado numerico 3x4 y post-it con clip', () => {
+  it('renderiza la interfaz de desbloqueo con post-it con clip y el diálogo de PIN', () => {
     StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
     render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
     expect(screen.getByRole('heading', { level: 1, name: /desbloquear cuaderno\./i })).toBeInTheDocument();
     expect(screen.getByText(/cuadernos registrados/i)).toBeInTheDocument();
-    expect(screen.getByText(/introduce tu pin maestro/i)).toBeInTheDocument();
     expect(screen.getByText(/discipline today, peace tomorrow/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '1' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '9' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: /ingresa tu pin/i })).toBeInTheDocument();
   });
 
-  it('renderiza candado de latón artesanal en perfiles protegidos y cerradura de combinación cilíndrica en el PIN', () => {
+  it('renderiza candado de latón en perfiles protegidos y la cerradura de combinación dentro del diálogo, oculta a lectores de pantalla', () => {
     StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
     const { container } = render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
@@ -158,37 +179,53 @@ describe('ProfileGateView', () => {
     expect(padlock).toBeInTheDocument();
     expect(padlock).toHaveAttribute('aria-hidden', 'true');
 
-    const combinationLock = container.querySelector('[class*="combinationLockFrame"]');
+    const dialog = screen.getByRole('dialog', { name: /ingresa tu pin/i });
+    const combinationLock = dialog.querySelector('[class*="combinationLockFrame"]');
     expect(combinationLock).toBeInTheDocument();
     expect(combinationLock).toHaveAttribute('aria-hidden', 'true');
   });
 
-  it('permite ingresar solo dígitos con el teclado físico e ignora letras y símbolos', async () => {
+  it('permite ingresar solo dígitos con el teclado e ignora letras y símbolos', async () => {
     StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
     const user = userEvent.setup();
     render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
-    // Teclear combinación de letras, símbolos y números
     await user.keyboard('abc!@# 1234xyz');
 
-    // Las cajas de PIN deben tener exactamente 4 dígitos (los numéricos 1234)
-    const pinBoxes = screen.getAllByText('●');
-    expect(pinBoxes).toHaveLength(4);
+    expect(screen.getByLabelText(/pin de acceso/i)).toHaveValue('1234');
+    expect(screen.getAllByText('●')).toHaveLength(4);
   });
 
-  it('refleja feedback visual keypadBtnPressed en el botón correspondiente al pulsar teclas', async () => {
+  // Técnica: valores límite sobre la longitud del PIN (4 a 6 dígitos): la cerradura muestra 4 casillas como mínimo y crece hasta 6.
+  it.each([
+    ['', 4, 0],
+    ['12', 4, 2],
+    ['1234', 4, 4],
+    ['12345', 5, 5],
+    ['123456', 6, 6],
+    ['1234567', 6, 6],
+  ])('con el PIN "%s" la cerradura tiene %i casillas y %i llenas', async (typed, boxes, filled) => {
     StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
+    const user = userEvent.setup();
+    const { container } = render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    if (typed) await user.keyboard(typed);
+
+    expect(container.querySelectorAll('[class*="pinBox"]:not([class*="pinBoxes"])')).toHaveLength(boxes);
+    expect(screen.queryAllByText('●')).toHaveLength(filled);
+  });
+
+  it('el error de PIN queda ligado al input y la cerradura no oculta el mensaje', async () => {
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
+    vi.spyOn(sileo, 'error').mockImplementation(() => 'x');
     const user = userEvent.setup();
     render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
-    const btn5 = screen.getByRole('button', { name: '5' });
-    expect(btn5.className).not.toMatch(/keypadBtnPressed/);
+    await user.keyboard('0000{Enter}');
 
-    // Al presionar la tecla física '5'
-    await user.keyboard('5');
-
-    // Se verifica que '5' fue introducido en el PIN
-    expect(screen.getAllByText('●')).toHaveLength(1);
+    const input = screen.getByLabelText(/pin de acceso/i);
+    expect(await screen.findByRole('alert')).toHaveTextContent(/pin incorrecto/i);
+    expect(input).toHaveAttribute('aria-describedby', 'pin-error-alert');
   });
 
   it('permite borrar dígitos con Backspace y confirmar con Enter', async () => {

@@ -5,6 +5,7 @@ import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
 import { PIN_PATTERN, isPinProtected, migrateStoredPins, verifyPin } from '../services/pinHash';
 import { createNewProfile } from '../services/profileOperations';
+import { useEscapeKey } from '../utils/useEscapeKey';
 import styles from './ProfileGateView.module.css';
 
 interface ProfileGateViewProps {
@@ -27,7 +28,6 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
   const [name, setName] = useState('');
   const [pin, setPin] = useState('');
   const [pinInput, setPinInput] = useState('');
-  const [activeKey, setActiveKey] = useState<string | null>(null);
   const [pinError, setPinError] = useState(false);
   const [createPinError, setCreatePinError] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -74,79 +74,12 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
     }
   }, [selectedProfileForPin, profiles, busy, pinInput, onSelectProfile]);
 
+  useEscapeKey(() => setSelectedProfileForPin(null), !!selectedProfileForPin && !isCreating);
+
   const handleVerifyPin = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     await executeVerify();
   };
-
-  // Listener de teclado físico restringido a dígitos numéricos y feedback táctil
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
-    const triggerActiveKey = (key: string) => {
-      setActiveKey(key);
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => setActiveKey(null), 160);
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Sin panel de PIN visible o con el modal de crear perfil abierto, las teclas no se capturan
-      if (isCreating || !selectedProfileForPin) {
-        return;
-      }
-
-      const activeEl = document.activeElement;
-      if (
-        (activeEl instanceof HTMLInputElement && activeEl.id !== 'verify-pin-input') ||
-        activeEl instanceof HTMLTextAreaElement
-      ) {
-        return;
-      }
-
-      if (e.key >= '0' && e.key <= '9') {
-        e.preventDefault();
-        triggerActiveKey(e.key);
-        setPinInput(prev => (prev.length < 6 ? prev + e.key : prev));
-        setPinError(false);
-      } else if (e.key === 'Backspace') {
-        e.preventDefault();
-        triggerActiveKey('Backspace');
-        setPinInput(prev => prev.slice(0, -1));
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        triggerActiveKey('Enter');
-        executeVerify();
-      } else if (e.key === 'Escape') {
-        setPinInput('');
-        setPinError(false);
-      } else if (
-        !['Tab', 'Shift', 'Control', 'Alt', 'Meta', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)
-      ) {
-        // Bloquear cualquier otra tecla alfabética o símbolo
-        if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key.length === 1) {
-          e.preventDefault();
-        }
-      }
-    };
-
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (
-        activeKey === e.key ||
-        (e.key === 'Backspace' && activeKey === 'Backspace') ||
-        (e.key === 'Enter' && activeKey === 'Enter')
-      ) {
-        setActiveKey(null);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      if (timer) clearTimeout(timer);
-    };
-  }, [executeVerify, activeKey, isCreating, selectedProfileForPin]);
 
   const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -271,77 +204,6 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 
           <div className={styles.redStamp}>LOCAL</div>
 
-          {selectedProfileForPin && (
-          <div className={styles.pinPanel}>
-            <span className={styles.pinOverline}>ACCESO A CUADERNO PERSONAL</span>
-            <h2 className={styles.pinTitle}>Introduce tu PIN Maestro</h2>
-
-            {/* Cajas de dígitos PIN enmarcadas en cilindro de combinación de latón */}
-            <div className={styles.combinationLockFrame} aria-hidden="true">
-              <div className={styles.tumblerNotchTop} />
-              <div className={styles.pinBoxes}>
-                {[0, 1, 2, 3].map(i => (
-                  <div key={i} className={styles.pinBox}>
-                    {pinInput[i] ? '●' : ''}
-                  </div>
-                ))}
-              </div>
-              <div className={styles.tumblerNotchBottom} />
-            </div>
-
-            {/* Teclado numérico táctil 3x4 */}
-            <div className={styles.keypadGrid}>
-              {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map(digit => (
-                <button
-                  type="button"
-                  key={digit}
-                  className={`${styles.keypadBtn} ${activeKey === digit ? styles.keypadBtnPressed : ''}`}
-                  onClick={() => {
-                    if (pinInput.length < 6) {
-                      setPinInput(prev => prev + digit);
-                      setPinError(false);
-                    }
-                  }}
-                >
-                  {digit}
-                </button>
-              ))}
-              <button
-                type="button"
-                className={`${styles.keypadBtn} ${activeKey === 'Backspace' ? styles.keypadBtnPressed : ''}`}
-                aria-label="Borrar dígito"
-                onClick={() => setPinInput(prev => prev.slice(0, -1))}
-              >
-                ⌫
-              </button>
-              <button
-                type="button"
-                className={`${styles.keypadBtn} ${activeKey === '0' ? styles.keypadBtnPressed : ''}`}
-                onClick={() => {
-                  if (pinInput.length < 6) {
-                    setPinInput(prev => prev + '0');
-                    setPinError(false);
-                  }
-                }}
-              >
-                0
-              </button>
-              <button
-                type="button"
-                className={`${styles.keypadBtn} ${styles.keypadSubmit} ${activeKey === 'Enter' ? styles.keypadSubmitPressed : ''}`}
-                aria-label="Confirmar PIN"
-                onClick={handleVerifyPin}
-                disabled={busy}
-              >
-                ➔
-              </button>
-            </div>
-
-            <p className={styles.keypadHint}>
-              Ingresa los 4 dígitos o pulsa las teclas del teclado
-            </p>
-          </div>
-          )}
         </section>
       </main>
 
@@ -445,7 +307,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
                 >
                   Cancelar
                 </button>
-                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }} disabled={busy}>
+                <button type="submit" className={styles.btnSubmit} disabled={busy}>
                   Crear perfil
                 </button>
               </div>
@@ -467,6 +329,20 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
             <p className={styles.brandSubtitle} style={{ textAlign: 'center', marginBottom: 16 }}>
               Perfil: {selectedProfileForPin.name}
             </p>
+
+            {/* Indicador visual de la cerradura de combinación: refleja el input real, 4 casillas y hasta 6. */}
+            <div className={styles.combinationLockFrame} aria-hidden="true">
+              <div className={styles.tumblerNotchTop} />
+              <div className={styles.pinBoxes}>
+                {Array.from({ length: Math.min(6, Math.max(4, pinInput.length)) }, (_, i) => (
+                  <div key={i} className={styles.pinBox}>
+                    {pinInput[i] ? '●' : ''}
+                  </div>
+                ))}
+              </div>
+              <div className={styles.tumblerNotchBottom} />
+            </div>
+
             <form onSubmit={handleVerifyPin}>
               <div className={styles.formGroup}>
                 <label htmlFor="verify-pin-input" className={styles.formLabel}>
@@ -503,7 +379,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
                 >
                   Cancelar
                 </button>
-                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }} disabled={busy}>
+                <button type="submit" className={styles.btnSubmit} disabled={busy}>
                   Desbloquear
                 </button>
               </div>

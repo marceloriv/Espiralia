@@ -306,6 +306,31 @@
   transition: all 0.15s ease;
 }
 
+.btnSubmit {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btnSubmit:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.btnSubmit:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .btnPrimary:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
@@ -384,44 +409,21 @@
   border-radius: 2px;
 }
 
-.pinPanel {
-  width: 100%;
-  max-width: 280px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 10px;
-}
-
-.pinOverline {
-  font-family: var(--font-mono, monospace);
-  font-size: var(--text-micro);
-  color: var(--color-muted);
-  letter-spacing: 0.08em;
-  margin-bottom: 4px;
-}
-
-.pinTitle {
-  font-family: var(--font-primary);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-ink);
-  margin: 0 0 16px;
-}
-
 /* Marco cilíndrico de cerradura de combinación de latón */
 .combinationLockFrame {
   position: relative;
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 8px 12px;
   background: linear-gradient(180deg, #efe5ce 0%, #e2d2b0 50%, #c7b080 100%);
   border: 1.5px solid #8c6f32;
   border-radius: 10px;
   box-shadow: 1px 2px 5px rgba(35, 30, 20, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  margin-bottom: 16px;
+  margin: 0 auto 16px;
 }
 
 .tumblerNotchTop,
@@ -449,6 +451,7 @@
 .pinBox {
   width: 44px;
   height: 44px;
+  flex: 0 1 44px;
   border-radius: 6px;
   border: 1.5px solid #a8894d;
   background-color: #FFFFFF;
@@ -461,34 +464,9 @@
   font-weight: 700;
 }
 
-.keypadGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  width: 100%;
-  max-width: 240px;
-  margin-bottom: 12px;
-}
-
-.keypadBtn {
-  height: 44px;
-  border-radius: 8px;
-  border: 1px solid var(--color-hairline);
-  background-color: var(--color-surface-card);
-  box-shadow: var(--shadow-sm);
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--color-ink);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.1s ease;
-}
-
-.keypadBtn:focus-visible,
 .btnSecondary:focus-visible,
 .btnPrimary:focus-visible,
+.btnSubmit:focus-visible,
 .profileItem:focus-visible,
 .footerTextBtn:focus-visible,
 .btnBackToLanding:focus-visible {
@@ -496,45 +474,17 @@
   outline-offset: 2px;
 }
 
-.keypadBtn:hover {
-  background-color: #faf5ed;
-  transform: translateY(-1px);
-}
-
-.keypadSubmit {
-  background-color: var(--color-primary);
-  color: #fff;
-  border-color: var(--color-primary);
-}
-
-.keypadSubmit:hover {
-  background-color: var(--color-primary-hover);
-}
-
-.keypadBtnPressed {
-  background-color: #ede3d2 !important;
-  transform: translateY(1.5px) scale(0.96);
-  box-shadow: inset 1px 1px 2px rgba(40, 30, 15, 0.25) !important;
-  border-color: #8c6f32 !important;
-}
-
-.keypadSubmitPressed {
-  background-color: var(--color-primary-hover) !important;
-  transform: translateY(1.5px) scale(0.96);
-  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .keypadBtnPressed,
-  .keypadSubmitPressed {
-    transform: none;
+/* 6 casillas de 44px no caben en 375px: se estrechan sin pasar de 36px. */
+@media (max-width: 400px) {
+  .pinBoxes {
+    gap: 6px;
   }
-}
 
-.keypadHint {
-  font-size: var(--text-micro);
-  color: var(--color-muted);
-  margin-top: 4px;
+  .pinBox {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
 }
 
 .footerLinks {
