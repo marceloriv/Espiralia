@@ -3,6 +3,7 @@ import { Download, Upload, X, Lock, CheckCircle2, AlertTriangle } from 'lucide-r
 import { sileo } from 'sileo';
 import type { Profile } from '../../types';
 import { VaultService } from '../../services/vaultService';
+import { downloadFile } from '../../utils/downloadFile';
 import { encryptBackup, decryptBackup, isVaultEnvelope, type ProfileBackup, type EncryptedVaultEnvelope } from '../../services/vaultCrypto';
 import styles from './VaultModal.module.css';
 
@@ -56,24 +57,9 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const triggerDownload = (content: string, filename: string, mimeType: string) => {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = filename;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    URL.revokeObjectURL(url);
-  };
-
   const handleExport = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!exportStats) return;
-
-    const dateStr = new Date().toISOString().split('T')[0];
-    const safeName = profile.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
 
     if (isEncrypted) {
       if (passphrase.length < 6) {
@@ -87,16 +73,16 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
 
       try {
         const envelope = await encryptBackup(exportStats, passphrase);
-        const filename = `espiralia-${safeName}-${dateStr}.vault`;
-        triggerDownload(JSON.stringify(envelope, null, 2), filename, 'application/json');
+        const filename = VaultService.backupFilename(profile.name, 'vault');
+        downloadFile(JSON.stringify(envelope, null, 2), filename, 'application/json');
         sileo.success({ title: 'Respaldo cifrado descargado', description: filename });
         onClose();
       } catch (err) {
         alert('Error al cifrar el respaldo: ' + (err as Error).message);
       }
     } else {
-      const filename = `espiralia-${safeName}-${dateStr}.json`;
-      triggerDownload(JSON.stringify(exportStats, null, 2), filename, 'application/json');
+      const filename = VaultService.backupFilename(profile.name, 'json');
+      downloadFile(JSON.stringify(exportStats, null, 2), filename, 'application/json');
       sileo.success({ title: 'Respaldo plano descargado', description: filename });
       onClose();
     }

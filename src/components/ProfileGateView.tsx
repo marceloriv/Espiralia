@@ -5,6 +5,8 @@ import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
 import { PIN_PATTERN, isPinProtected, migrateStoredPins, verifyPin } from '../services/pinHash';
 import { createNewProfile } from '../services/profileOperations';
+import { VaultService } from '../services/vaultService';
+import { downloadFile } from '../utils/downloadFile';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import styles from './ProfileGateView.module.css';
 
@@ -75,6 +77,18 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
   }, [selectedProfileForPin, profiles, busy, pinInput, onSelectProfile]);
 
   useEscapeKey(() => setSelectedProfileForPin(null), !!selectedProfileForPin && !isCreating);
+
+  // Un archivo por perfil, en el mismo formato que importa la bóveda del cuaderno (VaultModal).
+  const handleExportBackups = () => {
+    if (profiles.length === 0) {
+      sileo.info({ title: 'No hay perfiles para respaldar' });
+      return;
+    }
+    profiles.forEach(p =>
+      downloadFile(JSON.stringify(VaultService.exportProfile(p.id), null, 2), VaultService.backupFilename(p.name, 'json'), 'application/json'),
+    );
+    sileo.success({ title: 'Respaldo exportado', description: 'Restáuralo desde dentro del cuaderno, en Bóveda Offline.' });
+  };
 
   const handleVerifyPin = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -211,25 +225,16 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
         <button
           type="button"
           className={styles.footerTextBtn}
-          onClick={() => sileo.info({ title: 'Para restablecer tu PIN, exporta y restaura tu bóveda local.' })}
+          onClick={() => sileo.info({ title: 'Espiralia no puede restablecer un PIN: solo guarda su hash en este navegador.' })}
         >
           ¿Olvidaste tu PIN?
         </button>
         <button
           type="button"
           className={styles.footerTextBtn}
-          onClick={() => {
-            const data = StorageService.exportVault();
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `espiralia-boveda-${new Date().toISOString().slice(0, 10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-          }}
+          onClick={handleExportBackups}
         >
-          Exportar Bóveda Local (.json)
+          Exportar respaldo (.json)
         </button>
         <button
           type="button"

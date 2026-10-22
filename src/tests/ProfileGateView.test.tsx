@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { ProfileGateView } from '../components/ProfileGateView';
 import { StorageService } from '../services/storage';
+import { VaultService } from '../services/vaultService';
+import type { ProfileBackup } from '../services/vaultCrypto';
 
 describe('ProfileGateView', () => {
   beforeEach(() => {
@@ -38,6 +40,81 @@ describe('ProfileGateView', () => {
     await user.keyboard('{Escape}');
     await user.click(screen.getByRole('button', { name: /nuevo perfil/i }));
     expect(screen.getByRole('button', { name: 'Crear perfil' }).className).toMatch(/btnSubmit/);
+  });
+
+  it('el aviso de PIN olvidado no promete una recuperación que no existe', async () => {
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
+    const infoSpy = vi.spyOn(sileo, 'info').mockImplementation(() => 'x');
+    const user = userEvent.setup();
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    await user.keyboard('{Escape}');
+    await user.click(screen.getByRole('button', { name: /olvidaste tu pin/i }));
+
+    const { title } = infoSpy.mock.calls[0][0] as { title: string };
+    expect(title).toMatch(/no puede restablecer un pin/i);
+    expect(title).not.toMatch(/restaura/i);
+  });
+
+  describe('exportar respaldo desde el acceso', () => {
+    const files: Array<{ name: string; blob: Blob }> = [];
+
+    beforeEach(() => {
+      files.length = 0;
+      let lastBlob: Blob;
+      vi.spyOn(URL, 'createObjectURL').mockImplementation(blob => {
+        lastBlob = blob as Blob;
+        return 'blob:respaldo';
+      });
+      vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
+      vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) {
+        files.push({ name: this.download, blob: lastBlob });
+      });
+    });
+
+    // Técnica: partición de equivalencia sobre la cantidad de perfiles (ninguno, uno, varios).
+    it('sin perfiles avisa y no descarga nada', async () => {
+      const infoSpy = vi.spyOn(sileo, 'info').mockImplementation(() => 'x');
+      const user = userEvent.setup();
+      render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+      await user.click(screen.getByRole('button', { name: /exportar respaldo/i }));
+
+      expect(files).toHaveLength(0);
+      expect(infoSpy).toHaveBeenCalledWith({ title: 'No hay perfiles para respaldar' });
+    });
+
+    it('descarga un archivo por perfil en el formato que importa la bóveda del cuaderno', async () => {
+      StorageService.saveProfile({ id: 'p-a', name: 'Ana Pérez', avatar: 'A', createdAt: '2026-10-09' });
+      StorageService.saveProfile({ id: 'p-b', name: 'Beto', avatar: 'B', createdAt: '2026-10-09' });
+      const user = userEvent.setup();
+      render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+      await user.click(screen.getByRole('button', { name: /exportar respaldo/i }));
+
+      expect(files.map(f => f.name)).toEqual([
+        expect.stringMatching(/^espiralia-ana-p-rez-\d{4}-\d{2}-\d{2}\.json$/),
+        expect.stringMatching(/^espiralia-beto-\d{4}-\d{2}-\d{2}\.json$/),
+      ]);
+    });
+
+    it('el archivo exportado se restaura con los mismos datos', async () => {
+      StorageService.saveProfile({ id: 'p-a', name: 'Ana', avatar: 'A', createdAt: '2026-10-09' });
+      StorageService.saveTodo({
+        id: 't1', profileId: 'p-a', title: 'Entregar informe', areaId: 'a', priority: 'alta',
+        status: 'pendiente', createdAt: '2026-10-09',
+      });
+      const user = userEvent.setup();
+      render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+      await user.click(screen.getByRole('button', { name: /exportar respaldo/i }));
+
+      const backup: unknown = JSON.parse(await files[0].blob.text());
+      expect(VaultService.validateBackup(backup)).toBe(true);
+      const { profile, counts } = VaultService.restoreProfile(backup as ProfileBackup, 'new_profile');
+      expect(counts.todos).toBe(1);
+      expect(StorageService.getTodos(profile.id).map(t => t.title)).toEqual(['Entregar informe']);
+    });
   });
 
   it('Escape cierra el diálogo de PIN', async () => {
