@@ -42,7 +42,7 @@ describe('Tokens de texto con contraste AA', () => {
       readdirSync(dir, { withFileTypes: true }).flatMap(e =>
         e.isDirectory() ? walk(path.join(dir, e.name)) : e.name.endsWith('.module.css') ? [path.join(dir, e.name)] : [],
       );
-    const decorative = /(^|[;{\s])color:\s*var\(--color-(muted-soft|accent-teal|success|accent-amber|primary-active)\b/m;
+    const decorative = /(^|[;{\s])color:\s*var\(--color-(muted-soft|accent-teal|success|accent-amber|primary-active|tertiary|secondary)\b/m;
 
     const offenders = walk(componentsDir)
       .filter(f => decorative.test(readFileSync(f, 'utf8')))

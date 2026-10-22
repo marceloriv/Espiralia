@@ -73,7 +73,7 @@
   padding: 3px 10px;
   border-radius: var(--radius-pill);
   background-color: rgba(93, 184, 166, 0.15);
-  color: var(--color-tertiary);
+  color: var(--color-text-teal);
   border: 1px solid rgba(93, 184, 166, 0.35);
 }
 
@@ -1131,7 +1131,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #997e2e;
+  color: var(--color-text-amber);
   margin-bottom: 6px;
 }
 
@@ -1164,7 +1164,7 @@
   margin-top: 10px;
   font-family: 'Caveat', cursive, var(--font-primary);
   font-size: 0.85rem;
-  color: #8f7936;
+  color: var(--color-text-amber);
   text-align: right;
 }
 

@@ -494,12 +494,12 @@
 
 .quickIconNote {
   background-color: rgba(156, 44, 156, 0.15);
-  color: var(--color-secondary);
+  color: var(--color-text-primary-active);
 }
 
 .quickIconLink {
   background-color: rgba(93, 184, 166, 0.2);
-  color: var(--color-tertiary);
+  color: var(--color-text-teal);
 }
 
 /* Backward compatibility for tests looking for .quickIcon */
@@ -859,7 +859,7 @@
   font-family: var(--font-primary);
   font-size: 24px;
   font-weight: bold;
-  color: var(--color-tertiary);
+  color: var(--color-text-teal);
   line-height: 1;
 }
 
@@ -867,7 +867,7 @@
   font-family: var(--font-primary);
   font-size: 24px;
   font-weight: bold;
-  color: var(--color-secondary);
+  color: var(--color-text-primary-active);
   line-height: 1;
 }
 
