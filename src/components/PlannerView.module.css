@@ -108,6 +108,8 @@
 
 .weekNavGroup {
   display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
   align-items: center;
   gap: 0.5rem;
   background: var(--color-surface-card, #efe9de);
@@ -168,6 +170,7 @@
 
 .priorityGroup {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem;
 }

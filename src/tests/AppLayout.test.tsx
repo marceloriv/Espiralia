@@ -89,6 +89,7 @@ describe('AppLayout', () => {
       'Notas',
       'Carpetas',
       'Integraciones',
+      'Más',
       'Ajustes & PIN',
       'Bóveda Offline',
       'Buscar en Espiralia (Ctrl+K)',
@@ -209,6 +210,45 @@ describe('AppLayout', () => {
       expect(within(nav).getByRole('button', { name })).toBeInTheDocument();
     }
     expect(within(nav).getByRole('button', { name: /dashboard/i })).toHaveAttribute('aria-current', 'page');
+  });
+
+  // Barra inferior móvil: 4 destinos fijos y un botón "Más" para el resto (los 7 no caben a 375px).
+  describe('Botón Más de la barra móvil', () => {
+    it('abre un menú con Notas, Carpetas e Integraciones', async () => {
+      const user = userEvent.setup();
+      renderLayout();
+
+      const more = screen.getByRole('button', { name: 'Más' });
+      expect(more).toHaveAttribute('aria-haspopup', 'menu');
+      expect(more).toHaveAttribute('aria-expanded', 'false');
+
+      await user.click(more);
+
+      expect(more).toHaveAttribute('aria-expanded', 'true');
+      const menu = screen.getByRole('menu', { name: /más secciones/i });
+      expect(within(menu).getAllByRole('menuitem').map(i => i.textContent)).toEqual(['Notas', 'Carpetas', 'Integraciones']);
+    });
+
+    it('Escape cierra el menú', async () => {
+      const user = userEvent.setup();
+      renderLayout();
+
+      await user.click(screen.getByRole('button', { name: 'Más' }));
+      await user.keyboard('{Escape}');
+
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    });
+
+    it('elegir un destino navega y cierra el menú', async () => {
+      const user = userEvent.setup();
+      const { onViewChange } = renderLayout();
+
+      await user.click(screen.getByRole('button', { name: 'Más' }));
+      await user.click(screen.getByRole('menuitem', { name: 'Carpetas' }));
+
+      expect(onViewChange).toHaveBeenCalledWith('folders');
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    });
   });
 
   it('renderiza la barra lateral editorial con monograma Es, boton de entrada y ficha Local DB', () => {

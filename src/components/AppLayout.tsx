@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search, Share2 } from 'lucide-react';
+import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search, Share2, MoreHorizontal } from 'lucide-react';
+import { useEscapeKey } from '../utils/useEscapeKey';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
 import { isPinProtected } from '../services/pinHash';
@@ -37,15 +38,18 @@ const VIEW_TITLES: Record<ViewType, string> = {
   integrations: 'Integraciones',
 };
 
-const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode }[] = [
+// `secondary`: en la barra inferior móvil estos destinos van dentro del botón "Más" (siete no caben a 375px).
+const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode; secondary?: boolean }[] = [
   { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} aria-hidden="true" /> },
   { view: 'agenda', label: 'Agenda', icon: <Calendar size={20} aria-hidden="true" /> },
   { view: 'planner', label: 'Planner', icon: <Compass size={20} aria-hidden="true" /> },
   { view: 'todo', label: 'To-Do', icon: <CheckSquare size={20} aria-hidden="true" /> },
-  { view: 'notes', label: 'Notas', icon: <BookOpen size={20} aria-hidden="true" /> },
-  { view: 'folders', label: 'Carpetas', icon: <Folder size={20} aria-hidden="true" /> },
-  { view: 'integrations', label: 'Integraciones', icon: <Share2 size={20} aria-hidden="true" /> },
+  { view: 'notes', label: 'Notas', icon: <BookOpen size={20} aria-hidden="true" />, secondary: true },
+  { view: 'folders', label: 'Carpetas', icon: <Folder size={20} aria-hidden="true" />, secondary: true },
+  { view: 'integrations', label: 'Integraciones', icon: <Share2 size={20} aria-hidden="true" />, secondary: true },
 ];
+
+const SECONDARY_ITEMS = NAV_ITEMS.filter(item => item.secondary);
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
   profile,
@@ -57,6 +61,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 }) => {
   const [currentDate] = useState(() => layoutDateFormatter.format(new Date()));
   const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  useEscapeKey(() => setIsMoreOpen(false), isMoreOpen);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNewNoteOpen, setIsNewNoteOpen] = useState(false);
   const [isVaultOpen, setIsVaultOpen] = useState(false);
@@ -154,7 +160,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               <button
                 type="button"
                 key={item.view}
-                className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+                className={`${styles.navItem} ${isActive ? styles.navItemActive : ''} ${item.secondary ? styles.navItemSecondary : ''}`}
                 onClick={() => onViewChange(item.view)}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -163,6 +169,38 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               </button>
             );
           })}
+
+          <div className={styles.moreWrapper}>
+            <button
+              type="button"
+              className={`${styles.navItem} ${SECONDARY_ITEMS.some(i => i.view === currentView) ? styles.navItemActive : ''}`}
+              aria-haspopup="menu"
+              aria-expanded={isMoreOpen}
+              onClick={() => setIsMoreOpen(open => !open)}
+            >
+              <MoreHorizontal size={20} aria-hidden="true" />
+              <span className={styles.navLabel}>Más</span>
+            </button>
+            {isMoreOpen && (
+              <div role="menu" aria-label="Más secciones" className={styles.moreMenu}>
+                {SECONDARY_ITEMS.map(item => (
+                  <button
+                    type="button"
+                    role="menuitem"
+                    key={item.view}
+                    className={styles.moreMenuItem}
+                    onClick={() => {
+                      onViewChange(item.view);
+                      setIsMoreOpen(false);
+                    }}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
 
         <div className={styles.sidebarFooter}>

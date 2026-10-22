@@ -216,13 +216,13 @@ body {
   padding: 0;
   background-color: var(--color-canvas);
   color: var(--color-body);
-  min-height: 100vh;
+  min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
 #root {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -259,6 +259,14 @@ a[class] {
 
 a[class] {
   min-width: var(--tap-min);
+}
+
+/* Móvil: los hijos de flex/grid dentro de las vistas pueden encoger en vez de empujar el ancho de la página (R-03).
+   Los controles se excluyen: conservan su mínimo táctil de 44px. */
+@media (max-width: 768px) {
+  main *:not(button):not([role='button']):not([role='tab']):not(a[class]) {
+    min-width: 0;
+  }
 }
 
 /* Accessibility: Avoid focus obscured by fixed headers (WCAG 2.4.11) */

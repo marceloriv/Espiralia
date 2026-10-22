@@ -11,6 +11,27 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
   const notesCss = fs.readFileSync(path.resolve(__dirname, '../components/NotesView.module.css'), 'utf-8');
   const foldersCss = fs.readFileSync(path.resolve(__dirname, '../components/FoldersView.module.css'), 'utf-8');
 
+  it('ninguna hoja de estilo usa 100vh (la barra del navegador móvil lo desborda): se usa 100dvh', () => {
+    const componentsDir = path.resolve(__dirname, '../components');
+    const walk = (dir: string): string[] =>
+      fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => {
+        const full = path.join(dir, e.name);
+        return e.isDirectory() ? walk(full) : e.name.endsWith('.css') ? [full] : [];
+      });
+    const offenders = [path.resolve(__dirname, '../index.css'), ...walk(componentsDir)]
+      .filter(f => /\b100vh\b/.test(fs.readFileSync(f, 'utf-8').replace(/\/\*[\s\S]*?\*\//g, '')))
+      .map(f => path.basename(f));
+
+    expect(offenders).toEqual([]);
+  });
+
+  it('el botón Más solo existe en la barra móvil y los destinos secundarios se ocultan allí', () => {
+    expect(appLayoutCss).toMatch(/\.moreWrapper\s*\{[^}]*display:\s*none/);
+    const mobileBlock = appLayoutCss.slice(appLayoutCss.indexOf('@media (max-width: 768px)'));
+    expect(mobileBlock).toMatch(/\.navItemSecondary\s*\{[^}]*display:\s*none/);
+    expect(mobileBlock).toMatch(/\.moreWrapper\s*\{[^}]*display:\s*(flex|block)/);
+  });
+
   it('previene fugas de desplazamiento horizontal en el cuerpo (Horizontal Scroll Leak)', () => {
     expect(indexCss).toMatch(/body\s*\{[^}]*overflow-x:\s*hidden/);
   });
