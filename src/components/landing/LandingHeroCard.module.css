@@ -142,7 +142,6 @@
   width: 58px;
   height: 18px;
   background: rgba(123, 140, 158, 0.35);
-  backdrop-filter: blur(2px);
   clip-path: polygon(0% 4%, 4% 0%, 96% 3%, 100% 6%, 98% 95%, 94% 100%, 3% 97%, 0% 92%);
   pointer-events: none;
   z-index: 4;
@@ -267,7 +266,6 @@
   width: 68px;
   height: 20px;
   background: rgba(142, 30, 162, 0.45);
-  backdrop-filter: blur(2px);
   clip-path: polygon(0% 4%, 3% 0%, 97% 2%, 100% 6%, 98% 94%, 95% 100%, 4% 97%, 0% 93%);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   pointer-events: none;

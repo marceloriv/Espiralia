@@ -109,7 +109,6 @@
   transform: translateX(-50%);
   width: 72px;
   height: 20px;
-  backdrop-filter: blur(2px);
   clip-path: polygon(0% 4%, 3% 0%, 97% 2%, 100% 6%, 98% 94%, 95% 100%, 4% 97%, 0% 93%);
   pointer-events: none;
   z-index: 5;

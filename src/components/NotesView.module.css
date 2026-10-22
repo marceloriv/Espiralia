@@ -1021,12 +1021,6 @@
   width: 2px;
   height: 16px;
   background-color: var(--color-primary);
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
 }
 
 .wordCount {
@@ -1643,7 +1637,7 @@
 }
 
 .cardReflection {
-  border-left: 4px solid var(--color-primary);
+  border-left: 4px solid var(--color-hairline);
 }
 
 .cardHeader {
