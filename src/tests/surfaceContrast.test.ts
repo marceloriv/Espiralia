@@ -31,10 +31,12 @@ describe('Surface & Background Contrast — Dimensional Layering (UI/UX Pro Max)
 
     for (const file of cssFiles) {
       const content = fs.readFileSync(file, 'utf-8');
+      // Una variable declarada en el propio módulo (por ejemplo --tono en Papel) también es válida.
+      const local = new Set(content.match(/--[a-zA-Z0-9_-]+(?=\s*:)/g) || []);
       const matches = content.matchAll(/var\(\s*(--[a-zA-Z0-9_-]+)/g);
       for (const m of matches) {
         const token = m[1];
-        if (!definedTokens.has(token)) {
+        if (!definedTokens.has(token) && !local.has(token)) {
           missing.push(`${token} en ${path.basename(file)}`);
         }
       }
@@ -47,10 +49,17 @@ describe('Surface & Background Contrast — Dimensional Layering (UI/UX Pro Max)
     const dashCssPath = path.resolve(__dirname, '../components/DashboardView.module.css');
     const dashCss = fs.readFileSync(dashCssPath, 'utf-8');
 
-    // .bentoCard, .card general y .miniRemindersCard no deben camuflarse con var(--color-canvas)
+    // .bentoCard no debe camuflarse con var(--color-canvas)
     expect(dashCss).toMatch(/\.bentoCard\s*\{[^}]*background-color:\s*var\(--bg-card/);
-    expect(dashCss).toMatch(/\.card\s*\{[^}]*background-color:\s*var\(--bg-card/);
-    expect(dashCss).toMatch(/\.miniRemindersCard\s*\{[^}]*background-color:\s*var\(--bg-card/);
+  });
+
+  it('las tarjetas de Papel (Horario, Recordatorios, Planner, Métricas) usan un tinte y no el lienzo canvas', () => {
+    const papelCss = fs.readFileSync(path.resolve(__dirname, '../components/common/Papel.module.css'), 'utf-8');
+
+    expect(papelCss).toMatch(/\.papel\s*\{[^}]*background-color:\s*var\(--tono\)/);
+    expect(papelCss).toMatch(/\.papel\s*\{[^}]*--tono:\s*var\(--papel-arena\)/);
+    expect(indexCss).toMatch(/--papel-arena:\s*var\(--color-surface-card\)/);
+    expect(papelCss).not.toMatch(/background-color:\s*var\(--color-canvas/);
   });
 
   it('PlannerDayColumn usa fondo opaco de tarjeta para no traslucir la trama', () => {

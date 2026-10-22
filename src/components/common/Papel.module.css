@@ -7,6 +7,15 @@
   transform: rotate(-0.3deg);
 }
 
+.sombra[data-forma='tarjeta'] {
+  display: flex;
+  flex-direction: column;
+}
+
+.sombra[data-forma='tarjeta'] > .papel {
+  flex: 1;
+}
+
 .sombra[data-forma='pieza'] {
   display: inline-block;
   transform: rotate(1.2deg);
@@ -14,6 +23,7 @@
 
 .papel {
   --tono: var(--papel-arena);
+  display: block;
   box-sizing: border-box;
   background-color: var(--tono);
   color: var(--color-ink);

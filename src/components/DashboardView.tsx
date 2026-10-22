@@ -46,6 +46,7 @@ import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
 import { HabitModal } from './habits/HabitModal';
 import { Pliego } from './common/Pliego';
+import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import styles from './DashboardView.module.css';
 
@@ -66,6 +67,9 @@ const getHabitIcon = (category?: string) => {
 };
 
 const longDateFormatter = new Intl.DateTimeFormat('es-CL', { weekday: 'long', day: 'numeric', month: 'long' });
+
+const weekdayFormatter = new Intl.DateTimeFormat('es-CL', { weekday: 'long' });
+const monthFormatter = new Intl.DateTimeFormat('es-CL', { month: 'long' });
 
 const countLabel = (n: number, singular: string, plural: string) => `${n} ${n === 1 ? singular : plural}`;
 
@@ -307,27 +311,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           1. CABECERA EDITORIAL & POST-IT ARTESANAL (Hero Card)
           ===================================================================== */}
       <section className={styles.heroCard} aria-labelledby="dash-greeting">
-        {/* Washi Tape toppers */}
-        <div className={styles.washiTapeSlateTop} aria-hidden="true" />
-        <div className={styles.washiTapeOrchidTop} aria-hidden="true" />
-
         <div className={styles.heroGrid}>
-          {/* Left Column: Metadata & Display Titular */}
+          {/* Left Column: fecha como hoja de calendario (DESIGN.md §0.5) */}
           <div className={styles.heroLeftCol}>
-            <div className={styles.heroMetaLine}>
-              <span className={styles.heroMetaBadge}>CUADERNO DE ENFOQUE PERSONAL</span>
-              <span className={styles.metaDot}>•</span>
-              <span className={styles.metaDateItem}>FECHA: {String(now.getDate()).padStart(2, '0')}.{String(now.getMonth() + 1).padStart(2, '0')}.{now.getFullYear()}</span>
-              <span className={styles.metaDot}>•</span>
-              <span>Semestre: {semester}</span>
-              <span className={styles.metaDot}>•</span>
-              <span className={styles.metaWeek}>Semana: #{currentWeekNumber}</span>
-            </div>
-
-            <p className={styles.atelierOverline}>ESPIRALIA ATELIER • HOY EN EL ESCRITORIO</p>
-            <h1 className={styles.heroDate}>{formatHeroDate(now)}</h1>
-            <div className={styles.displayFocusPlan}>
-              plan de enfoque<span className={styles.heroDot}>.</span>
+            <div className={styles.fechaBloque}>
+              <Papel as="div" forma="pieza" tinte="arena" className={styles.fechaHoja} aria-hidden="true">
+                <span className={styles.fechaNumero}>{now.getDate()}</span>
+              </Papel>
+              <div className={styles.fechaTexto}>
+                <p className={styles.metaSemana}>Semana {currentWeekNumber} · Semestre {semester}</p>
+                <h1 className={styles.heroDate} aria-label={formatHeroDate(now)}>
+                  {weekdayFormatter.format(now)} de {monthFormatter.format(now)}
+                </h1>
+                <span className={styles.fechaSubrayado} aria-hidden="true" />
+              </div>
             </div>
             <h2 id="dash-greeting" className={styles.heroTitle}>
               {greetingFor(now)}, {profile.name}.
@@ -356,15 +353,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <div className={styles.brassPaperclip} aria-hidden="true">
                 <div className={styles.brassInnerLoop} />
               </div>
-              {/* Orchid washi tape strip */}
-              <div className={styles.postItWashiTape} aria-hidden="true" />
-              {/* Hanko seal stamp */}
-              <div className={styles.hankoSealStamp} aria-hidden="true">済</div>
-
               <div className={styles.postItContent}>
-                <span className={styles.postItMottoLabel}>motto del día</span>
+                <span className={styles.postItMottoLabel}>lema del día</span>
                 <p className={styles.postItHandwriting}>
-                  discipline today,<br />peace tomorrow.
+                  Disciplina hoy,<br />paz mañana.
                 </p>
                 <div className={styles.postItFooter}>
                   <Heart size={14} className={styles.postItHeart} aria-hidden="true" />
@@ -526,9 +518,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {/* Card 2: Métricas de Serenidad (Papel Rasgado Editorial) */}
-        <div className={styles.bentoCardWrap}>
-          <div className={styles.cardWashiSlate} aria-hidden="true" />
-          <div className={`${styles.bentoCard} ${styles.bentoCardTorn}`}>
+        <Papel tinte={TINTE_DE_MODULO.dashboard}>
+          <div className={styles.bentoPapel}>
             <div className={styles.bentoCardHeader}>
               <span className={styles.bentoTag}>
                 <Activity size={16} aria-hidden="true" />
@@ -584,11 +575,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <span className={styles.dataSovereigntyText}>100% en tu máquina</span>
             </div>
           </div>
-        </div>
+        </Papel>
 
         {/* Card 3: Hábitos Semanales */}
         <div className={styles.bentoCard}>
-          <div className={styles.cardWashiOrchid} aria-hidden="true" />
           <div className={styles.bentoCardHeader}>
             <span className={styles.bentoTag}>
               <CheckCircle size={16} aria-hidden="true" />
@@ -749,7 +739,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <h3 id="dash-critical" className={styles.cardTitle}>
                   <span>Prioridades de hoy</span>
                 </h3>
-                <span className={styles.topPrioritiesSubBadge}>No negociables</span>
+                <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.todo}>
+                  <span className={styles.pestanaTexto}>No negociables</span>
+                </Papel>
               </div>
               <div className={styles.cardHeaderRight}>
                 <span className={styles.cardMeta}>{countLabel(criticalCount, 'crítico', 'críticos')}</span>
@@ -799,9 +791,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
           </Pliego>
 
-          {/* Eliminate Distractions Box with Metallic Paperclip */}
+          {/* Compromisos sin distracciones: cartulina lisa, es lo que la persona edita */}
           <div className={styles.distractionBox}>
-            <div className={styles.metallicPaperclip} aria-hidden="true" />
             <div className={styles.distractionHeader}>
               <h4 className={styles.distractionTitle}>Compromisos sin distracciones</h4>
               <span className={styles.distractionCommitment}>Compromisos ({distractions.length})</span>
@@ -851,7 +842,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Columna Lateral Derecha: Horario, Mini Reminders y Planner (5 cols) */}
         <div className={styles.mainRightCol}>
           {/* Focus Schedule de Hoy (Eventos de hoy + Bloques de planner) */}
-          <section className={styles.card} aria-labelledby="dash-events">
+          <Papel as="section" tinte={TINTE_DE_MODULO.agenda} aria-labelledby="dash-events">
             <div className={styles.cardHeader}>
               <h3 id="dash-events" className={styles.cardTitle}>
                 <Clock size={18} aria-hidden="true" />
@@ -893,11 +884,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <button type="button" className={styles.cardLink} onClick={() => onNavigate('agenda')}>
               Ver agenda completa →
             </button>
-          </section>
+          </Papel>
 
-          {/* Mini Reminders Card with Washi Tape */}
-          <div className={styles.miniRemindersCard}>
-            <div className={styles.miniRemindersWashi} aria-hidden="true" />
+          {/* Recordatorios: papel del módulo To-Do */}
+          <Papel tinte={TINTE_DE_MODULO.todo}>
             <div className={styles.cardHeader} style={{ marginBottom: 6 }}>
               <h4 className={styles.cardTitle} style={{ fontSize: 16 }}>
                 <Bell size={16} style={{ color: 'var(--color-accent-amber)' }} aria-hidden="true" />
@@ -927,10 +917,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 })}
               </div>
             )}
-          </div>
+          </Papel>
 
           {/* Planner de la semana */}
-          <section className={styles.card} aria-labelledby="dash-planner">
+          <Papel as="section" tinte={TINTE_DE_MODULO.planner} aria-labelledby="dash-planner">
             <div className={styles.cardHeader}>
               <h3 id="dash-planner" className={styles.cardTitle}>
                 <Compass size={18} aria-hidden="true" />
@@ -953,7 +943,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <button type="button" className={styles.cardLink} onClick={() => onNavigate('planner')}>
               Ver planner completo →
             </button>
-          </section>
+          </Papel>
         </div>
       </div>
 

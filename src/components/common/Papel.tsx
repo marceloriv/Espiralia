@@ -33,10 +33,13 @@ export const Papel: React.FC<PapelProps> = ({
   className,
   children,
   ...rest
-}) => (
-  <Tag className={`${styles.sombra} ${className ?? ''}`.trim()} data-forma={forma} {...rest}>
-    <div className={styles.papel} data-forma={forma} data-tinte={tinte}>
-      {children}
-    </div>
-  </Tag>
-);
+}) => {
+  const Inner = Tag === 'span' ? 'span' : 'div';
+  return (
+    <Tag className={`${styles.sombra} ${className ?? ''}`.trim()} data-forma={forma} {...rest}>
+      <Inner className={styles.papel} data-forma={forma} data-tinte={tinte}>
+        {children}
+      </Inner>
+    </Tag>
+  );
+};

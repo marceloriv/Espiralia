@@ -192,8 +192,7 @@ describe('DashboardView', () => {
   it('renderiza el dashboard completo con cabecera editorial, bento de serenidad, today focus y reflexion nocturna', () => {
     renderDashboard();
 
-    expect(screen.getByText(/hoy en el escritorio/i)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/octubre/i);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName(/\d{1,2} de [a-záéíóú]+/i);
     expect(screen.getByText(/foco principal de hoy/i)).toBeInTheDocument();
     expect(screen.getByText(/prioridades de hoy/i)).toBeInTheDocument();
     expect(screen.getByText(/horario de hoy/i)).toBeInTheDocument();
