@@ -60,6 +60,7 @@ El marfil cálido con serif de alto contraste y acento magenta es lo que cualqui
 
 - Una tarjeta resumen del Dashboard lleva el tinte del módulo que resume (Horario: pizarra; Planner de la semana: salvia; Recordatorios: terracota).
 - Las piezas pequeñas (etiqueta, pestaña) llevan una versión más intensa (28 a 42 %) del mismo tinte.
+- **El Acceso y la landing no son módulos.** Allí los tintes se reparten por tema y cada uno se usa una sola vez por pantalla (datos locales: pizarra; PIN: rosa; respaldo: salvia; aforismo: ámbar), sin pretender que signifiquen un módulo.
 - Los tintes se declaran como tokens (`--papel-arena`, `--papel-pizarra`, etc.) calculados con `color-mix` sobre los tokens base; no se escriben hex nuevos.
 - El texto sobre cualquier tinte usa `--color-ink` o `--color-body` y debe pasar 4.5:1 (test en `textTokensContrast.test.ts`).
 - **El magenta queda reservado para acciones y para el subrayado de la fecha.** No se usa como tinte de superficie.
@@ -97,7 +98,7 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 | 0 | **Autoalojar las fuentes actuales** (Newsreader, Inter, JetBrains Mono, Caveat), sin cambio visual. Quitar los enlaces a Google Fonts de `index.html`. | Cero peticiones a dominios externos al cargar la app. Se mide el peso real de las fuentes. |
 | 1 | **Primitivos**: `Papel` (extraído de `bentoCardTorn`), tokens `--papel-*`, `Pliego` (hecho) y los tests de presupuesto. | Tests rojos antes, verdes después; los tres `clip-path` duplicados convergen en uno. |
 | 2 | **Dashboard**: recortar ornamentos, tintes por módulo, hoja de la fecha. | Capturas a 375, 768 y 1440px; comparación con el mock. **Punto de revisión con la persona dueña.** |
-| 3 | **Acceso**: pliego en la tarjeta de cuadernos y panel derecho con papeles de datos reales. | Idem. **Punto de revisión.** |
+| 3 | **Acceso**: pliego en la tarjeta de cuadernos, panel derecho con papeles de datos reales, aforismo en español y corrección de los textos falsos del respaldo y del PIN olvidado (§0.9). | Idem, más tests de texto. **Punto de revisión.** |
 | 4 | **Resto de vistas**, una por commit: Agenda, Planner, To-Do, Notas, Carpetas, Integraciones. | Suite completa y capturas por vista. |
 | 5 | **Tipografía nueva** (§0.6). | Peso medido contra el presupuesto; contraste y escala sin regresiones. |
 | 6 | **Pasar la página** (§0.7). | Con y sin `prefers-reduced-motion`. |
@@ -114,10 +115,24 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 | Notas | La nota abierta | Tarjetas de nota (ámbar) | Editor | No |
 | To-Do, Carpetas, Integraciones | No | Tarjetas de cada módulo con su tinte | Formularios | No |
 
-Decisiones abiertas, para confirmar con la persona dueña:
-1. **Aforismo:** traducir "discipline today, peace tomorrow" al español, o mantenerlo en inglés como cita.
-2. **Texto del respaldo** en el acceso: "Respalda tu bóveda y restáurala en otro equipo". La restauración existe (`VaultModal`, pestaña de importar), así que el texto es veraz.
-3. **Cantidad de tintes en pantalla:** si 4 piezas de Papel por pantalla resulta demasiado, el presupuesto baja a 3.
+Decisiones tomadas por la persona dueña (2026-10-22):
+1. **Aforismo en español.** "discipline today, peace tomorrow" pasa a «Disciplina hoy, paz mañana.» en los cuatro sitios donde aparece: post-it del Dashboard (`DashboardView.tsx`), nota del Planner (`PlannerView.tsx`), post-it de To-Do (`TodoView.tsx`) y panel del Acceso (`ProfileGateView.tsx`). Los tests que hoy buscan el texto en inglés (`PlannerView.test.tsx`, `ProfileGateView.test.tsx`) se actualizan en el mismo commit. Se hace en el paso 2 (Dashboard), el paso 3 (Acceso) y el paso 4 (Planner y To-Do).
+2. **Se mantienen 4 piezas de Papel por pantalla.** El presupuesto de §0.3 y el test de §0.10 no cambian.
+3. **El texto del respaldo se verificó contra el código** (resultado abajo) y se corrige antes de usarlo.
+
+**Verificación del respaldo y la restauración** (código leído, 2026-10-22):
+
+| Afirmación | Resultado | Evidencia |
+| :--- | :--- | :--- |
+| Se puede respaldar un perfil y restaurarlo en otro equipo. | **Cierta, pero solo desde dentro del cuaderno**, con el perfil ya desbloqueado. | `VaultModal` (pestañas exportar e importar), `VaultService.exportProfile` y `restoreProfile` con los modos reemplazar y crear perfil nuevo. |
+| El respaldo se puede cifrar. | **Cierta, es opcional.** AES-GCM con clave derivada por PBKDF2 a partir de una frase. | `vaultCrypto.ts`, `encryptBackup` y `decryptBackup`. |
+| "Exportar bóveda local (.json)" del Acceso sirve para restaurar. | **Falsa.** Genera otro formato (`version: "1.0"`, todos los perfiles) que ninguna parte de la app importa. Es un JSON sin cifrar con los datos y los hash de PIN. | `StorageService.exportVault`, usado solo en `ProfileGateView.tsx`; `VaultModal` solo acepta `ProfileBackup` con `version: 1`. |
+| "Para restablecer tu PIN, exporta y restaura tu bóveda local." | **Falsa.** No existe recuperación de PIN: la restauración conserva el hash y la sal del perfil, y el modal de respaldo solo se alcanza con el perfil desbloqueado. | `restoreProfile` copia `backup.profile` completo; `VaultModal` se monta en `AppLayout`. |
+
+Consecuencias para el plan (paso 3, Acceso), con revisión de la persona dueña antes de implementar:
+- **Texto del papel salvia:** «Respalda desde dentro del cuaderno, con cifrado opcional, y restaura en otro equipo.»
+- **Aviso de PIN olvidado:** reemplazar el texto falso por «Espiralia no puede restablecer un PIN: solo guarda su hash en este navegador.» Es un cambio de texto; no cambia ningún dato.
+- **Botón "Exportar bóveda local" del Acceso:** quitarlo del Acceso (propuesta) o alinear su formato con el de `VaultModal`. Decisión pendiente: quitarlo deja sin copia a quien no pueda entrar; alinearlo implica un cambio de comportamiento y un test de ida y vuelta.
 
 ### 0.10 Criterios de aceptación (verificables)
 
