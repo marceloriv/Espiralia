@@ -90,8 +90,8 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ignorar si el usuario está en el modal de crear perfil o escribiendo en inputs externos
-      if (isCreating) {
+      // Sin panel de PIN visible o con el modal de crear perfil abierto, las teclas no se capturan
+      if (isCreating || !selectedProfileForPin) {
         return;
       }
 
@@ -146,7 +146,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
       window.removeEventListener('keyup', handleKeyUp);
       if (timer) clearTimeout(timer);
     };
-  }, [executeVerify, activeKey, isCreating]);
+  }, [executeVerify, activeKey, isCreating, selectedProfileForPin]);
 
   const handleCreateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -254,6 +254,8 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
             <span>Nuevo perfil</span>
           </button>
 
+          {profiles.length === 0 && <p className={styles.secNote}>Crea un perfil para empezar.</p>}
+
           <p className={styles.secNote}>
             ✓ PIN protegido con hash PBKDF2 (100.000 iteraciones)
           </p>
@@ -269,6 +271,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 
           <div className={styles.redStamp}>LOCAL</div>
 
+          {selectedProfileForPin && (
           <div className={styles.pinPanel}>
             <span className={styles.pinOverline}>ACCESO A CUADERNO PERSONAL</span>
             <h2 className={styles.pinTitle}>Introduce tu PIN Maestro</h2>
@@ -338,6 +341,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
               Ingresa los 4 dígitos o pulsa las teclas del teclado
             </p>
           </div>
+          )}
         </section>
       </main>
 

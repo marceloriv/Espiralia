@@ -11,6 +11,22 @@ describe('ProfileGateView', () => {
     vi.restoreAllMocks();
   });
 
+  it('sin perfiles no muestra Introduce tu PIN Maestro y invita a crear uno', () => {
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    expect(screen.queryByText(/introduce tu pin maestro/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '5' })).not.toBeInTheDocument();
+    expect(screen.getByText(/crea un perfil para empezar/i)).toBeInTheDocument();
+  });
+
+  it('con un perfil protegido seleccionado sí muestra el teclado de PIN', () => {
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
+    render(<ProfileGateView onSelectProfile={vi.fn()} />);
+
+    expect(screen.getByText(/introduce tu pin maestro/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '5' })).toBeInTheDocument();
+  });
+
   it('permite crear un nuevo perfil sin PIN y seleccionarlo', async () => {
     const successSpy = vi.spyOn(sileo, 'success');
     const user = userEvent.setup();
@@ -123,6 +139,7 @@ describe('ProfileGateView', () => {
   });
 
   it('renderiza la interfaz de desbloqueo con pliego papercraft, teclado numerico 3x4 y post-it con clip', () => {
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
     render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
     expect(screen.getByRole('heading', { level: 1, name: /desbloquear cuaderno\./i })).toBeInTheDocument();
@@ -147,6 +164,7 @@ describe('ProfileGateView', () => {
   });
 
   it('permite ingresar solo dígitos con el teclado físico e ignora letras y símbolos', async () => {
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
     const user = userEvent.setup();
     render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
@@ -159,6 +177,7 @@ describe('ProfileGateView', () => {
   });
 
   it('refleja feedback visual keypadBtnPressed en el botón correspondiente al pulsar teclas', async () => {
+    StorageService.saveProfile({ id: 'p-pin', name: 'Carlos', avatar: 'C', pin: '4321', createdAt: '2026-10-09' });
     const user = userEvent.setup();
     render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
