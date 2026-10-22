@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Target, Plus, X } from 'lucide-react';
 import { sileo } from 'sileo';
+import { useEscapeKey } from '../../utils/useEscapeKey';
 import type { Goal, GoalSubItem } from '../../types';
 import { StorageService } from '../../services/storage';
 import { GoalCard } from './GoalCard';
@@ -14,6 +15,7 @@ interface GoalsDrawerProps {
 export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChange }) => {
   const [goals, setGoals] = useState<Goal[]>(() => StorageService.getGoals(profileId));
   const [isModalOpen, setIsModalOpen] = useState(false);
+  useEscapeKey(() => setIsModalOpen(false), isModalOpen);
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Metas Académicas');
   const [description, setDescription] = useState('');

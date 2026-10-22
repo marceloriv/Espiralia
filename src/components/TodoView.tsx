@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Sparkles, Check, Heart, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
+import { useEscapeKey } from '../utils/useEscapeKey';
 import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
@@ -41,6 +42,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
   // Modal de nueva área
   const [isAreaModalOpen, setIsAreaModalOpen] = useState(false);
+  useEscapeKey(() => setIsAreaModalOpen(false), isAreaModalOpen);
   const [newAreaName, setNewAreaName] = useState('');
   const [newAreaColor, setNewAreaColor] = useState(COLOR_PALETTE[0]);
 

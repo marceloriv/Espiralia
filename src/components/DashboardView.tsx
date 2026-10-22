@@ -41,6 +41,7 @@ import {
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
 import { HabitModal } from './habits/HabitModal';
+import { useEscapeKey } from '../utils/useEscapeKey';
 import styles from './DashboardView.module.css';
 
 interface DashboardViewProps {
@@ -83,6 +84,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [editingHabit, setEditingHabit] = useState<HabitTrackerItem | null>(null);
   const [pinnedFocusTodoId, setPinnedFocusTodoId] = useState<string | null>(null);
   const [isFocusModalOpen, setIsFocusModalOpen] = useState(false);
+  const focusCloseBtnRef = useRef<HTMLButtonElement>(null);
+  useEscapeKey(() => setIsFocusModalOpen(false), isFocusModalOpen);
+  useEffect(() => {
+    if (isFocusModalOpen) focusCloseBtnRef.current?.focus();
+  }, [isFocusModalOpen]);
   const [distractions, setDistractions] = useState<string[]>(() => StorageService.getDistractions(profile.id));
   const [newDistractionText, setNewDistractionText] = useState('');
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profile.id));
@@ -1221,6 +1227,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className={styles.focusModalHeader}>
               <h3 id="focus-select-title" className={styles.focusModalTitle}>Seleccionar Foco del Día</h3>
               <button
+                ref={focusCloseBtnRef}
                 type="button"
                 className={styles.closeBtn}
                 onClick={() => setIsFocusModalOpen(false)}
