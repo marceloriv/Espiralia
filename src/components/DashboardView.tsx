@@ -1188,7 +1188,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <div className={styles.sovereigntyStamp}>
             <ShieldCheck size={16} className={styles.sovereigntyIcon} aria-hidden="true" />
-            <span>Almacenamiento 100% Client-Side • Espiralia Taller de Escritorio v2.6</span>
+            <span>Datos guardados en este navegador</span>
           </div>
         </div>
 

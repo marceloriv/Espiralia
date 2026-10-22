@@ -218,8 +218,8 @@ describe('AppLayout', () => {
     expect(screen.getByRole('heading', { name: 'Espiralia', level: 1 })).toBeInTheDocument();
     expect(screen.getByText('Taller de Escritorio')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /\+ acción rápida/i })).toBeInTheDocument();
-    expect(screen.getByText(/local db: activa/i)).toBeInTheDocument();
-    expect(screen.getByText(/aes-256/i)).toBeInTheDocument();
+    expect(screen.getByText(/guardado en este navegador/i)).toBeInTheDocument();
+    expect(screen.queryByText(/aes-256/i)).not.toBeInTheDocument();
   });
 });
 

@@ -799,7 +799,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
           {/* Storage Physical Analogy Widget */}
           <div className={styles.storageWidget}>
             <div className={styles.storageHeader}>
-              <span className={styles.storageTitle}>Almacenamiento Local (IndexedDB)</span>
+              <span className={styles.storageTitle}>Almacenamiento Local (localStorage)</span>
               <span className={styles.storageValue}>{formatBytes(storageBytes)} de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)}</span>
             </div>
             <div className={styles.storageProgressBar}>

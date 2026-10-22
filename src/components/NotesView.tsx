@@ -571,7 +571,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               {/* Barra de estado de escritura en vivo */}
               <div className={styles.writingStatusBar}>
                 <span className={styles.blinkingCursor} />
-                <span>Escribiendo en vivo en almacenamiento cifrado local • Sin telemetría en la nube</span>
+                <span>Guardado en este navegador • Sin telemetría</span>
                 <span className={styles.wordCount}>
                   {activeWordCount} {activeWordCount === 1 ? 'palabra escrita' : 'palabras escritas'}
                 </span>
@@ -680,7 +680,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               <div>
                 <span className={styles.vaultTitle}>Cuaderno de Terapia Privado</span>
                 <p className={styles.vaultDesc}>
-                  Registros confinados al dispositivo local. Copia de respaldo automática en bóveda encriptada.
+                  Registros guardados solo en este navegador.
                 </p>
               </div>
             </div>

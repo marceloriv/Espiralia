@@ -4,13 +4,13 @@ import userEvent from '@testing-library/user-event';
 import { LandingView } from '../components/LandingView';
 
 describe('LandingView', () => {
-  it('renderiza la cabecera editorial con indicador v2.4 papelería y titular display', () => {
+  it('renderiza la cabecera editorial sin versión inventada y con titular display', () => {
     render(<LandingView onNavigateLogin={() => {}} />);
     expect(screen.getByRole('heading', { level: 1, name: /el arte de organizar tu vida con serenidad cotidiana/i })).toBeInTheDocument();
-    expect(screen.getByText(/v2\.4 papelería/i)).toBeInTheDocument();
+    expect(screen.queryByText(/v2\.4/i)).not.toBeInTheDocument();
     expect(screen.getByText(/100% client-side • sin rastreo • almacenamiento local/i)).toBeInTheDocument();
-    expect(screen.getByText(/indexeddb cifrado/i)).toBeInTheDocument();
-    expect(screen.getByText(/biorritmo hoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/datos en tu navegador/i)).toBeInTheDocument();
+    expect(screen.getByText('Día de ejemplo')).toBeInTheDocument();
   });
 
   it('integra las fichas de archivador en la sección de pilares con enlaces ancla', () => {

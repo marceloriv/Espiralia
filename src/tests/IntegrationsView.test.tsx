@@ -20,7 +20,7 @@ describe('IntegrationsView (Stitch screen)', () => {
     render(<IntegrationsView profile={profile} />);
     expect(screen.getByRole('heading', { level: 1, name: /integraciones & enlace externo/i })).toBeInTheDocument();
     expect(screen.getByText(/módulo descentralizado/i)).toBeInTheDocument();
-    expect(screen.getByText(/0 bytes transmitidos al exterior/i)).toBeInTheDocument();
+    expect(screen.getByText(/datos solo en este navegador/i)).toBeInTheDocument();
   });
 
   it('despliega las 3 opciones de la tarjeta Google Calendar & iCal (.ics)', () => {
@@ -74,8 +74,7 @@ describe('IntegrationsView (Stitch screen)', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /integraciones & enlace externo/i })).toBeInTheDocument();
     expect(screen.getByText(/archivado localmente/i)).toBeInTheDocument();
-    expect(screen.getByText(/aislamiento estricto verificado/i)).toBeInTheDocument();
-    expect(screen.getByText(/0 bytes transmitidos al exterior/i)).toBeInTheDocument();
+    expect(screen.getByText(/datos solo en este navegador/i)).toBeInTheDocument();
     expect(screen.getByText(/google calendar & ical \(\.ics\)/i)).toBeInTheDocument();
     expect(screen.getByText(/arrastra tu archivo/i)).toBeInTheDocument();
     expect(screen.getAllByText(/gmail & plantillas/i)[0]).toBeInTheDocument();

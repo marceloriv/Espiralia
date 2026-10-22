@@ -18,7 +18,7 @@ export const LandingDeskPreview: React.FC = () => {
   const [tasks, setTasks] = useState<DeskTask[]>([
     {
       id: 'task-1',
-      title: 'Estudio Licencia Clase B: 40 preguntas CONASET',
+      title: 'Repaso de estudio: 40 preguntas',
       duration: '35m',
       completed: true,
     },
@@ -134,7 +134,7 @@ export const LandingDeskPreview: React.FC = () => {
             <div className={styles.scheduleList}>
               <div className={styles.scheduleRow}>
                 <span className={styles.scheduleTime}>07:30 - 09:00</span>
-                <span className={styles.scheduleTitle}>Bloque Alpha: Revisión teórica CONASET</span>
+                <span className={styles.scheduleTitle}>Bloque Alpha: Repaso teórico</span>
                 <span className={styles.scheduleTag}>Enfoque Profundo</span>
               </div>
               <div className={`${styles.scheduleRow} ${styles.scheduleRowAmber}`}>

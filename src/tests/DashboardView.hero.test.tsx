@@ -301,7 +301,7 @@ describe('DashboardView critical CSS & Hero Content', () => {
       expect(screen.queryByText('IndexedDB activo')).not.toBeInTheDocument();
       expect(screen.queryByText('Objetivo semestral')).not.toBeInTheDocument();
       expect(screen.getByText('Almacenamiento')).toBeInTheDocument();
-      expect(screen.getByText(/en este navegador/i)).toBeInTheDocument();
+      expect(screen.getByText(/de ~5\.0 MB en este navegador/)).toBeInTheDocument();
     });
   });
 });

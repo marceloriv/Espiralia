@@ -829,7 +829,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
             100% Client-Side Engine
           </span>
           <span className={styles.bullet}>·</span>
-          <span>IndexedDB local</span>
+          <span>localStorage</span>
           <span className={styles.bullet}>·</span>
           <span>Datos particionados por perfil</span>
         </div>

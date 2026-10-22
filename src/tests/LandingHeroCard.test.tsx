@@ -6,17 +6,17 @@ describe('LandingHeroCard', () => {
   it('renderiza la nota adhesiva con aforismo caligráfico, cinta washi y clip dorado', () => {
     render(<LandingHeroCard />);
     expect(screen.getByText(/aforismo matutino/i)).toBeInTheDocument();
-    expect(screen.getByText(/№ 042/i)).toBeInTheDocument();
+    expect(screen.queryByText(/№ 042/i)).not.toBeInTheDocument();
     expect(screen.getByText(/cada página escrita con calma sostiene el día que viene/i)).toBeInTheDocument();
-    expect(screen.getByText(/tinta ferrogalorresistente/i)).toBeInTheDocument();
+    expect(screen.getByText('Ejemplo')).toBeInTheDocument();
   });
 
-  it('despliega la ficha de biorritmo sobre pliego rasgado con sello de imprenta y porcentaje', () => {
+  it('despliega la ficha de día de ejemplo sobre pliego rasgado sin porcentajes inventados', () => {
     render(<LandingHeroCard />);
-    expect(screen.getByText(/biorritmo hoy/i)).toBeInTheDocument();
+    expect(screen.getByText('Día de ejemplo')).toBeInTheDocument();
     expect(screen.getByText(/en foco/i)).toBeInTheDocument();
-    expect(screen.getByText(/claridad mental/i)).toBeInTheDocument();
-    expect(screen.getByText(/88%/i)).toBeInTheDocument();
+    expect(screen.queryByText(/claridad mental/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/88%/i)).not.toBeInTheDocument();
   });
 
   it('despliega la carpeta dossier de expediente analógico con pestaña de archivo y clip metálico', () => {

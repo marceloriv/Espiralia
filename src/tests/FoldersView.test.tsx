@@ -54,7 +54,7 @@ describe('FoldersView', () => {
     expect(screen.getByText(/archivado localmente/i)).toBeInTheDocument();
     expect(screen.getByText(/fichas & manuscritos en esta carpeta/i)).toBeInTheDocument();
     expect(screen.getByText(/captura veloz de enlace/i)).toBeInTheDocument();
-    expect(screen.getByText(/almacenamiento local \(indexeddb\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/almacenamiento local \(localstorage\)/i)).toBeInTheDocument();
   });
 
   it('incluye broche fastener de latón y hendidura de pliegue de expediente manila', () => {

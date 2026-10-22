@@ -191,7 +191,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
         <p className={styles.tagline}>TALLER DE ESCRITORIO • CUADERNO PERSONAL</p>
         <div className={styles.secBadge}>
           <span className={styles.secDot} aria-hidden="true" />
-          <span>Arquitectura 100% Client-Side • IndexedDB / WebCrypto PBKDF2</span>
+          <span>Datos en este navegador • PIN con hash PBKDF2</span>
         </div>
       </header>
 
@@ -255,7 +255,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
           </button>
 
           <p className={styles.secNote}>
-            ✓ Cifrado PBKDF2 • 100.000 iteraciones en navegador
+            ✓ PIN protegido con hash PBKDF2 (100.000 iteraciones)
           </p>
         </section>
 
@@ -267,7 +267,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
             <div className={styles.postitSub}>Escribe sin censura.</div>
           </div>
 
-          <div className={styles.redStamp}>LOCAL ENCRIPTADO</div>
+          <div className={styles.redStamp}>LOCAL</div>
 
           <div className={styles.pinPanel}>
             <span className={styles.pinOverline}>ACCESO A CUADERNO PERSONAL</span>

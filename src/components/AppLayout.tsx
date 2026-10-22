@@ -169,9 +169,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           <div className={styles.localDbBadge}>
             <span className={styles.localDbStatus}>
               <span className={styles.localDbDot} aria-hidden="true" />
-              Local DB: Activa
+              Guardado en este navegador
             </span>
-            <span className={styles.localDbCipher}>AES-256</span>
           </div>
 
           <div className={styles.sidebarFooterActions}>

@@ -230,8 +230,6 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
           <div className={styles.headerMetaRow}>
             <div className={styles.badgeCluster}>
               <span className={styles.badgeModule}>Módulo Descentralizado</span>
-              <span className={styles.badgeBullet}>•</span>
-              <span className={styles.badgeVersion}>v4.8 Local-First</span>
             </div>
 
             <div className={styles.categoryChipsLegend} aria-label="Áreas de integración">
@@ -271,7 +269,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                 </div>
                 <div>
                   <h3 className={styles.sidebarTitle}>Integraciones</h3>
-                  <p className={styles.sidebarSubtitle}>Protocolo Local IndexedDB</p>
+                  <p className={styles.sidebarSubtitle}>Protocolo local</p>
                 </div>
               </div>
 
@@ -344,11 +342,10 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                 </div>
                 <div>
                   <div className={styles.bannerHeadingRow}>
-                    <h2 className={styles.bannerTitle}>Aislamiento Estricto Verificado</h2>
-                    <span className={styles.tagZeroBytes}>0 bytes transmitidos al exterior</span>
+                    <h2 className={styles.bannerTitle}>Datos solo en este navegador</h2>
                   </div>
                   <p className={styles.bannerText}>
-                    Protocolo local IndexedDB activo con cifrado en reposo. Compatibilidad total con Google Calendar, Apple iCal y clientes RFC 5545.
+                    Los datos viven en el localStorage de este navegador. Los archivos .ics siguen el formato RFC 5545 y abren en Google Calendar y Apple Calendario.
                   </p>
                 </div>
               </div>
@@ -718,7 +715,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
         <div className={styles.sheetBottomMantra}>
           <div className={styles.mantraStorage}>
             <span className={styles.greenDot}></span>
-            <span>Almacenamiento Local: <strong style={{ color: 'var(--color-ink, #232b2b)' }}>{formatBytes(storageBytes)} de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)}</strong> (IndexedDB)</span>
+            <span>Almacenamiento Local: <strong style={{ color: 'var(--color-ink, #232b2b)' }}>{formatBytes(storageBytes)} de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)}</strong> (localStorage)</span>
           </div>
           <p className={styles.mantraQuote}>
             « Tus datos soberanos residen en tu equipo, sin intermediarios. »

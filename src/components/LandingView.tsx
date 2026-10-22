@@ -42,7 +42,6 @@ export const LandingView: React.FC<LandingViewProps> = ({
           <a href="#root" className={styles.logoTitle} aria-label="Espiralia Inicio">
             Espiralia
           </a>
-          <span className={styles.editionBadge}>v2.4 Papelería</span>
         </div>
 
         <nav className={styles.navLinks} aria-label="Navegación editorial">
@@ -88,7 +87,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               </h1>
 
               <p className={styles.heroSubtitle}>
-                Un santuario táctil para tu atención. Diseñado con la nobleza de la papelería editorial japonesa y la soberanía de una bóveda local cifrada. Sin nubes ajenas, sin suscripciones, sin distracciones.
+                Un santuario táctil para tu atención. Diseñado con la nobleza de la papelería editorial japonesa y datos que viven solo en tu navegador. Sin nubes ajenas, sin suscripciones, sin distracciones.
               </p>
 
               <div className={styles.heroActions}>
@@ -109,15 +108,11 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <div className={styles.heroMicroSpecs}>
                 <div className={styles.microSpecItem}>
                   <Check size={13} color="var(--color-primary)" aria-hidden="true" />
-                  <span>IndexedDB cifrado</span>
+                  <span>Datos en tu navegador</span>
                 </div>
                 <div className={styles.microSpecItem}>
                   <Check size={13} color="var(--color-primary)" aria-hidden="true" />
-                  <span>Exporta a .MD & .ICS</span>
-                </div>
-                <div className={styles.microSpecItem}>
-                  <Check size={13} color="var(--color-primary)" aria-hidden="true" />
-                  <span>Listo para imprenta A4/A5</span>
+                  <span>Exporta la agenda a .ics</span>
                 </div>
               </div>
             </div>

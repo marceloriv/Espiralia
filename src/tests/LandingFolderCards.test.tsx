@@ -32,7 +32,7 @@ describe('LandingFolderCards', () => {
 
   it('despliega las métricas en recuadros estilo ficha técnica de imprenta', () => {
     render(<LandingFolderCards />);
-    expect(screen.getByText(/banco oficial conaset • modo cronometrado/i)).toBeInTheDocument();
+    expect(screen.getByText(/tareas y bloques por área/i)).toBeInTheDocument();
     expect(screen.getByText(/sin límites de caracteres • privacidad total/i)).toBeInTheDocument();
     expect(screen.getByText(/expediente de postulación y plazos/i)).toBeInTheDocument();
   });

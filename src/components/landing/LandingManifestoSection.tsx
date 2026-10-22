@@ -5,7 +5,6 @@ import {
   Cpu,
   Lock,
   ArrowRight,
-  Download,
   Share2,
 } from 'lucide-react';
 import styles from './LandingManifestoSection.module.css';
@@ -58,10 +57,10 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
             <div className={styles.certTitleGroup}>
               <ShieldCheck size={24} color="var(--color-accent-teal, #5db8a6)" aria-hidden="true" />
               <h3 id="cert-title" className={styles.certTitle}>
-                Soberanía Digital Certificada
+                Tus datos se quedan en tu navegador
               </h3>
             </div>
-            <span className={styles.certBadge}>0% Telemetría • 100% Autónomo</span>
+            <span className={styles.certBadge}>Sin servidor ni telemetría</span>
           </div>
 
           <div className={styles.certGrid}>
@@ -79,9 +78,9 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
               <div className={styles.pillarIcon} aria-hidden="true">
                 <Lock size={20} />
               </div>
-              <h4 className={styles.pillarTitle}>Bóveda Cifrada</h4>
+              <h4 className={styles.pillarTitle}>Datos locales</h4>
               <p className={styles.pillarDesc}>
-                Almacenamiento local aislado en IndexedDB con protección por PIN opcional. Tus reflexiones nunca abandonan tu máquina.
+                Se guardan en el localStorage de tu navegador. El PIN opcional bloquea el perfil. El respaldo exportable se cifra con tu contraseña (PBKDF2 y AES-GCM).
               </p>
             </div>
 
@@ -89,24 +88,13 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
               <div className={styles.pillarIcon} aria-hidden="true">
                 <Share2 size={20} />
               </div>
-              <h4 className={styles.pillarTitle}>Interoperabilidad Total</h4>
+              <h4 className={styles.pillarTitle}>Agenda exportable</h4>
               <p className={styles.pillarDesc}>
-                Exporta tus notas y cronogramas en Markdown estándar (.md) y calendarios abiertos (.ics). Sin ataduras propietarias.
+                Exporta tu agenda a un archivo .ics, formato abierto (RFC 5545).
               </p>
             </div>
           </div>
 
-          {/* Pie de Certificado con Firma y Sello Notarial */}
-          <div className={styles.certificateFooter}>
-            <div className={styles.certSignatureGroup}>
-              <span className={styles.certSignatureLabel}>Garantía Fundacional</span>
-              <span className={styles.certSignatureScript}>«Cifrado en cliente • Sin nubes ajenas»</span>
-            </div>
-            <div className={styles.certSealTag} aria-hidden="true">
-              <span>BÓVEDA SOBERANA</span>
-              <span className={styles.certSealSerial}>EXP. 2026 / PRIVACIDAD ABSOLUTA</span>
-            </div>
-          </div>
         </article>
 
         {/* 3. Banner de Cierre */}
@@ -114,7 +102,7 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
           <div className={styles.washiAccentTop} aria-hidden="true" />
           <h3 className={styles.closingTitle}>Tu Cuaderno te Espera</h3>
           <p className={styles.closingSubtitle}>
-            Comienza hoy a registrar tus días con la calma de la papelería editorial y la solidez de una bóveda digital cifrada en tu disco.
+            Comienza hoy a registrar tus días con la calma de la papelería editorial y tus datos guardados en tu navegador.
           </p>
 
           <div className={styles.closingActions}>
@@ -125,17 +113,6 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
             >
               <span>Comenzar Cuaderno</span>
               <ArrowRight size={16} aria-hidden="true" />
-            </button>
-
-            <button
-              type="button"
-              className={styles.secondaryOutlineBtn}
-              onClick={() => {
-                window.print();
-              }}
-            >
-              <Download size={16} aria-hidden="true" />
-              <span>Descargar Plantillas Imprimibles (PDF)</span>
             </button>
           </div>
         </div>

@@ -7,7 +7,7 @@ export const LandingHeroCard: React.FC = () => {
       className={styles.heroVignetteContainer}
       data-interactive-stack="true"
       tabIndex={0}
-      aria-label="Bodegón de papelería interactivo: Dossier, Biorritmo y Aforismo"
+      aria-label="Bodegón de papelería interactivo: dossier, día de ejemplo y aforismo"
     >
       {/* 1. Capa Fondo: Carpeta Dossier Manila de Expediente Analógico */}
       <div className={styles.dossierFolder} aria-label="Expediente analógico Santuario">
@@ -22,30 +22,16 @@ export const LandingHeroCard: React.FC = () => {
       </div>
 
       {/* 2. Capa Intermedia: Pliego Rasgado de Biorritmo con Clip de Latón */}
-      <div className={styles.tornPaperSlip} aria-label="Biorritmo Hoy">
+      <div className={styles.tornPaperSlip} aria-label="Día de ejemplo">
         <div className={styles.paperClipBrass} aria-hidden="true" />
         <div className={styles.washiTapeSlate} aria-hidden="true" />
 
         <div className={styles.indexCardHeader}>
-          <span className={styles.indexCardTitle}>Biorritmo Hoy</span>
+          <span className={styles.indexCardTitle}>Día de ejemplo</span>
           <span className={styles.stampSeal}>En Foco</span>
         </div>
-        <div className={styles.clarityRow}>
-          <span>Claridad mental:</span>
-          <span className={styles.clarityValue}>88%</span>
-        </div>
-        <div
-          className={styles.progressBarBg}
-          role="progressbar"
-          aria-valuenow={88}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label="Claridad mental"
-        >
-          <div className={styles.progressBarFill} style={{ width: '88%' }} />
-        </div>
         <p className={styles.indexCardDesc}>
-          Fase ideal para escritura profunda y diseño de estructuras.
+          Un día de ejemplo: una prioridad, un bloque de enfoque y un cierre.
         </p>
       </div>
 
@@ -55,14 +41,12 @@ export const LandingHeroCard: React.FC = () => {
         <div className={styles.washiTapeMagenta} aria-hidden="true" />
         <div className={styles.noteHeader}>
           <span>Aforismo Matutino</span>
-          <span className={styles.noteNumber}>№ 042</span>
         </div>
         <blockquote className={styles.quoteText}>
           «Cada página escrita con calma sostiene el día que viene.»
         </blockquote>
         <div className={styles.noteFooter}>
-          <span>Tinta ferrogalorresistente</span>
-          <time dateTime="08:30">08:30 AM · En calma</time>
+          <span>Ejemplo</span>
         </div>
       </aside>
     </div>

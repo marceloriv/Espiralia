@@ -13,7 +13,7 @@ describe('LandingDeskPreview', () => {
   it('despliega el pliego diario A4 con pila de hojas superpuestas y broche archivador metálico', () => {
     const { container } = render(<LandingDeskPreview />);
     expect(screen.getByText(/plan de foco • hoy/i)).toBeInTheDocument();
-    expect(screen.getByText(/estudio licencia clase b/i)).toBeInTheDocument();
+    expect(screen.getByText(/repaso de estudio: 40 preguntas/i)).toBeInTheDocument();
     expect(screen.getByText(/papel libre de ácido • 120 gsm/i)).toBeInTheDocument();
 
     const paperStack = container.querySelector('[data-papercraft="paper-stack"]');
