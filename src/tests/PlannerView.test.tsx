@@ -196,7 +196,7 @@ describe('PlannerView integración semanal y metas', () => {
   it('renderiza la cabecera focus plan, filtros de area, rejilla semanal de 7 columnas y top priorities con clip', () => {
     render(<PlannerView profileId={profileId} />);
 
-    expect(screen.getByRole('heading', { level: 1, name: /focus plan & agenda semanal\./i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /plan de enfoque y agenda semanal\./i })).toBeInTheDocument();
     expect(screen.getByText(/01\. estudios/i)).toBeInTheDocument();
     expect(screen.getByText(/prioridades de la semana/i)).toBeInTheDocument();
     expect(screen.getByText(/habit tracker semanal/i)).toBeInTheDocument();

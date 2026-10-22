@@ -60,7 +60,7 @@ export const LandingRitmosSection: React.FC = () => {
     <section className={styles.ritmosSection} aria-labelledby="ritmos-heading">
       <div className={styles.sectionHeader}>
         <h2 id="ritmos-heading" className={styles.sectionTitle}>
-          Una Cadencia Vital que Respeta tus Límites
+          Tu día en tres momentos
         </h2>
         <p className={styles.sectionSubtitle}>
           No más listas infinitas ni sobrecarga cognitiva. Estructura tu jornada en tres momentos cardinales inspirados en la sobriedad del cuaderno clásico.

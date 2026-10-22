@@ -139,7 +139,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
       <div className={styles.editorialHeader}>
         <div className={styles.headerLeft}>
           <span className={styles.overlineTag}>ESPIRALIA TALLER • PLANIFICADOR SEMANAL</span>
-          <h1 className={styles.plannerMainHeading}>focus plan & agenda semanal.</h1>
+          <h1 className={styles.plannerMainHeading}>plan de enfoque y agenda semanal.</h1>
           <h2 className={styles.pageTitle}>Planner Semanal</h2>
         </div>
 
@@ -342,7 +342,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
           {/* Mini Reminders & Bujo Dot Grid */}
           <div className={styles.remindersCard}>
-            <h4 className={styles.remindersTitle}>MINI REMINDERS & BUJO DOT GRID</h4>
+            <h4 className={styles.remindersTitle}>RECORDATORIOS Y NOTAS RÁPIDAS</h4>
             <p className={styles.remindersText}>
               Pausa de agua a las 11:30. Dejar el escritorio despejado al finalizar la jornada.
             </p>

@@ -327,13 +327,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <p className={styles.atelierOverline}>ESPIRALIA ATELIER • HOY EN EL ESCRITORIO</p>
             <h1 className={styles.heroDate}>{formatHeroDate(now)}</h1>
             <div className={styles.displayFocusPlan}>
-              focus plan<span className={styles.heroDot}>.</span>
+              plan de enfoque<span className={styles.heroDot}>.</span>
             </div>
             <h2 id="dash-greeting" className={styles.heroTitle}>
               {greetingFor(now)}, {profile.name}.
             </h2>
             <p className={styles.heroSubtitle}>
-              <em>clarify your mind. prioritize your energy.</em> Aquí está el pulso de tu día y lo que no puede esperar.
+              <em>ordena tu mente. cuida tu energía.</em> Aquí está el pulso de tu día y lo que no puede esperar.
             </p>
 
             <blockquote className={styles.heroAphorism}>
@@ -570,7 +570,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <span className={styles.metricTileLabel}>Rendimiento</span>
                 <div className={styles.metricTileValueBox}>
                   <span className={styles.metricTileValPurple}>
-                    {taskPerf.percentage === null ? '—' : `${taskPerf.percentage}%`}
+                    {taskPerf.percentage === null ? 'Sin datos' : `${taskPerf.percentage}%`}
                   </span>
                 </div>
                 <span className={styles.metricTileSub}>
@@ -747,7 +747,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className={styles.cardHeader}>
               <div className={styles.cardHeaderLeft}>
                 <h3 id="dash-critical" className={styles.cardTitle}>
-                  <span>TOP PRIORITIES no negociables</span>
+                  <span>Prioridades de hoy</span>
                 </h3>
                 <span className={styles.topPrioritiesSubBadge}>No negociables</span>
               </div>
@@ -804,7 +804,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className={styles.distractionBox}>
             <div className={styles.metallicPaperclip} aria-hidden="true" />
             <div className={styles.distractionHeader}>
-              <h4 className={styles.distractionTitle}>ELIMINATE DISTRACTIONS</h4>
+              <h4 className={styles.distractionTitle}>Compromisos sin distracciones</h4>
               <span className={styles.distractionCommitment}>Compromisos ({distractions.length})</span>
             </div>
             <ul className={styles.distractionList}>
@@ -856,7 +856,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className={styles.cardHeader}>
               <h3 id="dash-events" className={styles.cardTitle}>
                 <Clock size={18} aria-hidden="true" />
-                <span>Focus Schedule de Hoy</span>
+                <span>Horario de hoy</span>
               </h3>
               <span className={styles.cardMeta}>{countLabel(todayScheduleItems.length, 'actividad', 'actividades')}</span>
             </div>
@@ -902,7 +902,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <div className={styles.cardHeader} style={{ marginBottom: 6 }}>
               <h4 className={styles.cardTitle} style={{ fontSize: 16 }}>
                 <Bell size={16} style={{ color: 'var(--color-accent-amber)' }} aria-hidden="true" />
-                <span>Mini Reminders</span>
+                <span>Recordatorios</span>
               </h4>
               <span className={styles.cardMeta}>Recordatorios ({reminderTodos.length})</span>
             </div>
@@ -1097,7 +1097,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className={styles.notesCardHeader}>
           <div className={styles.notesTitleBox}>
             <h3 id="dash-notes" className={styles.notesCardTitle}>
-              NOTES / BRAIN DUMP
+              Notas y vaciado mental
             </h3>
             <span className={styles.notesCardTag}>Cuadrícula libre de ideas espontáneas</span>
           </div>
@@ -1141,7 +1141,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className={styles.reflectionHeader}>
           <div className={styles.reflectionTitleBox}>
             <h3 id="dash-reflection" className={styles.reflectionTitle}>
-              End of day reflection <span className={styles.reflectionHeart}>♡</span>
+              Reflexión del día <span className={styles.reflectionHeart}>♡</span>
             </h3>
             <span className={styles.reflectionSubtext}>• Balance de la jornada</span>
           </div>

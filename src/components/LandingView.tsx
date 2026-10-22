@@ -85,12 +85,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
           <div className={styles.heroGrid}>
             <div className={styles.heroContent}>
               <h1 id="hero-title" className={styles.heroHeading}>
-                El arte de organizar tu vida con{' '}
-                <span className={styles.heroHeadingItalic}>serenidad cotidiana</span>.
+                Organiza tu semana en un cuaderno que{' '}
+                <span className={styles.heroHeadingItalic}>guarda todo en tu navegador</span>.
               </h1>
 
               <p className={styles.heroSubtitle}>
-                Un santuario táctil para tu atención. Diseñado con la nobleza de la papelería editorial japonesa y datos que viven solo en tu navegador. Sin nubes ajenas, sin suscripciones, sin distracciones.
+                Agenda, planner, tareas y notas por perfil, con PIN opcional. Sin cuenta y sin servidor: todo se guarda en tu navegador.
               </p>
 
               <div className={styles.heroActions}>
@@ -164,7 +164,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
           <div>
             <div className={styles.footerBrand}>Espiralia</div>
             <div className={styles.footerCopy}>
-              © 2026 Espiralia. Santuario de orden personal y soberanía local.
+              © 2026 Espiralia. Agenda, planner y notas que se quedan en tu navegador.
             </div>
           </div>
 

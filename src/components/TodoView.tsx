@@ -249,7 +249,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
             </h1>
 
             <p className={styles.editorialLead}>
-              <span className={styles.leadItalic}>Clarify your mind. Prioritize your energy.</span> Un espacio unificado donde convergen tus tareas diarias, tus sesiones agendadas y tus notas vivas organizadas por áreas de vida.
+              <span className={styles.leadItalic}>Ordena tu mente. Cuida tu energía.</span> Un espacio unificado donde convergen tus tareas diarias, tus sesiones agendadas y tus notas vivas organizadas por áreas de vida.
             </p>
 
             <div className={styles.metaRow}>
@@ -549,7 +549,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
               <div className={styles.detailedHeader}>
                 <h3 className={styles.detailedTitle}>
-                  <span>Tareas que importan (Tasks that matter)</span>
+                  <span>Tareas que importan</span>
                   <span className={styles.detailedSub}>· Ordenadas por impacto</span>
                 </h3>
                 <span className={styles.showingCount}>
@@ -781,7 +781,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               <div className={styles.metalPaperclipCorner} aria-hidden="true" />
 
               <div className={styles.miniRemindersHeader}>
-                <h3 className={styles.miniRemindersTitle}>Mini Reminders &amp; Energy</h3>
+                <h3 className={styles.miniRemindersTitle}>Recordatorios y energía</h3>
                 <Coffee size={16} className={styles.remindersSub} aria-hidden="true" />
               </div>
 

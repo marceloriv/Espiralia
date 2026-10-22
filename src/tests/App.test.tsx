@@ -30,7 +30,7 @@ describe('App integración general', () => {
 
   it('inicia en la portada editorial de bienvenida si no hay sesion activa', async () => {
     render(<App />);
-    expect(await screen.findByRole('heading', { name: /el arte de organizar tu vida con serenidad cotidiana/i }, { timeout: 4000 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /organiza tu semana en un cuaderno que guarda todo en tu navegador/i }, { timeout: 4000 })).toBeInTheDocument();
   });
 
   it('permite crear perfil, ingresar al dashboard y cambiar de perfil', async () => {

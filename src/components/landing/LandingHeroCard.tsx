@@ -11,10 +11,10 @@ export const LandingHeroCard: React.FC = () => {
       aria-label="Bodegón de papelería interactivo: dossier, día de ejemplo y aforismo"
     >
       {/* 1. Capa Fondo: Carpeta Dossier Manila de Expediente Analógico */}
-      <div className={styles.dossierFolder} aria-label="Expediente analógico Santuario">
+      <div className={styles.dossierFolder} aria-label="Expediente analógico de ejemplo">
         <div className={styles.dossierTab}>
           <span className={styles.dossierTabDot} aria-hidden="true" />
-          <span className={styles.dossierTabLabel}>EXP. 2026 / SANTUARIO</span>
+          <span className={styles.dossierTabLabel}>EXP. 2026 / EJEMPLO</span>
           <span className={styles.dossierTabSub}>• Bóveda Documental</span>
         </div>
         <div className={styles.dossierSeal} aria-hidden="true">

@@ -195,10 +195,10 @@ describe('DashboardView', () => {
     expect(screen.getByText(/hoy en el escritorio/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/octubre/i);
     expect(screen.getByText(/foco principal de hoy/i)).toBeInTheDocument();
-    expect(screen.getByText(/top priorities no negociables/i)).toBeInTheDocument();
-    expect(screen.getByText(/focus schedule de hoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/prioridades de hoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/horario de hoy/i)).toBeInTheDocument();
     expect(screen.getByText(/progreso por áreas temáticas/i)).toBeInTheDocument();
-    expect(screen.getByText(/end of day reflection/i)).toBeInTheDocument();
+    expect(screen.getByText(/reflexión del día/i)).toBeInTheDocument();
   });
 });
 

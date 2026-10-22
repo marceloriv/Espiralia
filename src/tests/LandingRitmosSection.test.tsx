@@ -5,7 +5,7 @@ import { LandingRitmosSection } from '../components/landing/LandingRitmosSection
 describe('LandingRitmosSection', () => {
   it('despliega los tres momentos de cadencia vital con horarios e iconos representativos', () => {
     render(<LandingRitmosSection />);
-    expect(screen.getByRole('heading', { level: 2, name: /una cadencia vital que respeta tus límites/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /tu día en tres momentos/i })).toBeInTheDocument();
     expect(screen.getByText(/01 • 07:30 - 09:00/i)).toBeInTheDocument();
     expect(screen.getByText(/02 • 11:00 - 13:00/i)).toBeInTheDocument();
     expect(screen.getByText(/03 • 20:00 - 20:30/i)).toBeInTheDocument();

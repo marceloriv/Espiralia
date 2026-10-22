@@ -6,7 +6,7 @@ import { LandingView } from '../components/LandingView';
 describe('LandingView', () => {
   it('renderiza la cabecera editorial sin versión inventada y con titular display', () => {
     render(<LandingView onNavigateLogin={() => {}} />);
-    expect(screen.getByRole('heading', { level: 1, name: /el arte de organizar tu vida con serenidad cotidiana/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: /organiza tu semana en un cuaderno que guarda todo en tu navegador/i })).toBeInTheDocument();
     expect(screen.queryByText(/v2\.4/i)).not.toBeInTheDocument();
     expect(screen.getByText(/datos en tu navegador/i)).toBeInTheDocument();
     expect(screen.getByText('Día de ejemplo')).toBeInTheDocument();

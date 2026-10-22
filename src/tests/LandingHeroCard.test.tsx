@@ -21,9 +21,9 @@ describe('LandingHeroCard', () => {
 
   it('despliega la carpeta dossier de expediente analógico con pestaña de archivo y clip metálico', () => {
     render(<LandingHeroCard />);
-    expect(screen.getByText(/exp\. 2026 \/ santuario/i)).toBeInTheDocument();
+    expect(screen.getByText(/exp\. 2026 \/ ejemplo/i)).toBeInTheDocument();
     expect(screen.getByText(/bóveda documental/i)).toBeInTheDocument();
-    const dossier = screen.getByLabelText(/expediente analógico santuario/i);
+    const dossier = screen.getByLabelText(/expediente analógico de ejemplo/i);
     expect(dossier).toBeInTheDocument();
   });
 
