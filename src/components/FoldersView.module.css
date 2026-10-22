@@ -635,7 +635,7 @@
 .metaLabel {
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  color: var(--color-muted-soft, #8e8b82);
+  color: var(--color-muted);
   text-transform: uppercase;
 }
 
@@ -780,7 +780,7 @@
 
 .btnActionTable:hover {
   text-decoration: underline;
-  color: var(--color-primary-active, #c654c3);
+  color: var(--color-text-primary-active);
 }
 
 .ledgerFootnote {
@@ -1385,7 +1385,7 @@
 }
 
 .bookmarkLinkAnchor {
-  color: var(--color-muted-soft, #8e8b82);
+  color: var(--color-muted);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1435,7 +1435,7 @@
 }
 
 .bookmarkExtra {
-  color: var(--color-muted-soft, #8e8b82);
+  color: var(--color-muted);
 }
 
 /* User Links Actions in Card */

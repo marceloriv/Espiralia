@@ -709,7 +709,7 @@
 .moonVector {
   width: 22px;
   height: 22px;
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
   cursor: default;
   transition: all 0.2s ease;
 }
@@ -799,7 +799,7 @@
 }
 
 .statusStable {
-  color: var(--color-success);
+  color: var(--color-text-success);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -883,7 +883,7 @@
 .metricTileSub {
   font-family: var(--font-family-3);
   font-size: 10px;
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 .dataSovereigntyText {
@@ -1028,7 +1028,7 @@
 }
 
 .statusSuccess {
-  color: var(--color-success);
+  color: var(--color-text-success);
   font-weight: 600;
 }
 
@@ -1216,7 +1216,7 @@
 }
 
 .emptyPrioritiesIcon {
-  color: var(--color-success, #5a826d);
+  color: var(--color-text-success);
   opacity: 0.85;
 }
 
@@ -1378,7 +1378,7 @@
   padding: 2px 8px;
   border-radius: var(--radius-xs);
   background-color: var(--color-surface-card);
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
   border: 1px solid var(--color-hairline);
 }
 
@@ -1484,7 +1484,7 @@
 .priorityDoneSub {
   font-family: var(--font-family-3);
   font-size: 11px;
-  color: var(--color-success);
+  color: var(--color-text-success);
 }
 
 .priorityPendingSub {
@@ -1494,7 +1494,7 @@
 }
 
 .priorityDoneCheck {
-  color: var(--color-success);
+  color: var(--color-text-success);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -1885,7 +1885,7 @@
 .routineStatusTag {
   font-family: var(--font-family-3);
   font-size: 10px;
-  color: var(--color-success);
+  color: var(--color-text-success);
 }
 
 .routinePauseTag {
@@ -2226,7 +2226,7 @@
 }
 
 .milestoneCheckIcon {
-  color: var(--color-success);
+  color: var(--color-text-success);
   flex-shrink: 0;
 }
 
@@ -2264,7 +2264,7 @@
 .areaPendingPill {
   font-family: var(--font-family-3);
   font-size: 11px;
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 /* Must maintain min-height: 44px for accessibility and test suites */
@@ -2344,7 +2344,7 @@
 .notesCardTag {
   font-family: var(--font-family-3);
   font-size: 11px;
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 .notesHeaderIcon {
@@ -2381,7 +2381,7 @@
   gap: 5px;
   font-family: var(--font-family-3);
   font-size: 11px;
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 .notesCardBtn {
@@ -2531,7 +2531,7 @@
 }
 
 .sovereigntyIcon {
-  color: var(--color-accent-teal);
+  color: var(--color-text-teal);
 }
 
 .saveReflectionBtn {

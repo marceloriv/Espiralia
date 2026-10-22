@@ -129,7 +129,7 @@
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
   font-weight: 600;
-  color: var(--color-accent-teal, #5db8a6);
+  color: var(--color-text-teal);
   background-color: rgba(93, 184, 166, 0.12);
   padding: 4px 10px;
   border-radius: var(--radius-pill, 9999px);
@@ -176,7 +176,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-accent-teal, #5db8a6);
+  color: var(--color-text-teal);
   margin-bottom: 1rem;
 }
 

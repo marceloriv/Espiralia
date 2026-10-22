@@ -156,11 +156,11 @@
 }
 
 .iconAmber {
-  color: var(--color-accent-amber);
+  color: var(--color-text-amber);
 }
 
 .iconTeal {
-  color: var(--color-accent-teal);
+  color: var(--color-text-teal);
 }
 
 .enfoqueLabel {
@@ -265,7 +265,7 @@
   font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 .floralWatermark {
@@ -766,7 +766,7 @@
   font-family: var(--font-family-3);
   font-size: var(--text-caption);
   font-weight: 700;
-  color: var(--color-accent-amber);
+  color: var(--color-text-amber);
   padding-top: 2px;
 }
 
@@ -1510,7 +1510,7 @@
 .localCacheNote {
   font-family: var(--font-family-3);
   font-size: 0.65rem;
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 /* 4.3 Mini Reminders & Energy */
@@ -1587,7 +1587,7 @@
 }
 
 .energyStatus {
-  color: var(--color-accent-teal);
+  color: var(--color-text-teal);
   font-weight: 600;
 }
 

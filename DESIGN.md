@@ -46,7 +46,7 @@
 | **`ink`** | `#1A1917` (`#141413`) | `--color-ink` | Tinta de pluma estilográfica; titulares principales de máximo contraste. |
 | **`body`** | `#3D3D3A` | `--color-body` | Color de texto para lectura corrida, tareas e instrucciones. |
 | **`body-strong`** | `#252523` | `--color-body-strong` | Texto de peso medio para énfasis y etiquetas destacadas. |
-| **`muted`** | `#75736C` (`#6C6A64`) | `--color-muted` | Metadatos, horas, subtítulos, etiquetas y números monumentales de agua. |
+| **`muted`** | `#64625C` | `--color-muted` | Metadatos, horas, subtítulos, etiquetas y números monumentales de agua. Oscurecido en 2026-10-22 para cumplir 4.5:1 sobre todas las superficies cálidas. |
 | **`muted-soft`** | `#8E8B82` | `--color-muted-soft` | Elementos terciarios de baja jerarquía visual. |
 | **`hairline`** | `#E8E2D8` (`#E6DFD8`) | `--color-hairline` | Renglones de cuaderno, divisores finos y bordes sutiles de papel. |
 | **`hairline-soft`** | `#EBE6DF` | `--color-hairline-soft` | Divisores interiores ultra tenues. |
@@ -55,7 +55,11 @@
 | **`terracotta`** | `#9C4A3B` | `--color-accent-terracotta` | Alertas amables, prioridades críticas y washi tape de destaque. |
 | **`accent-teal`** | `#5DB8A6` | `--color-accent-teal` | Acento editorial secundario para métricas y categorías de estudio. |
 | **`accent-amber`** | `#E8A55A` | `--color-accent-amber` | Tono cálido para recordatorios y notas pendientes. |
-| **`success`** | `#5DB872` | `--color-success` | Indicador de confirmación y tarea finalizada. |
+| **`success`** | `#5DB872` | `--color-success` | Indicador de confirmación y tarea finalizada (fondos, bordes e iconos; no como color de texto). |
+| **`text-success`** | `#316F3F` | `--color-text-success` | Variante de texto de `success` (5.0:1 o más sobre las superficies del tema). |
+| **`text-teal`** | `#2F6B60` | `--color-text-teal` | Variante de texto de `accent-teal`. |
+| **`text-amber`** | `#8E5414` | `--color-text-amber` | Variante de texto de `accent-amber`. |
+| **`text-primary-active`** | `#9E359B` | `--color-text-primary-active` | Variante de texto de `primary-active`. |
 | **`warning`** | `#D4A017` | `--color-warning` | Notificación preventiva de plazos o advertencias de bóveda. |
 | **`error`** | `#C64545` | `--color-error` | Errores de validación o alertas críticas. |
 | **`surface-dark`** | `#1A1817` (`#181715`) | `--color-surface-dark` | Bloque nocturno del manifiesto y modo de concentración profunda. |

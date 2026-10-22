@@ -720,7 +720,7 @@
 }
 
 .iconTeal {
-  color: var(--color-accent-teal);
+  color: var(--color-text-teal);
 }
 
 .iconPrimary {
@@ -1031,7 +1031,7 @@
 
 .wordCount {
   margin-left: auto;
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 /* 3-Column Night Reflection Strip */
@@ -1070,7 +1070,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--color-accent-amber);
+  color: var(--color-text-amber);
 }
 
 .reflectionTagTeal {
@@ -1078,7 +1078,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--color-accent-teal);
+  color: var(--color-text-teal);
 }
 
 .reflectionBody {
@@ -1291,13 +1291,13 @@
 .barValTeal {
   font-family: var(--font-family-3);
   font-weight: 600;
-  color: var(--color-accent-teal);
+  color: var(--color-text-teal);
 }
 
 .barValAmber {
   font-family: var(--font-family-3);
   font-weight: 600;
-  color: var(--color-accent-amber);
+  color: var(--color-text-amber);
 }
 
 .barTrack {
