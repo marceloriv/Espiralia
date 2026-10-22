@@ -288,7 +288,7 @@ describe('TodoView', () => {
       const user = userEvent.setup();
       render(<TodoView profileId={profileId} />);
 
-      const sunBtn = screen.getByRole('button', { name: /nivel ☀️/i });
+      const sunBtn = screen.getByRole('button', { name: /nivel plena/i });
       await user.click(sunBtn);
 
       const todayStr = toLocalDateStr(new Date());
