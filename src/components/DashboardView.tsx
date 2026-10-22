@@ -17,7 +17,6 @@ import {
   CheckCircle,
   Coffee,
   Star,
-  Pin,
   Check,
   Clock,
   Bell,
@@ -46,6 +45,7 @@ import {
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
 import { HabitModal } from './habits/HabitModal';
+import { Pliego } from './common/Pliego';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import styles from './DashboardView.module.css';
 
@@ -743,7 +743,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* Top Priorities no negociables */}
-          <section className={styles.card} aria-labelledby="dash-critical">
+          <Pliego aria-labelledby="dash-critical">
             <div className={styles.cardHeader}>
               <div className={styles.cardHeaderLeft}>
                 <h3 id="dash-critical" className={styles.cardTitle}>
@@ -752,7 +752,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <span className={styles.topPrioritiesSubBadge}>No negociables</span>
               </div>
               <div className={styles.cardHeaderRight}>
-                <Pin size={18} className={styles.pushPinIcon} aria-hidden="true" />
                 <span className={styles.cardMeta}>{countLabel(criticalCount, 'crítico', 'críticos')}</span>
               </div>
             </div>
@@ -798,7 +797,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <button type="button" className={styles.cardLink} onClick={() => onNavigate('todo')}>
               Ver todas las tareas →
             </button>
-          </section>
+          </Pliego>
 
           {/* Eliminate Distractions Box with Metallic Paperclip */}
           <div className={styles.distractionBox}>
