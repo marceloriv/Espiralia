@@ -118,6 +118,7 @@
 
 .todoInput:focus {
   border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
 }
 
 .btnAddTodo {

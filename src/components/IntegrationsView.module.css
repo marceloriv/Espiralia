@@ -783,6 +783,7 @@
 
 .selectInput:focus {
   border-color: var(--color-primary, #6e0081);
+  box-shadow: var(--focus-ring);
 }
 
 .exportActionRow {

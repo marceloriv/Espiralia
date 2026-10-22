@@ -1704,6 +1704,7 @@
 .distractionInput:focus {
   outline: none;
   border-color: var(--color-primary, #324b3e);
+  box-shadow: var(--focus-ring);
 }
 
 .distractionAddBtn {
