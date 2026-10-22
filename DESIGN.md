@@ -4,6 +4,8 @@
 
 **Theme:** warm-editorial-stationery (Lienzo cálido de imprenta artesanal, libre de blancos clínicos a nivel global, con acentos orquídea/magenta de identidad y tonos orgánicos de cuaderno de autor).
 
+**Dial:** ENERGY 2 / RHYTHM 2 / MOTION 1 (antislop, núcleo Parte 3). ENERGY 2: presencia editorial sin estridencia. RHYTHM 2: las secciones alternan composición (un elemento a ancho completo, listas, pares) en vez de repetir tres tarjetas. MOTION 1: solo estados de interacción (hover, foco, transiciones breves); sin animaciones en bucle.
+
 ---
 
 ## 1. Filosofía & Principios Visuales
@@ -208,6 +210,7 @@
 - **Armonizar control operativo y serenidad emocional**: Acompañar siempre las listas de tareas y tablas de tiempo con lemas inspiradores, aforismos diarios y sellos de racha.
 - **Respetar la jerarquía tríadica**: Serif para cabeceras y citas, sans para lectura y control operativo, script para notas afectivas, mono para metadatos y bóveda.
 - **Garantizar soporte de exportación/impresión**: Diagramación limpia con soporte para impresión o exportación a PDF para quienes combinan soporte digital y físico.
+- **Un solo logo**: el monograma "Es" (serif, sobre el cuadrado magenta `--color-primary`) en la barra superior de la landing, la barra lateral y la pantalla de acceso. No usar otros glifos ni iconos como marca.
 - **Objetivo táctil mínimo de 44x44px**: botones, inputs, selects, tabs y enlaces con clase usan `--tap-min` (regla global en `src/index.css`). Decisión del dueño, 2026-10-22: sube el 40px anterior.
 - **Preservar los tokens exactos**: Usar siempre las variables documentadas (`--color-primary`, `--color-canvas`, etc.) para consistencia absoluta en todo el proyecto.
 
