@@ -5,6 +5,19 @@ const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
 
 const getScopedKey = (profileId: string, domain: string) => `espiralia_${profileId}_${domain}`;
 
+export const STORAGE_ERROR_EVENT = 'espiralia:storage-error';
+
+/** Escribe en localStorage sin lanzar: ante QuotaExceededError avisa con STORAGE_ERROR_EVENT y devuelve false. */
+function writeItem(key: string, value: string): boolean {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch {
+    window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key } }));
+    return false;
+  }
+}
+
 // ponytail: persistencia directa y sincrónica en localStorage. Si un perfil excede 5MB (QuotaExceeded), migrar a IndexedDB asíncrono.
 function getScopedList<T>(key: string): T[] {
   try {
@@ -23,12 +36,12 @@ function saveScopedItem<T extends { id: string }>(key: string, item: T): void {
   } else {
     list.push(item);
   }
-  localStorage.setItem(key, JSON.stringify(list));
+  writeItem(key, JSON.stringify(list));
 }
 
 function deleteScopedItem<T extends { id: string }>(key: string, id: string): void {
   const list = getScopedList<T>(key).filter(i => i.id !== id);
-  localStorage.setItem(key, JSON.stringify(list));
+  writeItem(key, JSON.stringify(list));
 }
 
 function getScopedData<T>(key: string, fallback: T): T {
@@ -76,7 +89,7 @@ export const StorageService = {
   },
 
   setActiveProfileId(id: string): void {
-    localStorage.setItem(ACTIVE_PROFILE_KEY, id);
+    writeItem(ACTIVE_PROFILE_KEY, id);
   },
 
   clearActiveProfileId(): void {
@@ -160,7 +173,7 @@ export const StorageService = {
         color: def.color,
         createdAt: new Date().toISOString(),
       }));
-      localStorage.setItem(getScopedKey(profileId, 'areas'), JSON.stringify(seeded));
+      writeItem(getScopedKey(profileId, 'areas'), JSON.stringify(seeded));
       return seeded;
     } catch {
       return [];
@@ -173,7 +186,7 @@ export const StorageService = {
 
   deleteArea(profileId: string, areaId: string): void {
     const list = this.getAreas(profileId).filter(a => a.id !== areaId);
-    localStorage.setItem(getScopedKey(profileId, 'areas'), JSON.stringify(list));
+    writeItem(getScopedKey(profileId, 'areas'), JSON.stringify(list));
 
     // Reasignar tareas huérfanas al área General o la primera disponible
     const fallbackArea = list.find(a => a.name.toLowerCase() === 'general') ?? list[0];
@@ -187,7 +200,7 @@ export const StorageService = {
         }
       }
       if (changed) {
-        localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(todos));
+        writeItem(getScopedKey(profileId, 'todos'), JSON.stringify(todos));
       }
     }
   },
@@ -244,7 +257,7 @@ export const StorageService = {
     } else {
       list.push(normalized);
     }
-    localStorage.setItem(getScopedKey(todo.profileId, 'todos'), JSON.stringify(list));
+    writeItem(getScopedKey(todo.profileId, 'todos'), JSON.stringify(list));
   },
 
   deleteTodo(profileId: string, todoId: string): void {
@@ -262,7 +275,7 @@ export const StorageService = {
         todo.status = 'completada';
         todo.completed = true;
       }
-      localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
+      writeItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
     }
   },
 
@@ -272,7 +285,7 @@ export const StorageService = {
     if (todo) {
       todo.status = status;
       todo.completed = status === 'completada';
-      localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
+      writeItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
     }
   },
 
@@ -347,7 +360,7 @@ export const StorageService = {
   },
 
   saveDistractions(profileId: string, items: string[]): void {
-    localStorage.setItem(getScopedKey(profileId, 'distractions'), JSON.stringify(items));
+    writeItem(getScopedKey(profileId, 'distractions'), JSON.stringify(items));
   },
 
   // Moods
@@ -368,7 +381,7 @@ export const StorageService = {
     const key = getScopedKey(profileId, 'daily_energy');
     const data = getScopedData<Record<string, string>>(key, {});
     data[dateStr] = energy;
-    localStorage.setItem(key, JSON.stringify(data));
+    writeItem(key, JSON.stringify(data));
   },
 
   seedInitialProfileData(profileId: string): void {

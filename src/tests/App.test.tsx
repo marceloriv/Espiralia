@@ -3,6 +3,7 @@ import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { App } from '../App';
+import { STORAGE_ERROR_EVENT } from '../services/storage';
 
 describe('App integración general', () => {
   beforeEach(() => {
@@ -81,6 +82,31 @@ describe('App integración general', () => {
     expect(successSpy).toHaveBeenCalledWith(expect.objectContaining({
       title: expect.stringContaining('Valentina'),
     }));
+  });
+
+  it('muestra un aviso al recibir espiralia:storage-error', () => {
+    const errorSpy = vi.spyOn(sileo, 'error');
+    render(<App />);
+
+    act(() => {
+      window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key: 'espiralia_p_todos' } }));
+    });
+
+    expect(errorSpy).toHaveBeenCalledWith(expect.objectContaining({
+      title: expect.stringMatching(/almacenamiento del navegador está lleno/i),
+    }));
+  });
+
+  it('no repite el aviso de almacenamiento lleno dentro de 3 segundos', () => {
+    const errorSpy = vi.spyOn(sileo, 'error');
+    render(<App />);
+
+    act(() => {
+      window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key: 'a' } }));
+      window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key: 'b' } }));
+    });
+
+    expect(errorSpy).toHaveBeenCalledTimes(1);
   });
 
   it('configura el contenedor de notificaciones Sileo en posicion top-center', async () => {
