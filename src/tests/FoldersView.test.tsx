@@ -47,26 +47,33 @@ describe('FoldersView', () => {
     expect(anchor).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
-  it('renderiza el fichero archival con solapas escalonadas, sello archivado localmente y tabla de fichas viva', () => {
+  it('renderiza el fichero archival con solapas escalonadas y tabla de fichas viva', () => {
     render(<FoldersView profileId="p-test" />);
 
     expect(screen.getByRole('heading', { level: 1, name: /explorador de carpetas & vínculos/i })).toBeInTheDocument();
-    expect(screen.getByText(/archivado localmente/i)).toBeInTheDocument();
     expect(screen.getByText(/fichas & manuscritos en esta carpeta/i)).toBeInTheDocument();
     expect(screen.getByText(/captura veloz de enlace/i)).toBeInTheDocument();
     expect(screen.getByText(/almacenamiento local \(localstorage\)/i)).toBeInTheDocument();
   });
 
-  it('incluye broche fastener de latón y hendidura de pliegue de expediente manila', () => {
+  it('pone la carpeta abierta, la captura y las tarjetas de enlace en Papel rosa, sin ornamentos ni relleno de ejemplo', async () => {
+    const { StorageService } = await import('../services/storage');
+    StorageService.saveLink({
+      id: 'lnk-papel',
+      profileId: 'p-test',
+      title: 'Referencia',
+      url: 'https://example.com',
+      createdAt: new Date().toISOString(),
+    });
     const { container } = render(<FoldersView profileId="p-test" />);
 
-    const fastener = container.querySelector('[class*="brassProngFastener"]');
-    expect(fastener).toBeInTheDocument();
-    expect(fastener).toHaveAttribute('aria-hidden', 'true');
-
-    const creaseLine = container.querySelector('[class*="manilaCreaseLine"]');
-    expect(creaseLine).toBeInTheDocument();
-    expect(creaseLine).toHaveAttribute('aria-hidden', 'true');
+    expect(container.querySelectorAll('[data-tinte="rosa"]').length).toBeGreaterThanOrEqual(3);
+    for (const ornamento of ['brassProngFastener', 'manilaCreaseLine', 'watermarkNum', 'hankoSeal', 'washiTape', 'pushpinBadge', 'washiCardStrip']) {
+      expect(container.querySelector(`[class*="${ornamento}"]`), ornamento).toBeNull();
+    }
+    for (const texto of [/estante 04-a/i, /solapa científica/i, /hoja 1 de 2/i, /carpeta manila/i, /modif\. 12 mar/i, /descargar fichero zip/i, /oficiales \(0\)/i, /versión 2\.4\.0/i, /metadatos automáticos/i]) {
+      expect(screen.queryByText(texto), String(texto)).not.toBeInTheDocument();
+    }
   });
 
   it('renderiza las carpetas del fichero con estructura de carpeta plana moderna (solapa trasera, hojas y bolsillo frontal)', () => {

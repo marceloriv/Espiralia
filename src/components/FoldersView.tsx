@@ -6,7 +6,6 @@ import {
   Trash2,
   BookmarkPlus,
   FolderPlus,
-  Printer,
   Shield,
   FileText,
   BookOpen,
@@ -22,6 +21,7 @@ import { formatBytes } from '../utils/formatBytes';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
 import { NoteModal } from './notes/NoteModal';
+import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import styles from './FoldersView.module.css';
 
 interface FoldersViewProps {
@@ -92,7 +92,6 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
   const [userSelectedFolderId, setUserSelectedFolderId] = useState<string | null>(null);
   const [quickUrl, setQuickUrl] = useState('');
   const [quickFolderId, setQuickFolderId] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'all' | 'official' | 'reading' | 'tools'>('all');
   const isFirstMount = useRef(true);
 
   // Modals state
@@ -420,13 +419,9 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
       {/* Top Header & Stationery Actions */}
       <header className={styles.header}>
         <div className={styles.titleArea}>
-          <div className={styles.overline}>
-            <span className={styles.overlineDot}></span>
-            <span>Registro Físico-Digital • Estante 04-A</span>
-          </div>
           <h1 className={styles.title}>Explorador de Carpetas &amp; Vínculos</h1>
           <p className={styles.subtitle}>
-            Fichero de índice en cartulina pesante con solapas escalonadas y repositorio de vínculos web analógicos.
+            Tus carpetas, notas y enlaces guardados en este navegador.
           </p>
         </div>
 
@@ -462,7 +457,6 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
               <span className={styles.ficheroTitle}>Fichero de Índice Manuscrito</span>
               <span className={styles.countBadge}>{displayFolders.length} Carpetas Activas</span>
             </div>
-            <span className={styles.ficheroOrderLabel}>ORDENADO POR: SOLAPA CIENTÍFICA</span>
           </div>
 
           {/* Stepped Tabbed File Cabinet System */}
@@ -505,24 +499,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             </div>
 
             {/* Main File Folder Body (Heavy Cartulina Paper) */}
-            <div className={styles.folderBinderBody}>
-              {/* Broche Fastener de Latón de Sujeción de Expediente */}
-              <div className={styles.brassProngFastener} aria-hidden="true">
-                <div className={styles.fastenerBasePlate}>
-                  <div className={styles.fastenerProngLeft} />
-                  <div className={styles.fastenerProngRight} />
-                  <div className={styles.fastenerCompressorBar} />
-                </div>
-              </div>
-
-              {/* Hendidura de pliegue prensado en cartulina manila */}
-              <div className={styles.manilaCreaseLine} aria-hidden="true" />
-
-              {/* Monumental Watermark Number */}
-              <div className={styles.watermarkNum} aria-hidden="true">
-                {activeFolder?.num || '01'}
-              </div>
-
+            <Papel as="div" tinte={TINTE_DE_MODULO.carpetas}>
               {/* Folder Header Details */}
               <div className={styles.folderHeaderDetails}>
                 <div className={styles.folderLead}>
@@ -534,7 +511,6 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                       <h3 className={styles.folderTitle}>
                         {activeFolder?.num}. {activeFolder?.name}
                       </h3>
-                      <span className={styles.hankoSeal}>ARCHIVADO LOCALMENTE</span>
                       {activeFolder?.isCustom && (
                         <div style={{ display: 'inline-flex', gap: 6, marginLeft: 8 }}>
                           <button
@@ -581,10 +557,6 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
               <div className={styles.ledgerContainer}>
                 <div className={styles.ledgerSubheader}>
                   <span>Fichas &amp; Manuscritos en esta Carpeta</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <Printer size={15} aria-hidden="true" />
-                    <span>Hoja 1 de 2</span>
-                  </div>
                 </div>
 
                 {/* Ledger Table Layout */}
@@ -672,10 +644,6 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
 
                 {/* Index Footnote & Quick Sub-Actions */}
                 <div className={styles.ledgerFootnote}>
-                  <div className={styles.statusPhysical}>
-                    <span className={styles.greenDot}></span>
-                    <span>Copia física archivada en Archivador Madera 01 • Carpeta Manila #24</span>
-                  </div>
                   <div className={styles.ledgerSubActions}>
                     <button
                       type="button"
@@ -685,17 +653,10 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                     >
                       + Agregar Vínculo
                     </button>
-                    <button
-                      type="button"
-                      className={styles.btnSubAction}
-                      onClick={handleExportJson}
-                    >
-                      Descargar Fichero ZIP
-                    </button>
                   </div>
                 </div>
               </div>
-            </div>
+            </Papel>
           </div>
 
           {/* Inactive Folders as Stacked Preview Strip */}
@@ -726,7 +687,6 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                   <p className={styles.miniDesc}>{df.desc}</p>
                   <div className={styles.miniFooter}>
                     <span>{df.specs}</span>
-                    <span>Modif. 12 Mar</span>
                   </div>
                 </div>
               ))}
@@ -746,26 +706,20 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
               <p className={styles.stickyQuote}>
                 “Tus documentos y enlaces organizados como en un fichero de roble físico, 100% en tu navegador.”
               </p>
-              <div className={styles.stickyFooter}>
-                <span>• Espiralia Cuaderno No. 12</span>
-                <span>Santiago, CL</span>
-              </div>
             </div>
           </div>
 
           {/* Quick Capture Card */}
-          <div className={styles.quickCaptureWrapper}>
-            <div className={styles.washiTape} aria-hidden="true"></div>
+          <Papel as="section" tinte={TINTE_DE_MODULO.carpetas} aria-label="Captura veloz de enlace">
             <div className={styles.quickCaptureCard}>
               <div className={styles.quickCaptureHeader}>
                 <div className={styles.quickCaptureLead}>
                   <BookmarkPlus size={20} color="var(--color-primary)" aria-hidden="true" />
                   <h4 className={styles.quickCaptureTitle}>Captura Veloz de Enlace</h4>
                 </div>
-                <span className={styles.clipboardBadge}>CLIPBOARD</span>
               </div>
               <p className={styles.quickCaptureDesc}>
-                Pega cualquier URL y clasifícala en tus fichas de cartulina con metadatos automáticos.
+                Pega una URL y elige la carpeta donde guardarla.
               </p>
               <form onSubmit={handleQuickCapture} className={styles.quickCaptureForm}>
                 <input
@@ -795,7 +749,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                 </div>
               </form>
             </div>
-          </div>
+          </Papel>
 
           {/* Storage Physical Analogy Widget */}
           <div className={styles.storageWidget}>
@@ -835,42 +789,9 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             </div>
             <div>
               <h3 className={styles.catalogTitle}>Catálogo de Vínculos &amp; Recursos Web</h3>
-              <p className={styles.catalogSubtitle}>
-                Tarjetas tipo pliego de notas con chinchetas y cintas washi tape
-              </p>
             </div>
           </div>
 
-          <div className={styles.catalogPills}>
-            <button
-              type="button"
-              className={`${styles.pillBtn} ${activeFilter === 'all' ? styles.pillBtnActive : ''}`}
-              onClick={() => setActiveFilter('all')}
-            >
-              Todos ({links.length})
-            </button>
-            <button
-              type="button"
-              className={`${styles.pillBtn} ${activeFilter === 'official' ? styles.pillBtnActive : ''}`}
-              onClick={() => setActiveFilter('official')}
-            >
-              Oficiales (0)
-            </button>
-            <button
-              type="button"
-              className={`${styles.pillBtn} ${activeFilter === 'reading' ? styles.pillBtnActive : ''}`}
-              onClick={() => setActiveFilter('reading')}
-            >
-              Lecturas (0)
-            </button>
-            <button
-              type="button"
-              className={`${styles.pillBtn} ${activeFilter === 'tools' ? styles.pillBtnActive : ''}`}
-              onClick={() => setActiveFilter('tools')}
-            >
-              Herramientas (0)
-            </button>
-          </div>
         </div>
 
         {/* Bento Grid of Ephemeral Bookmarks */}
@@ -907,19 +828,13 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
               </button>
             </div>
           ) : (
-            links.map((link, idx) => {
+            links.map((link) => {
               const folder = folders.find(f => f.id === link.folderId);
               const badgeText = folder ? folder.name.toUpperCase() : 'VÍNCULO LOCAL';
               const domain = link.url.replace(/^https?:\/\//, '').split('/')[0];
-              const isEven = idx % 2 === 0;
 
               return (
-                <div key={link.id} className={styles.bookmarkCardWrapper}>
-                  {isEven ? (
-                    <div className={styles.washiCardStrip} aria-hidden="true" />
-                  ) : (
-                    <div className={styles.pushpinBadge} aria-hidden="true" />
-                  )}
+                <Papel key={link.id} as="article" tinte={TINTE_DE_MODULO.carpetas} className={styles.bookmarkCardWrapper}>
                   <div className={styles.bookmarkCard}>
                     <div>
                       <div className={styles.bookmarkTop}>
@@ -964,25 +879,12 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                       <span className={styles.bookmarkExtra}>{folder ? folder.name : 'Local'}</span>
                     </div>
                   </div>
-                </div>
+                </Papel>
               );
             })
           )}
         </div>
       </section>
-
-      {/* Atmospheric Desk Footer */}
-      <footer className={styles.footer}>
-        <div className={styles.footerQuote}>
-          <span className={styles.tealDot}></span>
-          <span>Espiralia Taller de Escritorio • Hecho para mentes reflexivas con diseño editorial artesanal.</span>
-        </div>
-        <div className={styles.footerSpecs}>
-          <span>Encapsulado en papel marfil #FAF9F5</span>
-          <span>•</span>
-          <span>Versión 2.4.0-Estantería</span>
-        </div>
-      </footer>
 
       {/* Modals for Folder & Link Creation */}
       <FolderModal

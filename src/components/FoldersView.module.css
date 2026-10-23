@@ -49,25 +49,6 @@
   gap: 0.35rem;
 }
 
-.overline {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-primary);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.overlineDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--color-primary);
-}
-
 .title {
   font-family: var(--font-headline, 'Newsreader', serif);
   font-size: 2.25rem;
@@ -145,7 +126,7 @@
 
 @media (min-width: 1080px) {
   .deskStage {
-    grid-template-columns: 8fr 4fr;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
   }
 }
 
@@ -187,13 +168,6 @@
   background: var(--color-surface-card, #efe9de);
   border: 1px solid var(--color-hairline, #e6dfd8);
   color: var(--color-ink-muted, #6c6a64);
-}
-
-.ficheroOrderLabel {
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
-  letter-spacing: 0.03em;
 }
 
 /* Staggered Tabs Container */
@@ -435,110 +409,6 @@
   color: var(--color-ink-muted, #6c6a64);
 }
 
-/* Heavy Cartulina Folder Body */
-.folderBinderBody {
-  background: #F4EDE2;
-  /* Textura de cartulina manila pesada con sutiles marcas de prensado */
-  background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(142, 30, 162, 0.02) 31px, rgba(142, 30, 162, 0.02) 32px),
-    radial-gradient(#dfd5c5 1.1px, transparent 1.1px);
-  background-size: 100% 32px, 18px 18px;
-  border: 1px solid #dfd4c4;
-  border-radius: 0 1rem 1rem 1rem;
-  padding: 2.25rem 1.75rem 1.75rem;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 1px 2px rgba(20, 20, 19, 0.05),
-    0 8px 16px -4px rgba(20, 20, 19, 0.08),
-    0 20px 32px -8px rgba(20, 20, 19, 0.07);
-}
-
-@media (min-width: 640px) {
-  .folderBinderBody {
-    padding: 2.5rem 2rem 2rem;
-  }
-}
-
-/* Broche Fastener de Latón de Sujeción de Expediente */
-.brassProngFastener {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 130px;
-  height: 18px;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.fastenerBasePlate {
-  position: relative;
-  width: 100%;
-  height: 10px;
-  background: linear-gradient(180deg, #d4b878 0%, #ecd79c 50%, #ad9151 100%);
-  border: 1px solid #7c6431;
-  border-radius: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-.fastenerProngLeft,
-.fastenerProngRight {
-  position: absolute;
-  top: -2px;
-  width: 22px;
-  height: 5px;
-  background: linear-gradient(90deg, #876d37 0%, #cfb370 50%, #876d37 100%);
-  border: 1px solid #665022;
-  border-radius: 1px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-
-.fastenerProngLeft {
-  left: 18px;
-}
-
-.fastenerProngRight {
-  right: 18px;
-}
-
-.fastenerCompressorBar {
-  position: absolute;
-  top: 2px;
-  left: 12px;
-  right: 12px;
-  height: 3px;
-  background: #fdf5d6;
-  opacity: 0.85;
-  border-radius: 1px;
-}
-
-/* Línea de hendidura de pliegue prensado de la carpeta manila */
-.manilaCreaseLine {
-  position: absolute;
-  top: 26px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(180deg, rgba(160, 140, 115, 0.25) 0%, rgba(255, 255, 255, 0.5) 100%);
-  pointer-events: none;
-  z-index: 4;
-}
-
-.watermarkNum {
-  position: absolute;
-  right: -0.5rem;
-  bottom: -2rem;
-  font-family: var(--font-headline, serif);
-  font-size: 11rem;
-  font-weight: 700;
-  color: rgba(20, 20, 19, 0.035);
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-}
-
 .folderHeaderDetails {
   display: flex;
   flex-direction: column;
@@ -595,25 +465,6 @@
   font-weight: 600;
   color: var(--color-ink, #141413);
   margin: 0;
-}
-
-.hankoSeal {
-  font-family: var(--font-code, monospace);
-  font-size: var(--text-micro);
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
-  border: 1.5px dashed #b93c3c;
-  color: #b93c3c;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transform: rotate(-2.5deg);
-  background: rgba(185, 60, 60, 0.06);
-  box-shadow: 0 0 0 1px rgba(185, 60, 60, 0.2);
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  user-select: none;
 }
 
 .folderDesc {
@@ -802,20 +653,6 @@
   }
 }
 
-.statusPhysical {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-code, monospace);
-}
-
-.greenDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #5db872;
-}
-
 .ledgerSubActions {
   display: flex;
   align-items: center;
@@ -1002,42 +839,8 @@
   margin: 0;
 }
 
-.stickyFooter {
-  margin-top: 1rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid rgba(236, 225, 154, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
-  color: #786a24;
-}
-
-/* Fast Capture Card with Washi */
-.quickCaptureWrapper {
-  position: relative;
-  padding-top: 0.85rem;
-}
-
-.washiTape {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%) rotate(-1.5deg);
-  width: 110px;
-  height: 16px;
-  background: rgba(220, 198, 172, 0.75);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-  z-index: 10;
-}
-
 .quickCaptureCard {
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(20, 20, 19, 0.04);
+  display: block;
 }
 
 .quickCaptureHeader {
@@ -1059,16 +862,6 @@
   font-weight: 600;
   color: var(--color-ink, #141413);
   margin: 0;
-}
-
-.clipboardBadge {
-  font-family: var(--font-code, monospace);
-  font-size: var(--text-micro);
-  background: rgba(237, 150, 215, 0.2);
-  color: var(--color-primary);
-  padding: 0.15rem 0.5rem;
-  border-radius: 0.25rem;
-  font-weight: 700;
 }
 
 .quickCaptureDesc {
@@ -1254,19 +1047,6 @@
   margin: 0;
 }
 
-.catalogSubtitle {
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
-  margin: 0;
-}
-
-.catalogPills {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  overflow-x: auto;
-}
-
 .pillBtn {
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
@@ -1306,53 +1086,18 @@
 }
 
 .bookmarkCardWrapper {
-  position: relative;
-  padding-top: 0.75rem;
+  transition: transform 0.2s ease;
 }
 
-.washiCardStrip {
-  position: absolute;
-  top: 0;
-  right: 1.5rem;
-  width: 80px;
-  height: 14px;
-  background: rgba(220, 198, 172, 0.7);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transform: rotate(3deg);
-  z-index: 10;
-}
-
-.pushpinBadge {
-  position: absolute;
-  top: -2px;
-  left: 1.5rem;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #c64545;
-  border: 1px solid #ffffff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  z-index: 10;
+.bookmarkCardWrapper:hover {
+  transform: translateY(-2px);
 }
 
 .bookmarkCard {
-  background: #fcf9f2;
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  border-radius: 0.75rem;
-  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-  box-shadow: 0 1px 3px rgba(20, 20, 19, 0.04);
-  transition: all 0.2s ease;
-}
-
-.bookmarkCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 1px 2px rgba(20, 20, 19, 0.05),
-    0 8px 16px -4px rgba(20, 20, 19, 0.08);
 }
 
 .bookmarkTop {
@@ -1391,6 +1136,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
   transition: color 0.12s ease;
 }
 
@@ -1449,7 +1196,7 @@
 
 .iconBtn {
   min-height: var(--tap-min);
-  min-width: 36px;
+  min-width: var(--tap-min);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1464,47 +1211,6 @@
 .iconBtn:hover {
   background: var(--color-hairline, #e6dfd8);
   color: var(--color-ink, #141413);
-}
-
-/* Atmospheric Desk Footer */
-.footer {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-hairline, #e6dfd8);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
-}
-
-@media (min-width: 640px) {
-  .footer {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-}
-
-.footerQuote {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.tealDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #5db8a6;
-}
-
-.footerSpecs {
-  font-family: var(--font-code, monospace);
-  font-size: 0.6875rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
 }
 
 .emptyTableTd {
