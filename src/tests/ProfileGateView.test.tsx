@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { ProfileGateView } from '../components/ProfileGateView';
@@ -244,8 +244,44 @@ describe('ProfileGateView', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /desbloquear cuaderno\./i })).toBeInTheDocument();
     expect(screen.getByText(/cuadernos registrados/i)).toBeInTheDocument();
-    expect(screen.getByText(/discipline today, peace tomorrow/i)).toBeInTheDocument();
+    expect(screen.getByText(/disciplina hoy, paz mañana/i)).toBeInTheDocument();
+    expect(screen.queryByText(/discipline today/i)).not.toBeInTheDocument();
     expect(screen.getByRole('dialog', { name: /ingresa tu pin/i })).toBeInTheDocument();
+  });
+
+  describe('panel del cuaderno (DESIGN.md §0.9, paso 3)', () => {
+    const renderLibre = () => {
+      StorageService.saveProfile({ id: 'p-libre', name: 'Ana', avatar: 'A', createdAt: '2026-10-09' });
+      return render(<ProfileGateView onSelectProfile={vi.fn()} />);
+    };
+
+    it('la tarjeta de cuadernos registrados es un pliego encuadernado', () => {
+      const { container } = renderLibre();
+
+      const anillas = container.querySelectorAll('main svg[aria-hidden="true"]');
+      expect(anillas.length).toBeGreaterThanOrEqual(2);
+      expect(container.querySelector('[class*="washiCorner"]')).not.toBeInTheDocument();
+    });
+
+    // Cada afirmación del panel se verificó contra el código (DESIGN.md §0.9): sin servidor, PIN con hash y sal, respaldo cifrable.
+    it.each([
+      [/todo queda en este navegador/i, /no salen de tu equipo/i],
+      [/pin opcional por perfil/i, /hash con sal/i],
+      [/respalda desde dentro del cuaderno/i, /cifrado opcional/i],
+    ])('cuenta un dato verificable: %s', (titulo, detalle) => {
+      renderLibre();
+      const panel = screen.getByRole('complementary', { name: /sobre tu cuaderno/i });
+
+      expect(within(panel).getByText(titulo)).toBeInTheDocument();
+      expect(panel).toHaveTextContent(detalle);
+    });
+
+    it('marca el cuaderno como local con el sello y no repite la afirmación de PBKDF2 tres veces', () => {
+      renderLibre();
+
+      expect(within(screen.getByRole('complementary', { name: /sobre tu cuaderno/i })).getByText('LOCAL')).toBeInTheDocument();
+      expect(screen.getAllByText(/pbkdf2/i)).toHaveLength(1);
+    });
   });
 
   it('renderiza candado de latón en perfiles protegidos y la cerradura de combinación dentro del diálogo, oculta a lectores de pantalla', () => {

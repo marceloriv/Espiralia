@@ -6,6 +6,8 @@ import { StorageService } from '../services/storage';
 import { PIN_PATTERN, isPinProtected, migrateStoredPins, verifyPin } from '../services/pinHash';
 import { createNewProfile } from '../services/profileOperations';
 import { VaultService } from '../services/vaultService';
+import { Pliego } from './common/Pliego';
+import { Papel } from './common/Papel';
 import { downloadFile } from '../utils/downloadFile';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import styles from './ProfileGateView.module.css';
@@ -143,82 +145,96 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
       </header>
 
       <main className={styles.mainSheet}>
-        <div className={styles.washiCorner} aria-hidden="true" />
+        <Pliego as="div" className={styles.pliegoGate}>
+          {/* Columna Izquierda: Cuadernos Registrados */}
+          <section className={styles.leftCol}>
+            <span className={styles.overlineTag}>CUADERNOS REGISTRADOS</span>
+            <h1 className={styles.mainTitle}>Desbloquear Cuaderno.</h1>
+            <p className={styles.quote}>
+              «Un espacio íntimo donde tus pensamientos no salen jamás de tu dispositivo.»
+            </p>
 
-        {/* Columna Izquierda: Cuadernos Registrados */}
-        <section className={styles.leftCol}>
-          <span className={styles.overlineTag}>CUADERNOS REGISTRADOS</span>
-          <h1 className={styles.mainTitle}>Desbloquear Cuaderno.</h1>
-          <p className={styles.quote}>
-            «Un espacio íntimo donde tus pensamientos no salen jamás de tu dispositivo.»
-          </p>
+            <h2 className={styles.cardHeading}>Selecciona tu perfil</h2>
 
-          <h2 className={styles.cardHeading}>Selecciona tu perfil</h2>
-
-          <div className={styles.profileList}>
-            {profiles.map(profile => (
-              <button
-                type="button"
-                key={profile.id}
-                className={`${styles.profileItem} ${selectedProfileForPin?.id === profile.id ? styles.profileItemActive : ''}`}
-                onClick={() => handleProfileClick(profile)}
-              >
-                <div className={styles.avatarBadge} aria-hidden="true">{profile.avatar}</div>
-                <div className={styles.profileInfo}>
-                  <div className={styles.profileNameRow}>
-                    <span className={styles.profileName}>{profile.name}</span>
-                    <span className={styles.activePill}>ACTIVO</span>
-                  </div>
-                  <div className={styles.profileMeta}>
-                    {isPinProtected(profile) ? 'Protegido por PIN' : 'Acceso libre'}
-                  </div>
-                </div>
-                {isPinProtected(profile) ? (
-                  <div className={styles.brassPadlock} aria-hidden="true">
-                    <div className={styles.padlockShackle} />
-                    <div className={styles.padlockBody}>
-                      <div className={styles.padlockKeyhole} />
+            <div className={styles.profileList}>
+              {profiles.map(profile => (
+                <button
+                  type="button"
+                  key={profile.id}
+                  className={`${styles.profileItem} ${selectedProfileForPin?.id === profile.id ? styles.profileItemActive : ''}`}
+                  onClick={() => handleProfileClick(profile)}
+                >
+                  <div className={styles.avatarBadge} aria-hidden="true">{profile.avatar}</div>
+                  <div className={styles.profileInfo}>
+                    <div className={styles.profileNameRow}>
+                      <span className={styles.profileName}>{profile.name}</span>
+                      <span className={styles.activePill}>ACTIVO</span>
+                    </div>
+                    <div className={styles.profileMeta}>
+                      {isPinProtected(profile) ? 'Protegido por PIN' : 'Acceso libre'}
                     </div>
                   </div>
-                ) : (
-                  <ArrowRight size={18} className={styles.arrowIcon} aria-hidden="true" />
-                )}
-              </button>
-            ))}
-          </div>
+                  {isPinProtected(profile) ? (
+                    <div className={styles.brassPadlock} aria-hidden="true">
+                      <div className={styles.padlockShackle} />
+                      <div className={styles.padlockBody}>
+                        <div className={styles.padlockKeyhole} />
+                      </div>
+                    </div>
+                  ) : (
+                    <ArrowRight size={18} className={styles.arrowIcon} aria-hidden="true" />
+                  )}
+                </button>
+              ))}
+            </div>
 
-          <button
-            type="button"
-            className={styles.btnPrimary}
-            onClick={() => {
-              setIsCreating(true);
-              setName('');
-              setPin('');
-              setCreatePinError(false);
-            }}
-          >
-            <Plus size={18} aria-hidden="true" />
-            <span>Nuevo perfil</span>
-          </button>
+            <button
+              type="button"
+              className={styles.btnPrimary}
+              onClick={() => {
+                setIsCreating(true);
+                setName('');
+                setPin('');
+                setCreatePinError(false);
+              }}
+            >
+              <Plus size={18} aria-hidden="true" />
+              <span>Nuevo perfil</span>
+            </button>
 
-          {profiles.length === 0 && <p className={styles.secNote}>Crea un perfil para empezar.</p>}
+            {profiles.length === 0 && <p className={styles.secNote}>Crea un perfil para empezar.</p>}
+          </section>
 
-          <p className={styles.secNote}>
-            ✓ PIN protegido con hash PBKDF2 (100.000 iteraciones)
-          </p>
-        </section>
+          {/* Columna Derecha: lema y tres datos del cuaderno, cada uno en su papel (DESIGN.md §0.9) */}
+          <aside className={styles.rightCol} aria-label="Sobre tu cuaderno">
+            <div className={styles.postitNote}>
+              <div className={styles.brassClip} aria-hidden="true" />
+              <div className={styles.postitText}>Disciplina hoy, paz mañana ♡</div>
+              <div className={styles.postitSub}>Escribe sin censura.</div>
+            </div>
 
-        {/* Columna Derecha: Teclado táctil y Post-it */}
-        <section className={styles.rightCol}>
-          <div className={styles.postitNote}>
-            <div className={styles.brassClip} aria-hidden="true" />
-            <div className={styles.postitText}>discipline today, peace tomorrow ♡</div>
-            <div className={styles.postitSub}>Escribe sin censura.</div>
-          </div>
+            <Papel as="div" forma="pieza" tinte="pizarra" className={styles.datoA}>
+              <p className={styles.dato}>
+                <strong>Todo queda en este navegador</strong>
+                Tus perfiles, notas y tareas no salen de tu equipo.
+              </p>
+            </Papel>
+            <Papel as="div" forma="pieza" tinte="rosa" className={styles.datoB}>
+              <p className={styles.dato}>
+                <strong>PIN opcional por perfil</strong>
+                Se guarda como hash con sal, nunca en texto plano.
+              </p>
+            </Papel>
+            <Papel as="div" forma="pieza" tinte="salvia" className={styles.datoC}>
+              <p className={styles.dato}>
+                <strong>Respalda desde dentro del cuaderno</strong>
+                Con cifrado opcional, y restaura en otro equipo.
+              </p>
+            </Papel>
 
-          <div className={styles.redStamp}>LOCAL</div>
-
-        </section>
+            <div className={styles.redStamp}>LOCAL</div>
+          </aside>
+        </Pliego>
       </main>
 
       <footer className={styles.footerLinks}>
