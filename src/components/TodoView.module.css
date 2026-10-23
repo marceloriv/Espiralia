@@ -57,7 +57,7 @@
 .editorialH1 {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 2.5rem;
+  font-size: var(--text-display-md);
   font-weight: 600;
   color: var(--color-ink);
   line-height: 1.15;
@@ -185,7 +185,7 @@
 
 .postItScript {
   margin: 0;
-  font-family: 'Caveat', cursive, var(--font-primary);
+  font-family: var(--font-script);
   font-size: 1.45rem;
   color: var(--color-ink);
   line-height: 1.15;
@@ -200,8 +200,8 @@
 
 .postItSub {
   margin: 0;
-  font-family: 'Caveat', cursive, var(--font-primary);
-  font-size: 1.1rem;
+  font-family: var(--font-script);
+  font-size: var(--text-script-min);
   color: var(--color-primary);
 }
 

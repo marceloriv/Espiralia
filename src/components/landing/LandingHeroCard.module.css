@@ -288,7 +288,7 @@
 }
 
 .quoteText {
-  font-family: var(--font-script, cursive);
+  font-family: var(--font-script);
   font-size: 1.65rem;
   line-height: 1.35;
   color: #222118;

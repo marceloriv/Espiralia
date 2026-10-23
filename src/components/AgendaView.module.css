@@ -305,8 +305,8 @@
 
 .postItQuote {
   margin: 6px 0;
-  font-family: 'Caveat', cursive, var(--font-primary);
-  font-size: 1.35rem;
+  font-family: var(--font-script);
+  font-size: var(--text-script-min);
   text-align: center;
   color: var(--color-ink);
   line-height: 1.3;

@@ -279,7 +279,7 @@
 
 .plannerMainHeading {
   font-family: var(--font-primary, serif);
-  font-size: 26px;
+  font-size: var(--text-display-md);
   font-weight: 700;
   color: var(--color-ink, #141413);
   margin: 0 0 2px;
@@ -308,8 +308,8 @@
 }
 
 .stickyText {
-  font-family: 'Caveat', cursive, sans-serif;
-  font-size: 16px;
+  font-family: var(--font-script);
+  font-size: var(--text-script-min);
   font-weight: 600;
   color: #2a2520;
   margin: 0;

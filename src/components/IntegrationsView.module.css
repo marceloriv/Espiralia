@@ -77,8 +77,8 @@
 }
 
 .postitQuote {
-  font-family: 'Caveat', cursive;
-  font-size: 1.05rem;
+  font-family: var(--font-script);
+  font-size: var(--text-script-min);
   line-height: 1.25;
   color: #473B25;
   margin: 0;
@@ -86,7 +86,8 @@
 
 .postitAuthor {
   display: block;
-  font-family: 'Caveat', cursive;
+  font-family: var(--font-family-2);
+  font-style: italic;
   font-size: 0.8125rem;
   color: var(--color-text-amber);
   margin-top: 0.35rem;
@@ -119,18 +120,13 @@
 .title {
   margin: 0;
   font-family: var(--font-headline, 'Cormorant Garamond', 'Newsreader', serif);
-  font-size: 2.5rem;
+  font-size: var(--text-display-md);
   line-height: 1.15;
   font-weight: 600;
   color: #273444;
   letter-spacing: -0.015em;
 }
 
-@media (min-width: 640px) {
-  .title {
-    font-size: 3.25rem;
-  }
-}
 
 .subtitle {
   margin: 0.5rem 0 0;

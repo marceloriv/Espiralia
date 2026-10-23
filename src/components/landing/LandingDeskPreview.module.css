@@ -597,8 +597,8 @@
 }
 
 .quickNoteContent {
-  font-family: var(--font-script, 'Caveat', cursive, sans-serif);
-  font-size: 1.35rem;
+  font-family: var(--font-script);
+  font-size: var(--text-script-min);
   line-height: 1.45;
   color: #2e261f;
   margin: 0 0 1rem 0;

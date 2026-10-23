@@ -51,7 +51,7 @@
 
 .title {
   font-family: var(--font-headline, 'Newsreader', serif);
-  font-size: 2.25rem;
+  font-size: var(--text-display-md);
   line-height: 1.2;
   font-weight: 600;
   letter-spacing: -0.015em;
@@ -798,7 +798,7 @@
 }
 
 .stickyQuote {
-  font-family: 'Caveat', 'Patrick Hand', cursive;
+  font-family: var(--font-script);
   font-size: 1.45rem;
   line-height: 1.35;
   color: #1f1a08;

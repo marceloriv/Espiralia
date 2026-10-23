@@ -265,8 +265,8 @@
 }
 
 .certSignatureScript {
-  font-family: var(--font-script, 'Caveat', cursive, sans-serif);
-  font-size: 1.25rem;
+  font-family: var(--font-script);
+  font-size: var(--text-script-min);
   color: #d4af37;
   letter-spacing: 0.02em;
 }
