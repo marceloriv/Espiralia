@@ -1842,6 +1842,25 @@
   border: 1px solid var(--color-hairline);
 }
 
+.plannerRow {
+  gap: 10px;
+}
+
+.dayTag {
+  flex-shrink: 0;
+  min-width: 2.4em;
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.plannerRow .rowTitle {
+  flex: 1;
+  min-width: 0;
+}
+
 .slotTag {
   font-family: var(--font-family-3);
   font-size: 11px;

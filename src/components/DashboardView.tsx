@@ -57,6 +57,9 @@ interface DashboardViewProps {
   onOpenLink?: () => void;
 }
 
+// Índice = `dayOfWeek` (0 = domingo), igual que el Planner.
+const WEEK_DAY_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
 const getHabitIcon = (category?: string) => {
   const cat = (category || '').toLowerCase();
   if (cat.includes('estudio') || cat.includes('lectura')) return BookOpen;
@@ -146,7 +149,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     ? 'Media Prioridad'
     : 'Baja Prioridad';
   const allWeekBlocks = planner.filter(b => b.period === 'semanal');
-  const weekBlocks = allWeekBlocks.slice(0, 4);
+  // Lunes primero y domingo al final: antes se tomaban los 4 primeros por orden de creación y los del domingo quedaban fuera.
+  const weekDayRank = (d?: DayOfWeek) => (d === undefined ? 8 : d === 0 ? 7 : d);
+  const weekBlocks = [...allWeekBlocks].sort((a, b) => weekDayRank(a.dayOfWeek) - weekDayRank(b.dayOfWeek));
   const areaSummaries = computeAreaSummaries(areas, todos);
 
   const todayDayOfWeek = now.getDay() as DayOfWeek;
@@ -936,6 +941,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <ul className={styles.list} aria-label="Planner de la semana">
                 {weekBlocks.map(b => (
                   <li key={b.id} className={styles.plannerRow}>
+                    <span className={styles.dayTag}>{b.dayOfWeek === undefined ? 'Sin día' : WEEK_DAY_SHORT[b.dayOfWeek]}</span>
                     <span className={`${styles.rowTitle} ${b.completed ? styles.rowTitleDone : ''}`}>{b.title}</span>
                     <span className={styles.slotTag}>{b.timeSlot}</span>
                   </li>
