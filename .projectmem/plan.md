@@ -35,6 +35,8 @@ _What we're working toward now. Use `- [ ]` / `- [x]` checklists._
 - [x] Decidido: el post-it de Notas conserva su frase ("Claridad hoy, sosiego mañana") porque es el lema propio de esa vista; los aforismos de DESIGN.md §0.9 son los de Dashboard, Planner, To-Do y Acceso.
 
 ### Sigue pendiente
+- [x] Mocks de sugerencia recibidos el 2026-10-23 (Dashboard y Planner con fotos, ilustraciones y degradados): se tomaron solo las ideas compatibles con `DESIGN.md`: columna de hoy resaltada en el Planner (`eed6262`) y franja de cuatro indicadores en el Dashboard. No se adoptó la dirección visual (fotos, plantas ilustradas, degradados, botones verdes, Planner sin domingo).
+- [ ] Propuesta aparte, sin decidir: eje de horas (08:00 a 20:00) bajo las columnas del Planner, como en el mock. Hoy los bloques tienen franja (mañana, tarde, noche) y `time` opcional; ubicarlos por hora es una función nueva y toca el modelo de bloques.
 - [x] Paso 5, tipografía nueva (`2955a13`): ruta crítica 96KB, cuatro familias autoalojadas, escala fluida en los H1 y manuscrito de 22px o más.
 - [ ] Etiquetas de ejes del gráfico SVG del Dashboard a 10px en móvil (por debajo del mínimo de 11px); previo al paso 5.
 - [ ] Atkinson y Fraunces cambian el ancho del texto: mirar con ojos humanos Landing y Acceso, que no se midieron con detalle.
