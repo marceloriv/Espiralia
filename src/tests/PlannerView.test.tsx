@@ -261,4 +261,25 @@ describe('PlannerView integración semanal y metas', () => {
       expect(screen.getByRole('button', { name: 'Energía Baja' })).toHaveAttribute('aria-pressed', 'true');
     });
   });
+
+  describe('Columna de hoy', () => {
+    it('marca solo la columna del día actual con aria-current y la etiqueta "Hoy"', () => {
+      render(<PlannerView profileId={profileId} />);
+
+      const hoy = screen.getAllByRole('region').filter(el => el.getAttribute('aria-current') === 'date');
+      expect(hoy).toHaveLength(1);
+      const nombres = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      expect(hoy[0]).toHaveAttribute('aria-label', `Columna ${nombres[new Date().getDay()]}`);
+      expect(hoy[0]).toHaveTextContent('Hoy');
+    });
+
+    it('en otra semana ninguna columna se marca como hoy', async () => {
+      const user = userEvent.setup();
+      render(<PlannerView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /semana siguiente/i }));
+
+      expect(screen.queryAllByRole('region').filter(el => el.getAttribute('aria-current') === 'date')).toHaveLength(0);
+    });
+  });
 });

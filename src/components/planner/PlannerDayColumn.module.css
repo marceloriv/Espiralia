@@ -105,3 +105,22 @@
   padding: 1.5rem 0.5rem;
   font-style: italic;
 }
+
+/* Columna de hoy: tinte salvia (el del Planner) y etiqueta de texto. */
+.todayColumn {
+  background: color-mix(in srgb, var(--papel-salvia) 45%, var(--bg-card));
+  border-color: var(--papel-salvia-fuerte, var(--papel-salvia));
+}
+
+.todayTag {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink);
+  color: var(--color-canvas);
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}

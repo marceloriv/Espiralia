@@ -117,6 +117,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
         dayOfWeek,
         name: dayNames[idx],
         dateLabel: `${dayNum} ${monthShort}`,
+        isToday: d.toDateString() === now.toDateString(),
       };
     });
 
@@ -324,6 +325,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
                 key={day.dayOfWeek}
                 dayName={day.name}
                 dateLabel={day.dateLabel}
+                isToday={day.isToday}
                 blocks={filteredBlocks.filter(b => b.dayOfWeek === day.dayOfWeek)}
                 onAddBlock={() => handleOpenModal(day.dayOfWeek)}
                 onToggleBlock={handleToggleBlock}
