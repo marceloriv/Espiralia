@@ -38,6 +38,14 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
     expect(rule?.[1]).toContain("label:has(> input[type='checkbox'])");
   });
 
+  // Con la sección de eliminar, la hoja de ajustes mide ~1100px: sin scroll en el fondo fijo, quedaba cortada en pantallas bajas.
+  it('el modal de ajustes de perfil hace scroll en el fondo y se centra con margin auto cuando su contenido desborda', () => {
+    const settingsCss = fs.readFileSync(path.resolve(__dirname, '../components/profile/ProfileSettingsModal.module.css'), 'utf-8');
+    expect(settingsCss).toMatch(/\.backdrop\s*\{[^}]*overflow-y:\s*auto/);
+    expect(settingsCss).toMatch(/\.modalWrap\s*\{[^}]*margin:\s*auto/);
+    expect(settingsCss).not.toMatch(/\.backdrop\s*\{[^}]*align-items:\s*center/);
+  });
+
   it('previene fugas de desplazamiento horizontal en el cuerpo (Horizontal Scroll Leak)', () => {
     expect(indexCss).toMatch(/body\s*\{[^}]*overflow-x:\s*hidden/);
   });

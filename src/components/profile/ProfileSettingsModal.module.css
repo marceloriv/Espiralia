@@ -4,8 +4,7 @@
   background-color: rgba(20, 20, 19, 0.5);
   backdrop-filter: blur(2px);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow-y: auto;
   z-index: 100;
   padding: 16px;
 }
@@ -14,6 +13,8 @@
   position: relative;
   width: 100%;
   max-width: 480px;
+  /* Centra y, si la hoja es más alta que la pantalla, deja que el fondo haga scroll sin cortar la parte superior. */
+  margin: auto;
   filter: drop-shadow(0 14px 28px rgba(26, 25, 23, 0.16))
           drop-shadow(0 3px 6px rgba(26, 25, 23, 0.10));
   animation: modalEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
