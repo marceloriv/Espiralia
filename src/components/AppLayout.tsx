@@ -265,7 +265,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               aria-label="+ Nueva Nota"
             >
               <Plus size={16} aria-hidden="true" />
-              <span>+ Nueva Nota</span>
+              <span className={styles.newNoteLabel}>Nueva Nota</span>
             </button>
             <button
               type="button"

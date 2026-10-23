@@ -57,6 +57,14 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
     expect(appLayoutCss).toMatch(/@media \(max-width: 1100px\)\s*\{\s*\.searchPlaceholder,\s*\.searchShortcut\s*\{[^}]*display:\s*none/);
   });
 
+  it('AppLayout deja Nueva Nota como ícono en móvil para que el título de la vista no se corte', () => {
+    expect(appLayoutCss).toMatch(/\.newNoteLabel\s*\{[^}]*position:\s*absolute[^}]*clip:\s*rect\(0 0 0 0\)/);
+  });
+
+  it('TodoView mantiene el tamaño de las solapas de área y deja que la fila haga scroll', () => {
+    expect(todoCss).toMatch(/\.folderTab\s*\{[^}]*flex-shrink:\s*0[^}]*white-space:\s*nowrap/);
+  });
+
   it('PlannerView reparte la semana en columnas de 190px que caben, porque la regla global anula el min-width (< 768px)', () => {
     expect(indexCss).toMatch(/@media \(max-width: 768px\)[\s\S]*?main \*:not\(button\)[^{]*\{[^}]*min-width:\s*0/);
     expect(plannerCss).toMatch(/@media \(max-width: 768px\)[\s\S]*?\.weeklyGrid\s*\{[^}]*display:\s*grid/);
