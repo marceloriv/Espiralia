@@ -15,7 +15,6 @@ describe('NotesView - Pliego Bujo Superior Activo', () => {
     render(<NotesView profileId={profileId} />);
 
     expect(screen.getByRole('heading', { level: 1, name: /diario de autoobservación & desahogo/i })).toBeInTheDocument();
-    expect(screen.getByText(/pregunta ancla de la semana/i)).toBeInTheDocument();
     expect(screen.getByText(/tu primera entrada/i)).toBeInTheDocument();
     expect(screen.queryByText(/avance conaset/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/pliego activo de trabajo/i)).not.toBeInTheDocument();
@@ -180,13 +179,11 @@ describe('NotesView - Pliego Bujo Superior Activo', () => {
     expect(ribbon).toHaveStyle({ backgroundColor: '#d97706' });
   });
 
-  it('el pliego superior abierto despliega el mecanismo de anillas metalicas del archivador y perforaciones de hoja', () => {
-    render(<NotesView profileId={profileId} />);
+  it('el pliego superior abierto usa las anillas del Pliego, no un mecanismo propio', () => {
+    const { container } = render(<NotesView profileId={profileId} />);
 
-    const mechanism = screen.getByTestId('binder-mechanism');
-    expect(mechanism).toBeInTheDocument();
-    expect(screen.getAllByTestId('binder-ring').length).toBeGreaterThanOrEqual(2);
-    expect(screen.getAllByTestId('binder-punch-hole').length).toBeGreaterThanOrEqual(2);
+    expect(screen.queryByTestId('binder-mechanism')).toBeNull();
+    expect(screen.queryAllByTestId('binder-punch-hole')).toHaveLength(0);
+    expect(container.querySelector('[class*="folioContainer"] svg')).not.toBeNull();
   });
 });
-

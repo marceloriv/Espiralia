@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Pencil, Trash2, Folder as FolderIcon } from 'lucide-react';
 import type { Note, Folder } from '../../types';
 import { parseBujoContent, countWords, getCategoryRibbonColor } from '../../utils/bujoFormatter';
+import { Papel, TINTE_DE_MODULO } from '../common/Papel';
 import styles from './BujoCard.module.css';
 
 export interface BujoCardProps {
@@ -67,13 +68,16 @@ export const BujoCard: React.FC<BujoCardProps> = ({
   };
 
   return (
-    <article
+    <Papel
+      as="article"
+      tinte={TINTE_DE_MODULO.notas}
       className={`${styles.card} ${isActive ? styles.cardActive : ''}`}
       onClick={handleCardClick}
       onKeyDown={handleKeyDown}
       tabIndex={0}
       aria-selected={isActive}
     >
+      <div className={styles.cardBody}>
       {isActive && (
         <div className={styles.activeCornerClip} aria-hidden="true">
           <div className={styles.activeClipLoop} />
@@ -154,6 +158,7 @@ export const BujoCard: React.FC<BujoCardProps> = ({
           </button>
         </div>
       </div>
-    </article>
+      </div>
+    </Papel>
   );
 };

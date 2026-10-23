@@ -1,35 +1,17 @@
 .card {
-  position: relative;
-  padding: 18px 20px 16px;
-  border-radius: 12px;
-  background-color: var(--bg-card);
-  /* Papel verjurado para fichas de archivo */
-  background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 21px, rgba(142, 30, 162, 0.02) 21px, rgba(142, 30, 162, 0.02) 22px),
-    radial-gradient(#E5DDD1 1px, transparent 1px);
-  background-size: 100% 22px, 14px 14px;
-  border: 1px solid var(--color-hairline, #E6DFD8);
-  border-left: 4px solid var(--color-hairline, #E6DFD8);
-  box-shadow: 
-    1px 1px 0 rgba(220, 210, 195, 0.6),
-    2px 2px 0 rgba(200, 190, 175, 0.3),
-    0 4px 14px rgba(26, 25, 23, 0.05);
+  cursor: pointer;
+  transition: transform 0.18s ease;
+  outline: none;
+}
+
+.cardBody {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  outline: none;
 }
 
 .card:hover {
   transform: translateY(-2px);
-  border-color: var(--color-hairline-soft, #EBE6DF);
-  border-left-color: var(--color-primary-soft, #ED96D7);
-  box-shadow: 
-    1px 1px 0 rgba(220, 210, 195, 0.8),
-    3px 3px 0 rgba(142, 30, 162, 0.15),
-    0 6px 18px rgba(20, 20, 19, 0.08);
 }
 
 .card:focus-visible {
@@ -38,18 +20,14 @@
 }
 
 .cardActive {
-  border-color: var(--color-primary, #8E1EA2);
-  border-left-color: var(--color-primary, #8E1EA2);
-  box-shadow: 
-    1px 1px 0 rgba(142, 30, 162, 0.25),
-    3px 3px 0 rgba(142, 30, 162, 0.2),
-    0 6px 20px rgba(142, 30, 162, 0.12);
+  outline: 2px solid var(--color-primary, #8E1EA2);
+  outline-offset: 2px;
   transform: translateY(-2px);
 }
 
 .activeCornerClip {
   position: absolute;
-  top: -8px;
+  top: 8px;
   left: 20px;
   width: 14px;
   height: 24px;
@@ -63,7 +41,7 @@
 
 .ribbon {
   position: absolute;
-  top: 0;
+  top: 4px;
   right: 22px;
   width: 12px;
   height: 26px;
@@ -229,7 +207,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.15s ease;
-  min-width: 28px;
+  min-width: var(--tap-min);
   min-height: var(--tap-min);
 }
 

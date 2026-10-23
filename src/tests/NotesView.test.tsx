@@ -11,28 +11,27 @@ describe('NotesView', () => {
     localStorage.clear();
   });
 
-  it('renderiza el diario de autoobservacion con pregunta ancla, pliego verjurado, reflexion nocturna y energia basal', () => {
+  it('renderiza el diario de autoobservacion con pliego verjurado y energia basal', () => {
     render(<NotesView profileId={profileId} />);
 
     expect(screen.getByRole('heading', { level: 1, name: /diario de autoobservación & desahogo/i })).toBeInTheDocument();
-    expect(screen.getByText(/pregunta ancla de la semana/i)).toBeInTheDocument();
     expect(screen.getByText(/tu primera entrada/i)).toBeInTheDocument();
     expect(screen.queryByText(/avance conaset/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/¿qué fluyó bien hoy\?/i)).toBeInTheDocument();
-    expect(screen.getByText(/modo estilográfica: activo/i)).toBeInTheDocument();
     expect(screen.queryByText(/vaciado rápido/i)).not.toBeInTheDocument();
   });
 
-  it('incluye elementos táctiles de encuadernación artesanal y clip de latón en el pliego verjurado', () => {
+  it('pone la nota abierta en un Pliego y no conserva ornamentos ni relleno de ejemplo', () => {
     const { container } = render(<NotesView profileId={profileId} />);
 
-    const bookbindingGutter = container.querySelector('[class*="bookbindingGutter"]');
-    expect(bookbindingGutter).toBeInTheDocument();
-    expect(bookbindingGutter).toHaveAttribute('aria-hidden', 'true');
-
-    const bujoBrassClip = container.querySelector('[class*="bujoBrassClip"]');
-    expect(bujoBrassClip).toBeInTheDocument();
-    expect(bujoBrassClip).toHaveAttribute('aria-hidden', 'true');
+    const pliego = container.querySelector('[class*="folioContainer"]');
+    expect(pliego?.querySelector('svg')).not.toBeNull();
+    for (const ornamento of ['bookbindingGutter', 'bujoBrassClip', 'binderMechanism', 'binderPunchMargin', 'washiTape', 'hankoSeal']) {
+      expect(container.querySelector(`[class*="${ornamento}"]`), ornamento).toBeNull();
+    }
+    expect(screen.queryByText(/pregunta ancla de la semana/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/¿qué fluyó bien hoy\?/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/modo estilográfica/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/historial de versiones/i)).not.toBeInTheDocument();
   });
 
   it('renderiza la vista y permite crear una nueva reflexión terapéutica', async () => {

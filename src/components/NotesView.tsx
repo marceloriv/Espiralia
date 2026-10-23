@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus, BookOpen, FileText, Pencil, Lightbulb, Feather, Activity, ShieldCheck, Cloud, Coffee, Leaf, Flame, Sun, type LucideIcon } from 'lucide-react';
+import { Plus, BookOpen, FileText, Lightbulb, Feather, Activity, ShieldCheck, Cloud, Coffee, Leaf, Flame, Sun, type LucideIcon } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Note, Folder, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { NoteModal } from './notes/NoteModal';
 import { BujoCard } from './notes/BujoCard';
+import { Pliego } from './common/Pliego';
 import { parseBujoContent, countWords, getCategoryRibbonColor } from '../utils/bujoFormatter';
 import styles from './NotesView.module.css';
 
@@ -334,8 +335,6 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       <div className={styles.deskHeader}>
         <div className={styles.deskHeaderMain}>
           <div className={styles.overlineRow}>
-            <span className={styles.overlineTag}>Espiralia • Cuaderno Analógico Local</span>
-            <span className={styles.bullet}>•</span>
             <span className={styles.overlineSub}>{currentTomoConfig.title}</span>
           </div>
 
@@ -410,42 +409,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       </div>
 
       {/* 2. Pliego Físico Abierto Papercraft Stitch */}
-      <div className={styles.folioContainer}>
-        {/* Mecanismo de Anillas de Acero de Archivador de Palanca */}
-        <div className={styles.binderMechanism} data-testid="binder-mechanism" aria-hidden="true">
-          <div className={styles.binderSpinePlate} />
-          <div className={styles.binderRingGroup}>
-            <div className={styles.binderRing} data-testid="binder-ring">
-              <div className={styles.binderRingHighlight} />
-            </div>
-            <div className={styles.binderRing} data-testid="binder-ring">
-              <div className={styles.binderRingHighlight} />
-            </div>
-            <div className={styles.binderRing} data-testid="binder-ring">
-              <div className={styles.binderRingHighlight} />
-            </div>
-          </div>
-          <div className={styles.binderLeverHandle} />
-        </div>
-
-        {/* Perforaciones circulares en el margen de la hoja */}
-        <div className={styles.binderPunchMargin} aria-hidden="true">
-          <div className={styles.binderPunchHole} data-testid="binder-punch-hole" />
-          <div className={styles.binderPunchHole} data-testid="binder-punch-hole" />
-          <div className={styles.binderPunchHole} data-testid="binder-punch-hole" />
-        </div>
-
-        {/* Cintas Washi en esquinas */}
-        <div className={styles.washiTapeMagenta} aria-hidden="true" />
-        <div className={styles.washiTapeSlate} aria-hidden="true" />
-
-        {/* Sello Notarial Rojo Hanko Japonés / Espiralia */}
-        <div className={styles.hankoSeal} aria-hidden="true">
-          <span className={styles.hankoKanji}>済</span>
-          <span className={styles.hankoText}>ESPIRALIA</span>
-          <span className={styles.hankoSub}>AUTÉNTICO</span>
-        </div>
-
+      <Pliego as="div" className={styles.folioContainer}>
         {/* Grid de Pliego Manuscrito (8 Cols Izquierda, 4 Cols Derecha) */}
         <div className={styles.folioGrid}>
           {/* ============================================================== */}
@@ -475,17 +439,6 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               </div>
             </div>
 
-            {/* Pregunta Ancla Terapéutica */}
-            <div className={styles.anchorPromptBanner}>
-              <Feather size={18} className={styles.iconPrimary} aria-hidden="true" />
-              <div>
-                <h4 className={styles.anchorPromptTitle}>Pregunta Ancla de la Semana:</h4>
-                <p className={styles.anchorPromptText}>
-                  "¿Qué autoexigencias me estoy imponiendo hoy que pertenecen al futuro y no a mi presente inmediato?"
-                </p>
-              </div>
-            </div>
-
             {/* Lienzo Manuscrito Bujo Dot Grid */}
             <div className={styles.bujoCanvas}>
               {/* Cinta marcapáginas en la esquina */}
@@ -495,23 +448,6 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                 data-testid="pliego-ribbon"
                 aria-hidden="true"
               />
-
-              {/* Margen de encuadernación cosida con hilo de taller */}
-              <div className={styles.bookbindingGutter} aria-hidden="true">
-                <div className={styles.stitchKnot} style={{ top: '12%' }} />
-                <div className={styles.stitchKnot} style={{ top: '37%' }} />
-                <div className={styles.stitchKnot} style={{ top: '63%' }} />
-                <div className={styles.stitchKnot} style={{ top: '88%' }} />
-                <div className={styles.marginGuideRule} />
-              </div>
-
-              {/* Clip de latón de sujeción superior */}
-              <div className={styles.bujoBrassClip} aria-hidden="true">
-                <svg fill="none" height="42" viewBox="0 0 24 48" width="22" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M7 18V36C7 40.4 10.6 44 15 44C19.4 44 23 40.4 23 36V11C23 5.5 18.5 1 13 1C7.5 1 3 5.5 3 11V33C3 35.8 5.2 38 8 38C10.8 38 13 35.8 13 33V14" stroke="#cfb53b" strokeLinecap="round" strokeWidth="2.5" />
-                  <path d="M6 18V36C6 39 9 42.5 14 42.5" stroke="#fef08a" strokeLinecap="round" strokeWidth="1" />
-                </svg>
-              </div>
 
               {isEditingPliego ? (
                 <div className={styles.pliegoEditorContainer}>
@@ -578,21 +514,6 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               </div>
             </div>
 
-            {/* Barra de Reflexión Nocturna (3 Columnas) */}
-            <div className={styles.nightReflectionStrip}>
-              <div className={styles.reflectionCol}>
-                <span className={styles.reflectionTagPrimary}>¿Qué fluyó bien hoy?</span>
-                <p className={styles.reflectionBody}>Pude respirar antes de contestar el correo del taller. Pausa de 3 minutos cumplida.</p>
-              </div>
-              <div className={styles.reflectionCol}>
-                <span className={styles.reflectionTagAmber}>¿Qué puedo mejorar?</span>
-                <p className={styles.reflectionBody}>No consultar la bandeja de entrada después de las 20:00 hrs. Desconectar la pantalla azul.</p>
-              </div>
-              <div className={styles.reflectionCol}>
-                <span className={styles.reflectionTagTeal}>Intención para mañana:</span>
-                <p className={styles.reflectionBody}>Caminar 20 min bajo los plátanos orientales sin auriculares ni prisa.</p>
-              </div>
-            </div>
           </div>
 
           {/* ============================================================== */}
@@ -619,7 +540,6 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                   Escribe sin censura.<br />
                   El orden exterior nutre la serenidad interior.
                 </p>
-                <span className={styles.stickyAuthor}>Cuaderno Terapéutico #4</span>
               </div>
             </div>
 
@@ -668,26 +588,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
 
         {/* Barra Analógica Inferior */}
         <div className={styles.folioBottomToolbar}>
-          <div className={styles.toolbarMetaGroup}>
-            <span className={styles.toolbarMetaItem}>
-              <Pencil size={14} aria-hidden="true" />
-              <span>Modo Estilográfica: Activo (Tinta 0.5mm)</span>
-            </span>
-            <span className={styles.bullet}>•</span>
-            <span className={styles.toolbarMetaItem}>
-              <BookOpen size={14} aria-hidden="true" />
-              <span>Papel: Tinte Marfil 300g / Verjurado</span>
-            </span>
-          </div>
-
           <div className={styles.toolbarActionsGroup}>
-            <button
-              type="button"
-              className={styles.btnVersionHistory}
-              onClick={() => sileo.info({ title: 'Versión del pliego', description: 'Pliego sincronizado localmente.' })}
-            >
-              <span>Historial de Versiones</span>
-            </button>
             <button
               type="button"
               className={styles.btnEditPliego}
@@ -706,7 +607,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
             </button>
           </div>
         </div>
-      </div>
+      </Pliego>
 
       {/* 3. Sección de Archivo de Notas & Búsqueda */}
       <section className={styles.archiveSection}>

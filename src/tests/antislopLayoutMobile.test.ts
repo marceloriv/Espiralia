@@ -59,8 +59,8 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
 
   it('NotesView define escala compacta de archivador y pliego para pantallas moviles (< 640px)', () => {
     expect(notesCss).toContain('@media (max-width: 640px)');
-    expect(notesCss).toMatch(/@media \(max-width: 640px\)[\s\S]*?\.folioContainer\s*\{[^}]*padding:\s*20px 14px 20px 46px/);
-    expect(notesCss).toMatch(/@media \(max-width: 640px\)[\s\S]*?\.binderMechanism\s*\{[^}]*width:\s*24px/);
+    // El pliego (Pliego.module.css) lleva su propio padding móvil; aquí solo queda la escala del archivador.
+    expect(notesCss).not.toMatch(/\.binderMechanism/);
   });
 
   it('FoldersView define scroll-snap y dimensiones adaptadas para carpetas en pantallas moviles (< 640px)', () => {
