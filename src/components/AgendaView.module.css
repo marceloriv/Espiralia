@@ -312,14 +312,6 @@
   line-height: 1.3;
 }
 
-.postItAuthor {
-  text-align: right;
-  font-family: var(--font-family-3);
-  font-size: var(--text-micro);
-  color: var(--color-text-amber);
-  font-style: italic;
-}
-
 /* 3.2 El resumen del día es un Papel (cuerpo en columna); el formulario es cartulina lisa: se edita, no solo se lee. */
 .panelBody {
   display: flex;

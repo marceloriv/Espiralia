@@ -35,6 +35,11 @@ const BANNED_EVERYWHERE: RegExp[] = [
   /Biorritmo/,
   /0 bytes transmitidos/,
   /LOCAL ENCRIPTADO/,
+  // Firma personal y ejemplos de otro dominio (conducción) que no pertenecen a un producto público.
+  /r\.v\. notas de taller/,
+  /Conducción real/,
+  /normas viales/,
+  /\bmilitar\b/i,
 ];
 
 const files = walk(COMPONENTS_DIR);

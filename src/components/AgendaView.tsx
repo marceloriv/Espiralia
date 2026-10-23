@@ -301,9 +301,6 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <p className={styles.postItQuote}>
               “Un día a la vez; la constancia vence a la prisa ♡”
             </p>
-            <div className={styles.postItAuthor}>
-              <span>- r.v. notas de taller</span>
-            </div>
           </div>
 
           {/* 3.2 Resumen del día: papel pizarra, el tinte de la Agenda */}

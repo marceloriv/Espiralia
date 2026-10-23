@@ -25,7 +25,7 @@ const MOMENTOS: RitmoMomento[] = [
     num: '01',
     horario: '01 • 07:30 - 09:00',
     titulo: 'Enfoque Profundo Sin Ruido',
-    desc: 'Dedicado a tu tarea más exigente antes de que el mundo despierte. En este espacio se ataca el estudio riguroso de normas viales o la redacción compleja sin interrupciones.',
+    desc: 'Dedicado a tu tarea más exigente antes de que el mundo despierte. En este espacio se ataca el estudio riguroso o la redacción compleja sin interrupciones.',
     metrica: '1 sola prioridad crítica • Modo sin notificaciones',
     icon: <Sunrise size={18} color="var(--color-primary)" aria-hidden="true" />,
     washiClass: styles.washiMagenta,

@@ -218,7 +218,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
                 onChange={(e) => setIsEncrypted(e.target.checked)}
               />
               <label htmlFor="vault-encrypt-toggle" className={styles.label}>
-                Cifrar archivo con contraseña (AES-GCM militar offline)
+                Cifrar archivo con contraseña (AES-GCM)
               </label>
             </div>
 

@@ -144,7 +144,7 @@ export const LandingDeskPreview: React.FC = () => {
               </div>
               <div className={`${styles.scheduleRow} ${styles.scheduleRowTeal}`}>
                 <span className={styles.scheduleTime}>16:00 - 17:00</span>
-                <span className={styles.scheduleTitle}>Práctica en circuito / Conducción real</span>
+                <span className={styles.scheduleTitle}>Práctica guiada y repaso de apuntes</span>
                 <span className={styles.scheduleTag}>Acción</span>
               </div>
               <div className={`${styles.scheduleRow} ${styles.scheduleRowNeutral}`}>
