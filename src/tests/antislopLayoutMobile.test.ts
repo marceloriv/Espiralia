@@ -65,6 +65,11 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
     expect(todoCss).toMatch(/\.folderTab\s*\{[^}]*flex-shrink:\s*0[^}]*white-space:\s*nowrap/);
   });
 
+  it('DashboardView deja los siete días de hábitos visibles: columnas de 44px que pasan a otra fila en vez de cortarse', () => {
+    expect(dashboardCss).toMatch(/\.habitPillsRow\s*\{[^}]*display:\s*grid[^}]*repeat\(auto-fit,\s*minmax\(44px,\s*1fr\)\)/);
+    expect(dashboardCss).toMatch(/\.habitPillChecked,\s*\.habitPillEmpty\s*\{[^}]*width:\s*44px[^}]*height:\s*44px/);
+  });
+
   it('PlannerView reparte la semana en columnas de 190px que caben, porque la regla global anula el min-width (< 768px)', () => {
     expect(indexCss).toMatch(/@media \(max-width: 768px\)[\s\S]*?main \*:not\(button\)[^{]*\{[^}]*min-width:\s*0/);
     expect(plannerCss).toMatch(/@media \(max-width: 768px\)[\s\S]*?\.weeklyGrid\s*\{[^}]*display:\s*grid/);

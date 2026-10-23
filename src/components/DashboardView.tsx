@@ -600,9 +600,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               >
                 + Hábito
               </button>
-              <div className={styles.habitDaysHead}>
-                <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
-              </div>
             </div>
           </div>
 
@@ -647,7 +644,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                             onClick={() => handleToggleHabitDay(h.id, dayIdx)}
                             aria-label={`Marcar ${dayLetter} para ${h.name}`}
                           >
-                            {isCompleted ? '✓' : ''}
+                            {isCompleted ? '✓' : dayLetter}
                           </button>
                         );
                       })}

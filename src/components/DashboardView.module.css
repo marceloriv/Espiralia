@@ -767,19 +767,6 @@
 }
 
 /* Card 3: Habit Tracker */
-.habitDaysHead {
-  display: flex;
-  gap: 6px;
-  font-family: var(--font-family-3);
-  font-size: 11px;
-  color: var(--color-muted);
-}
-
-.habitDaysHead span {
-  width: 18px;
-  text-align: center;
-}
-
 .habitRowsList {
   display: flex;
   flex-direction: column;
@@ -789,8 +776,8 @@
 
 .habitRowItem {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .habitInfo {
@@ -813,39 +800,61 @@
   white-space: nowrap;
 }
 
+/* Siete columnas de 44px cuando caben; si la tarjeta es más angosta, los días pasan a una segunda fila en vez de cortarse. */
 .habitPillsRow {
-  display: flex;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+  justify-items: center;
 }
 
+/* El botón mide 44px (R-03) y ocupa una columna de la fila; el círculo visible se dibuja detrás con ::before. */
 .habitPillChecked,
 .habitPillEmpty {
-  width: 20px;
-  height: 20px;
+  position: relative;
+  isolation: isolate;
+  width: 44px;
+  height: 44px;
   padding: 0;
   margin: 0;
-  border-radius: 9999px;
+  border: none;
+  background: transparent;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: inherit;
+  font-family: var(--font-family-3);
+  font-size: 11px;
   transition: transform 0.12s ease;
   box-sizing: border-box;
 }
 
+.habitPillChecked::before,
+.habitPillEmpty::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  z-index: -1;
+  border-radius: 9999px;
+  box-sizing: border-box;
+}
+
 .habitPillChecked {
-  background-color: #5a826d;
   color: #ffffff;
   font-size: var(--text-micro);
   font-weight: bold;
-  border: none;
+}
+
+.habitPillChecked::before {
+  background-color: #5a826d;
 }
 
 .habitPillEmpty {
+  color: var(--color-muted);
+}
+
+.habitPillEmpty::before {
   border: 1px solid var(--color-hairline);
   background-color: var(--color-surface-soft);
-  color: transparent;
 }
 
 .habitPillChecked:hover,
