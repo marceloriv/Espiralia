@@ -44,12 +44,7 @@
   color: var(--color-muted);
 }
 
-.bullet {
-  color: var(--color-hairline);
-}
-
 .weekTag {
-  color: var(--color-primary);
   font-weight: 700;
 }
 
@@ -166,99 +161,7 @@
   }
 }
 
-/* 2.1 Columna Izquierda: Calendario Papercraft */
-.calendarCard {
-  position: relative;
-  min-width: 0;
-  padding: 34px 24px 24px;
-  background-color: var(--bg-card);
-  /* Textura de pliego verjurado para el almanaque de mesa */
-  background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(142, 30, 162, 0.02) 31px, rgba(142, 30, 162, 0.02) 32px),
-    radial-gradient(#dfd5c5 1px, transparent 1px);
-  background-size: 100% 32px, 16px 16px;
-  border: 1px solid var(--border-hairline);
-  border-radius: var(--radius-xl);
-  box-shadow: 
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    var(--shadow-card-stack, 0 1px 3px rgba(37, 35, 32, 0.04), 0 12px 28px -4px rgba(45, 35, 25, 0.08));
-  overflow: hidden;
-}
-
-/* Regla milimetrada de latón grabada en el almanaque */
-.brassRulerBar {
-  position: absolute;
-  top: 6px;
-  left: 20px;
-  right: 20px;
-  height: 18px;
-  background: linear-gradient(180deg, #ecd89d 0%, #caa658 50%, #997836 100%);
-  border: 1px solid #735a26;
-  border-radius: 2px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 4px 1px;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.rulerGraduations {
-  width: 100%;
-  height: 6px;
-  background-image: repeating-linear-gradient(
-    90deg,
-    #4a3713 0px,
-    #4a3713 1px,
-    transparent 1px,
-    transparent 5px
-  );
-  opacity: 0.6;
-}
-
-.rulerMarks {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  font-family: var(--font-family-3, monospace);
-  font-size: var(--text-micro);
-  font-weight: 700;
-  color: #3b2a0c;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  padding: 0 2px;
-}
-
-.bindingAccent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, #8E1EA2, #5DB8A6, #E8A55A);
-  opacity: 0.85;
-}
-
-.bindingRivetLeft,
-.bindingRivetRight {
-  position: absolute;
-  top: 1px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
-}
-
-.bindingRivetLeft {
-  left: 30px;
-}
-
-.bindingRivetRight {
-  right: 30px;
-}
-
+/* 2.1 Columna Izquierda: el almanaque va en un Pliego (anillas, sombra de apilado); el calendario lo pinta FullCalendar. */
 .calendarToolbar {
   display: flex;
   flex-wrap: wrap;
@@ -284,16 +187,6 @@
   font-size: var(--text-body-md);
   font-weight: 700;
   color: var(--color-ink);
-}
-
-.sheetBadge {
-  font-family: var(--font-family-3);
-  font-size: 0.6875rem;
-  color: var(--color-muted);
-  background-color: var(--color-surface-card);
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px solid var(--color-hairline);
 }
 
 .toolbarLegend {
@@ -414,19 +307,6 @@
   transform: rotate(0deg);
 }
 
-.postItWashiTape {
-  position: absolute;
-  top: -9px;
-  left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  width: 105px;
-  height: 18px;
-  background: rgba(220, 185, 215, 0.65);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-  border-radius: 2px;
-  pointer-events: none;
-}
-
 .postItTop {
   display: flex;
   align-items: center;
@@ -463,23 +343,30 @@
   font-style: italic;
 }
 
-/* 3.2 Ficha de Tareas y Citas Inmediatas con Clip Metálico Dorado */
+/* 3.2 El resumen del día es un Papel (cuerpo en columna); el formulario es cartulina lisa: se edita, no solo se lee. */
+.panelBody {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 .panelCard {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
   padding: 24px 20px 20px;
-  background-color: var(--color-surface-card);
+  background-color: var(--color-surface-bright);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-xl);
-  box-shadow: 2px 3px 0px #efe9de, 4px 6px 0px #e8e0d2, 0 12px 24px rgba(20, 20, 19, 0.06);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-paper);
 }
 
 .goldenMetalClip {
   position: absolute;
-  top: -10px;
-  left: 28px;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 20;
   display: flex;
   flex-direction: column;
@@ -533,13 +420,9 @@
 }
 
 .priorityCountBadge {
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
+  flex-shrink: 0;
   font-family: var(--font-family-3);
   font-size: 0.7rem;
-  background-color: rgba(142, 30, 162, 0.1);
-  color: var(--color-primary);
-  border: 1px solid rgba(142, 30, 162, 0.2);
   font-weight: 600;
 }
 
@@ -608,36 +491,6 @@
   box-shadow: 1px 1px 0 rgba(142, 30, 162, 0.2), 0 4px 10px rgba(20, 20, 19, 0.06);
 }
 
-.ticketNotchTop,
-.ticketNotchBottom {
-  position: absolute;
-  right: 64px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  z-index: 2;
-}
-
-.ticketNotchTop {
-  top: -6px;
-}
-
-.ticketNotchBottom {
-  bottom: -6px;
-}
-
-.ticketPerforationLine {
-  position: absolute;
-  right: 69px;
-  top: 4px;
-  bottom: 4px;
-  width: 1px;
-  border-left: 1px dashed rgba(160, 140, 115, 0.4);
-  pointer-events: none;
-}
-
 .eventSwatch {
   width: 10px;
   height: 10px;
@@ -688,36 +541,6 @@
 .iconBtn:hover {
   color: var(--color-primary);
   background-color: var(--color-surface-soft);
-}
-
-.quickReminderDashed {
-  padding: 12px;
-  border-radius: 8px;
-  background-color: rgba(250, 249, 245, 0.8);
-  border: 1px dashed var(--color-hairline);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.reminderHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-family: var(--font-family-3);
-  font-size: var(--text-micro);
-  font-weight: 700;
-  color: var(--color-muted);
-  letter-spacing: 0.05em;
-}
-
-.reminderText {
-  margin: 0;
-  font-family: var(--font-primary);
-  font-style: italic;
-  font-size: var(--text-body-sm);
-  color: var(--color-ink);
-  line-height: 1.4;
 }
 
 /* 3.3 Formulario */

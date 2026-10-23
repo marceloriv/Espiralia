@@ -9,7 +9,7 @@ import esLocale from '@fullcalendar/react/locales/es';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
-import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Bell, Smile, Leaf, Meh, BatteryLow } from 'lucide-react';
+import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Smile, Leaf, Meh, BatteryLow } from 'lucide-react';
 import { ENERGY_LEVELS } from '../utils/energyLevels';
 import { sileo } from 'sileo';
 import type { AgendaEvent, EventCategory, Profile, ViewType } from '../types';
@@ -30,6 +30,8 @@ import {
 } from './agenda/eventMapping';
 import type { CategoryFilter } from './agenda/eventMapping';
 import { commitTimeChange, safeDeleteEvent, safeSaveEvent } from './agenda/eventPersistence';
+import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Pliego } from './common/Pliego';
 import styles from './AgendaView.module.css';
 
 interface AgendaViewProps {
@@ -181,11 +183,9 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
       <div className={styles.headerRibbon}>
         <div className={styles.ribbonLeft}>
           <div className={styles.overlineRow}>
-            <span>Cuaderno #04</span>
-            <span className={styles.bullet}>•</span>
-            <span>Tomo Primavera-Verano</span>
-            <span className={styles.bullet}>•</span>
-            <span className={styles.weekTag}>Semana {isoWeekNumber(new Date())}</span>
+            <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.agenda} className={styles.weekTag}>
+              Semana {isoWeekNumber(new Date())}
+            </Papel>
           </div>
 
           <div className={styles.titleRow}>
@@ -229,33 +229,12 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
         {/* ============================================================== */}
         {/* Columna Izquierda: Almanaque de Mesa Mensual (8 Cols)          */}
         {/* ============================================================== */}
-        <div className={styles.calendarCard}>
-          {/* Regla milimetrada de latón de taller de imprenta */}
-          <div className={styles.brassRulerBar} aria-hidden="true">
-            <div className={styles.rulerGraduations} />
-            <div className={styles.rulerMarks}>
-              <span>0</span>
-              <span>5</span>
-              <span>10</span>
-              <span>15</span>
-              <span>20</span>
-              <span>25</span>
-              <span>30cm</span>
-            </div>
-          </div>
-
-          {/* Acento superior de encuadernación de imprenta con pernos */}
-          <div className={styles.bindingAccent} aria-hidden="true">
-            <span className={styles.bindingRivetLeft} />
-            <span className={styles.bindingRivetRight} />
-          </div>
-
+        <Pliego as="div" className={styles.calendarCard}>
           {/* Barra de Herramientas del Almanaque */}
           <div className={styles.calendarToolbar}>
             <div className={styles.toolbarLeft}>
               <BookOpen size={18} className={styles.iconPrimary} aria-hidden="true" />
               <span className={styles.sheetTitle}>Almanaque de Mesa</span>
-              <span className={styles.sheetBadge}>Formato Imprenta</span>
             </div>
 
             <div className={styles.toolbarLegend}>
@@ -303,15 +282,18 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               <span className={styles.syncText}>Exportable a .ics para Google Calendar y Apple Calendario (RFC 5545)</span>
             </div>
           </div>
-        </div>
+        </Pliego>
 
         {/* ============================================================== */}
         {/* Columna Derecha: The Analog Physical Desk Artifacts (4 Cols)   */}
         {/* ============================================================== */}
         <aside className={styles.eventsPanel} aria-label="Día seleccionado">
-          {/* 3.1 Post-It Motivacional con Washi Tape */}
+          {/* 3.1 Post-It Motivacional: lleva el único clip de la pantalla */}
           <div className={styles.motivationalPostIt}>
-            <div className={styles.postItWashiTape} aria-hidden="true" />
+            <div className={styles.goldenMetalClip} aria-hidden="true">
+              <div className={styles.clipOuter} />
+              <div className={styles.clipInner} />
+            </div>
             <div className={styles.postItTop}>
               <Sun size={15} className={styles.postItSun} aria-hidden="true" />
               <span className={styles.postItTag}>NOTA DEL DÍA</span>
@@ -324,23 +306,18 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             </div>
           </div>
 
-          {/* 3.2 Ficha de Tareas y Citas Inmediatas con Clip Metálico Dorado */}
-          <div className={styles.panelCard}>
-            {/* Clip Metálico Dorado de sujeción */}
-            <div className={styles.goldenMetalClip} aria-hidden="true">
-              <div className={styles.clipOuter} />
-              <div className={styles.clipInner} />
-            </div>
-
+          {/* 3.2 Resumen del día: papel pizarra, el tinte de la Agenda */}
+          <Papel as="section" tinte={TINTE_DE_MODULO.agenda} aria-labelledby="agenda-day-title">
+            <div className={styles.panelBody}>
             {/* Cabecera de la ficha */}
             <div className={styles.panelHeaderRow}>
               <div>
                 <span className={styles.agendaDiariaBadge}>Agenda Diaria</span>
-                <h3 className={styles.panelTitle}>Eventos del {selectedDate}</h3>
+                <h3 id="agenda-day-title" className={styles.panelTitle}>Eventos del {selectedDate}</h3>
               </div>
-              <span className={styles.priorityCountBadge}>
+              <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.agenda} className={styles.priorityCountBadge}>
                 {dayEvents.length} {dayEvents.length === 1 ? 'Prioritaria' : 'Prioritarias'}
-              </span>
+              </Papel>
             </div>
 
             {/* Input para saltar a otra fecha */}
@@ -364,10 +341,6 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               <ul className={styles.eventsList} aria-label="Eventos del día">
                 {dayEvents.map(ev => (
                   <li key={ev.id} className={styles.eventItem}>
-                    <span className={styles.ticketNotchTop} aria-hidden="true" />
-                    <span className={styles.ticketNotchBottom} aria-hidden="true" />
-                    <span className={styles.ticketPerforationLine} aria-hidden="true" />
-
                     <span
                       className={styles.eventSwatch}
                       style={{ backgroundColor: CATEGORY_COLORS[categoryOf(ev)].color }}
@@ -404,18 +377,8 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 ))}
               </ul>
             )}
-
-            {/* Recordatorio rápido con micro-perforaciones */}
-            <div className={styles.quickReminderDashed}>
-              <div className={styles.reminderHeader}>
-                <span>RECORDATORIO RÁPIDO</span>
-                <Bell size={12} aria-hidden="true" />
-              </div>
-              <p className={styles.reminderText}>
-                Comprar papel kraft gramaje 180g y cinta washi verde salvia en librería central.
-              </p>
             </div>
-          </div>
+          </Papel>
 
           {/* 3.3 Formulario de Creación / Edición */}
           <form
@@ -568,7 +531,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <div className={styles.rhythmHeader}>
               <div className={styles.rhythmTitleGroup}>
                 <Moon size={16} className={styles.iconPrimary} aria-hidden="true" />
-                <h4 className={styles.rhythmTitle}>Energy &amp; Mood Rhythm Tracker</h4>
+                <h4 className={styles.rhythmTitle}>Ritmo de energía y ánimo</h4>
               </div>
               <span className={styles.rhythmDateBadge}>
                 {new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'short' }).toUpperCase()}
