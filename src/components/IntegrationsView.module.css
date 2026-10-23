@@ -30,20 +30,6 @@
   }
 }
 
-/* Atmospheric Washi Tape on Top Right */
-.topWashiTape {
-  position: absolute;
-  top: -14px;
-  right: 3rem;
-  width: 128px;
-  height: 24px;
-  background: rgba(166, 186, 164, 0.85);
-  box-shadow: 0 1px 3px rgba(35, 25, 15, 0.1);
-  transform: rotate(3deg);
-  border-radius: 2px;
-  z-index: 20;
-}
-
 /* Sovereignty Post-it with Brass Paperclip */
 .sovereigntyPostit {
   position: relative;
@@ -107,18 +93,6 @@
   text-align: right;
 }
 
-/* Botanical Watermark */
-.botanicalWatermark {
-  position: absolute;
-  top: 1.5rem;
-  left: 2rem;
-  width: 110px;
-  height: 110px;
-  color: rgba(140, 154, 167, 0.18);
-  pointer-events: none;
-  user-select: none;
-}
-
 /* Editorial Title Block */
 .header {
   position: relative;
@@ -126,33 +100,6 @@
   padding-bottom: 1.75rem;
   border-bottom: 1px solid #E3DCCE;
   max-width: 860px;
-}
-
-.headerMetaRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.badgeCluster {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.badgeModule {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.15rem 0.65rem;
-  border-radius: 9999px;
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
-  font-weight: 600;
-  background-color: rgba(237, 150, 215, 0.25);
-  color: var(--color-primary);
-  border: 1px solid rgba(110, 0, 129, 0.2);
 }
 
 .badgeBullet {
@@ -163,32 +110,6 @@
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
   color: var(--color-ink-muted, #6c6a64);
-}
-
-.categoryChipsLegend {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.chipItem {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.15rem 0.65rem;
-  border-radius: 9999px;
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
-  border: 1px solid rgba(166, 186, 164, 0.4);
-  background: rgba(166, 186, 164, 0.25);
-  color: #24523c;
-}
-
-.chipDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
 }
 
 .titleRow {
@@ -214,23 +135,6 @@
   }
 }
 
-.hankoStamp {
-  border: 2px solid #a83626;
-  color: #a83626;
-  font-family: var(--font-code, monospace);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  padding: 0.15rem 0.5rem;
-  border-radius: 0.25rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  transform: rotate(-3deg);
-  display: inline-block;
-  opacity: 0.9;
-  mix-blend-mode: multiply;
-  box-shadow: inset 0 0 0 1px rgba(168, 54, 38, 0.35);
-}
-
 .subtitle {
   margin: 0.5rem 0 0;
   font-family: var(--font-headline, 'Newsreader', serif);
@@ -239,12 +143,6 @@
   line-height: 1.6;
   color: #5d6770;
   max-width: 780px;
-}
-
-.italicTerm {
-  font-style: normal;
-  font-weight: 600;
-  color: var(--color-ink);
 }
 
 /* Inner App Workspace Layout */
@@ -259,185 +157,6 @@
   .workspaceLayout {
     flex-direction: row;
   }
-}
-
-/* Left Sidebar */
-.leftSidebar {
-  width: 100%;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  background: rgba(244, 239, 230, 0.7);
-  padding: 1.25rem;
-  border-radius: 0.75rem;
-  border: 1px solid #DDD5C5;
-}
-
-@media (min-width: 1024px) {
-  .leftSidebar {
-    width: 270px;
-  }
-}
-
-.sidebarTitleBox {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #E3DACB;
-}
-
-.sidebarIconSquare {
-  width: 36px;
-  height: 36px;
-  border-radius: 0.5rem;
-  background: #ffffff;
-  border: 1px solid #DDD5C5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-primary);
-}
-
-.sidebarTitle {
-  font-family: var(--font-headline, serif);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--color-ink);
-  margin: 0;
-}
-
-.sidebarSubtitle {
-  font-family: var(--font-code, monospace);
-  font-size: 0.6875rem;
-  color: var(--color-ink-muted, #6c6a64);
-  margin: 0;
-}
-
-.sidebarNav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.sidebarNavItem {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--color-body, #3d3d3a);
-  text-decoration: none;
-  transition: all 0.12s ease;
-  border: 1px solid transparent;
-}
-
-.sidebarNavItem:hover {
-  background: rgba(255, 255, 255, 0.6);
-  color: var(--color-ink);
-}
-
-.sidebarNavItemActive {
-  background: #ffffff;
-  color: var(--color-primary);
-  font-weight: 700;
-  border-color: #DDD5C5;
-  box-shadow: 0 1px 2px rgba(20, 20, 19, 0.04);
-}
-
-.activeDotIndicator {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  margin-left: auto;
-}
-
-/* Sidebar Backup Card */
-.sidebarBackupCard {
-  position: relative;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  background: #ffffff;
-  border: 1px solid #DDD5C5;
-  box-shadow: 0 1px 2px rgba(20, 20, 19, 0.04);
-}
-
-.backupWashi {
-  position: absolute;
-  top: -8px;
-  left: 1.5rem;
-  width: 64px;
-  height: 14px;
-  background: rgba(173, 193, 171, 0.75);
-  box-shadow: 0 1px 2px rgba(35, 25, 15, 0.08);
-  border-radius: 2px;
-}
-
-.backupCardHeader {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.35rem;
-  color: var(--color-primary);
-  font-weight: 600;
-  font-size: 0.75rem;
-  padding-top: 0.25rem;
-}
-
-.backupCardDesc {
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
-  line-height: 1.4;
-  margin: 0 0 0.75rem;
-}
-
-.btnBackupSmall {
-  width: 100%;
-  background: #FAF7F2;
-  border: 1px solid #DDD5C7;
-  color: var(--color-ink);
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.45rem 0.75rem;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: all 0.12s ease;
-}
-
-.btnBackupSmall:hover {
-  background: #F2EBE0;
-}
-
-.sidebarFooter {
-  padding-top: 0.75rem;
-  border-top: 1px solid #E3DACB;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
-}
-
-.sidebarFooterLink {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.5rem;
-  border-radius: 0.5rem;
-  color: var(--color-ink-muted, #6c6a64);
-  text-decoration: none;
-}
-
-.sidebarFooterLink:hover {
-  color: var(--color-ink);
 }
 
 /* Right Workbench Content */
@@ -468,17 +187,6 @@
     align-items: center;
     justify-content: space-between;
   }
-}
-
-.bannerWashi {
-  position: absolute;
-  top: -10px;
-  left: 2.5rem;
-  width: 96px;
-  height: 16px;
-  background: rgba(143, 163, 184, 0.7);
-  box-shadow: 0 1px 2px rgba(35, 25, 15, 0.08);
-  border-radius: 2px;
 }
 
 .bannerLeft {
@@ -535,26 +243,6 @@
   line-height: 1.45;
 }
 
-.btnAuditTraffic {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.85rem;
-  border-radius: 0.5rem;
-  background: #ffffff;
-  border: 1px solid #DDD5C5;
-  color: var(--color-ink);
-  font-size: 0.75rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.12s ease;
-  white-space: nowrap;
-}
-
-.btnAuditTraffic:hover {
-  background: #F6F1EA;
-}
-
 /* Two Main Editorial Cards (Bento Grid) */
 .bentoGrid {
   display: grid;
@@ -569,84 +257,11 @@
   }
 }
 
-/* Ojales metálicos de latón para ficha de archivo */
-.grommetRow {
-  position: absolute;
-  top: 8px;
-  left: 16px;
-  right: 16px;
-  display: flex;
-  justify-content: space-between;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.grommetRivet {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #ecd89d 0%, #caa658 55%, #735a26 100%);
-  border: 1px solid #5a451b;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.8);
-  position: relative;
-}
-
-.grommetRivet::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #2a2010;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6);
-}
-
-.grommetRivetLeft {
-  left: 0;
-}
-
-.grommetRivetRight {
-  right: 0;
-}
-
 /* Card 1: Google Calendar & iCal (7 Cols) */
 .cardLeft {
-  position: relative;
-  background: #ffffff;
-  border: 1px solid #DDD5C6;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 10px -1px rgba(45, 38, 30, 0.05), 0 10px 25px -4px rgba(45, 38, 30, 0.06);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-}
-
-.cardTopWashi {
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 110px;
-  height: 20px;
-  background: rgba(197, 188, 158, 0.75);
-  box-shadow: 0 1px 2px rgba(35, 25, 15, 0.08);
-  border-radius: 2px;
-  text-align: center;
-}
-
-.cardTopWashiText {
-  font-family: var(--font-code, monospace);
-  font-size: var(--text-micro);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #564e3c;
-  font-weight: 700;
-  display: block;
-  padding-top: 2px;
 }
 
 .cardHeader {
@@ -730,12 +345,6 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-}
-
-.optionTimestamp {
-  font-family: var(--font-code, monospace);
-  font-size: 0.6875rem;
-  color: var(--color-ink-muted, #6c6a64);
 }
 
 .optionDesc {
@@ -950,27 +559,9 @@
 
 /* Card 2: Gmail & Plantillas */
 .cardRight {
-  position: relative;
-  background: #ffffff;
-  border: 1px solid #DDD5C6;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 10px -1px rgba(45, 38, 30, 0.05), 0 10px 25px -4px rgba(45, 38, 30, 0.06);
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.gmailWashiCorner {
-  position: absolute;
-  top: -10px;
-  right: -8px;
-  width: 80px;
-  height: 16px;
-  background: rgba(218, 180, 166, 0.8);
-  box-shadow: 0 1px 2px rgba(35, 25, 15, 0.08);
-  transform: rotate(8deg);
-  border-radius: 2px;
 }
 
 .securityCallout {
@@ -1029,12 +620,6 @@
   border-color: rgba(232, 165, 90, 0.35);
 }
 
-.templateId {
-  font-family: var(--font-code, monospace);
-  font-size: 0.6875rem;
-  color: var(--color-ink-muted, #6c6a64);
-}
-
 .templateSubject {
   font-family: var(--font-headline, serif);
   font-size: 1rem;
@@ -1072,35 +657,6 @@
   background: #F2ECE0;
 }
 
-/* Card 3: Auditoría Local */
-.auditChecklist {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
-}
-
-.auditItem {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  font-size: 0.75rem;
-}
-
-.auditItemLeft {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--color-ink);
-  font-weight: 500;
-}
-
-.auditTime {
-  font-family: var(--font-code, monospace);
-  font-size: 0.6875rem;
-  color: var(--color-ink-muted, #6c6a64);
-}
-
 .btnDownloadFullVault {
   width: 100%;
   padding: 0.65rem 1rem;
@@ -1121,31 +677,6 @@
 
 .btnDownloadFullVault:hover {
   background: #F2EBE0;
-}
-
-/* Medallón de sello de lacre rojo en relieve */
-.waxSealMedallion {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #e03545 0%, #a81c2b 60%, #6e0f1b 100%);
-  border: 1.5px solid #821420;
-  box-shadow: 1px 2px 4px rgba(110, 15, 27, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.5);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transform: rotate(-5deg);
-}
-
-.waxSealMonogram {
-  font-family: var(--font-headline, serif);
-  font-size: 13px;
-  font-weight: 700;
-  color: #ffccd2;
-  text-shadow: 0 1px 1px rgba(80, 10, 18, 0.9);
-  line-height: 1;
 }
 
 .vaultSubhint {
@@ -1191,53 +722,3 @@
   background: #3f7a4e;
 }
 
-.mantraQuote {
-  font-family: 'Caveat', cursive;
-  font-size: 1.15rem;
-  color: #516170;
-  letter-spacing: 0.02em;
-  margin: 0;
-}
-
-.mantraSpecs {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
-}
-
-/* Desk Bottom Technical Footer */
-.deskBottomFooter {
-  padding: 0.5rem 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
-}
-
-@media (min-width: 640px) {
-  .deskBottomFooter {
-    flex-direction: row;
-  }
-}
-
-.footerLeft {
-  margin: 0;
-}
-
-.footerRight {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.footerRight a {
-  text-decoration: underline;
-  color: inherit;
-}

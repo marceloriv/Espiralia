@@ -19,7 +19,6 @@ describe('IntegrationsView (Stitch screen)', () => {
   it('renderiza la cabecera editorial de Stitch y el banner de privacidad 100% client-side', () => {
     render(<IntegrationsView profile={profile} />);
     expect(screen.getByRole('heading', { level: 1, name: /integraciones & enlace externo/i })).toBeInTheDocument();
-    expect(screen.getByText(/módulo descentralizado/i)).toBeInTheDocument();
     expect(screen.getByText(/datos solo en este navegador/i)).toBeInTheDocument();
   });
 
@@ -56,44 +55,42 @@ describe('IntegrationsView (Stitch screen)', () => {
     }
   });
 
-  it('despliega la sección de Gmail & Plantillas con enlaces mailto precompilados', () => {
+  it('despliega la sección de correo con un enlace mailto honesto', () => {
     render(<IntegrationsView profile={profile} />);
-    expect(screen.getByRole('heading', { name: /gmail & plantillas/i })).toBeInTheDocument();
-    const mailtoLinks = screen.getAllByRole('link', { name: /abrir borrador en gmail|enviar recordatorio/i });
-    expect(mailtoLinks.length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByRole('heading', { name: /correo & plantillas/i })).toBeInTheDocument();
+    const mailtoLinks = screen.getAllByRole('link', { name: /redactar recordatorio/i });
+    expect(mailtoLinks).toHaveLength(1);
     expect(mailtoLinks[0]).toHaveAttribute('href', expect.stringContaining('mailto:'));
   });
 
-  it('despliega la tarjeta de auditoría local con el estado del almacenamiento', () => {
+  it('ofrece la copia completa en JSON y no inventa historial de auditoría', () => {
     render(<IntegrationsView profile={profile} />);
-    expect(screen.getByRole('heading', { name: /registro de auditoría local/i })).toBeInTheDocument();
-    expect(screen.getByText(/historial de sincronización en este navegador/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /copia completa/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /descargar copia completa \(\.json\)/i })).toBeInTheDocument();
+    expect(screen.queryByText(/registro de auditoría local/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/hoy, 09:41/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/agenda_2026\.ics/i)).not.toBeInTheDocument();
   });
 
-  it('renderiza la bóveda local con sello archivado, tarjeta rfc 5545, zona drop, plantillas gmail y auditoria', () => {
+  it('pone las tarjetas en Papel turquesa y quita ornamentos, índice muerto y controles sin efecto', () => {
+    const { container } = render(<IntegrationsView profile={profile} />);
+
+    expect(container.querySelectorAll('[data-tinte="turquesa"]').length).toBe(3);
+    for (const ornamento of ['waxSealMedallion', 'grommetRivet', 'topWashiTape', 'botanicalWatermark', 'hankoStamp', 'leftSidebar']) {
+      expect(container.querySelector(`[class*="${ornamento}"]`), ornamento).toBeNull();
+    }
+    expect(screen.queryByRole('navigation', { name: /navegación de integraciones/i })).toBeNull();
+    expect(screen.queryByLabelText(/rango temporal/i)).toBeNull();
+    expect(screen.queryByRole('button', { name: /auditoría de tráfico/i })).toBeNull();
+    expect(screen.queryByText(/zero-cloud/i)).not.toBeInTheDocument();
+  });
+
+  it('renderiza la bóveda local con tarjeta rfc 5545, zona drop y tarjetas de correo y copia', () => {
     render(<IntegrationsView profile={profile} />);
 
     expect(screen.getByRole('heading', { level: 1, name: /integraciones & enlace externo/i })).toBeInTheDocument();
-    expect(screen.getByText(/archivado localmente/i)).toBeInTheDocument();
     expect(screen.getByText(/datos solo en este navegador/i)).toBeInTheDocument();
     expect(screen.getByText(/google calendar & ical \(\.ics\)/i)).toBeInTheDocument();
     expect(screen.getByText(/arrastra tu archivo/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/gmail & plantillas/i)[0]).toBeInTheDocument();
-    expect(screen.getByText(/registro de auditoría local/i)).toBeInTheDocument();
-  });
-
-  it('incluye medallón de sello de lacre rojo y ojales metálicos de archivo', () => {
-    const { container } = render(<IntegrationsView profile={profile} />);
-
-    const waxSeal = container.querySelector('[class*="waxSealMedallion"]');
-    expect(waxSeal).toBeInTheDocument();
-    expect(waxSeal).toHaveAttribute('aria-hidden', 'true');
-    expect(waxSeal).toHaveTextContent('E');
-
-    const grommets = container.querySelectorAll('[class*="grommetRivet"]');
-    expect(grommets.length).toBeGreaterThanOrEqual(2);
-    grommets.forEach(grommet => {
-      expect(grommet).toHaveAttribute('aria-hidden', 'true');
-    });
   });
 });
