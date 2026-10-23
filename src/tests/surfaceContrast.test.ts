@@ -58,7 +58,10 @@ describe('Surface & Background Contrast — Dimensional Layering (UI/UX Pro Max)
 
     expect(papelCss).toMatch(/\.papel\s*\{[^}]*background-color:\s*var\(--tono\)/);
     expect(papelCss).toMatch(/\.papel\s*\{[^}]*--tono:\s*var\(--papel-arena\)/);
-    expect(indexCss).toMatch(/--papel-arena:\s*var\(--color-surface-card\)/);
+    const arena = indexCss.match(/--papel-arena:\s*(#[0-9a-fA-F]{6})/)?.[1];
+    const canvas = indexCss.match(/--color-canvas:\s*(#[0-9a-fA-F]{6})/)?.[1];
+    expect(arena).toBeDefined();
+    expect(arena?.toLowerCase()).not.toBe(canvas?.toLowerCase());
     expect(papelCss).not.toMatch(/background-color:\s*var\(--color-canvas/);
   });
 

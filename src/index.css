@@ -179,20 +179,28 @@
   --tap-min: 44px;
 
   /* Tintes de Papel (DESIGN.md §0.4): el color codifica el módulo. Claro para superficies, fuerte para piezas pequeñas. */
-  --papel-arena: var(--color-surface-card);
-  --papel-arena-fuerte: var(--color-surface-cream-strong);
-  --papel-pizarra: color-mix(in srgb, var(--color-accent-slate) 14%, var(--color-canvas));
-  --papel-pizarra-fuerte: color-mix(in srgb, var(--color-accent-slate) 30%, var(--color-canvas));
-  --papel-salvia: color-mix(in srgb, var(--color-accent-sage) 14%, var(--color-canvas));
-  --papel-salvia-fuerte: color-mix(in srgb, var(--color-accent-sage) 28%, var(--color-canvas));
-  --papel-terracota: color-mix(in srgb, var(--color-accent-terracotta) 12%, var(--color-canvas));
-  --papel-terracota-fuerte: color-mix(in srgb, var(--color-accent-terracotta) 22%, var(--color-canvas));
-  --papel-ambar: color-mix(in srgb, var(--color-accent-amber) 16%, var(--color-canvas));
-  --papel-ambar-fuerte: color-mix(in srgb, var(--color-accent-amber) 42%, var(--color-canvas));
-  --papel-rosa: color-mix(in srgb, var(--color-primary-soft) 16%, var(--color-canvas));
-  --papel-rosa-fuerte: color-mix(in srgb, var(--color-primary-soft) 38%, var(--color-canvas));
-  --papel-turquesa: color-mix(in srgb, var(--color-accent-teal) 14%, var(--color-canvas));
-  --papel-turquesa-fuerte: color-mix(in srgb, var(--color-accent-teal) 32%, var(--color-canvas));
+  /* Valores directos: los acentos de origen son tan tenues (slate 15%, sage 18% de saturación) que mezclarlos con el canvas deja papeles grises. */
+  --papel-arena: #ece0cb;
+  --papel-arena-fuerte: #e6d3b3;
+  --papel-pizarra: #ccdaea;
+  --papel-pizarra-fuerte: #b8cde5;
+  --papel-salvia: #d0e6cc;
+  --papel-salvia-fuerte: #b7deaf;
+  --papel-terracota: #f1cfc5;
+  --papel-terracota-fuerte: #eebaaa;
+  --papel-ambar: #fae1bd;
+  --papel-ambar-fuerte: #f9d59f;
+  --papel-rosa: #f8cee8;
+  --papel-rosa-fuerte: #f6b6df;
+  --papel-turquesa: #c7efe7;
+  --papel-turquesa-fuerte: #adebde;
+  /* Sobre esos tintes los textos globales bajan de 4.5:1; dentro del Papel se usan estas variantes un 6 a 7% más oscuras. */
+  --papel-texto-suave: #5e5c56;
+  --papel-texto-exito: #2e673b;
+  --papel-texto-turquesa: #2c655a;
+  --papel-texto-ambar: #854f13;
+  --papel-texto-magenta: #933190;
+  --papel-texto-error: #a63333;
 
   /* Tokens de compatibilidad y alias historicos */
   --color-surface: var(--color-surface-soft);

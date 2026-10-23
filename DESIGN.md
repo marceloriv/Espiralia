@@ -48,21 +48,21 @@ El marfil cálido con serif de alto contraste y acento magenta es lo que cualqui
 
 ### 0.4 El color codifica el módulo
 
-| Módulo | Tinte | Base (token) | Mezcla con `--color-canvas` |
+| Módulo | Tinte | Token | Valor |
 | :--- | :--- | :--- | :--- |
-| Dashboard, neutro | Arena | `--color-surface-card` | sin mezcla |
-| Agenda y fechas | Pizarra | `--color-accent-slate` | 14 % |
-| Planner | Salvia | `--color-accent-sage` | 14 % |
-| To-Do y prioridad | Terracota | `--color-accent-terracotta` | 12 % |
-| Notas | Ámbar | `--color-accent-amber` | 16 % |
-| Carpetas | Rosa | `--color-primary-soft` | 16 % |
-| Integraciones | Turquesa | `--color-accent-teal` | 14 % |
+| Dashboard, neutro | Arena | `--papel-arena` | `#ece0cb` |
+| Agenda y fechas | Pizarra | `--papel-pizarra` | `#ccdaea` |
+| Planner | Salvia | `--papel-salvia` | `#d0e6cc` |
+| To-Do y prioridad | Terracota | `--papel-terracota` | `#f1cfc5` |
+| Notas | Ámbar | `--papel-ambar` | `#fae1bd` |
+| Carpetas | Rosa | `--papel-rosa` | `#f8cee8` |
+| Integraciones | Turquesa | `--papel-turquesa` | `#c7efe7` |
 
 - Una tarjeta resumen del Dashboard lleva el tinte del módulo que resume (Horario: pizarra; Planner de la semana: salvia; Recordatorios: terracota).
-- Las piezas pequeñas (etiqueta, pestaña) llevan una versión más intensa (28 a 42 %) del mismo tinte.
+- Las piezas pequeñas (etiqueta, pestaña) llevan una versión más intensa del mismo tinte (`--papel-<tinte>-fuerte`, unos 6 puntos de luminosidad menos).
 - **El Acceso y la landing no son módulos.** Allí los tintes se reparten por tema y cada uno se usa una sola vez por pantalla (datos locales: pizarra; PIN: rosa; respaldo: salvia; aforismo: ámbar), sin pretender que signifiquen un módulo.
-- Los tintes se declaran como tokens (`--papel-arena`, `--papel-pizarra`, etc.) calculados con `color-mix` sobre los tokens base; no se escriben hex nuevos.
-- El texto sobre cualquier tinte usa `--color-ink` o `--color-body` y debe pasar 4.5:1 (test en `textTokensContrast.test.ts`).
+- Los tintes se declaran como tokens (`--papel-arena`, `--papel-pizarra`, etc.) con valor directo (hex) en `src/index.css`. Los acentos de origen son tan tenues (pizarra 15 % y salvia 18 % de saturación) que mezclarlos con el canvas dejaba papeles grises casi iguales; el test de `textTokensContrast.test.ts` exige saturación mínima de 30 % y una distancia entre tintes de al menos 15 en RGB.
+- El texto sobre cualquier tinte usa `--color-ink` o `--color-body` y debe pasar 4.5:1 (test en `textTokensContrast.test.ts`). Dentro del Papel, el texto secundario y de estado (`--color-muted` y los `--color-text-*`) se redefine con variantes un 6 a 7 % más oscuras (`--papel-texto-*`), porque sobre tintes saturados los tokens globales bajan de 4.5:1.
 - **El magenta queda reservado para acciones y para el subrayado de la fecha.** No se usa como tinte de superficie.
 
 ### 0.5 La fecha como hoja de calendario

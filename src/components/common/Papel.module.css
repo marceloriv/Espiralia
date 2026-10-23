@@ -36,6 +36,13 @@
   background-image: var(--fibra);
   background-size: 240px 240px;
   color: var(--color-ink);
+  /* Los tintes saturados piden texto secundario algo más oscuro; los hijos heredan estos tokens (valores en index.css). */
+  --color-muted: var(--papel-texto-suave);
+  --color-text-success: var(--papel-texto-exito);
+  --color-text-teal: var(--papel-texto-turquesa);
+  --color-text-amber: var(--papel-texto-ambar);
+  --color-text-primary-active: var(--papel-texto-magenta);
+  --color-text-error: var(--papel-texto-error);
 }
 
 .papel[data-tinte='pizarra'] { --tono: var(--papel-pizarra); }
