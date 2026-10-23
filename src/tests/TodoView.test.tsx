@@ -18,9 +18,9 @@ describe('TodoView', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /to-do & áreas integradas\./i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /área estudios/i })).toBeInTheDocument();
-    expect(screen.getByText(/entrada rápida al taller/i)).toBeInTheDocument();
+    expect(screen.getByText(/entrada rápida/i)).toBeInTheDocument();
     expect(screen.getByText(/agenda asociada/i)).toBeInTheDocument();
-    expect(screen.getByText(/disciplina gentil/i)).toBeInTheDocument();
+    expect(screen.getByText(/disciplina hoy,\s*paz mañana/i)).toBeInTheDocument();
   });
 
   it('permite agregar, alternar y filtrar tareas', async () => {
@@ -30,7 +30,7 @@ describe('TodoView', () => {
 
     render(<TodoView profileId={profileId} />);
 
-    expect(screen.getByText(/mis tareas/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Semana \d{1,2}$/)).toBeInTheDocument();
 
     const input = screen.getByPlaceholderText(/¿qué tienes pendiente\?/i);
     await user.type(input, 'Comprar insumos{enter}');
@@ -326,7 +326,7 @@ describe('TodoView', () => {
       expect(screen.queryByText(/Estudio Conaset/i)).not.toBeInTheDocument();
     });
 
-    it('incluye grapas de alambre, margen rojo escolar y sello carmín al completar tarea', () => {
+    it('pone el sello carmín al completar tarea y no conserva grapas ni relleno de ejemplo', () => {
       StorageService.saveTodo({
         id: 'todo-staple-test',
         profileId,
@@ -340,13 +340,14 @@ describe('TodoView', () => {
 
       const { container } = render(<TodoView profileId={profileId} />);
 
-      const staples = container.querySelector('[class*="schoolStaplesBar"]');
-      expect(staples).toBeInTheDocument();
-      expect(staples).toHaveAttribute('aria-hidden', 'true');
-
-      const margin = container.querySelector('[class*="schoolMarginGuide"]');
-      expect(margin).toBeInTheDocument();
-      expect(margin).toHaveAttribute('aria-hidden', 'true');
+      for (const ornamento of ['schoolStaplesBar', 'schoolMarginGuide', 'washiTape', 'tornEdge', 'metalClipAccent', 'metalPaperclipCorner']) {
+        expect(container.querySelector(`[class*="${ornamento}"]`), ornamento).toBeNull();
+      }
+      expect(screen.queryByText(/antidistracciones/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/vaciado mental/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/small steps every day/i)).not.toBeInTheDocument();
+      expect(container.querySelectorAll('[data-tinte="terracota"]').length).toBeGreaterThanOrEqual(2);
+      expect(container.querySelector('[data-tinte="pizarra"]')).not.toBeNull();
 
       const stamp = container.querySelector('[class*="stampCompletedSeal"]');
       expect(stamp).toBeInTheDocument();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag, Feather, Coffee, Check, Heart, ShieldCheck } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag, Check, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE, energyLabel } from '../utils/energyLevels';
@@ -8,6 +8,7 @@ import { StorageService } from '../services/storage';
 import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
 import { dueLabel, criticalTodos } from './dashboard/dashboardData';
 import { AreaIntegratedWorkspace } from './todo/AreaIntegratedWorkspace';
+import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import styles from './TodoView.module.css';
 
 interface TodoViewProps {
@@ -232,16 +233,13 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
     <div className={styles.todoContainer}>
       {/* 1. Cabecera Editorial Papercraft Stitch */}
       <section className={styles.stationeryBanner}>
-        <div className={styles.washiTapeLeft} aria-hidden="true" />
-        <div className={styles.washiTapeRight} aria-hidden="true" />
-
         <div className={styles.bannerGrid}>
           {/* Columna Izquierda: Titular y Propósito */}
           <div className={styles.bannerMain}>
             <div className={styles.overlineRow}>
-              <span className={styles.overlineTag}>Cuaderno de Tareas Semestral · Mis tareas</span>
-              <span className={styles.overlineDivider}>|</span>
-              <span className={styles.overlineSub}>Semana {isoWeekNumber(new Date())}</span>
+              <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.todo} className={styles.weekTag}>
+                Semana {isoWeekNumber(new Date())}
+              </Papel>
             </div>
 
             <h1 className={styles.editorialH1}>
@@ -285,16 +283,12 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
               <div className={styles.postItContent}>
                 <p className={styles.postItScript}>
-                  discipline today,<br />peace tomorrow.
+                  Disciplina hoy,<br />paz mañana.
                 </p>
                 <div className={styles.postItDivider} />
                 <p className={styles.postItSub}>♡ todo en un solo lugar</p>
-                <p className={styles.postItCode}>Espiralia Manila Note #08</p>
               </div>
 
-              <div className={styles.floralWatermark} aria-hidden="true">
-                <Heart size={38} strokeWidth={1} />
-              </div>
             </div>
           </div>
         </div>
@@ -394,15 +388,13 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
           {/* Columna Principal / Izquierda (Tareas & Entrada Rápida) */}
           <div className={styles.leftColumn}>
             {/* 3.1 Entrada Rápida al Taller con Clip de Latón */}
-            <div className={styles.quickAddCard}>
-              <div className={styles.tornEdgeTop} aria-hidden="true" />
-              <div className={styles.metalClipAccent} aria-hidden="true" />
+            <Papel as="section" tinte={TINTE_DE_MODULO.todo} aria-label="Entrada rápida">
 
               <div className={styles.quickAddBody}>
                 <div className={styles.quickAddHeader}>
                   <span className={styles.quickAddTitle}>
                     <Plus size={16} className={styles.iconPrimary} aria-hidden="true" />
-                    Entrada Rápida al Taller
+                    Entrada rápida
                   </span>
                   <span className={styles.quickAddAreaPill}>
                     Área: {areas[0]?.name || 'General'}
@@ -461,14 +453,10 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                   </div>
                 </form>
               </div>
-
-              <div className={styles.tornEdgeBottom} aria-hidden="true" />
-            </div>
+            </Papel>
 
             {/* 3.2 TOP PRIORITIES Manila Card */}
-            <div className={styles.topPrioritiesCard}>
-              <div className={styles.washiTapeCard} aria-hidden="true" />
-              <div className={styles.tornEdgeTop} aria-hidden="true" />
+            <Papel as="section" tinte={TINTE_DE_MODULO.todo} aria-label="Prioridades clave">
 
               <div className={styles.topPrioritiesBody}>
                 <div className={styles.topPrioritiesHeader}>
@@ -533,20 +521,10 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                   </div>
                 )}
               </div>
-
-              <div className={styles.tornEdgeBottom} aria-hidden="true" />
-            </div>
+            </Papel>
 
             {/* 3.3 Libreta Escolar de Tareas (Cuaderno Rayado con Grapas y Margen) */}
             <div className={styles.detailedTasksSection}>
-              {/* Grapas de alambre metálico de encuadernación */}
-              <div className={styles.schoolStaplesBar} aria-hidden="true">
-                <span className={styles.schoolStapleLeft} />
-                <span className={styles.schoolStapleRight} />
-              </div>
-              {/* Margen rojo guía escolar */}
-              <div className={styles.schoolMarginGuide} aria-hidden="true" />
-
               <div className={styles.detailedHeader}>
                 <h3 className={styles.detailedTitle}>
                   <span>Tareas que importan</span>
@@ -677,28 +655,13 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               )}
             </div>
 
-            {/* 3.4 Compromiso Antidistracciones de Hoy */}
-            <div className={styles.distractionsBox}>
-              <div className={styles.distractionsLeft}>
-                <div className={styles.distractionsIcon}>
-                  <ShieldCheck size={20} className={styles.iconPrimary} aria-hidden="true" />
-                </div>
-                <div>
-                  <h4 className={styles.distractionsTitle}>Compromiso Antidistracciones de Hoy</h4>
-                  <p className={styles.distractionsDesc}>
-                    Teléfono en modo escala de grises y fuera del alcance durante las horas de estudio.
-                  </p>
-                </div>
-              </div>
-              <span className={styles.distractionsScript}>disciplina gentil ♡</span>
-            </div>
           </div>
 
           {/* Columna Lateral / Derecha (Agenda, Bujo & Energía) */}
           <div className={styles.rightColumn}>
             {/* 3.5 Agenda Asociada */}
-            <div className={styles.associatedAgendaCard}>
-              <div className={styles.washiTapeSlate} aria-hidden="true" />
+            <Papel as="section" tinte={TINTE_DE_MODULO.agenda} aria-label="Agenda asociada">
+              <div className={styles.associatedAgendaCard}>
               <div className={styles.agendaCardHeader}>
                 <div className={styles.agendaCardTitleGroup}>
                   <Calendar size={18} className={styles.iconPrimary} aria-hidden="true" />
@@ -746,43 +709,13 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                   Ver vista semanal extendida en Agenda →
                 </button>
               </div>
-            </div>
-
-            {/* 3.6 Notes / Brain Dump Bujo Dot Grid */}
-            <div className={styles.brainDumpCard}>
-              <div className={styles.tornEdgeTop} aria-hidden="true" />
-
-              <div className={styles.brainDumpBody}>
-                <div className={styles.brainDumpHeader}>
-                  <div className={styles.brainDumpTitleGroup}>
-                    <Feather size={16} className={styles.iconPrimary} aria-hidden="true" />
-                    <h3 className={styles.brainDumpTitle}>Notas &amp; Vaciado Mental</h3>
-                  </div>
-                  <span className={styles.brainDumpSub}>Bujo Dot Grid</span>
-                </div>
-
-                <div className={styles.dotGridCanvas}>
-                  <p className={styles.dotGridScript}>
-                    Tus notas rápidas aparecerán aquí. Crea la primera en Notas.
-                  </p>
-                  <span className={styles.dotGridHeart} aria-hidden="true">♡</span>
-                </div>
-
-                <div className={styles.brainDumpFooter}>
-                  <span className={styles.localCacheNote}>Guardado en caché local</span>
-                </div>
               </div>
-
-              <div className={styles.tornEdgeBottom} aria-hidden="true" />
-            </div>
+            </Papel>
 
             {/* 3.7 Mini Reminders & Energy Check */}
             <div className={styles.miniRemindersCard}>
-              <div className={styles.metalPaperclipCorner} aria-hidden="true" />
-
               <div className={styles.miniRemindersHeader}>
-                <h3 className={styles.miniRemindersTitle}>Recordatorios y energía</h3>
-                <Coffee size={16} className={styles.remindersSub} aria-hidden="true" />
+                <h3 className={styles.miniRemindersTitle}>Energía de hoy</h3>
               </div>
 
               <div className={styles.energyMeterBox}>
@@ -806,13 +739,6 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                   ))}
                 </div>
               </div>
-
-              <div className={styles.dailyMantraBox}>
-                <p className={styles.mantraScript}>
-                  "Paso a paso. Una tarea a la vez. No cargues mañana en el bolsillo de hoy."
-                </p>
-                <span className={styles.mantraSub}>Mantra del Taller</span>
-              </div>
             </div>
           </div>
         </div>
@@ -820,13 +746,10 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
       {/* 4. Footer Editorial de Privacidad */}
       <footer className={styles.editorialFooter}>
-        <span className={styles.footerScript}>
-          Small steps every day lead to big results. ♡
-        </span>
         <div className={styles.footerMeta}>
           <span className={styles.footerPill}>
             <span className={styles.footerGreenDot} />
-            100% Client-Side Engine
+            100% en tu navegador
           </span>
           <span className={styles.bullet}>·</span>
           <span>localStorage</span>

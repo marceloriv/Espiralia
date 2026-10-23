@@ -58,7 +58,7 @@ describe('AppRoutes con rutas protegidas', () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByText(/mis tareas/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: /to-do & áreas integradas/i })).toBeInTheDocument();
   });
 
   it('navega a /agenda y resuelve componente diferido con Suspense', async () => {
