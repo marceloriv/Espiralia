@@ -1,15 +1,28 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Leaf, Smile, Sun, Moon, BatteryCharging } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { PlannerBlock, DayOfWeek, TimeSlot, Priority, Profile, ViewType } from '../types';
+import type { PlannerBlock, DayOfWeek, TimeSlot, Priority, Profile, ViewType, HabitTrackerItem } from '../types';
 import { StorageService } from '../services/storage';
 import { PlannerDayColumn } from './planner/PlannerDayColumn';
 import { PlannerBlockModal } from './planner/PlannerBlockModal';
 import { GoalsDrawer } from './planner/GoalsDrawer';
+import { HabitModal } from './habits/HabitModal';
 import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import { Pliego } from './common/Pliego';
-import { isoWeekNumber } from '../utils/localDate';
+import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
+import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE, energyLabel } from '../utils/energyLevels';
 import styles from './PlannerView.module.css';
+
+// Mismo orden que `daysCompleted` de los hábitos: lunes a domingo.
+const HABIT_DAYS = [
+  { letter: 'L', name: 'lunes' },
+  { letter: 'M', name: 'martes' },
+  { letter: 'X', name: 'miércoles' },
+  { letter: 'J', name: 'jueves' },
+  { letter: 'V', name: 'viernes' },
+  { letter: 'S', name: 'sábado' },
+  { letter: 'D', name: 'domingo' },
+];
 
 interface PlannerViewProps {
   profileId?: string;
@@ -28,10 +41,54 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<DayOfWeek | undefined>(1);
   const isFirstMount = useRef(true);
+  const todayStr = toLocalDateStr(new Date());
+  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
+  const [habits, setHabits] = useState<HabitTrackerItem[]>(() => StorageService.getHabits(profileId));
+  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<HabitTrackerItem | null>(null);
 
   const loadBlocks = useCallback(() => {
     setBlocks(StorageService.getPlanner(profileId));
+    setHabits(StorageService.getHabits(profileId));
   }, [profileId]);
+
+  const handleToggleHabitDay = (habitId: string, dayIndex: number) => {
+    StorageService.toggleHabitDay(profileId, habitId, dayIndex);
+    setHabits(StorageService.getHabits(profileId));
+  };
+
+  const handleOpenHabit = (habit: HabitTrackerItem | null) => {
+    setEditingHabit(habit);
+    setIsHabitModalOpen(true);
+  };
+
+  const handleSaveHabit = (data: { id?: string; name: string; category?: string }) => {
+    const existing = data.id ? habits.find(h => h.id === data.id) : undefined;
+    if (existing) {
+      StorageService.saveHabit({ ...existing, name: data.name, category: data.category });
+    } else {
+      StorageService.saveHabit({
+        id: `habit-${Date.now()}`,
+        profileId,
+        name: data.name,
+        category: data.category || 'General',
+        daysCompleted: [false, false, false, false, false, false, false],
+      });
+    }
+    setHabits(StorageService.getHabits(profileId));
+    setIsHabitModalOpen(false);
+  };
+
+  const handleDeleteHabit = (habitId: string) => {
+    StorageService.deleteHabit(profileId, habitId);
+    setHabits(StorageService.getHabits(profileId));
+    setIsHabitModalOpen(false);
+  };
+
+  const handleSelectEnergy = (value: string) => {
+    setEnergyLevel(value);
+    StorageService.setTodayMood(profileId, todayStr, value);
+  };
 
   useEffect(() => {
     if (isFirstMount.current) {
@@ -297,36 +354,70 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
             </ul>
           </div>
 
-          {/* Habit Tracker Semanal */}
+          {/* Hábitos: los mismos que el Dashboard (clave `habits`) */}
           <div className={styles.habitTrackerCard}>
-            <h3 className={styles.habitTrackerTitle}>HABIT TRACKER SEMANAL</h3>
-            <div className={styles.habitRow}>
-              <span className={styles.habitName}>Lectura 25 min</span>
-              <div className={styles.daysCircles}>
-                {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((d, i) => (
-                  <span key={i} className={`${styles.dayCircle} ${i < 4 ? styles.dayCircleChecked : ''}`}>{d}</span>
-                ))}
-              </div>
+            <div className={styles.habitHeader}>
+              <h3 className={styles.habitTrackerTitle}>HÁBITOS DE LA SEMANA</h3>
+              <button
+                type="button"
+                className={styles.addHabitBtn}
+                onClick={() => handleOpenHabit(null)}
+                aria-label="Añadir hábito"
+              >
+                <Plus size={16} aria-hidden="true" />
+              </button>
             </div>
-            <div className={styles.habitRow}>
-              <span className={styles.habitName}>Sin pantallas 22h</span>
-              <div className={styles.daysCircles}>
-                {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((d, i) => (
-                  <span key={i} className={`${styles.dayCircle} ${i < 3 ? styles.dayCircleChecked : ''}`}>{d}</span>
-                ))}
-              </div>
-            </div>
+            {habits.length === 0 ? (
+              <p className={styles.habitEmpty}>Sin hábitos registrados. Añade el primero con el botón +.</p>
+            ) : (
+              habits.map(habit => (
+                <div key={habit.id} className={styles.habitRow}>
+                  <button
+                    type="button"
+                    className={styles.habitName}
+                    onClick={() => handleOpenHabit(habit)}
+                    aria-label={`Editar hábito ${habit.name}`}
+                  >
+                    {habit.name}
+                  </button>
+                  <div className={styles.daysCircles}>
+                    {HABIT_DAYS.map((day, idx) => {
+                      const done = Boolean(habit.daysCompleted?.[idx]);
+                      return (
+                        <button
+                          key={day.letter + idx}
+                          type="button"
+                          className={`${styles.dayCircle} ${done ? styles.dayCircleChecked : ''}`}
+                          onClick={() => handleToggleHabitDay(habit.id, idx)}
+                          aria-pressed={done}
+                          aria-label={`${habit.name}: ${day.name}`}
+                        >
+                          <span className={styles.dayDot}>{day.letter}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
-          {/* Energy Check & Mood */}
+          {/* Energía del día: la misma que To-Do (clave `daily_energy`) */}
           <div className={styles.moodCard}>
-            <h4 className={styles.moodTitle}>ENERGY CHECK & MOOD</h4>
+            <h4 className={styles.moodTitle}>ENERGÍA DE HOY · {energyLabel(energyLevel).toUpperCase()}</h4>
             <div className={styles.moodIcons}>
-              <button type="button" className={styles.moodBtn} aria-label="Energía Baja"><Moon size={16} /></button>
-              <button type="button" className={styles.moodBtn} aria-label="Energía Neutra"><Smile size={16} /></button>
-              <button type="button" className={`${styles.moodBtn} ${styles.moodBtnActive}`} aria-label="Energía Serena"><Leaf size={16} /></button>
-              <button type="button" className={styles.moodBtn} aria-label="Energía Foco"><BatteryCharging size={16} /></button>
-              <button type="button" className={styles.moodBtn} aria-label="Energía Radiante"><Sun size={16} /></button>
+              {ENERGY_LEVELS.map(({ value, label, icon: Icon }) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`${styles.moodBtn} ${energyLevel === value ? styles.moodBtnActive : ''}`}
+                  onClick={() => handleSelectEnergy(value)}
+                  aria-label={`Energía ${label}`}
+                  aria-pressed={energyLevel === value}
+                >
+                  <Icon size={16} aria-hidden="true" />
+                </button>
+              ))}
             </div>
           </div>
 
@@ -334,6 +425,14 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
           <GoalsDrawer profileId={profileId} onGoalsChange={loadBlocks} />
         </aside>
       </div>
+
+      <HabitModal
+        isOpen={isHabitModalOpen}
+        habit={editingHabit}
+        onClose={() => setIsHabitModalOpen(false)}
+        onSave={handleSaveHabit}
+        onDelete={handleDeleteHabit}
+      />
 
       {isModalOpen && (
         <PlannerBlockModal

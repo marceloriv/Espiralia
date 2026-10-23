@@ -199,7 +199,7 @@ describe('PlannerView integración semanal y metas', () => {
     expect(screen.getByRole('heading', { level: 1, name: /plan de enfoque y agenda semanal\./i })).toBeInTheDocument();
     expect(screen.getByText(/01\. estudios/i)).toBeInTheDocument();
     expect(screen.getByText(/prioridades de la semana/i)).toBeInTheDocument();
-    expect(screen.getByText(/habit tracker semanal/i)).toBeInTheDocument();
+    expect(screen.getByText(/hábitos de la semana/i)).toBeInTheDocument();
     expect(screen.getByText(/disciplina hoy, paz mañana/i)).toBeInTheDocument();
   });
 
@@ -219,5 +219,46 @@ describe('PlannerView integración semanal y metas', () => {
     const grid = screen.getByRole('main', { name: /grilla semanal/i });
     expect(grid.querySelector('svg')).not.toBeNull();
     expect(container.querySelector('[data-tinte="salvia"]')).not.toBeNull();
+  });
+
+  describe('Hábitos y energía reales', () => {
+    it('sin hábitos muestra un estado vacío y no inventa "Lectura 25 min"', () => {
+      render(<PlannerView profileId={profileId} />);
+
+      expect(screen.getByText(/sin hábitos registrados/i)).toBeInTheDocument();
+      expect(screen.queryByText(/lectura 25 min/i)).not.toBeInTheDocument();
+    });
+
+    it('marca un día de un hábito del Dashboard y lo guarda en la clave de hábitos', async () => {
+      const user = userEvent.setup();
+      StorageService.saveHabit({
+        id: 'h-1',
+        profileId,
+        name: 'Caminar',
+        daysCompleted: [false, false, false, false, false, false, false],
+      });
+      render(<PlannerView profileId={profileId} />);
+
+      const miercoles = screen.getByRole('button', { name: 'Caminar: miércoles' });
+      expect(miercoles).toHaveAttribute('aria-pressed', 'false');
+      await user.click(miercoles);
+
+      expect(miercoles).toHaveAttribute('aria-pressed', 'true');
+      expect(StorageService.getHabits(profileId)[0].daysCompleted[2]).toBe(true);
+    });
+
+    it('guarda la energía del día con los mismos valores que To-Do y la recuerda al recargar', async () => {
+      const user = userEvent.setup();
+      const hoy = new Date();
+      const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+      const { unmount } = render(<PlannerView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: 'Energía Baja' }));
+      expect(StorageService.getTodayMood(profileId, hoyStr)).toBe('☁️');
+      unmount();
+
+      render(<PlannerView profileId={profileId} />);
+      expect(screen.getByRole('button', { name: 'Energía Baja' })).toHaveAttribute('aria-pressed', 'true');
+    });
   });
 });
