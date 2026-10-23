@@ -10,7 +10,7 @@
 
 ## 0. Dirección de Impacto Visual: el cuaderno de espiral (plan v2)
 
-> Estado: **plan en ejecución, pasos 0 a 3 hechos** (§0.8). Implementado: fuentes autoalojadas (`9bcc46a`), `Pliego` (`ef8acfd`), acceso por PIN en un solo diálogo (`0dc8f1a`), respaldo del acceso alineado con la bóveda (`9dd66a5`), primitivo `Papel` y tokens `--papel-*` (`c6647af`) y el Dashboard con Papel por módulo y fecha como hoja (`b6791eb`). Lo demás de esta sección es *por implementar*. El resto del documento (§1 a §6) describe lo vigente en el código. Restricción dura: nada de esto cambia claves, formas ni valores guardados en `localStorage`; es solo presentación.
+> Estado: **plan en ejecución, pasos 0 a 4 hechos** (§0.8). Implementado: fuentes autoalojadas (`9bcc46a`), `Pliego` (`ef8acfd`), acceso por PIN en un solo diálogo (`0dc8f1a`), respaldo del acceso alineado con la bóveda (`9dd66a5`), primitivo `Papel` y tokens `--papel-*` (`c6647af`) y el Dashboard con Papel por módulo y fecha como hoja (`b6791eb`). Lo demás de esta sección es *por implementar*. El resto del documento (§1 a §6) describe lo vigente en el código. Restricción dura: nada de esto cambia claves, formas ni valores guardados en `localStorage`; es solo presentación.
 
 ### 0.1 Tesis
 
@@ -99,7 +99,7 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 | 1 | **Primitivos**: `Papel`, tokens `--papel-*`, `Pliego` y los tests de presupuesto. **Hecho** (`c6647af`). | Tests rojos antes y verdes después; 14 tintes con 4.5:1 sobre la tinta y el texto de cuerpo. |
 | 2 | **Dashboard**: recortar ornamentos, tintes por módulo, hoja de la fecha. **Hecho** (`b6791eb`), con una excepción medida en §0.10 (criterio 4). | Capturas a 375 y 1440px; suite de 90 archivos y 657 tests en verde. **Punto de revisión con la persona dueña (pendiente).** |
 | 3 | **Acceso**: pliego en la tarjeta de cuadernos, panel derecho con papeles de datos reales, aforismo en español y corrección de los textos falsos del respaldo y del PIN olvidado (§0.9). **Hecho**: el respaldo y el aviso del PIN en `9dd66a5`; el pliego, los tres papeles de datos y el lema en español en el commit del paso 3. | Capturas a 375, 768 y 1440px; 5 tests nuevos de texto y estructura. **Punto de revisión con la persona dueña (pendiente).** |
-| 4 | **Resto de vistas**, una por commit: Agenda, Planner, To-Do, Notas, Carpetas, Integraciones. | Suite completa y capturas por vista. |
+| 4 | **Resto de vistas**, una por commit. **Hecho**: Agenda (`0a78dc5`), Planner (`29641b0`), To-Do (`2c43629`), Notas (`ef826c8`), Carpetas (`4010fd1`) e Integraciones (`455ace8`). Además de aplicar Papel y Pliego, cada vista perdió sus ornamentos y el relleno de ejemplo, y Carpetas ganó la corrección de un desborde horizontal a 1440px. | Suite de 91 archivos y 686 tests en verde en cada commit; sin desborde horizontal a 485px (mínimo de la ventana de Chrome) y a 1440px en Notas, Carpetas e Integraciones; pendiente medir Agenda y Planner a 1440px y 375px exactos (la lista de pendientes está en `.projectmem/plan.md`). **Punto de revisión con la persona dueña (pendiente).** |
 | 5 | **Tipografía nueva** (§0.6). | Peso medido contra el presupuesto; contraste y escala sin regresiones. |
 | 6 | **Pasar la página** (§0.7). | Con y sin `prefers-reduced-motion`. |
 
