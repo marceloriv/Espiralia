@@ -49,9 +49,12 @@
   text-transform: capitalize;
 }
 
+/* La hora encabeza la tarjeta: los bloques del día se leen de arriba abajo como un eje de horas. */
 .timeText {
   color: var(--color-ink, #141413);
+  font-size: 0.9375rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .title {

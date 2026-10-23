@@ -24,6 +24,9 @@ export const PlannerDayColumn: React.FC<PlannerDayColumnProps> = ({
   onToggleBlock,
   onDeleteBlock,
 }) => {
+  // Con hora primero (de la más temprana a la más tardía); sin hora al final, en el orden en que se guardaron.
+  const ordered = [...blocks].sort((a, b) => (a.time ?? '99:99').localeCompare(b.time ?? '99:99'));
+
   return (
     <section
       className={`${styles.dayColumn} ${isToday ? styles.todayColumn : ''}`}
@@ -62,7 +65,7 @@ export const PlannerDayColumn: React.FC<PlannerDayColumnProps> = ({
         {blocks.length === 0 ? (
           <p className={styles.emptyDayText}>Sin bloques</p>
         ) : (
-          blocks.map(block => (
+          ordered.map(block => (
             <PlannerBlockCard
               key={block.id}
               block={block}

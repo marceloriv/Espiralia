@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { PlannerView } from '../components/PlannerView';
@@ -259,6 +259,23 @@ describe('PlannerView integración semanal y metas', () => {
 
       render(<PlannerView profileId={profileId} />);
       expect(screen.getByRole('button', { name: 'Energía Baja' })).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
+
+  describe('Eje de horas', () => {
+    // Técnica: partición de equivalencia (con hora desordenada / sin hora).
+    it('ordena los bloques del día por hora y deja al final los que no tienen', () => {
+      const base = { profileId, period: 'semanal' as const, priority: 'media' as const, completed: false, dayOfWeek: 1 as const };
+      StorageService.savePlanner({ ...base, id: 'pb-t', timeSlot: 'tarde', title: 'Revisión', time: '15:00' });
+      StorageService.savePlanner({ ...base, id: 'pb-s', timeSlot: 'noche', title: 'Sin hora' });
+      StorageService.savePlanner({ ...base, id: 'pb-m', timeSlot: 'mañana', title: 'Lectura', time: '08:30' });
+
+      render(<PlannerView profileId={profileId} />);
+
+      const lunes = within(screen.getByRole('region', { name: 'Columna Lunes' }));
+      const orden = lunes.getAllByRole('checkbox').map(c => c.getAttribute('aria-label'));
+      expect(orden).toEqual(['Completar Lectura', 'Completar Revisión', 'Completar Sin hora']);
+      expect(lunes.getByText('08:30').tagName).toBe('TIME');
     });
   });
 
