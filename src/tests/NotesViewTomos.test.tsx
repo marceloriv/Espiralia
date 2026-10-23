@@ -140,13 +140,9 @@ describe('NotesView - Tomos y Carpetas', () => {
     expect(tomo2Btn).toHaveAttribute('aria-current', 'false');
     expect(tomo3Btn).toHaveAttribute('aria-current', 'false');
 
-    // Porta-etiquetas metálicos con remaches en cada archivador
-    const labelFrames = screen.getAllByTestId('binder-label-frame');
-    expect(labelFrames.length).toBe(3);
-
-    // Ojales metálicos de extracción (finger hole ring)
-    const fingerRings = screen.getAllByTestId('binder-finger-ring');
-    expect(fingerRings.length).toBe(3);
+    // Las solapas llevan solo etiqueta y contador: sin porta-etiquetas con remaches ni ojal metálico
+    expect(screen.queryAllByTestId('binder-label-frame')).toHaveLength(0);
+    expect(screen.queryAllByTestId('binder-finger-ring')).toHaveLength(0);
 
     // Contadores de notas en cada archivador (2, 1, 0)
     expect(screen.getByTestId('count-tomo-01')).toHaveTextContent('2');

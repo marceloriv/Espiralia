@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus, BookOpen, FileText, Lightbulb, Feather, Activity, ShieldCheck, Cloud, Coffee, Leaf, Flame, Sun, type LucideIcon } from 'lucide-react';
+import { Plus, BookOpen, FileText, Lightbulb, Feather, Activity, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Note, Folder, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
@@ -7,6 +7,8 @@ import { NoteModal } from './notes/NoteModal';
 import { BujoCard } from './notes/BujoCard';
 import { Pliego } from './common/Pliego';
 import { parseBujoContent, countWords, getCategoryRibbonColor } from '../utils/bujoFormatter';
+import { toLocalDateStr } from '../utils/localDate';
+import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE } from '../utils/energyLevels';
 import styles from './NotesView.module.css';
 
 interface NotesViewProps {
@@ -21,13 +23,6 @@ const DEFAULT_THERAPEUTIC_TITLE = 'Descompresión mental & Autoobservación';
 
 const DEFAULT_THERAPEUTIC_CONTENT = `§ 1. Tu primera entrada
 Este tomo aún no tiene notas. Pulsa "Nueva Nota" para escribir la primera: lo que escribas se guarda solo en este navegador.`;
-
-const BASAL_ICONS: Record<string, LucideIcon> = { Baja: Cloud, Neutro: Coffee, Sereno: Leaf, Enérgico: Flame, Radiante: Sun };
-
-const BasalIcon: React.FC<{ level: string }> = ({ level }) => {
-  const Icon = BASAL_ICONS[level] ?? Cloud;
-  return <Icon size={16} aria-hidden="true" />;
-};
 
 export interface TomoConfig {
   id: string;
@@ -84,7 +79,8 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
-  const [basalEnergy, setBasalEnergy] = useState<string>('Sereno');
+  const todayStr = toLocalDateStr(new Date());
+  const [basalEnergy, setBasalEnergy] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [isEditingPliego, setIsEditingPliego] = useState(false);
   const [pliegoDraftTitle, setPliegoDraftTitle] = useState('');
@@ -103,6 +99,12 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
     }
     loadData();
   }, [loadData]);
+
+  // La energía del día es la misma que usan To-Do y Planner (clave `daily_energy`).
+  const handleSelectEnergy = (value: string) => {
+    setBasalEnergy(value);
+    StorageService.setTodayMood(profileId, todayStr, value);
+  };
 
   const handleOpenNew = () => {
     setEditingNote(null);
@@ -367,26 +369,12 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                 className={`${styles.binderSpineBtn} ${tomoStyleClass} ${isActive ? styles.binderActive : ''}`}
                 onClick={() => setActiveTomo(tomo.id)}
               >
-                <div className={styles.binderTopCap} aria-hidden="true" />
-
-                {/* Porta-etiquetas metálico con remaches */}
-                <div className={styles.binderLabelFrame} data-testid="binder-label-frame">
-                  <div className={`${styles.binderRivet} ${styles.rivetTL}`} aria-hidden="true" />
-                  <div className={`${styles.binderRivet} ${styles.rivetTR}`} aria-hidden="true" />
-                  <div className={`${styles.binderRivet} ${styles.rivetBL}`} aria-hidden="true" />
-                  <div className={`${styles.binderRivet} ${styles.rivetBR}`} aria-hidden="true" />
-
-                  {/* Etiqueta de papel rotulada */}
-                  <div className={styles.binderLabelPaper}>
-                    {tomo.iconName === 'book' && <BookOpen size={13} aria-hidden="true" />}
-                    {tomo.iconName === 'sparkles' && <Lightbulb size={13} aria-hidden="true" />}
-                    {tomo.iconName === 'file' && <FileText size={13} aria-hidden="true" />}
-                    <span className={styles.binderLabelText}>{tomo.title}</span>
-                  </div>
+                <div className={styles.binderLabelPaper}>
+                  {tomo.iconName === 'book' && <BookOpen size={13} aria-hidden="true" />}
+                  {tomo.iconName === 'sparkles' && <Lightbulb size={13} aria-hidden="true" />}
+                  {tomo.iconName === 'file' && <FileText size={13} aria-hidden="true" />}
+                  <span className={styles.binderLabelText}>{tomo.title}</span>
                 </div>
-
-                {/* Ojal circular metálico de extracción */}
-                <div className={styles.binderFingerRing} data-testid="binder-finger-ring" aria-hidden="true" />
 
                 {/* Contador de notas en el lomo */}
                 <span className={styles.binderCountPill} data-testid={`count-${tomo.folderId}`}>
@@ -556,17 +544,18 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               </div>
 
               <div className={styles.energyScale}>
-                <span className={styles.scaleLabel}>Energía Basal:</span>
+                <span className={styles.scaleLabel}>Energía de hoy:</span>
                 <div className={styles.scaleButtonsRow}>
-                  {['Baja', 'Neutro', 'Sereno', 'Enérgico', 'Radiante'].map((level) => (
+                  {ENERGY_LEVELS.map(({ value, label, icon: Icon }) => (
                     <button
-                      key={level}
+                      key={value}
                       type="button"
-                      className={`${styles.scaleBtn} ${basalEnergy === level ? styles.scaleBtnActive : ''}`}
-                      onClick={() => setBasalEnergy(level)}
+                      className={`${styles.scaleBtn} ${basalEnergy === value ? styles.scaleBtnActive : ''}`}
+                      onClick={() => handleSelectEnergy(value)}
+                      aria-pressed={basalEnergy === value}
                     >
-                      <BasalIcon level={level} />
-                      <span className={styles.scaleBtnText}>{level}</span>
+                      <Icon size={16} aria-hidden="true" />
+                      <span className={styles.scaleBtnText}>{label}</span>
                     </button>
                   ))}
                 </div>

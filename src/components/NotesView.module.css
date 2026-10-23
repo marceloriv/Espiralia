@@ -118,8 +118,8 @@
 .flatFolderTab,
 .tomoTab {
   position: relative;
-  width: 220px;
-  min-width: 190px;
+  flex: 0 1 200px;
+  min-width: 132px;
   height: 54px;
   background: var(--binder-spine-bg, #2e2620);
   border: 1px solid var(--binder-border, #1c1714);
@@ -187,17 +187,8 @@
     height: 52px;
   }
 
-  .binderLabelFrame {
-    padding: 2px 6px;
-  }
-
   .binderLabelText {
     font-size: 0.72rem;
-  }
-
-  .binderFingerRing {
-    width: 18px;
-    height: 18px;
   }
 
   .binderCountPill {
@@ -205,47 +196,6 @@
     padding: 1px 4px;
   }
 }
-
-/* Cantonera o refuerzo superior */
-.binderTopCap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
-  border-radius: 8px 8px 0 0;
-  pointer-events: none;
-}
-
-/* Porta-etiquetas metálico (Brass/Nickel Label Holder) con remaches */
-.binderLabelFrame {
-  position: relative;
-  flex: 1;
-  margin-right: 8px;
-  background: linear-gradient(135deg, #d8cbba 0%, #b8a892 50%, #9e8e79 100%);
-  border: 1px solid #7a6c58;
-  border-radius: 4px;
-  padding: 3px 5px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-
-.binderRivet {
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: #5c4f3d;
-  border-radius: 50%;
-  box-shadow: 0 0.5px 0 rgba(255, 255, 255, 0.5);
-  pointer-events: none;
-}
-.rivetTL { top: 2px; left: 2px; }
-.rivetTR { top: 2px; right: 2px; }
-.rivetBL { bottom: 2px; left: 2px; }
-.rivetBR { bottom: 2px; right: 2px; }
 
 /* Etiqueta de cartulina blanca/crema insertada en el porta-etiquetas */
 .binderLabelPaper {
@@ -269,30 +219,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   letter-spacing: -0.01em;
-}
-
-/* Orificio circular metálico de extracción (Finger ring hole con anillo remachado) */
-.binderFingerRing {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: 2px solid #b3a48e;
-  background: radial-gradient(circle at 35% 35%, #1c1815 0%, #0a0807 100%);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8), 0 1px 2px rgba(255, 255, 255, 0.15);
-  flex-shrink: 0;
-  position: relative;
-}
-
-.binderFingerRing::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 6px;
-  height: 3px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.25);
-  transform: rotate(-30deg);
 }
 
 /* Píldora de conteo del archivador */
@@ -705,7 +631,7 @@
   background-color: #FFF8D6;
   border: 1px solid #f0e3a6;
   border-radius: 4px;
-  padding: 22px 20px 16px;
+  padding: 44px 20px 16px;
   box-shadow: 1px 2px 4px rgba(20, 20, 19, 0.06), 3px 8px 16px rgba(20, 20, 19, 0.09);
   transform: rotate(-2deg);
   transition: transform 0.2s ease;

@@ -167,5 +167,18 @@ describe('NotesView', () => {
     expect(screen.queryByText('Lista de Ferretería')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 3, name: /evaluación conaset b/i })).toBeInTheDocument();
   });
-});
 
+  it('guarda la energía del día con los mismos valores que To-Do y Planner y la recuerda al recargar', async () => {
+    const user = userEvent.setup();
+    const hoy = new Date();
+    const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+    const { unmount } = render(<NotesView profileId={profileId} />);
+
+    await user.click(screen.getByRole('button', { name: /^baja$/i }));
+    expect(StorageService.getTodayMood(profileId, hoyStr)).toBe('☁️');
+    unmount();
+
+    render(<NotesView profileId={profileId} />);
+    expect(screen.getByRole('button', { name: /^baja$/i })).toHaveAttribute('aria-pressed', 'true');
+  });
+});
