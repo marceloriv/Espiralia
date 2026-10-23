@@ -499,7 +499,9 @@
   background: #ffffff;
   border: 1px solid var(--color-hairline, #e6dfd8);
   border-radius: 0.75rem;
-  overflow: hidden;
+  /* La tabla hace scroll horizontal en vez de cortar la columna de acción cuando no cabe. */
+  overflow-x: auto;
+  overflow-y: hidden;
   box-shadow: 0 1px 3px rgba(20, 20, 19, 0.04);
 }
 

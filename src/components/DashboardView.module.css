@@ -691,12 +691,14 @@
 /* Card 2: Metrics Quad Grid */
 .metricsQuadGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin: 12px 0;
 }
 
 .metricQuadTile {
+  min-width: 0;
+  overflow-wrap: anywhere;
   padding: 12px;
   border-radius: var(--radius-md);
   background-color: var(--color-surface-soft);
