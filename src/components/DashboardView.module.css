@@ -42,6 +42,12 @@
   gap: 10px;
 }
 
+.heroHead {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .metaDot {
   color: var(--color-hairline);
 }
@@ -2440,5 +2446,70 @@
   .routineTitleDone::after {
     animation: none;
     clip-path: inset(0 0 0 0);
+  }
+}
+
+/* =========================================================================
+   Estado móvil del Dashboard (antislop-layoutmobile, DESIGN.md §0.10.4).
+   El encabezado esencial, las tareas y los accesos van primero. El aforismo, el lema y las tarjetas
+   de serenidad pasan después. Solo cambia el orden: el contenido es el mismo y escritorio no se toca.
+   El hero deja de ser una tarjeta (display: contents) para que sus piezas se ordenen una por una.
+   ========================================================================= */
+@media (max-width: 960px) {
+  .dashboardContainer > * {
+    order: 10;
+  }
+
+  .heroCard,
+  .heroGrid,
+  .heroLeftCol,
+  .heroRightCol {
+    display: contents;
+  }
+
+  .heroHead {
+    order: 0;
+  }
+
+  .mainLayoutGrid {
+    order: 1;
+  }
+
+  .quickSection {
+    order: 2;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .heroAphorism {
+    order: 3;
+    margin: 0;
+  }
+
+  .tactilePostIt {
+    order: 4;
+    align-self: center;
+  }
+
+  .bentoTrio {
+    order: 5;
+  }
+
+  .quickGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tableta (600 a 960px): una sola columna estiraría Horario, Recordatorios y Planner a todo el ancho. */
+@media (min-width: 600px) and (max-width: 960px) {
+  .mainRightCol {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .mainRightCol > :last-child {
+    grid-column: 1 / -1;
   }
 }

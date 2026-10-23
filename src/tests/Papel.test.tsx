@@ -76,6 +76,11 @@ describe('Papel', () => {
       expect(base).toMatch(/drop-shadow\(0 -1px 0 [^)]*surface-bright/);
     });
 
+    it('en móvil la tarjeta usa un relleno menor que en escritorio', () => {
+      const movil = css.match(/@media \(max-width: 600px\) \{([\s\S]*?)\n\}/)?.[1] ?? '';
+      expect(movil).toMatch(/\.papel\[data-forma='tarjeta'\]\s*\{[^}]*padding:\s*22px 16px 24px/);
+    });
+
     it('en forced-colors conserva un borde visible y quita el recorte', () => {
       const block = css.match(/@media \(forced-colors: active\) \{[\s\S]*?\n\}/)?.[0] ?? '';
       expect(block).toMatch(/clip-path:\s*none/);

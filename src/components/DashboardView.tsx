@@ -314,24 +314,31 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className={styles.heroGrid}>
           {/* Left Column: fecha como hoja de calendario (DESIGN.md §0.5) */}
           <div className={styles.heroLeftCol}>
-            <div className={styles.fechaBloque}>
-              <Papel as="div" forma="pieza" tinte="arena" className={styles.fechaHoja} aria-hidden="true">
-                <span className={styles.fechaNumero}>{now.getDate()}</span>
-              </Papel>
-              <div className={styles.fechaTexto}>
-                <p className={styles.metaSemana}>Semana {currentWeekNumber} · Semestre {semester}</p>
-                <h1 className={styles.heroDate} aria-label={formatHeroDate(now)}>
-                  {weekdayFormatter.format(now)} de {monthFormatter.format(now)}
-                </h1>
-                <span className={styles.fechaSubrayado} aria-hidden="true" />
+            {/* Encabezado esencial: en móvil es lo único del hero que va antes de las tareas */}
+            <div className={styles.heroHead}>
+              <div className={styles.fechaBloque}>
+                <Papel as="div" forma="pieza" tinte="arena" className={styles.fechaHoja} aria-hidden="true">
+                  <span className={styles.fechaNumero}>{now.getDate()}</span>
+                </Papel>
+                <div className={styles.fechaTexto}>
+                  <p className={styles.metaSemana}>Semana {currentWeekNumber} · Semestre {semester}</p>
+                  <h1 className={styles.heroDate} aria-label={formatHeroDate(now)}>
+                    {weekdayFormatter.format(now)} de {monthFormatter.format(now)}
+                  </h1>
+                  <span className={styles.fechaSubrayado} aria-hidden="true" />
+                </div>
               </div>
+              <h2 id="dash-greeting" className={styles.heroTitle}>
+                {greetingFor(now)}, {profile.name}.
+              </h2>
+              <p className={styles.heroSubtitle}>
+                <em>ordena tu mente. cuida tu energía.</em> Aquí está el pulso de tu día y lo que no puede esperar.
+              </p>
+              <ul className={styles.heroChips} aria-label="Resumen">
+                <li className={styles.chip}>{countLabel(pendingCount, 'pendiente', 'pendientes')}</li>
+                <li className={`${styles.chip} ${styles.chipCritical}`}>{countLabel(criticalCount, 'crítico', 'críticos')}</li>
+              </ul>
             </div>
-            <h2 id="dash-greeting" className={styles.heroTitle}>
-              {greetingFor(now)}, {profile.name}.
-            </h2>
-            <p className={styles.heroSubtitle}>
-              <em>ordena tu mente. cuida tu energía.</em> Aquí está el pulso de tu día y lo que no puede esperar.
-            </p>
 
             <blockquote className={styles.heroAphorism}>
               <Quote className={styles.aphorismQuoteIcon} size={22} aria-hidden="true" />
@@ -339,11 +346,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 «El orden no es una restricción, es el espacio donde florecen tus ideas y tu calma. Un renglón a la vez, sin prisa pero sin pausa.»
               </p>
             </blockquote>
-
-            <ul className={styles.heroChips} aria-label="Resumen">
-              <li className={styles.chip}>{countLabel(pendingCount, 'pendiente', 'pendientes')}</li>
-              <li className={`${styles.chip} ${styles.chipCritical}`}>{countLabel(criticalCount, 'crítico', 'críticos')}</li>
-            </ul>
           </div>
 
           {/* Right Column: Tactile Post-it Note taped with Brass Paperclip */}

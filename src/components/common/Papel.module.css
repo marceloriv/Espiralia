@@ -96,3 +96,10 @@
     background-image: none;
   }
 }
+
+/* Móvil: el relleno de escritorio sobra en una pantalla de 375px. */
+@media (max-width: 600px) {
+  .papel[data-forma='tarjeta'] {
+    padding: 22px 16px 24px;
+  }
+}
