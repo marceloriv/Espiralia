@@ -27,5 +27,9 @@ export default defineConfig({
     setupFiles: './src/tests/setup.ts',
     globals: true,
     testTimeout: 20000,
+    coverage: {
+      provider: 'v8',
+      thresholds: { lines: 80, branches: 80 },
+    },
   },
 })
