@@ -5,6 +5,7 @@ export type PapelTinte = 'arena' | 'pizarra' | 'salvia' | 'terracota' | 'ambar' 
 type PapelTag = 'div' | 'section' | 'article' | 'aside' | 'span';
 
 /** El color codifica el módulo (DESIGN.md §0.4): el mismo tinte significa lo mismo en toda la app. */
+// eslint-disable-next-line react-refresh/only-export-components -- solo afecta el HMR en desarrollo
 export const TINTE_DE_MODULO = {
   dashboard: 'arena',
   agenda: 'pizarra',

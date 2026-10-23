@@ -34,6 +34,8 @@ export interface TomoConfig {
   defaultContent: string;
 }
 
+// La regla solo afecta el HMR en desarrollo; mover estas exportaciones obligaría a tocar a sus importadores.
+// eslint-disable-next-line react-refresh/only-export-components
 export const TOMOS_CONFIG: TomoConfig[] = [
   {
     id: '01',
@@ -64,13 +66,14 @@ export const TOMOS_CONFIG: TomoConfig[] = [
   },
 ];
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function getNoteTomo(note: Note): string {
   if (note.folderId === 'tomo-02' || note.folderId === '02') return '02';
   if (note.folderId === 'tomo-03' || note.folderId === '03') return '03';
   return '01'; // Por defecto pertenece a Tomo 01 (Diario Íntimo)
 }
 
-export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
+export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, profile }) => {
   const profileId = profile?.id ?? propProfileId ?? '';
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profileId));
   const [folders, setFolders] = useState<Folder[]>(() => StorageService.getFolders(profileId));

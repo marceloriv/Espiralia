@@ -55,7 +55,7 @@ const DEFAULT_TAG_ICONS: Record<string, string> = {
 function cleanHeadingTitle(raw: string): string {
   return raw
     .replace(/^(?:#+|§)\s*/, '')
-    .replace(/^\d+[\.\)]\s*/, '')
+    .replace(/^\d+[.)]\s*/, '')
     .trim();
 }
 
@@ -182,8 +182,8 @@ export function parseBujoContent(content: string, defaultTitle?: string): BujoBl
           /^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)\s*(.*)$/u
         );
 
-        let icon = '';
-        let title = '';
+        let icon: string;
+        let title: string;
 
         if (emojiMatch) {
           icon = emojiMatch[1];

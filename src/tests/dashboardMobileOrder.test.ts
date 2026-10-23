@@ -46,7 +46,7 @@ describe('Dashboard en móvil: lo accionable primero', () => {
   });
 
   it('el encabezado esencial agrupa fecha, saludo, subtítulo y contadores en un solo bloque', () => {
-    const head = tsx.match(/<div className=\{styles\.heroHead\}>([\s\S]*?)\n            <\/div>\n\n            <blockquote/)?.[1] ?? '';
+    const head = tsx.match(/<div className=\{styles\.heroHead\}>([\s\S]*?)\n {12}<\/div>\n\n {12}<blockquote/)?.[1] ?? '';
     for (const pieza of ['fechaBloque', 'dash-greeting', 'heroSubtitle', 'heroChips']) expect(head, pieza).toContain(pieza);
     expect(head).not.toContain('heroAphorism');
   });

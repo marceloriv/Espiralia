@@ -8,7 +8,7 @@ import path from 'path';
 const mockProfile: Profile = {
   id: 'p-test',
   name: 'Test User',
-} as any;
+} as unknown as Profile;
 
 describe('DashboardView critical CSS & Hero Content', () => {
   it('includes inline critical CSS for hero in index.html', () => {

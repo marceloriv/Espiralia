@@ -27,7 +27,7 @@ export interface IntegrationsViewProps {
   onNavigate?: (view: ViewType) => void;
 }
 
-export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: propProfile, profileId, onNavigate: _onNavigate }) => {
+export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: propProfile, profileId }) => {
   const profile = propProfile ?? (profileId ? StorageService.getProfiles().find(p => p.id === profileId) : null) ?? {
     id: profileId || 'default',
     name: 'Usuario',

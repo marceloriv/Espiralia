@@ -30,7 +30,7 @@ interface PlannerViewProps {
   onNavigate?: (view: ViewType) => void;
 }
 
-export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
+export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfileId, profile }) => {
   const profileId = profile?.id ?? propProfileId ?? '';
   const [blocks, setBlocks] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profileId));
   const weekPriorities = StorageService.getTodos(profileId)

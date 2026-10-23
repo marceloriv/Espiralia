@@ -26,7 +26,7 @@ interface FoldersViewProps {
   onNavigate?: (view: ViewType) => void;
 }
 
-export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
+export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfileId, profile }) => {
   const profileId = profile?.id ?? propProfileId ?? '';
   const [folders, setFolders] = useState<Folder[]>(() => StorageService.getFolders(profileId));
   const [links, setLinks] = useState<LinkItem[]>(() => StorageService.getLinks(profileId));
@@ -171,7 +171,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
       StorageService.saveNote(updated);
       try {
         sileo.success({ title: 'Nota actualizada', description: `Se guardaron los cambios en ${noteData.title}` });
-      } catch {}
+      } catch { /* el aviso es opcional: la nota ya se guardó */ }
     } else {
       const newNote: Note = {
         id: `note-${Date.now()}`,
@@ -184,7 +184,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
       StorageService.saveNote(newNote);
       try {
         sileo.success({ title: 'Nota creada', description: `Se creó la nota ${noteData.title}` });
-      } catch {}
+      } catch { /* el aviso es opcional: la nota ya se guardó */ }
     }
     setIsNoteModalOpen(false);
     loadData();
@@ -424,9 +424,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                     aria-selected={isActive}
                     className={`${styles.flatFolderTab} ${isActive ? styles.flatFolderActive : ''}`}
                     onClick={() => setUserSelectedFolderId(df.id)}
-                    style={{
-                      ['--folder-color' as any]: folderColor,
-                    }}
+                    style={{ '--folder-color': folderColor } as React.CSSProperties}
                   >
                     <div className={styles.flatBackFlap} aria-hidden="true" />
                     <div className={styles.flatSheets} data-testid="folder-flat-sheets" aria-hidden="true">
