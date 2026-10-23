@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
 import type { ViewType, Profile } from '../types';
+import { turnPage } from '../utils/pageTurn';
 
 interface ProtectedRouteProps {
   activeProfile: Profile | null;
@@ -28,7 +29,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     : 'dashboard';
 
   const handleViewChange = (view: ViewType) => {
-    navigate(`/${view}`);
+    turnPage(() => navigate(`/${view}`));
   };
 
   return (

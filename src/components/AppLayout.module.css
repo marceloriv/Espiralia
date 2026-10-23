@@ -489,6 +489,8 @@
   flex: 1;
   padding: 32px;
   overflow-y: auto;
+  /* Solo el contenido pasa la página: el encabezado y la barra lateral se quedan quietos (index.css, ::view-transition). */
+  view-transition-name: pagina;
 }
 
 /* ---------- Tablet (769–1023 px): riel de íconos ---------- */

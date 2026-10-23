@@ -246,6 +246,9 @@ body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* Grano de papel al 3 % (DESIGN.md §0.7): ruido SVG como fondo del body, no una capa fija, para no repintar al hacer scroll. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .15 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='.03'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 
 #root {
@@ -262,6 +265,42 @@ h1, h2, h3, h4 {
 
 @view-transition {
   navigation: auto;
+}
+
+/* Pasar la página (DESIGN.md §0.7): 240ms y 8px de desplazamiento, solo en el contenido (`view-transition-name: pagina`).
+   El resto de la pantalla no se anima. Con `prefers-reduced-motion` la función `turnPage` ni siquiera inicia la transición. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(pagina) {
+  animation: pagina-sale 120ms ease-in both;
+}
+
+::view-transition-new(pagina) {
+  animation: pagina-entra 240ms ease-out both;
+}
+
+@keyframes pagina-sale {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pagina-entra {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 /* Accessibility: Focus visible indicator (WCAG 2.4.7 / 1.4.11) */
