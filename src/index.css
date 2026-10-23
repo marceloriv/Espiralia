@@ -328,9 +328,9 @@ a[class] {
 }
 
 /* Móvil: los hijos de flex/grid dentro de las vistas pueden encoger en vez de empujar el ancho de la página (R-03).
-   Los controles se excluyen: conservan su mínimo táctil de 44px. */
+   Los controles se excluyen: conservan su mínimo táctil de 44px (también el label que envuelve un checkbox). */
 @media (max-width: 768px) {
-  main *:not(button):not([role='button']):not([role='tab']):not(a[class]) {
+  main *:not(button):not([role='button']):not([role='tab']):not(a[class]):not(label:has(> input[type='checkbox'])) {
     min-width: 0;
   }
 }

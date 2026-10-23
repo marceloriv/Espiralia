@@ -32,6 +32,12 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
     expect(mobileBlock).toMatch(/\.moreWrapper\s*\{[^}]*display:\s*(flex|block)/);
   });
 
+  // El reset de min-width gana en especificidad a `.checkboxLabel` y `.checkboxTouchTarget` y los encogía a 20-25px de ancho.
+  it('el reset min-width:0 de móvil no encoge el label que envuelve un checkbox (área táctil de 44px)', () => {
+    const rule = indexCss.match(/@media \(max-width: 768px\)\s*\{\s*(main \*:not[^{]+)\{\s*min-width:\s*0/);
+    expect(rule?.[1]).toContain("label:has(> input[type='checkbox'])");
+  });
+
   it('previene fugas de desplazamiento horizontal en el cuerpo (Horizontal Scroll Leak)', () => {
     expect(indexCss).toMatch(/body\s*\{[^}]*overflow-x:\s*hidden/);
   });
