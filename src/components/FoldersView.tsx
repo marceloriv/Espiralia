@@ -8,10 +8,6 @@ import {
   FolderPlus,
   Shield,
   FileText,
-  BookOpen,
-  Brain,
-  GraduationCap,
-  PiggyBank,
   Pin,
 } from 'lucide-react';
 import { sileo } from 'sileo';
@@ -29,60 +25,6 @@ interface FoldersViewProps {
   profile?: Profile;
   onNavigate?: (view: ViewType) => void;
 }
-
-interface CuratedFolder {
-  id: string;
-  num: string;
-  name: string;
-  color: string;
-  desc: string;
-  specs: string;
-  icon: React.ReactNode;
-  tag: string;
-}
-
-const DEFAULT_CURATED_FOLDERS: CuratedFolder[] = [
-  {
-    id: 'curated-01',
-    num: '01',
-    name: 'Proyectos & Estudio',
-    color: '#5b6b7d',
-    desc: 'Planificación de proyectos, bitácoras de aprendizaje y documentación técnica.',
-    specs: 'Curada • General',
-    icon: <BookOpen size={26} aria-hidden="true" />,
-    tag: '01 / PROYECTOS',
-  },
-  {
-    id: 'curated-02',
-    num: '02',
-    name: 'Personal & Bienestar',
-    color: '#486858',
-    desc: 'Hábitos diarios, reflexiones, salud integral y registros personales.',
-    specs: 'Curada • Bienestar',
-    icon: <Brain size={26} aria-hidden="true" />,
-    tag: '02 / BIENESTAR',
-  },
-  {
-    id: 'curated-03',
-    num: '03',
-    name: 'Archivo & Referencias',
-    color: '#6d28d9',
-    desc: 'Material de consulta, enlaces de interés, manuales y lecturas de largo plazo.',
-    specs: 'Curada • Archivo',
-    icon: <GraduationCap size={26} aria-hidden="true" />,
-    tag: '03 / REFERENCIAS',
-  },
-  {
-    id: 'curated-04',
-    num: '04',
-    name: 'Finanzas & Administración',
-    color: '#8e5414',
-    desc: 'Presupuestos, comprobantes, pólizas y gestión administrativa.',
-    specs: 'Curada • Finanzas',
-    icon: <PiggyBank size={26} aria-hidden="true" />,
-    tag: '04 / FINANZAS',
-  },
-];
 
 export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfileId, profile, onNavigate: _onNavigate }) => {
   const profileId = profile?.id ?? propProfileId ?? '';
@@ -118,10 +60,9 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     loadData();
   }, [loadData]);
 
-  // Combine user folders with default curated folders if user hasn't created any yet
-  const displayFolders = useMemo(() => {
-    if (folders.length > 0) {
-      return folders.map((f, idx) => ({
+  const displayFolders = useMemo(
+    () =>
+      folders.map((f, idx) => ({
         id: f.id,
         num: String(idx + 1).padStart(2, '0'),
         name: f.name,
@@ -131,19 +72,15 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         icon: <FolderIcon size={26} aria-hidden="true" />,
         tag: `${String(idx + 1).padStart(2, '0')} / ARCHIVO`,
         isCustom: true,
-      }));
-    }
-    return DEFAULT_CURATED_FOLDERS.map((cf) => ({
-      ...cf,
-      isCustom: false,
-    }));
-  }, [folders, links, notes]);
+      })),
+    [folders, links, notes],
+  );
 
   const selectedFolderId = useMemo(() => {
     if (userSelectedFolderId && displayFolders.some((f) => f.id === userSelectedFolderId)) {
       return userSelectedFolderId;
     }
-    return displayFolders[0]?.id || 'curated-01';
+    return displayFolders[0]?.id ?? '';
   }, [displayFolders, userSelectedFolderId]);
 
   const activeFolder = useMemo(() => {
@@ -369,10 +306,8 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     e.preventDefault();
     if (!quickUrl.trim()) return;
 
-    let targetFolderId = quickFolderId;
-    if (!targetFolderId) {
-      targetFolderId = folders[0]?.id || 'curated-01';
-    }
+    // Sin carpetas el enlace se guarda sin carpeta, nunca con un id inventado.
+    const targetFolderId = quickFolderId || folders[0]?.id;
 
     const cleanTitle = quickUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
     const newLink: LinkItem = {
@@ -459,6 +394,20 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             </div>
           </div>
 
+          {displayFolders.length === 0 ? (
+            <div className={styles.emptyFolders}>
+              <FolderPlus size={32} aria-hidden="true" />
+              <h3 className={styles.emptyFoldersTitle}>Aún no tienes carpetas</h3>
+              <p className={styles.emptyFoldersText}>
+                Crea una para ordenar tus notas y enlaces. También puedes guardar enlaces sin carpeta.
+              </p>
+              <button type="button" className={styles.btnAdd} onClick={handleOpenNewFolder}>
+                <FolderPlus size={18} aria-hidden="true" />
+                <span>Crear mi primera carpeta</span>
+              </button>
+            </div>
+          ) : (
+            <>
           {/* Stepped Tabbed File Cabinet System */}
           <div style={{ paddingTop: '0.5rem', position: 'relative' }}>
             {/* Flat Modern Folder Tabs */}
@@ -691,6 +640,8 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                 </div>
               ))}
           </div>
+            </>
+          )}
         </section>
 
         {/* Right: Tangible Paper Ephemera & Fast Capture (4 Cols) */}
@@ -737,6 +688,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                     onChange={(e) => setQuickFolderId(e.target.value)}
                     aria-label="Carpeta de destino"
                   >
+                    {displayFolders.length === 0 && <option value="">Sin carpeta</option>}
                     {displayFolders.map((f) => (
                       <option key={f.id} value={f.id}>
                         {f.num}. {f.name}

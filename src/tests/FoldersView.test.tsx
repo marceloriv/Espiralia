@@ -2,6 +2,10 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FoldersView } from '../components/FoldersView';
+import { StorageService } from '../services/storage';
+
+const crearCarpeta = (profileId: string, id: string, name: string) =>
+  StorageService.saveFolder({ id, profileId, name, createdAt: new Date().toISOString() });
 
 describe('FoldersView', () => {
   const profileId = 'p-folders-view';
@@ -48,6 +52,7 @@ describe('FoldersView', () => {
   });
 
   it('renderiza el fichero archival con solapas escalonadas y tabla de fichas viva', () => {
+    crearCarpeta('p-test', 'f-1', 'Proyectos');
     render(<FoldersView profileId="p-test" />);
 
     expect(screen.getByRole('heading', { level: 1, name: /explorador de carpetas & vínculos/i })).toBeInTheDocument();
@@ -57,12 +62,13 @@ describe('FoldersView', () => {
   });
 
   it('pone la carpeta abierta, la captura y las tarjetas de enlace en Papel rosa, sin ornamentos ni relleno de ejemplo', async () => {
-    const { StorageService } = await import('../services/storage');
+    crearCarpeta('p-test', 'f-1', 'Proyectos');
     StorageService.saveLink({
       id: 'lnk-papel',
       profileId: 'p-test',
       title: 'Referencia',
       url: 'https://example.com',
+      folderId: 'f-1',
       createdAt: new Date().toISOString(),
     });
     const { container } = render(<FoldersView profileId="p-test" />);
@@ -77,12 +83,14 @@ describe('FoldersView', () => {
   });
 
   it('renderiza las carpetas del fichero con estructura de carpeta plana moderna (solapa trasera, hojas y bolsillo frontal)', () => {
+    crearCarpeta('p-test-flat', 'f-1', 'Proyectos');
+    crearCarpeta('p-test-flat', 'f-2', 'Personal');
     render(<FoldersView profileId="p-test-flat" />);
 
     const sheets = screen.getAllByTestId('folder-flat-sheets');
-    expect(sheets.length).toBeGreaterThanOrEqual(4);
+    expect(sheets).toHaveLength(2);
 
-    const activeTab = screen.getByRole('tab', { name: /proyectos & estudio/i });
+    const activeTab = screen.getByRole('tab', { name: /proyectos/i });
     expect(activeTab).toHaveAttribute('aria-selected', 'true');
     expect(activeTab.querySelector('[data-front-flap="true"]')).toBeInTheDocument();
   });
@@ -185,5 +193,36 @@ describe('FoldersView', () => {
       expect(screen.getAllByRole('button', { name: /\+ guardar enlace/i }).length).toBeGreaterThanOrEqual(2);
     });
   });
-});
 
+  describe('Sin carpetas', () => {
+    it('muestra un estado vacío en vez de carpetas inventadas', () => {
+      render(<FoldersView profileId="p-sin-carpetas" />);
+
+      expect(screen.getByText(/aún no tienes carpetas/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /crear mi primera carpeta/i })).toBeInTheDocument();
+      expect(screen.queryByRole('tab')).toBeNull();
+      expect(screen.queryByText(/proyectos & estudio|personal & bienestar|archivo & referencias|finanzas & administración/i)).toBeNull();
+    });
+
+    it('la captura veloz guarda el enlace sin carpeta y sin id inventado', async () => {
+      const user = userEvent.setup();
+      render(<FoldersView profileId="p-sin-carpetas" />);
+
+      await user.type(screen.getByLabelText(/url para captura veloz/i), 'https://ejemplo.cl/guia');
+      await user.click(screen.getByRole('button', { name: /archivar/i }));
+
+      const guardado = StorageService.getLinks('p-sin-carpetas');
+      expect(guardado).toHaveLength(1);
+      expect(guardado[0].folderId).toBeUndefined();
+      expect(JSON.stringify(guardado)).not.toContain('curated');
+    });
+
+    it('el botón del estado vacío abre el modal para crear la primera carpeta', async () => {
+      const user = userEvent.setup();
+      render(<FoldersView profileId="p-sin-carpetas" />);
+
+      await user.click(screen.getByRole('button', { name: /crear mi primera carpeta/i }));
+      expect(screen.getByLabelText(/nombre de la carpeta/i)).toBeInTheDocument();
+    });
+  });
+});
