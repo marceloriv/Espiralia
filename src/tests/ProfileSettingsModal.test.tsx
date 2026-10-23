@@ -171,6 +171,92 @@ describe('ProfileSettingsModal', () => {
       expect(onClose).toHaveBeenCalledTimes(1);
     }
   });
+
+  describe('eliminar perfil', () => {
+    const botonEliminar = () => screen.getByRole('button', { name: /eliminar perfil y sus datos/i });
+    const campoNombre = () => screen.getByLabelText(/escribe el nombre del perfil/i);
+
+    it('el botón de eliminar está desactivado hasta escribir el nombre exacto del perfil', async () => {
+      const user = userEvent.setup();
+      render(
+        <ProfileSettingsModal isOpen={true} onClose={vi.fn()} profile={baseProfile} onProfileUpdated={vi.fn()} />
+      );
+
+      expect(botonEliminar()).toBeDisabled();
+
+      await user.type(campoNombre(), ' Valentina ');
+      expect(botonEliminar()).toBeEnabled();
+
+      await user.clear(campoNombre());
+      await user.type(campoNombre(), 'valentina');
+      expect(botonEliminar()).toBeDisabled();
+    });
+
+    it('elimina un perfil sin PIN y avisa al padre', async () => {
+      const successSpy = vi.spyOn(sileo, 'success');
+      const onProfileDeleted = vi.fn();
+      const onClose = vi.fn();
+      const user = userEvent.setup();
+      StorageService.saveProfile(baseProfile);
+
+      render(
+        <ProfileSettingsModal
+          isOpen={true}
+          onClose={onClose}
+          profile={baseProfile}
+          onProfileUpdated={vi.fn()}
+          onProfileDeleted={onProfileDeleted}
+        />
+      );
+
+      await user.type(campoNombre(), 'Valentina');
+      await user.click(botonEliminar());
+
+      await waitFor(() => {
+        expect(successSpy).toHaveBeenCalledWith(expect.objectContaining({ title: expect.stringMatching(/perfil eliminado/i) }));
+        expect(onProfileDeleted).toHaveBeenCalledTimes(1);
+        expect(onClose).toHaveBeenCalled();
+      });
+      expect(StorageService.getProfiles()).toHaveLength(0);
+    });
+
+    it('con PIN erróneo muestra el error y conserva el perfil', async () => {
+      const errorSpy = vi.spyOn(sileo, 'error');
+      const onProfileDeleted = vi.fn();
+      const user = userEvent.setup();
+      const { pinHash, pinSalt } = await hashPin('4321');
+      const protectedProfile: Profile = { ...baseProfile, pinHash, pinSalt };
+      StorageService.saveProfile(protectedProfile);
+
+      render(
+        <ProfileSettingsModal
+          isOpen={true}
+          onClose={vi.fn()}
+          profile={protectedProfile}
+          onProfileUpdated={vi.fn()}
+          onProfileDeleted={onProfileDeleted}
+        />
+      );
+
+      await user.type(campoNombre(), 'Valentina');
+      await user.type(screen.getByLabelText(/pin actual para eliminar/i), '0000');
+      await user.click(botonEliminar());
+
+      await waitFor(() => {
+        expect(errorSpy).toHaveBeenCalledWith(expect.objectContaining({ title: expect.stringMatching(/pin actual es incorrecto/i) }));
+      });
+      expect(StorageService.getProfiles()).toHaveLength(1);
+      expect(onProfileDeleted).not.toHaveBeenCalled();
+    });
+
+    it('un perfil sin PIN no muestra el campo de PIN en la sección de eliminar', () => {
+      render(
+        <ProfileSettingsModal isOpen={true} onClose={vi.fn()} profile={baseProfile} onProfileUpdated={vi.fn()} />
+      );
+
+      expect(screen.queryByLabelText(/pin actual para eliminar/i)).not.toBeInTheDocument();
+    });
+  });
 });
 
 

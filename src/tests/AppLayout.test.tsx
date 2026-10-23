@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { AppLayout } from '../components/AppLayout';
@@ -188,6 +188,17 @@ describe('AppLayout', () => {
     await user.click(settingsBtn);
 
     expect(screen.getByRole('dialog', { name: /ajustes de perfil/i })).toBeInTheDocument();
+  });
+
+  it('al eliminar el perfil desde Ajustes se llama onLockProfile', async () => {
+    const user = userEvent.setup();
+    const { onLockProfile } = renderLayout();
+
+    await user.click(screen.getByRole('button', { name: /ajustes & pin/i }));
+    await user.type(screen.getByLabelText(/escribe el nombre del perfil/i), 'Francisca');
+    await user.click(screen.getByRole('button', { name: /eliminar perfil y sus datos/i }));
+
+    await waitFor(() => expect(onLockProfile).toHaveBeenCalledTimes(1));
   });
 
   // Revisión final (Minor 6 re-graduado): en móvil la tarjeta del sidebar se oculta; el perfil activo sigue identificable.

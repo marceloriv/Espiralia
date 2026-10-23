@@ -300,6 +300,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         onProfileUpdated={(updated) => {
           onProfileUpdated?.(updated);
         }}
+        onProfileDeleted={() => onLockProfile()}
       />
 
       <NoteModal
