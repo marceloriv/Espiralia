@@ -116,15 +116,6 @@
   background-color: var(--color-primary);
 }
 
-/* Cuerpo de la tarjeta de métricas dentro de Papel: reparte el contenido y deja el pie abajo. */
-.bentoPapel {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 16px;
-  height: 100%;
-}
-
 .pestanaTexto {
   font-family: var(--font-family-3);
   font-size: var(--text-micro);
@@ -472,11 +463,6 @@
   color: var(--color-text-teal);
 }
 
-/* Backward compatibility for tests looking for .quickIcon */
-.quickIcon {
-  display: inline-flex;
-}
-
 .quickText {
   display: flex;
   flex-direction: column;
@@ -501,9 +487,39 @@
    3. BENTO SECTION: PRODUCTIVIDAD SERENA & ENERGY PHASES
    ========================================================================= */
 
+/* Franja de métricas: cuatro indicadores en una fila, y 2 o 1 columnas cuando no caben. */
+.kpiStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 16px;
+}
+
+.kpiStrip .metricQuadTile {
+  padding: 16px;
+  gap: 4px;
+  background-color: var(--bg-card, #FCF9F6);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-paper);
+}
+
+.metricTileBar {
+  height: 6px;
+  margin: 6px 0 2px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-hairline);
+  overflow: hidden;
+}
+
+.metricTileBarFill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+}
+
+/* Energía y hábitos: dos tarjetas, la de hábitos necesita ~350px para sus siete días de 44px. */
 .bentoTrio {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
 }
 
@@ -557,21 +573,6 @@
   border: 1px solid var(--color-hairline);
 }
 
-.bentoScore {
-  margin: 12px 0 4px;
-  font-family: var(--font-primary);
-  font-size: var(--text-display-md);
-  font-weight: 600;
-  color: var(--color-ink);
-  line-height: 1.1;
-}
-
-.bentoHint {
-  margin: 0;
-  font-size: var(--text-body-sm);
-  color: var(--color-body);
-}
-
 /* Lunar Cycle Visualizer */
 .lunarCycleVisualizer {
   display: flex;
@@ -594,18 +595,6 @@
   height: 26px;
   color: var(--color-primary);
   filter: drop-shadow(0 0 6px rgba(110, 0, 129, 0.25));
-}
-
-.moonIcon {
-  font-size: 22px;
-  cursor: default;
-  transition: transform 0.15s ease;
-}
-
-.moonIconActive {
-  font-size: 26px;
-  transform: scale(1.15);
-  filter: drop-shadow(0 0 4px rgba(142, 30, 162, 0.3));
 }
 
 .clarityQuestion {
@@ -688,14 +677,6 @@
   background-color: var(--color-success);
 }
 
-/* Card 2: Metrics Quad Grid */
-.metricsQuadGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin: 12px 0;
-}
-
 .metricQuadTile {
   min-width: 0;
   overflow-wrap: anywhere;
@@ -761,11 +742,6 @@
   font-family: var(--font-family-3);
   font-size: var(--text-micro);
   color: var(--color-muted);
-}
-
-.dataSovereigntyText {
-  color: var(--color-primary);
-  font-weight: 500;
 }
 
 /* Card 3: Habit Tracker */
@@ -1023,12 +999,6 @@
   line-height: 1.35;
   color: var(--color-ink);
   font-weight: 600;
-}
-
-.focusSubtitle {
-  margin: 4px 0 0;
-  font-size: var(--text-body-sm);
-  color: var(--color-muted);
 }
 
 .focusChipsRow {
@@ -1314,64 +1284,6 @@
   color: var(--color-ink);
 }
 
-.priorityNumHighlight {
-  font-family: var(--font-primary);
-  font-weight: bold;
-  font-size: 16px;
-  color: var(--color-primary);
-}
-
-/* Priorities container & rows */
-.prioritiesContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.stitchPriorityRow {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--color-hairline);
-}
-
-.stitchPriorityText {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.priorityDoneSub {
-  font-family: var(--font-family-3);
-  font-size: 11px;
-  color: var(--color-text-success);
-}
-
-.priorityPendingSub {
-  font-family: var(--font-family-3);
-  font-size: 11px;
-  color: var(--color-muted);
-}
-
-.priorityDoneCheck {
-  color: var(--color-text-success);
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.timeTagSmall {
-  font-family: var(--font-family-3);
-  font-size: 11px;
-  padding: 2px 6px;
-  border-radius: var(--radius-xs);
-  background-color: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline);
-  color: var(--color-muted);
-}
-
 .rowTitle {
   flex: 1;
   font-size: var(--text-body-sm);
@@ -1447,19 +1359,6 @@
   border-radius: var(--radius-xl);
   padding: 20px 24px;
   box-shadow: var(--shadow-paper);
-}
-
-.paperclipIcon {
-  position: absolute;
-  top: -12px;
-  left: 24px;
-  width: 16px;
-  height: 36px;
-  border: 2.5px solid #94a3b8;
-  border-radius: 9999px;
-  background: rgba(226, 232, 240, 0.6);
-  pointer-events: none;
-  z-index: 10;
 }
 
 .distractionHeader {
@@ -1624,31 +1523,11 @@
   border-color: var(--color-hairline);
 }
 
-.routineSlotActive {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  background-color: #efe9de;
-  border: 2px solid var(--color-primary);
-  box-shadow: var(--shadow-sm);
-}
-
 .routineTime {
   font-family: var(--font-family-3);
   font-size: 12px;
   font-weight: 600;
   color: var(--color-muted);
-  width: 44px;
-  flex-shrink: 0;
-}
-
-.routineTimeActive {
-  font-family: var(--font-family-3);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-primary);
   width: 44px;
   flex-shrink: 0;
 }
@@ -1661,35 +1540,11 @@
   flex-shrink: 0;
 }
 
-.routineDotAmber {
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  background-color: var(--color-accent-amber);
-  flex-shrink: 0;
-}
-
-.routineDotPurple {
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  background-color: var(--color-secondary);
-  flex-shrink: 0;
-}
-
 .routineDotTeal {
   width: 8px;
   height: 8px;
   border-radius: 9999px;
   background-color: var(--color-accent-teal);
-  flex-shrink: 0;
-}
-
-.routineDotGray {
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  background-color: var(--color-muted-soft);
   flex-shrink: 0;
 }
 
@@ -1725,35 +1580,10 @@
   color: var(--color-ink);
 }
 
-.activeSlotBody {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.activeSlotTitle {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
-.activeSlotBadge {
-  font-family: var(--font-family-3);
-  font-size: var(--text-micro);
-  color: var(--color-primary);
-  font-weight: 600;
-}
-
 .routineStatusTag {
   font-family: var(--font-family-3);
   font-size: var(--text-micro);
   color: var(--color-text-success);
-}
-
-.routinePauseTag {
-  font-family: var(--font-family-3);
-  font-size: var(--text-micro);
-  color: var(--color-muted);
 }
 
 .routineMutedTag {
@@ -1762,52 +1592,12 @@
   color: var(--color-muted);
 }
 
-.eventRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-hairline);
-  background-color: var(--color-surface-soft);
-}
-
-.timeBlock {
-  font-family: var(--font-family-3);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-muted);
-  width: 48px;
-  flex-shrink: 0;
-}
-
-.rowBody {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex: 1;
-  gap: 8px;
-}
-
 .badge {
   font-family: var(--font-family-3);
   font-size: 11px;
   padding: 2px 8px;
   border-radius: var(--radius-pill);
   font-weight: 600;
-}
-
-.activeSlotCard {
-  background-color: #efe9de;
-  border: 2px solid var(--color-primary);
-  box-shadow: var(--shadow-sm);
-}
-
-.pulseDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
-  background-color: var(--color-primary);
 }
 
 .remindersList {
@@ -2522,6 +2312,7 @@
     align-self: center;
   }
 
+  .kpiStrip,
   .bentoTrio {
     order: 5;
   }

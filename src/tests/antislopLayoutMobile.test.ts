@@ -72,7 +72,7 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
 
   it('el contenido que no cabe hace scroll o encoge en vez de cortarse (tabla de Carpetas y métricas del Dashboard)', () => {
     expect(foldersCss).toMatch(/\.ledgerTableWrapper\s*\{[^}]*overflow-x:\s*auto/);
-    expect(dashboardCss).toMatch(/\.metricsQuadGrid\s*\{[^}]*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+    expect(dashboardCss).toMatch(/\.kpiStrip\s*\{[^}]*repeat\(auto-fit,\s*minmax\(min\(100%,\s*150px\),\s*1fr\)\)/);
   });
 
   it('PlannerView reparte la semana en columnas de 190px que caben, porque la regla global anula el min-width (< 768px)', () => {

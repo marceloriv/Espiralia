@@ -10,7 +10,6 @@ import {
   Heart,
   Zap,
   Target,
-  Activity,
   Leaf,
   Cloud,
   BatteryLow,
@@ -437,6 +436,63 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </section>
 
       {/* =====================================================================
+          1b. FRANJA DE MÉTRICAS DE SERENIDAD (cuatro indicadores en una fila)
+          ===================================================================== */}
+      <section className={styles.kpiStrip} aria-label="Métricas de serenidad">
+        <div className={styles.metricQuadTile}>
+          <span className={styles.metricTileLabel}>Racha Serena</span>
+          <div className={styles.metricTileValueBox}>
+            <span className={styles.metricTileValAccent}>{habitStreak}</span>
+            <span className={styles.metricTileUnit}>días</span>
+          </div>
+          <span className={styles.metricTileSub}>{habitStreak > 0 ? 'Hábitos al día' : 'Marca un hábito para empezarla'}</span>
+        </div>
+
+        <div className={styles.metricQuadTile}>
+          <span className={styles.metricTileLabel}>Foco Neto Hoy</span>
+          <div className={styles.metricTileValueBox}>
+            <span className={styles.metricTileVal}>{netFocus.hours}</span>
+            <span className={styles.metricTileUnit}>horas</span>
+          </div>
+          <span className={styles.metricTileSub}>
+            {netFocus.count > 0 ? `${netFocus.count} actividades hoy` : 'Día libre de foco'}
+          </span>
+        </div>
+
+        <div className={styles.metricQuadTile}>
+          <span className={styles.metricTileLabel}>Almacenamiento</span>
+          <div className={styles.metricTileValueBox}>
+            <span className={styles.metricTileValTeal}>{formatBytes(storageBytes)}</span>
+          </div>
+          <span className={styles.metricTileSub}>de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)} en este navegador</span>
+        </div>
+
+        <div className={styles.metricQuadTile}>
+          <span className={styles.metricTileLabel}>Rendimiento</span>
+          <div className={styles.metricTileValueBox}>
+            <span className={styles.metricTileValPurple}>
+              {taskPerf.percentage === null ? 'Sin datos' : `${taskPerf.percentage}%`}
+            </span>
+          </div>
+          {taskPerf.percentage !== null && (
+            <div
+              className={styles.metricTileBar}
+              role="progressbar"
+              aria-label="Rendimiento de tareas"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={taskPerf.percentage}
+            >
+              <div className={styles.metricTileBarFill} style={{ width: `${taskPerf.percentage}%` }} />
+            </div>
+          )}
+          <span className={styles.metricTileSub}>
+            {taskPerf.total > 0 ? `${taskPerf.completed} de ${taskPerf.total} tareas logradas` : 'Sin tareas registradas'}
+          </span>
+        </div>
+      </section>
+
+      {/* =====================================================================
           2. BENTO TRILOGÍA DE SERENIDAD & ENERGY PHASES
           ===================================================================== */}
       <section className={styles.bentoTrio}>
@@ -523,66 +579,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </span>
           </div>
         </div>
-
-        {/* Card 2: Métricas de Serenidad (Papel Rasgado Editorial) */}
-        <Papel tinte={TINTE_DE_MODULO.dashboard}>
-          <div className={styles.bentoPapel}>
-            <div className={styles.bentoCardHeader}>
-              <span className={styles.bentoTag}>
-                <Activity size={16} aria-hidden="true" />
-                <span>Métricas de Serenidad</span>
-              </span>
-              <span className={styles.bentoBadge}>Privacidad local</span>
-            </div>
-
-            <div className={styles.metricsQuadGrid}>
-              <div className={styles.metricQuadTile}>
-                <span className={styles.metricTileLabel}>Racha Serena</span>
-                <div className={styles.metricTileValueBox}>
-                  <span className={styles.metricTileValAccent}>{habitStreak}</span>
-                  <span className={styles.metricTileUnit}>días</span>
-                </div>
-                <span className={styles.metricTileSub}>{habitStreak > 0 ? 'Hábitos al día' : 'localStorage activo'}</span>
-              </div>
-
-              <div className={styles.metricQuadTile}>
-                <span className={styles.metricTileLabel}>Foco Neto Hoy</span>
-                <div className={styles.metricTileValueBox}>
-                  <span className={styles.metricTileVal}>{netFocus.hours}</span>
-                  <span className={styles.metricTileUnit}>horas</span>
-                </div>
-                <span className={styles.metricTileSub}>
-                  {netFocus.count > 0 ? `${netFocus.count} actividades hoy` : 'Día libre de foco'}
-                </span>
-              </div>
-
-              <div className={styles.metricQuadTile}>
-                <span className={styles.metricTileLabel}>Almacenamiento</span>
-                <div className={styles.metricTileValueBox}>
-                  <span className={styles.metricTileValTeal}>{formatBytes(storageBytes)}</span>
-                </div>
-                <span className={styles.metricTileSub}>de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)} en este navegador</span>
-              </div>
-
-              <div className={styles.metricQuadTile}>
-                <span className={styles.metricTileLabel}>Rendimiento</span>
-                <div className={styles.metricTileValueBox}>
-                  <span className={styles.metricTileValPurple}>
-                    {taskPerf.percentage === null ? 'Sin datos' : `${taskPerf.percentage}%`}
-                  </span>
-                </div>
-                <span className={styles.metricTileSub}>
-                  {taskPerf.total > 0 ? `${taskPerf.completed} de ${taskPerf.total} tareas logradas` : 'Sin tareas registradas'}
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.bentoCardFooter}>
-              <span>Soberanía de datos</span>
-              <span className={styles.dataSovereigntyText}>100% en tu máquina</span>
-            </div>
-          </div>
-        </Papel>
 
         {/* Card 3: Hábitos Semanales */}
         <div className={styles.bentoCard}>
