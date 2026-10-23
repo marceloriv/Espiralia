@@ -35,6 +35,9 @@ _What we're working toward now. Use `- [ ]` / `- [x]` checklists._
 - [x] Decidido: el post-it de Notas conserva su frase ("Claridad hoy, sosiego mañana") porque es el lema propio de esa vista; los aforismos de DESIGN.md §0.9 son los de Dashboard, Planner, To-Do y Acceso.
 
 ### Sigue pendiente
+- [x] Paso 5, tipografía nueva (`2955a13`): ruta crítica 96KB, cuatro familias autoalojadas, escala fluida en los H1 y manuscrito de 22px o más.
+- [ ] Etiquetas de ejes del gráfico SVG del Dashboard a 10px en móvil (por debajo del mínimo de 11px); previo al paso 5.
+- [ ] Atkinson y Fraunces cambian el ancho del texto: mirar con ojos humanos Landing y Acceso, que no se midieron con detalle.
 - [ ] Puntos de revisión con la persona dueña de los pasos 2 (Dashboard), 3 (Acceso) y 4 (resto de vistas).
 - [ ] projectmem avisa "HIGH CHURN" en Dashboard (34 cambios en 30 días), Notas, To-Do, Agenda, Planner y Carpetas: revisar si es solo el plan visual o hay un problema de arquitectura en estas vistas.
 - [ ] Skill `design-taste-frontend` instalado por copia en `~/.claude/skills/` (no se actualiza con `git pull`); revisar si choca con `antislop` y `DESIGN.md` antes de usarlo en el proyecto.
@@ -42,7 +45,7 @@ _What we're working toward now. Use `- [ ]` / `- [x]` checklists._
 
 ## Next
 _Queued, but not started._
-- [ ] Paso 5 (tipografía nueva, §0.6) y paso 6 (pasar la página, §0.7) de `DESIGN.md` §0.8.
+- [ ] Paso 6 (pasar la página, §0.7) de `DESIGN.md` §0.8: transición de 240ms con View Transitions, sin movimiento con `prefers-reduced-motion`; y el grano de papel al 3 % del `body`.
 
 ## Someday / maybe
 
