@@ -14,10 +14,11 @@ const setReducedMotion = (reduce: boolean) => {
   })) as unknown as typeof window.matchMedia;
 };
 
-type ViewTransitionDocument = Document & { startViewTransition?: (cb: () => void) => unknown };
+// El tipo del DOM declara la API como obligatoria; en los tests se simula su ausencia y su presencia.
+const vtDoc = document as unknown as { startViewTransition?: unknown };
 
 afterEach(() => {
-  delete (document as ViewTransitionDocument).startViewTransition;
+  delete vtDoc.startViewTransition;
 });
 
 describe('turnPage', () => {
@@ -26,7 +27,7 @@ describe('turnPage', () => {
     setReducedMotion(false);
     const update = vi.fn();
     const start = vi.fn((cb: () => void) => cb());
-    (document as ViewTransitionDocument).startViewTransition = start;
+    vtDoc.startViewTransition = start;
 
     turnPage(update);
 
@@ -38,7 +39,7 @@ describe('turnPage', () => {
     setReducedMotion(true);
     const update = vi.fn();
     const start = vi.fn();
-    (document as ViewTransitionDocument).startViewTransition = start;
+    vtDoc.startViewTransition = start;
 
     turnPage(update);
 
