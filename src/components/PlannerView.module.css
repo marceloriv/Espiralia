@@ -209,6 +209,25 @@
   align-items: stretch;
 }
 
+/* El Pliego abarca las siete columnas aunque el área haga scroll horizontal, en vez de terminar en el borde visible. */
+.gridArea > .weekPliego {
+  width: max-content;
+  min-width: 100%;
+}
+
+/* Hasta 768px la regla global de index.css (R-03) anula el min-width de las columnas y las deja de 48px.
+   En vez de siete franjas, la semana se reparte en tantas columnas de 190px como quepan: una en teléfono, dos o tres en tableta. */
+@media (max-width: 768px) {
+  .gridArea > .weekPliego {
+    width: auto;
+  }
+
+  .weeklyGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr));
+  }
+}
+
 .drawerArea {
   width: 360px;
   flex-shrink: 0;

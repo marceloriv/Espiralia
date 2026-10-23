@@ -52,6 +52,15 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
     expect(plannerCss).toMatch(/@media \(max-width: 640px\)[\s\S]*?\.plannerMainHeading\s*\{[^}]*font-size:\s*20px/);
   });
 
+  it('PlannerView reparte la semana en columnas de 190px que caben, porque la regla global anula el min-width (< 768px)', () => {
+    expect(indexCss).toMatch(/@media \(max-width: 768px\)[\s\S]*?main \*:not\(button\)[^{]*\{[^}]*min-width:\s*0/);
+    expect(plannerCss).toMatch(/@media \(max-width: 768px\)[\s\S]*?\.weeklyGrid\s*\{[^}]*display:\s*grid/);
+    // En escritorio el Pliego abarca las siete columnas aunque el área haga scroll; en móvil vuelve al ancho de la pantalla.
+    expect(plannerCss).toMatch(/\.gridArea > \.weekPliego\s*\{[^}]*width:\s*max-content[^}]*min-width:\s*100%/);
+    expect(plannerCss).toMatch(/@media \(max-width: 768px\)[\s\S]*?\.gridArea > \.weekPliego\s*\{[^}]*width:\s*auto/);
+    expect(plannerCss).toMatch(/@media \(max-width: 768px\)[\s\S]*?\.weeklyGrid\s*\{[^}]*repeat\(auto-fill,\s*minmax\(min\(100%,\s*190px\),\s*1fr\)\)/);
+  });
+
   it('TodoView escala el encabezado H1 y banner en pantallas moviles (< 640px)', () => {
     expect(todoCss).toContain('@media (max-width: 640px)');
     expect(todoCss).toMatch(/@media \(max-width: 640px\)[\s\S]*?\.editorialH1\s*\{[^}]*font-size:\s*1\.85rem/);

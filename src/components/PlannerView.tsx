@@ -248,7 +248,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
       {/* Grid Principal & Barra Lateral Stitch */}
       <div className={styles.mainContent}>
         <main className={styles.gridArea} aria-label="Grilla semanal de bloques">
-          <Pliego as="div">
+          <Pliego as="div" className={styles.weekPliego}>
           <div className={styles.weeklyGrid}>
             {legacyBlocks.length > 0 && (
               <PlannerDayColumn
