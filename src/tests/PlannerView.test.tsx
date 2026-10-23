@@ -200,29 +200,24 @@ describe('PlannerView integración semanal y metas', () => {
     expect(screen.getByText(/01\. estudios/i)).toBeInTheDocument();
     expect(screen.getByText(/prioridades de la semana/i)).toBeInTheDocument();
     expect(screen.getByText(/habit tracker semanal/i)).toBeInTheDocument();
-    expect(screen.getByText(/discipline today, peace tomorrow/i)).toBeInTheDocument();
+    expect(screen.getByText(/disciplina hoy, paz mañana/i)).toBeInTheDocument();
   });
 
-  it('incluye cruces micrométricas de registro, cinta marcapáginas de seda y pestañas técnicas de bitácora', () => {
+  it('muestra la semana ISO en una pieza de Papel y no conserva los ornamentos de plano técnico', () => {
     const { container } = render(<PlannerView profileId={profileId} />);
 
-    const ribbon = container.querySelector('[class*="satinBookmarkRibbon"]');
-    expect(ribbon).toBeInTheDocument();
-    expect(ribbon).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByText(/^Semana \d{1,2}$/)).toBeInTheDocument();
+    expect(container.querySelector('[class*="satinBookmarkRibbon"]')).toBeNull();
+    expect(container.querySelector('[class*="registrationCross"]')).toBeNull();
+    expect(container.querySelector('[class*="brassClip"]')).toBeNull();
+    expect(screen.queryByText(/recordatorios y notas rápidas/i)).not.toBeInTheDocument();
+  });
 
-    const crosshairs = container.querySelectorAll('[class*="registrationCross"]');
-    expect(crosshairs.length).toBeGreaterThanOrEqual(2);
-    crosshairs.forEach(cross => {
-      expect(cross).toHaveAttribute('aria-hidden', 'true');
-    });
+  it('pone la semana en un Pliego y las metas en un Papel salvia', () => {
+    const { container } = render(<PlannerView profileId={profileId} />);
 
-    const technicalTabs = container.querySelectorAll('[class*="technicalTab"]');
-    expect(technicalTabs.length).toBeGreaterThanOrEqual(7);
-    technicalTabs.forEach(tab => {
-      expect(tab).toHaveAttribute('aria-hidden', 'true');
-    });
-
-    expect(screen.queryByText(/folio tec-2026/i)).not.toBeInTheDocument();
+    const grid = screen.getByRole('main', { name: /grilla semanal/i });
+    expect(grid.querySelector('svg')).not.toBeNull();
+    expect(container.querySelector('[data-tinte="salvia"]')).not.toBeNull();
   });
 });
-

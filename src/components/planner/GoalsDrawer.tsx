@@ -5,6 +5,7 @@ import { useEscapeKey } from '../../utils/useEscapeKey';
 import type { Goal, GoalSubItem } from '../../types';
 import { StorageService } from '../../services/storage';
 import { GoalCard } from './GoalCard';
+import { Papel, TINTE_DE_MODULO } from '../common/Papel';
 import styles from './GoalsDrawer.module.css';
 
 interface GoalsDrawerProps {
@@ -104,6 +105,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
 
   return (
     <aside className={styles.drawerContainer} aria-label="Panel de metas semanales">
+      <Papel as="div" tinte={TINTE_DE_MODULO.planner}>
       <div className={styles.drawerHeader}>
         <div className={styles.titleArea}>
           <span className={styles.subHeading}>Objetivos de Horizonte</span>
@@ -137,6 +139,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
           ))
         )}
       </div>
+      </Papel>
 
       {isModalOpen && (
         <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="modal-goal-title">

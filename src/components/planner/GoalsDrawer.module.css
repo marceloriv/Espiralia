@@ -1,6 +1,4 @@
 .drawerContainer {
-  background: var(--color-surface, #fcf9f6);
-  border-left: 1px solid var(--color-hairline, #e6dfd8);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;

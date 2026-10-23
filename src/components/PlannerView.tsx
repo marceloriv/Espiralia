@@ -6,6 +6,9 @@ import { StorageService } from '../services/storage';
 import { PlannerDayColumn } from './planner/PlannerDayColumn';
 import { PlannerBlockModal } from './planner/PlannerBlockModal';
 import { GoalsDrawer } from './planner/GoalsDrawer';
+import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Pliego } from './common/Pliego';
+import { isoWeekNumber } from '../utils/localDate';
 import styles from './PlannerView.module.css';
 
 interface PlannerViewProps {
@@ -125,20 +128,12 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
   return (
     <div className={styles.plannerWrapper}>
-      {/* Cruces de calibración y registro micrométrico de plano técnico */}
-      <div className={`${styles.registrationCross} ${styles.registrationCrossTL}`} aria-hidden="true">
-        <div className={styles.crosshairH} />
-        <div className={styles.crosshairV} />
-      </div>
-      <div className={`${styles.registrationCross} ${styles.registrationCrossTR}`} aria-hidden="true">
-        <div className={styles.crosshairH} />
-        <div className={styles.crosshairV} />
-      </div>
-
       {/* Cabecera Editorial Stitch */}
       <div className={styles.editorialHeader}>
         <div className={styles.headerLeft}>
-          <span className={styles.overlineTag}>ESPIRALIA TALLER • PLANIFICADOR SEMANAL</span>
+          <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.planner} className={styles.weekTag}>
+            Semana {isoWeekNumber(new Date())}
+          </Papel>
           <h1 className={styles.plannerMainHeading}>plan de enfoque y agenda semanal.</h1>
           <h2 className={styles.pageTitle}>Planner Semanal</h2>
         </div>
@@ -146,7 +141,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
         {/* Post-it manuscrito con chincheta */}
         <div className={styles.stickyAphorism}>
           <div className={styles.brassPin} aria-hidden="true" />
-          <p className={styles.stickyText}>discipline today, peace tomorrow. ♡</p>
+          <p className={styles.stickyText}>Disciplina hoy, paz mañana.</p>
         </div>
       </div>
 
@@ -170,12 +165,6 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
       {/* Subheader con Navegación, Cinta Marcapáginas y Filtros */}
       <header className={styles.subHeader}>
-        {/* Cinta marcapáginas de seda de bitácora */}
-        <div className={styles.satinBookmarkRibbon} aria-hidden="true">
-          <div className={styles.ribbonShine} />
-          <div className={styles.ribbonTail} />
-        </div>
-
         <div className={styles.leftGroup}>
           <div className={styles.weekNavGroup}>
             <button
@@ -259,6 +248,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
       {/* Grid Principal & Barra Lateral Stitch */}
       <div className={styles.mainContent}>
         <main className={styles.gridArea} aria-label="Grilla semanal de bloques">
+          <Pliego as="div">
           <div className={styles.weeklyGrid}>
             {legacyBlocks.length > 0 && (
               <PlannerDayColumn
@@ -284,12 +274,12 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
               />
             ))}
           </div>
+          </Pliego>
         </main>
 
         <aside className={styles.drawerArea}>
           {/* Top Priorities con clip dorado */}
           <div className={styles.topPrioritiesCard}>
-            <div className={styles.brassClip} aria-hidden="true" />
             <h3 className={styles.topPrioritiesTitle}>PRIORIDADES DE LA SEMANA</h3>
             <ul className={styles.prioritiesList}>
               {weekPriorities.length === 0 ? (
@@ -338,14 +328,6 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
               <button type="button" className={styles.moodBtn} aria-label="Energía Foco"><BatteryCharging size={16} /></button>
               <button type="button" className={styles.moodBtn} aria-label="Energía Radiante"><Sun size={16} /></button>
             </div>
-          </div>
-
-          {/* Mini Reminders & Bujo Dot Grid */}
-          <div className={styles.remindersCard}>
-            <h4 className={styles.remindersTitle}>RECORDATORIOS Y NOTAS RÁPIDAS</h4>
-            <p className={styles.remindersText}>
-              Pausa de agua a las 11:30. Dejar el escritorio despejado al finalizar la jornada.
-            </p>
           </div>
 
           {/* Goals Drawer preservado */}
