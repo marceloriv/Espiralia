@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { IntegrationsView } from '../components/IntegrationsView';
 import { StorageService } from '../services/storage';
 import type { Profile } from '../types';
@@ -92,5 +93,32 @@ describe('IntegrationsView (Stitch screen)', () => {
     expect(screen.getByText(/datos solo en este navegador/i)).toBeInTheDocument();
     expect(screen.getByText(/google calendar & ical \(\.ics\)/i)).toBeInTheDocument();
     expect(screen.getByText(/arrastra tu archivo/i)).toBeInTheDocument();
+  });
+
+  it('la copia completa descarga el mismo ProfileBackup (version 1) que Bóveda Offline puede restaurar', async () => {
+    const user = userEvent.setup();
+    const blobs: Blob[] = [];
+    vi.spyOn(URL, 'createObjectURL').mockImplementation((b: Blob | MediaSource) => {
+      blobs.push(b as Blob);
+      return 'blob:copia';
+    });
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    StorageService.saveEvent({ id: 'ev-copia', profileId: profile.id, title: 'Hito', date: '2026-10-25' });
+
+    render(<IntegrationsView profile={profile} />);
+    await user.click(screen.getByRole('button', { name: /descargar copia completa \(\.json\)/i }));
+
+    const backup = JSON.parse(await blobs[0].text());
+    expect(backup.version).toBe(1);
+    expect(backup.profile.id).toBe(profile.id);
+    expect(backup.events[0].title).toBe('Hito');
+    vi.restoreAllMocks();
+  });
+
+  it('el borrador de correo no inventa texto', () => {
+    render(<IntegrationsView profile={profile} />);
+    const link = screen.getByRole('link', { name: /redactar recordatorio/i });
+    expect(link.getAttribute('href')).toBe('mailto:?subject=Recordatorio%20de%20Espiralia');
   });
 });

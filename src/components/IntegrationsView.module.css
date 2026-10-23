@@ -102,6 +102,13 @@
   max-width: 860px;
 }
 
+/* Desde 640px el post-it de aforismo flota a la derecha (220px + 2.5rem de margen): el título no debe pasar por debajo. */
+@media (min-width: 640px) {
+  .header {
+    max-width: min(860px, calc(100% - 270px));
+  }
+}
+
 .badgeBullet {
   color: #e6dfd8;
 }

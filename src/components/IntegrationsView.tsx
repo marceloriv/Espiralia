@@ -17,6 +17,7 @@ import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { formatBytes } from '../utils/formatBytes';
 import { toLocalDateStr } from '../utils/localDate';
 import { IcsService } from '../services/icsService';
+import { VaultService } from '../services/vaultService';
 import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import styles from './IntegrationsView.module.css';
 
@@ -135,29 +136,19 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
     }
   };
 
+  // Mismo respaldo que el del Acceso y el de Bóveda Offline, así que se puede restaurar.
   const handleExportFullVault = () => {
-    const dataToExport = {
-      profile,
-      exportDate: new Date().toISOString(),
-      events: StorageService.getEvents(profile.id),
-      blocks: StorageService.getPlanner(profile.id),
-      todos: StorageService.getTodos(profile.id),
-      areas: StorageService.getAreas(profile.id),
-      notes: StorageService.getNotes(profile.id),
-      folders: StorageService.getFolders(profile.id),
-      links: StorageService.getLinks(profile.id),
-    };
-    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(VaultService.exportProfile(profile.id), null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `espiralia-boveda-completa-${profile.name.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = VaultService.backupFilename(profile.name, 'json');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
     try {
-      sileo.success({ title: 'Copia de Bóveda JSON descargada con éxito' });
+      sileo.success({ title: 'Copia completa descargada', description: 'Restáurala desde Bóveda Offline.' });
     } catch {
       // Ignorar
     }
@@ -167,7 +158,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
     title: string,
     dateStr: string,
     timeStr = '10:00',
-    details = 'Generado desde Espiralia Privacy Vault'
+    details = ''
   ) => {
     const cleanDate = dateStr.replace(/-/g, '');
     const cleanTime = timeStr.replace(/:/g, '') + '00';
@@ -438,7 +429,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     </p>
                     <a
                       className={styles.btnFullWidth}
-                      href="mailto:?subject=Resumen%20Espiralia%20del%20D%C3%ADa&body=Notas%20pendientes%20de%20revisi%C3%B3n%20editorial."
+                      href="mailto:?subject=Recordatorio%20de%20Espiralia"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -462,7 +453,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                           Copia completa
                         </h3>
                         <p className={styles.cardSubtitle}>
-                          Los datos de este perfil en un archivo JSON
+                          Respaldo de este perfil en un archivo JSON
                         </p>
                       </div>
                     </div>
@@ -477,7 +468,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     <span>Descargar copia completa (.json)</span>
                   </button>
                   <p className={styles.vaultSubhint}>
-                    Sirve para guardar o leer tus datos. Para restaurar un perfil usa Bóveda Offline.
+                    Es el mismo respaldo de Bóveda Offline: úsalo ahí para restaurar el perfil, con cifrado opcional.
                   </p>
                 </div>
                 </Papel>
