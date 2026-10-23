@@ -269,34 +269,6 @@
   flex-direction: column;
 }
 
-.logbookBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-family-3, monospace);
-  font-size: var(--text-micro);
-  font-weight: 700;
-  color: #5a6e85;
-  letter-spacing: 0.08em;
-  margin-bottom: 6px;
-}
-
-.badgeSerial {
-  background: rgba(30, 58, 95, 0.06);
-  padding: 1px 6px;
-  border-radius: 2px;
-  border: 1px solid rgba(30, 58, 95, 0.12);
-  color: #1e3a5f;
-}
-
-.badgeRule {
-  color: #a0aec0;
-}
-
-.badgeStandard {
-  color: #64748b;
-}
-
 .weekTag {
   font-family: var(--font-mono, monospace);
   font-size: var(--text-micro);

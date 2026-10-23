@@ -668,14 +668,6 @@
   color: var(--color-ink);
 }
 
-.priorityDesc {
-  margin: 0;
-  font-family: var(--font-family-2);
-  font-size: var(--text-caption);
-  color: var(--color-muted);
-  line-height: 1.4;
-}
-
 .titleDone {
   text-decoration: line-through;
   color: var(--color-muted);
@@ -702,13 +694,6 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-}
-
-.noPrioritiesText {
-  font-size: var(--text-body-sm);
-  color: var(--color-muted);
-  font-style: italic;
-  padding: 8px 4px;
 }
 
 /* 3.3 Sección Detallada de Tareas (Libreta Escolar Rayada con Grapas y Margen) */
@@ -1061,18 +1046,6 @@
   background-color: rgba(245, 240, 232, 0.6);
   border: 1px solid var(--color-hairline);
   border-left-width: 4px;
-}
-
-.eventBorderAmber {
-  border-left-color: var(--color-accent-amber);
-}
-
-.eventBorderPurple {
-  border-left-color: var(--color-primary);
-}
-
-.eventBorderTeal {
-  border-left-color: var(--color-accent-teal);
 }
 
 .eventDateCol {

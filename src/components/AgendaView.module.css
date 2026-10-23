@@ -242,22 +242,6 @@
   font-size: var(--text-caption);
 }
 
-.cycleInfo {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--color-muted);
-}
-
-.cycleStrong {
-  color: var(--color-ink);
-  font-weight: 600;
-}
-
-.iconMuted {
-  color: var(--color-muted);
-}
-
 .syncStatus {
   display: flex;
   align-items: center;
@@ -269,13 +253,6 @@
 
 .syncText {
   color: var(--color-muted);
-}
-
-.statusDotGreen {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--color-success);
 }
 
 /* ========================================================================= */
@@ -786,85 +763,6 @@
   margin-top: 3px;
 }
 
-/* ========================================================================= */
-/* 4. Bottom Section: The Weekly Flow & Quick Capture                        */
-/* ========================================================================= */
-
-.weeklyFlowSection {
-  margin-top: 12px;
-  padding: 24px;
-  background-color: var(--color-surface-card);
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 1px 3px rgba(37, 35, 32, 0.04), 0 12px 28px -4px rgba(45, 35, 25, 0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.weeklyFlowHeader {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
-  border-bottom: 1px solid var(--color-hairline);
-  padding-bottom: 14px;
-}
-
-@media (min-width: 768px) {
-  .weeklyFlowHeader {
-    flex-direction: row;
-    align-items: center;
-  }
-}
-
-.weeklyFlowTitleGroup {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.wfAvatarBadge {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: rgba(142, 30, 162, 0.12);
-  color: var(--color-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.75rem;
-  flex-shrink: 0;
-}
-
-.weeklyFlowTitle {
-  margin: 0;
-  font-family: var(--font-primary);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
-.weeklyFlowDesc {
-  margin: 2px 0 0;
-  font-family: var(--font-family-2);
-  font-size: var(--text-body-sm);
-  color: var(--color-muted);
-}
-
-.weeklyFlowProgress {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.progressText {
-  font-family: var(--font-family-3);
-  font-size: var(--text-caption);
-  color: var(--color-muted);
-}
-
 .progressBarTrack {
   width: 120px;
   height: 8px;
@@ -879,100 +777,3 @@
   background-color: var(--color-primary);
 }
 
-.capsulesGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
-
-@media (min-width: 640px) {
-  .capsulesGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .capsulesGrid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.dayCapsule {
-  padding: 14px 16px;
-  border-radius: var(--radius-lg);
-  background-color: var(--color-background);
-  border: 1px solid var(--color-hairline);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.capsuleToday {
-  background-color: rgba(142, 30, 162, 0.05);
-  border-color: rgba(142, 30, 162, 0.35);
-}
-
-.capsuleUpcoming {
-  opacity: 0.8;
-}
-
-.capsuleTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.capsuleDate {
-  font-family: var(--font-family-3);
-  font-size: 0.75rem;
-  color: var(--color-muted);
-}
-
-.capsuleDateToday {
-  font-family: var(--font-family-3);
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.iconSuccess {
-  color: var(--color-text-success);
-}
-
-.pulsingDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--color-primary);
-}
-
-.capsuleCircle {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-muted);
-}
-
-.capsuleTitle {
-  margin: 0;
-  font-family: var(--font-family-2);
-  font-size: var(--text-body-sm);
-  font-weight: 600;
-  color: var(--color-ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.capsuleMeta {
-  font-family: var(--font-family-3);
-  font-size: 0.6875rem;
-  color: var(--color-muted);
-}
-
-.capsuleMetaToday {
-  font-family: var(--font-family-3);
-  font-size: 0.6875rem;
-  color: var(--color-primary);
-  font-weight: 600;
-}

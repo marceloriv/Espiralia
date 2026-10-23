@@ -109,16 +109,6 @@
   }
 }
 
-.badgeBullet {
-  color: #e6dfd8;
-}
-
-.badgeVersion {
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
-}
-
 .titleRow {
   display: flex;
   align-items: baseline;
@@ -228,19 +218,6 @@
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--color-ink);
-}
-
-.tagZeroBytes {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.15rem 0.6rem;
-  border-radius: 9999px;
-  font-family: var(--font-code, monospace);
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: #EBF2EA;
-  color: #256834;
-  border: 1px solid #BFD6BD;
 }
 
 .bannerText {

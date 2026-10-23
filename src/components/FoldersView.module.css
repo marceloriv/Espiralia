@@ -172,8 +172,7 @@
 
 /* Staggered Tabs Container */
 /* Container de Carpetas Planas Modernas */
-.flatFoldersRow,
-.steppedTabsWrapper {
+.flatFoldersRow {
   display: flex;
   align-items: flex-end;
   gap: 10px;
@@ -185,14 +184,12 @@
   scrollbar-width: none;
 }
 
-.flatFoldersRow::-webkit-scrollbar,
-.steppedTabsWrapper::-webkit-scrollbar {
+.flatFoldersRow::-webkit-scrollbar {
   display: none;
 }
 
 /* Contenedor plano de la carpeta en FoldersView */
-.flatFolderTab,
-.steppedTab {
+.flatFolderTab {
   position: relative;
   flex: 0 1 195px;
   min-width: 140px;
@@ -206,19 +203,16 @@
   font-family: inherit;
 }
 
-.flatFolderTab:hover,
-.steppedTab:hover {
+.flatFolderTab:hover {
   transform: translateY(-2px);
 }
 
-.flatFolderTab:focus-visible,
-.steppedTab:focus-visible {
+.flatFolderTab:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
 .flatFolderTab.flatFolderActive,
-.steppedTabActive,
 .flatFolderTab[aria-selected="true"] {
   height: 58px;
   z-index: 20;
@@ -226,16 +220,14 @@
 }
 
 @media (max-width: 640px) {
-  .flatFoldersRow,
-  .steppedTabsWrapper {
+  .flatFoldersRow {
     gap: 8px;
     padding: 6px 0.5rem 0;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
   }
 
-  .flatFolderTab,
-  .steppedTab {
+  .flatFolderTab {
     width: 155px;
     min-width: 135px;
     height: 46px;
@@ -243,8 +235,7 @@
   }
 
   .flatFolderTab.flatFolderActive,
-  .steppedTabActive,
-  .flatFolderTab[aria-selected="true"] {
+.flatFolderTab[aria-selected="true"] {
     height: 50px;
   }
 
@@ -254,8 +245,7 @@
   }
 
   .flatFolderTab.flatFolderActive .flatFrontFlap,
-  .steppedTabActive .flatFrontFlap,
-  .flatFolderTab[aria-selected="true"] .flatFrontFlap {
+.flatFolderTab[aria-selected="true"] .flatFrontFlap {
     height: 35px;
   }
 
@@ -288,7 +278,6 @@
 }
 
 .flatFolderTab.flatFolderActive .flatBackFlap,
-.steppedTabActive .flatBackFlap,
 .flatFolderTab[aria-selected="true"] .flatBackFlap {
   filter: brightness(1);
 }
@@ -315,7 +304,6 @@
 }
 
 .flatFolderTab.flatFolderActive .flatSheets,
-.steppedTabActive .flatSheets,
 .flatFolderTab[aria-selected="true"] .flatSheets {
   transform: translateY(-6px);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.06);
@@ -354,7 +342,6 @@
 }
 
 .flatFolderTab.flatFolderActive .flatFrontFlap,
-.steppedTabActive .flatFrontFlap,
 .flatFolderTab[aria-selected="true"] .flatFrontFlap {
   height: 40px;
   filter: brightness(1.08);
@@ -397,15 +384,6 @@
   height: 6px;
   border-radius: 50%;
   background: var(--color-primary);
-}
-
-.tabCountMini {
-  font-family: var(--font-code, monospace);
-  font-size: 0.6875rem;
-  background: var(--color-hairline-soft, #ebe6df);
-  padding: 0.1rem 0.4rem;
-  border-radius: 0.25rem;
-  color: var(--color-ink-muted, #6c6a64);
 }
 
 .folderHeaderDetails {
@@ -491,24 +469,11 @@
   text-transform: uppercase;
 }
 
-.metaVal {
-  font-family: var(--font-code, monospace);
-  font-size: 0.8125rem;
-  color: var(--color-ink, #141413);
-  font-weight: 500;
-}
-
 .metaValAccent {
   font-family: var(--font-code, monospace);
   font-size: 0.8125rem;
   color: var(--color-primary);
   font-weight: 600;
-}
-
-.metaDivider {
-  width: 1px;
-  height: 28px;
-  background: var(--color-hairline, #e6dfd8);
 }
 
 /* Ledger Table */
@@ -1058,13 +1023,6 @@
   transition: all 0.12s ease;
 }
 
-.pillBtnActive {
-  background: var(--color-surface-card, #efe9de);
-  border-color: var(--color-primary);
-  color: var(--color-ink, #141413);
-  font-weight: 600;
-}
-
 /* Bento Bookmark Grid */
 .bookmarkGrid {
   display: grid;
@@ -1122,12 +1080,6 @@
   background: rgba(237, 150, 215, 0.2);
   border-color: rgba(142, 30, 162, 0.2);
   color: var(--color-primary);
-}
-
-.bookmarkAreaBadgeTeal {
-  background: rgba(93, 184, 166, 0.15);
-  border-color: rgba(93, 184, 166, 0.3);
-  color: #196b5d;
 }
 
 .bookmarkLinkAnchor {
