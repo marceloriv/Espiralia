@@ -134,17 +134,19 @@ Consecuencias para el plan (paso 3, Acceso), con revisión de la persona dueña 
 - **Aviso de PIN olvidado:** reemplazar el texto falso por «Espiralia no puede restablecer un PIN: solo guarda su hash en este navegador.» Es un cambio de texto; no cambia ningún dato.
 - **Botón "Exportar bóveda local" del Acceso:** quitarlo del Acceso (propuesta) o alinear su formato con el de `VaultModal`. Decisión pendiente: quitarlo deja sin copia a quien no pueda entrar; alinearlo implica un cambio de comportamiento y un test de ida y vuelta.
 
-**Decisión pendiente tras el paso 2: orden del Dashboard en móvil.** El criterio de §0.10.4 no se cumple porque, antes de las prioridades, el Dashboard muestra el encabezado completo, el aforismo, el lema del día, los cuatro accesos rápidos y las tres tarjetas de serenidad (pliego a 2436px en móvil). Opciones:
+**Decisión tomada tras el paso 2: orden del Dashboard en móvil (opción B, aplicada).** El criterio de §0.10.4 no se cumple porque, antes de las prioridades, el Dashboard muestra el encabezado completo, el aforismo, el lema del día, los cuatro accesos rápidos y las tres tarjetas de serenidad (pliego a 2436px en móvil). Opciones:
 - **A. Solo reordenar:** en móvil, las tres tarjetas de serenidad pasan después de las prioridades (CSS `order`, sin tocar el contenido). Mejora, pero el encabezado sigue siendo largo y no alcanza los 600px.
 - **B. Reordenar y compactar (recomendada):** en móvil el encabezado queda en fecha, saludo y contadores; el aforismo, el lema, los accesos rápidos y las tarjetas de serenidad van después de Foco y Prioridades. Cumple el criterio y no cambia el contenido ni el orden en escritorio.
 - **C. Relajar el criterio:** en el Dashboard se acepta que las prioridades queden más abajo, a cambio de conservar el encabezado completo.
+
+Aplicada la B: hasta 960px el encabezado esencial (fecha, saludo, subtítulo y contadores) va primero, luego las tareas del día, los accesos rápidos en dos columnas, el aforismo, el lema y las tarjetas de serenidad. De 600 a 960px la columna derecha pasa a dos columnas. El orden se fija con `order` (el hero deja de ser tarjeta en móvil con `display: contents`) y lo vigila `src/tests/dashboardMobileOrder.test.ts`. Medido sin desborde horizontal en 8 rutas a 375, 768 y 1440px; el único objetivo táctil pequeño es un enlace de texto de Integraciones, previo a este plan.
 
 ### 0.10 Criterios de aceptación (verificables)
 
 1. Como máximo un `<Pliego`, cuatro tarjetas y tres piezas de `<Papel` por archivo de vista (`papelBudget.test.ts`).
 2. Texto sobre cada tinte: 4.5:1 como mínimo, medido con la fórmula WCAG en `textTokensContrast.test.ts`.
 3. Ningún control menor de 44x44px; foco visible con 3:1 contra su entorno.
-4. A 375, 768 y 1440px: sin desborde horizontal (**cumplido** en el Dashboard a 375 y 1440). A 375x812, la primera tarea crítica del Dashboard empieza dentro de los primeros 600px (**no cumplido**: medido a 2436px en móvil y 1380px en escritorio; antes del pliego van el encabezado, el aforismo, el lema, los cuatro accesos y las tres tarjetas de serenidad). Decisión pendiente en §0.9.
+4. A 375, 768 y 1440px: sin desborde horizontal (**cumplido** en el Dashboard a 375 y 1440). A 375x812, la primera tarea crítica del Dashboard empieza dentro de los primeros 600px (**cumplido** con la opción B de §0.9: en móvil el pliego queda a 605px, antes 2454px, y la tarea de "Foco principal" empieza antes de los 600px; en escritorio no cambia, 1380px).
 5. Cero peticiones a dominios externos al cargar cualquier ruta; peso de fuentes medido y dentro del presupuesto fijado en el paso 5.
 6. Con `prefers-reduced-motion` no hay transición de página; con `prefers-contrast: more` y `forced-colors: active`, sin sombra desplazada, y los papeles conservan un borde visible (`border` de respaldo, `clip-path: none`).
 7. Sin `mix-blend-mode` ni más de cuatro `filter: drop-shadow` por pantalla. La pantalla se desplaza sin saltos en una grabación de rendimiento en emulación móvil.
