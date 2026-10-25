@@ -1072,3 +1072,13 @@
   color: var(--color-primary);
   background-color: var(--color-surface-soft);
 }
+
+/* Degradados por tinte (mock aprobado el 2026-10-25): la energía es el cierre del día (salvia)
+   y el vacío de notas cede el ámbar de Notas. */
+.moodTrackerCard {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 60%, var(--bg-card)), var(--bg-card) 72%);
+}
+
+.emptyState {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 52%, var(--bg-card)), var(--bg-card) 66%);
+}
