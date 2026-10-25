@@ -197,13 +197,14 @@
   --papel-rosa-fuerte: #f6b6df;
   --papel-turquesa: #c7efe7;
   --papel-turquesa-fuerte: #adebde;
-  /* Sobre esos tintes los textos globales bajan de 4.5:1; dentro del Papel se usan estas variantes un 6 a 7% más oscuras. */
-  --papel-texto-suave: #5e5c56;
-  --papel-texto-exito: #2e673b;
-  --papel-texto-turquesa: #2c655a;
-  --papel-texto-ambar: #854f13;
-  --papel-texto-magenta: #933190;
-  --papel-texto-error: #a63333;
+  /* Sobre esos tintes los textos globales bajan de 4.5:1; dentro del Papel se usan estas variantes más oscuras.
+     El degradado de esquina de la tarjeta (Papel.module.css) llega al 58% del tinte fuerte: su peor caso, 4.55:1, fija estos valores. */
+  --papel-texto-suave: #585651;
+  --papel-texto-exito: #2b6137;
+  --papel-texto-turquesa: #295f55;
+  --papel-texto-ambar: #7d4a12;
+  --papel-texto-magenta: #8c2f89;
+  --papel-texto-error: #9c3030;
 
   /* Tokens de compatibilidad y alias historicos */
   --color-surface: var(--color-surface-soft);

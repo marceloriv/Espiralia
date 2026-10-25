@@ -99,6 +99,15 @@ describe('Tintes de Papel con contraste AA', () => {
     }
   });
 
+  // El degradado de esquina de la tarjeta (Papel.module.css) mezcla el tinte fuerte al 58% sobre el tinte: ahí está el fondo más oscuro.
+  it.each(Object.values(TEXTOS_DE_PAPEL))('%s alcanza 4.5:1 en la esquina oscura de cada tarjeta', name => {
+    const fg = token(name);
+    for (const t of TINTES) {
+      const bg = mixHex(papelTint(`papel-${t}-fuerte`), 58, papelTint(`papel-${t}`));
+      expect(ratio(fg, bg), `${name} (${fg}) sobre la esquina de papel-${t} (${bg})`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
   it('el Papel redefine cada token de texto con su variante oscura', () => {
     const css = readFileSync('src/components/common/Papel.module.css', 'utf8');
     const regla = css.match(/\n\.papel\s*\{[^}]*\}/)?.[0] ?? '';
