@@ -89,7 +89,7 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 ### 0.7 Movimiento y grano
 
 - **Una sola escena: pasar la página** al cambiar de vista (240ms, desplazamiento de 8px), con la View Transitions API como mejora progresiva. Sin soporte o con `prefers-reduced-motion`, no hay transición. Es el último paso del plan.
-- **Grano de papel** al 3 %: una textura SVG como `background-image` del `body` (no una capa fija a pantalla completa, para no repintar al hacer scroll). Sin degradados, sin brillos, sin desenfoque, sin `mix-blend-mode`.
+- **Grano de papel** al 3 %: una textura SVG como `background-image` del `body` (no una capa fija a pantalla completa, para no repintar al hacer scroll). Sin brillos, sin desenfoque, sin `mix-blend-mode`. Los degradados por tinte sí están permitidos desde el 2026-10-25 (§0.12).
 
 ### 0.8 Orden de ejecución (cada paso se puede entregar y revertir por separado)
 
@@ -160,6 +160,17 @@ Aplicada la B: hasta 960px el encabezado esencial (fecha, saludo, subtítulo y c
 - **Borde rasgado generado con JavaScript:** mide el DOM en cada cambio de tamaño y no escala a todas las vistas.
 - **Más washi, clips y notas adhesivas en cada tarjeta:** competiría con la firma.
 - **Doble tinta en titulares corridos:** reduce la legibilidad sin aportar información.
+
+### 0.12 Degradados por tinte y hoja de origami (decisión de la persona dueña, 2026-10-25)
+
+La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reemplaza dos reglas anteriores: "sin degradados" (§0.7) y "el color solo en el Papel" (§0.4). Se llevó a `src/` y se extendió a las demás vistas.
+
+- **Regla:** una superficie con función lleva un degradado de su tinte de módulo hacia el papel claro (`--bg-card`), nunca un velo sobre toda la pantalla. El lienzo de la app es marfil liso, sin cuadrícula de puntos.
+- **Tarjeta de Papel** (`Papel.module.css`): la esquina inferior derecha se oscurece hacia `--papel-<tinte>-fuerte` (155°, desde 54 %, mezclado al 58 %). Vale para toda tarjeta, en cualquier vista.
+- **Superficies planas:** cada vista aplica el tinte de su módulo (§0.4) en el encabezado, los formularios y los vacíos; energía y hábitos llevan salvia, y las lecturas de métricas, turquesa. Los datos y el texto no se tiñen.
+- **Barra lateral:** degradado pizarra, arena y rosa (160°), y debajo de la navegación una hoja de origami en CSS (`OrigamiHoja`: molinillo, caracol y rosa, con el alfiler magenta de las tres figuras). Solo se muestra con 1024px de ancho y 900px de alto o más; el riel de íconos, el móvil y `forced-colors` la ocultan.
+- **Excepción a R-19 (movimiento sin propósito), mantenida por la persona dueña:** el molinillo gira una vuelta cada 24 s, solo con `prefers-reduced-motion: no-preference`. Es la única animación infinita de la app fuera del spinner de carga (`antislopMotion.test.ts`).
+- **Presupuesto de sombras (§0.10.7):** la hoja de origami no usa `filter: drop-shadow`, para no sumar a las cuatro de las tarjetas de Papel.
 
 ---
 
