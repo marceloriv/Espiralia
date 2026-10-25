@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Note, Folder } from '../../types';
 import { countWords, getCategoryRibbonColor } from '../../utils/bujoFormatter';
+import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './NoteModal.module.css';
 
 interface NoteModalProps {
@@ -29,6 +30,7 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
   const [folderId, setFolderId] = useState<string>(() => initialNote?.folderId || '');
   const [tagsStr, setTagsStr] = useState(() => (initialNote?.tags || []).join(', '));
 
+  const dialogRef = useDialogFocus();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const onCloseRef = useRef(onClose);
   useEffect(() => {
@@ -107,6 +109,7 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div
+        ref={dialogRef}
         className={styles.modalBox}
         onClick={(e) => e.stopPropagation()}
         role="dialog"

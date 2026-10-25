@@ -4,6 +4,7 @@ import { sileo } from 'sileo';
 import type { Area, EventCategory, Priority, TaskStatus } from '../../types';
 import { StorageService } from '../../services/storage';
 import { toLocalDateStr } from '../../utils/localDate';
+import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './QuickActionModal.module.css';
 
 export interface QuickActionModalProps {
@@ -39,7 +40,7 @@ const QuickActionModalContent: React.FC<QuickActionModalProps> = ({
   const [eventEndTime, setEventEndTime] = useState('');
   const [eventCategory, setEventCategory] = useState<EventCategory>('personal');
 
-  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef = useDialogFocus();
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;

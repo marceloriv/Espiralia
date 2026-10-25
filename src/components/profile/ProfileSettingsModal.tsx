@@ -4,6 +4,7 @@ import { sileo } from 'sileo';
 import type { Profile } from '../../types';
 import { PIN_PATTERN, isPinProtected } from '../../services/pinHash';
 import { updateProfilePin, removeProfilePin, deleteProfileData } from '../../services/profileOperations';
+import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './ProfileSettingsModal.module.css';
 
 export interface ProfileSettingsModalProps {
@@ -31,6 +32,7 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   const [deletePin, setDeletePin] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const dialogRef = useDialogFocus(isOpen);
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -140,6 +142,7 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
       <div className={styles.modalWrap} onClick={e => e.target === e.currentTarget && onClose()}>
         <div className={styles.washiTape} aria-hidden="true" />
         <div
+          ref={dialogRef}
           className={styles.modal}
           role="dialog"
           aria-modal="true"

@@ -4,6 +4,7 @@ import { sileo } from 'sileo';
 import type { Profile } from '../../types';
 import { VaultService } from '../../services/vaultService';
 import { downloadFile } from '../../utils/downloadFile';
+import { useDialogFocus } from '../../utils/useDialogFocus';
 import { encryptBackup, decryptBackup, isVaultEnvelope, type ProfileBackup, type EncryptedVaultEnvelope } from '../../services/vaultCrypto';
 import styles from './VaultModal.module.css';
 
@@ -42,6 +43,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
   const [restoreMode, setRestoreMode] = useState<'overwrite' | 'new_profile'>('overwrite');
   const [importError, setImportError] = useState<string | null>(null);
 
+  const dialogRef = useDialogFocus();
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -151,6 +153,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
       <div className={styles.modalWrap} onClick={(e) => e.stopPropagation()}>
         <div className={styles.washiTape} aria-hidden="true" />
         <div
+          ref={dialogRef}
           className={styles.modalBox}
           role="dialog"
           aria-modal="true"
