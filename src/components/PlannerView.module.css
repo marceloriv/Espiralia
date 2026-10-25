@@ -588,3 +588,14 @@
   }
 }
 
+/* Degradados por tinte (mock aprobado el 2026-10-25): las prioridades vienen de To-Do (terracota);
+   hábitos y energía son el cierre del día (salvia), como en el Dashboard. */
+.topPrioritiesCard {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-terracota) 56%, var(--bg-card)), var(--bg-card) 78%);
+}
+
+.habitTrackerCard,
+.moodCard {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 60%, var(--bg-card)), var(--bg-card) 72%);
+}
+
