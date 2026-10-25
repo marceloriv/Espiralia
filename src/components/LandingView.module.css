@@ -616,7 +616,9 @@
 
 .footerLinks {
   display: flex;
-  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 var(--spacing-md);
   align-items: center;
 }
 

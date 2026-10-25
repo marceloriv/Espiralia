@@ -25,6 +25,16 @@ describe('LandingView: navegación interna', () => {
     expect(container.querySelectorAll('a[href^="#"]')).toHaveLength(0);
   });
 
+  it('el pie de página es una navegación con nombre, y su último enlace lleva al acceso con el mismo nombre que el encabezado', async () => {
+    const onNavigateLogin = vi.fn();
+    render(<LandingView onNavigateLogin={onNavigateLogin} />);
+    const pie = screen.getByRole('navigation', { name: 'Pie de página' });
+
+    expect(within(pie).getAllByRole('button').map(b => b.textContent)).toEqual(['Cuaderno', 'Pilares', 'Manifiesto', 'Acceder']);
+    await userEvent.setup().click(within(pie).getByRole('button', { name: 'Acceder' }));
+    expect(onNavigateLogin).toHaveBeenCalledTimes(1);
+  });
+
   it.each(['Manifiesto', 'Cuaderno', 'Metodología'])('el enlace %s lleva a una sección que existe', async name => {
     const { container } = render(<LandingView onNavigateLogin={() => {}} />);
     const nav = screen.getByRole('navigation', { name: /navegación editorial/i });

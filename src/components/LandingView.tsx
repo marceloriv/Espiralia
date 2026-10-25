@@ -168,14 +168,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
           </div>
 
-          <div className={styles.footerLinks}>
+          <nav className={styles.footerLinks} aria-label="Pie de página">
             <button type="button" className={styles.footerLink} onClick={() => scrollToSection('cuaderno')}>Cuaderno</button>
             <button type="button" className={styles.footerLink} onClick={() => scrollToSection('pilares')}>Pilares</button>
             <button type="button" className={styles.footerLink} onClick={() => scrollToSection('manifiesto')}>Manifiesto</button>
-            <button type="button" className={styles.footerLink} onClick={onNavigateLogin}>
-              Acceder a Bóveda
-            </button>
-          </div>
+            <button type="button" className={styles.footerLink} onClick={onNavigateLogin}>Acceder</button>
+          </nav>
         </div>
       </footer>
     </div>
