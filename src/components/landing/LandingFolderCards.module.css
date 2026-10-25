@@ -17,11 +17,18 @@
   }
 }
 
+.folderCardsGrid > :nth-child(1) { --tinte-pilar: var(--papel-pizarra); }
+.folderCardsGrid > :nth-child(2) { --tinte-pilar: var(--papel-salvia); }
+.folderCardsGrid > :nth-child(3) { --tinte-pilar: var(--papel-ambar); }
+
 .folderCard {
   position: relative;
   background-color: var(--color-surface-card);
-  background-image: radial-gradient(rgba(26, 25, 23, 0.04) 0.65px, transparent 0.65px);
-  background-size: 14px 14px;
+  /* Cada pilar toma el color de su solapa: pizarra, salvia y ámbar (DESIGN.md §0.12). */
+  background-image:
+    radial-gradient(rgba(26, 25, 23, 0.04) 0.65px, transparent 0.65px),
+    linear-gradient(145deg, color-mix(in srgb, var(--tinte-pilar) 55%, var(--color-surface-card)), var(--color-surface-card) 66%);
+  background-size: 14px 14px, auto;
   border: 1px solid var(--color-hairline, #e6dfd8);
   border-radius: 4px 14px 12px 12px;
   padding: 1.85rem 1.5rem 1.35rem;

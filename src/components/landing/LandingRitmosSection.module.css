@@ -58,12 +58,19 @@
   }
 }
 
+.ritmosGrid > :nth-child(1) { --tinte-boleto: var(--papel-rosa); }
+.ritmosGrid > :nth-child(2) { --tinte-boleto: var(--papel-terracota); }
+.ritmosGrid > :nth-child(3) { --tinte-boleto: var(--papel-turquesa); }
+
 /* Boleto de Turno / Pliego Cortado Artesanal */
 .ritmoTicket {
   position: relative;
   background-color: var(--color-surface-card);
-  background-image: radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.5px, transparent 0.5px);
-  background-size: 14px 14px;
+  /* Cada boleto toma el color de su cinta: rosa, terracota y turquesa (DESIGN.md §0.12). */
+  background-image:
+    radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.5px, transparent 0.5px),
+    linear-gradient(145deg, color-mix(in srgb, var(--tinte-boleto) 55%, var(--color-surface-card)), var(--color-surface-card) 66%);
+  background-size: 14px 14px, auto;
   padding: 2.25rem 1.5rem 1.5rem;
   display: flex;
   flex-direction: column;
