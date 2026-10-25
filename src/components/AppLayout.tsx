@@ -254,10 +254,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               type="button"
               className={styles.searchTrigger}
               onClick={() => setIsSearchOpen(true)}
-              aria-label="Buscar en Espiralia (Ctrl+K)"
             >
               <Search size={15} aria-hidden="true" />
-              <span className={styles.searchPlaceholder}>Buscar en Espiralia...</span>
+              <span className={styles.searchPlaceholder}>Buscar en Espiralia...</span>{' '}
               <kbd className={styles.searchShortcut}>Ctrl+K</kbd>
             </button>
             <span className={styles.headerDate}>{currentDate}</span>

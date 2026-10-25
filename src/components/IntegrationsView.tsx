@@ -308,7 +308,6 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     onClick={() => fileInputRef.current?.click()}
                     role="button"
                     tabIndex={0}
-                    aria-label="Arrastra tu archivo .ics aquí o explora tu equipo"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click();
                     }}

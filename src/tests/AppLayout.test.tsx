@@ -92,7 +92,7 @@ describe('AppLayout', () => {
       'Más',
       'Ajustes & PIN',
       'Bóveda Offline',
-      'Buscar en Espiralia (Ctrl+K)',
+      'Buscar en Espiralia... Ctrl+K',
       '+ Nueva Nota',
       'Cambiar perfil (Francisca)',
     ]);
