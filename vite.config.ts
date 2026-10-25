@@ -38,6 +38,8 @@ export default defineConfig({
     testTimeout: 20000,
     coverage: {
       provider: 'v8',
+      // Sonar lee coverage/lcov.info (sonar-project.properties); el reporte por defecto de Vitest no lo genera.
+      reporter: ['text', 'lcov'],
       thresholds: { lines: 80, branches: 80 },
     },
   },
