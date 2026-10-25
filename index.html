@@ -7,6 +7,11 @@
     <meta name="theme-color" content="#faf9f5" />
     <meta name="description" content="Espiralia - Tu espacio personal de productividad, agenda y enfoque." />
     <title>Espiralia</title>
+    <!-- Las cuatro fuentes se usan en la primera pantalla; precargarlas evita que el cambio de fuente mueva el diseño (CLS). -->
+    <link rel="preload" href="/src/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/assets/fonts/atkinson-hyperlegible-next-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/assets/fonts/spline-sans-mono-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/src/assets/fonts/reenie-beanie-latin.woff2" as="font" type="font/woff2" crossorigin />
     <style>
       .hero { display: flex; flex-direction: column; gap: 8px; }
       .heroTitle { margin: 0; line-height: 1.15; }
