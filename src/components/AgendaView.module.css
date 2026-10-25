@@ -769,3 +769,13 @@
   background-color: var(--color-primary);
 }
 
+/* Degradados por tinte (mock aprobado el 2026-10-25): el formulario de evento lleva el tinte de Agenda
+   y la energía el de Planner, igual que en el Dashboard. */
+.panelCard {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-pizarra) 52%, var(--bg-card)), var(--bg-card) 62%);
+}
+
+.rhythmCard {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 60%, var(--bg-card)), var(--bg-card) 72%);
+}
+
