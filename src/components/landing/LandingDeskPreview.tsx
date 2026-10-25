@@ -95,7 +95,7 @@ export const LandingDeskPreview: React.FC = () => {
               Prioridades del Día (Máximo 3)
             </div>
 
-            <div className={styles.prioritiesList} role="list">
+            <div className={styles.prioritiesList} role="group" aria-label="Prioridades del día">
               {tasks.map(task => (
                 <label
                   key={task.id}

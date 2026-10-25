@@ -33,6 +33,8 @@
   --color-on-dark: #faf9f5;
   --color-on-dark-soft: #a09d96;
   --color-accent-teal: #5db8a6;
+  /* Texto teal sobre superficies oscuras (5.5:1 sobre #29322d); --color-text-teal es para fondos claros. */
+  --color-text-teal-on-dark: #5db8a6;
   --color-accent-amber: #e8a55a;
   --color-success: #5db872;
   /* Variantes de texto (>=4.5:1 sobre canvas, tarjetas, solapas y blanco). Los tokens de arriba quedan para fondos, bordes e iconos. */

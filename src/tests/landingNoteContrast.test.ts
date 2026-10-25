@@ -30,6 +30,17 @@ const CASES: [string, string, string, string][] = [
   ['pie de la nota rápida', 'LandingDeskPreview.module.css', 'quickNoteFooter', 'quickNoteCard'],
 ];
 
+describe('Contraste de la insignia de la sección oscura de la landing', () => {
+  // Lighthouse midió 2.13:1: la insignia usaba --color-text-teal (teal oscuro, pensado para fondos claros) sobre #29322d.
+  it('usa el teal para fondos oscuros y alcanza 4.5:1 sobre la tarjeta oscura', () => {
+    const css = readFileSync('src/components/landing/LandingManifestoSection.module.css', 'utf8');
+    expect(css.match(/\n\.certBadge\s*\{[^}]*?\n\s*color:\s*([^;]+);/)?.[1]).toBe('var(--color-text-teal-on-dark)');
+    const tokens = readFileSync('src/index.css', 'utf8');
+    const teal = tokens.match(/--color-text-teal-on-dark:\s*(#[0-9a-fA-F]{6})/)?.[1] ?? '';
+    expect(ratio(teal, '#29322d')).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
 describe('Contraste de las notas de la landing', () => {
   it.each(CASES)('%s alcanza 4.5:1 sobre su papel', (_nombre, file, texto, papel) => {
     const fg = color(file, texto, 'color');
