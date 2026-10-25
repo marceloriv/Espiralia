@@ -62,7 +62,7 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
               <div className={styles.pillarIcon} aria-hidden="true">
                 <Cpu size={20} />
               </div>
-              <h4 className={styles.pillarTitle}>100% Client-Side</h4>
+              <h4 className={styles.pillarTitle}>Todo se calcula en tu equipo</h4>
               <p className={styles.pillarDesc}>
                 Sin backend remoto ni servidores intermediarios. Todo el cómputo y renderizado se ejecutan en tu propio procesador.
               </p>

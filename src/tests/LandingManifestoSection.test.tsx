@@ -15,7 +15,7 @@ describe('LandingManifestoSection', () => {
   it('despliega los 3 pilares del certificado de soberanía local-first', () => {
     render(<LandingManifestoSection onAction={() => {}} />);
     expect(screen.getByText(/tus datos se quedan en tu navegador/i)).toBeInTheDocument();
-    expect(screen.getByText(/100% client-side/i)).toBeInTheDocument();
+    expect(screen.getByText('Todo se calcula en tu equipo')).toBeInTheDocument();
     expect(screen.getByText(/datos locales/i)).toBeInTheDocument();
     expect(screen.getByText(/agenda exportable/i)).toBeInTheDocument();
   });

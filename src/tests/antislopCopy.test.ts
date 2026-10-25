@@ -28,6 +28,8 @@ const BANNED: RegExp[] = [
   /Focus Schedule/i,
   /TOP PRIORITIES/,
   /Brain Dump/i,
+  /Energy Check/i,
+  /Client-Side/i,
   /nobleza de la papelería/i,
   /Interoperabilidad Total/i,
   /Cadencia Vital que Respeta/i,
