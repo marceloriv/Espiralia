@@ -5,9 +5,8 @@
   align-items: center;
   justify-content: center;
   padding: 32px 16px;
+  /* Marfil liso, como el resto de la app: el color vive en los papeles (DESIGN.md §0.12). */
   background-color: var(--bg-canvas, var(--color-canvas));
-  background-image: var(--pattern-dot-grid, radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px));
-  background-size: 18px 18px;
   position: relative;
 }
 
