@@ -1,0 +1,277 @@
+/* La hoja es CSS; cada figura se pliega con facetas y recortes. Solo se muestra donde cabe: riel de íconos y móvil la ocultan. */
+.hoja {
+  display: none;
+  position: relative;
+  flex: 0 0 130px;
+  margin-top: 8px;
+  background-color: var(--papel-arena);
+  background-image: linear-gradient(120deg,
+    color-mix(in srgb, var(--papel-pizarra) 65%, var(--bg-card)),
+    var(--papel-arena) 48%,
+    color-mix(in srgb, var(--papel-rosa) 65%, var(--bg-card)));
+  clip-path: polygon(0 6%, 5% 3%, 10% 7%, 16% 2%, 23% 6%, 30% 3%, 38% 6%, 47% 2%, 55% 6%, 64% 3%, 73% 7%, 82% 2%, 91% 6%, 100% 3%, 100% 94%, 94% 98%, 87% 94%, 79% 99%, 70% 95%, 61% 98%, 52% 94%, 43% 99%, 34% 95%, 25% 98%, 16% 94%, 8% 99%, 0 95%);
+  pointer-events: none;
+}
+
+.hoja i {
+  position: absolute;
+  display: block;
+}
+
+@media (min-width: 1024px) and (min-height: 900px) {
+  .hoja {
+    display: block;
+    flex-basis: 100px;
+  }
+
+  .molinillo { top: 15px; }
+  .rosa { top: 17px; }
+  .caracol { top: 8px; }
+}
+
+@media (min-width: 1024px) and (min-height: 980px) {
+  .hoja {
+    flex-basis: 130px;
+  }
+
+  .molinillo { top: 35px; }
+  .rosa { top: 37px; }
+  .caracol { top: 28px; }
+}
+
+/* Las tres figuras comparten una regla: cada pliegue es un corte de tono duro y todas llevan el mismo alfiler magenta al centro. */
+.molinillo {
+  position: absolute;
+  left: 4px;
+  top: 35px;
+  width: 66px;
+  height: 80px;
+}
+
+.aspa {
+  left: 16px;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  transform-origin: 100% 100%;
+  clip-path: polygon(4% 0, 100% 18%, 100% 100%, 57% 62%);
+  background: linear-gradient(135deg, var(--papel-pizarra) 0 50%, var(--papel-pizarra-fuerte) 50% 100%);
+}
+
+.aspa:nth-child(2) { transform: rotate(90deg); }
+.aspa:nth-child(3) { transform: rotate(180deg); }
+.aspa:nth-child(4) { transform: rotate(270deg); }
+
+.molinillo .tallo {
+  left: 43px;
+  top: 30px;
+  width: 2px;
+  height: 47px;
+  background: var(--color-accent-slate);
+}
+
+.buje {
+  left: 40px;
+  top: 25px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.rotor {
+  left: 0;
+  top: 0;
+  width: 66px;
+  height: 80px;
+  transform-origin: 44px 28px;
+}
+
+/* Giro lento: las aspas giran sobre el alfiler y el resto de la hoja queda quieto. Sin movimiento si la persona lo pidió. */
+@media (prefers-reduced-motion: no-preference) {
+  .rotor {
+    animation: aspas 24s linear infinite;
+  }
+}
+
+@keyframes aspas {
+  to { transform: rotate(360deg); }
+}
+
+.caracol {
+  position: absolute;
+  left: 58px;
+  top: 28px;
+  width: 111px;
+  height: 89px;
+  z-index: 2;
+}
+
+.cuerpo {
+  left: 0;
+  bottom: 5px;
+  width: 109px;
+  height: 42px;
+  clip-path: polygon(0 86%, 9% 69%, 24% 66%, 40% 78%, 58% 63%, 71% 52%, 78% 12%, 85% 0, 96% 4%, 100% 42%, 96% 88%, 84% 100%, 7% 100%);
+  background:
+    linear-gradient(172deg, transparent 58%, color-mix(in srgb, var(--color-ink) 8%, transparent) 58%),
+    linear-gradient(135deg, var(--papel-salvia), var(--papel-salvia-fuerte));
+}
+
+.cuerpo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(71% 52%, 78% 12%, 85% 0, 96% 4%, 100% 42%, 84% 46%);
+  background: color-mix(in srgb, var(--color-surface-bright) 38%, transparent);
+}
+
+.ojo {
+  left: 90px;
+  top: 49px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-ink);
+}
+
+.antena {
+  top: 18px;
+  right: 17px;
+  width: 2px;
+  height: 24px;
+  background: var(--color-accent-sage);
+  transform: rotate(-12deg);
+}
+
+.antena::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent-sage);
+}
+
+.antena:nth-child(4) {
+  right: 6px;
+  top: 16px;
+  transform: rotate(17deg);
+}
+
+.concha {
+  left: 12px;
+  top: 8px;
+  width: 72px;
+  height: 66px;
+  clip-path: polygon(8% 54%, 4% 30%, 21% 9%, 45% 0, 74% 7%, 92% 28%, 100% 57%, 86% 83%, 61% 100%, 33% 94%);
+  background: conic-gradient(from 10deg at 50% 52%,
+    var(--papel-arena-fuerte) 0 40deg,
+    var(--papel-arena) 40deg 95deg,
+    color-mix(in srgb, var(--bg-card) 45%, var(--papel-arena)) 95deg 150deg,
+    var(--papel-arena-fuerte) 150deg 210deg,
+    var(--papel-arena) 210deg 270deg,
+    color-mix(in srgb, var(--bg-card) 45%, var(--papel-arena)) 270deg 320deg,
+    var(--papel-arena-fuerte) 320deg 360deg);
+}
+
+/* El caracol se lee por la espiral: dos arcos del mismo tono que el papel, sin competir con el alfiler. */
+.concha::before,
+.concha::after {
+  content: "";
+  position: absolute;
+  border: 3px solid color-mix(in srgb, var(--papel-arena-fuerte), var(--color-ink) 32%);
+  border-left-color: transparent;
+  border-radius: 50%;
+}
+
+.concha::before {
+  left: 17px;
+  top: 15px;
+  width: 38px;
+  height: 38px;
+  transform: rotate(-35deg);
+}
+
+.concha::after {
+  left: 28px;
+  top: 26px;
+  width: 16px;
+  height: 16px;
+  transform: rotate(30deg);
+  border-bottom-color: transparent;
+}
+
+.concha .alfiler {
+  z-index: 1;
+  left: 32px;
+  top: 30px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.rosa {
+  position: absolute;
+  right: 6px;
+  top: 37px;
+  width: 49px;
+  height: 78px;
+}
+
+.rosa .tallo {
+  left: 25px;
+  top: 36px;
+  width: 2px;
+  height: 39px;
+  background: var(--color-accent-sage);
+}
+
+.follaje {
+  left: 11px;
+  top: 54px;
+  width: 15px;
+  height: 11px;
+  clip-path: polygon(0 0, 100% 50%, 24% 100%);
+  background: var(--papel-salvia-fuerte);
+}
+
+.follaje:nth-child(3) {
+  left: 26px;
+  top: 62px;
+  transform: scaleX(-1);
+}
+
+.petalo {
+  left: 13px;
+  top: 4px;
+  width: 25px;
+  height: 29px;
+  transform-origin: 50% 85%;
+  clip-path: polygon(50% 0, 100% 18%, 83% 88%, 50% 100%, 15% 82%, 0 18%);
+  background: linear-gradient(100deg, var(--papel-rosa) 0 50%, var(--papel-rosa-fuerte) 50% 100%);
+}
+
+.petalo:nth-child(5) { transform: rotate(72deg); }
+.petalo:nth-child(6) { transform: rotate(144deg); }
+.petalo:nth-child(7) { transform: rotate(216deg); }
+.petalo:nth-child(8) { transform: rotate(288deg); }
+
+.rosa .alfiler {
+  left: 22px;
+  top: 26px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+/* Sin colores del sistema, la hoja deja de leerse como figura: se oculta. */
+@media (forced-colors: active) {
+  .hoja {
+    display: none;
+  }
+}

@@ -10,6 +10,7 @@ import { ProfileSettingsModal } from './profile/ProfileSettingsModal';
 import { NoteModal } from './notes/NoteModal';
 import { VaultModal } from './vault/VaultModal';
 import { GlobalSearchModal } from './search/GlobalSearchModal';
+import { OrigamiHoja } from './common/OrigamiHoja';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -201,6 +202,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               </div>
             )}
           </div>
+
+          <OrigamiHoja />
         </nav>
 
         <div className={styles.sidebarFooter}>

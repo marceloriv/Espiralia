@@ -55,8 +55,12 @@
 /* Tarjeta: bordes superior e inferior rasgados y cuadrícula bujo (misma forma que usaba bentoCardTorn). */
 .papel[data-forma='tarjeta'] {
   padding: 28px 24px 30px;
-  background-image: radial-gradient(var(--color-grid-bujo) 0.65px, transparent 0.65px), var(--fibra);
-  background-size: 16px 16px, 240px 240px;
+  /* La esquina inferior derecha se oscurece hacia el tinte fuerte: separa el papel del lienzo sin velar el texto. */
+  background-image:
+    radial-gradient(var(--color-grid-bujo) 0.65px, transparent 0.65px),
+    linear-gradient(155deg, transparent 54%, color-mix(in srgb, var(--tono-fuerte) 58%, transparent)),
+    var(--fibra);
+  background-size: 16px 16px, auto, 240px 240px;
   clip-path: polygon(
     0% 10px, 3% 5px, 6% 11px, 9% 6px, 13% 12px, 17% 7px, 21% 11px, 25% 5px,
     29% 12px, 34% 6px, 38% 10px, 42% 5px, 47% 11px, 51% 6px, 56% 12px, 60% 7px,
@@ -82,13 +86,13 @@
   );
 }
 
-.papel[data-forma='pieza'][data-tinte='arena'] { --tono-fuerte: var(--papel-arena-fuerte); }
-.papel[data-forma='pieza'][data-tinte='pizarra'] { --tono-fuerte: var(--papel-pizarra-fuerte); }
-.papel[data-forma='pieza'][data-tinte='salvia'] { --tono-fuerte: var(--papel-salvia-fuerte); }
-.papel[data-forma='pieza'][data-tinte='terracota'] { --tono-fuerte: var(--papel-terracota-fuerte); }
-.papel[data-forma='pieza'][data-tinte='ambar'] { --tono-fuerte: var(--papel-ambar-fuerte); }
-.papel[data-forma='pieza'][data-tinte='rosa'] { --tono-fuerte: var(--papel-rosa-fuerte); }
-.papel[data-forma='pieza'][data-tinte='turquesa'] { --tono-fuerte: var(--papel-turquesa-fuerte); }
+.papel[data-tinte='arena'] { --tono-fuerte: var(--papel-arena-fuerte); }
+.papel[data-tinte='pizarra'] { --tono-fuerte: var(--papel-pizarra-fuerte); }
+.papel[data-tinte='salvia'] { --tono-fuerte: var(--papel-salvia-fuerte); }
+.papel[data-tinte='terracota'] { --tono-fuerte: var(--papel-terracota-fuerte); }
+.papel[data-tinte='ambar'] { --tono-fuerte: var(--papel-ambar-fuerte); }
+.papel[data-tinte='rosa'] { --tono-fuerte: var(--papel-rosa-fuerte); }
+.papel[data-tinte='turquesa'] { --tono-fuerte: var(--papel-turquesa-fuerte); }
 
 /* Sin recorte (modo de alto contraste), el papel conserva un borde visible. */
 @media (forced-colors: active) {

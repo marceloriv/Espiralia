@@ -51,9 +51,15 @@ describe('Papel', () => {
   describe('CSS', () => {
     const css = readFileSync('src/components/common/Papel.module.css', 'utf8');
 
-    it('solo usa tokens de color, sin degradados lineales, mezcla de capas ni animación', () => {
+    it('solo usa tokens de color, sin mezcla de capas, desenfoque ni animación', () => {
       expect(css).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
-      expect(css).not.toMatch(/linear-gradient|mix-blend-mode|blur\(|animation:|infinite/);
+      expect(css).not.toMatch(/mix-blend-mode|blur\(|animation:|infinite/);
+    });
+
+    it('la tarjeta se oscurece hacia su tinte fuerte con un degradado de esquina (mock aprobado el 2026-10-25)', () => {
+      const tarjeta = css.match(/\.papel\[data-forma='tarjeta'\]\s*\{[^}]*\}/)?.[0] ?? '';
+      expect(tarjeta).toMatch(/linear-gradient\(155deg, transparent 54%, color-mix\([^)]*var\(--tono-fuerte\)/);
+      expect(css).toMatch(/\.papel\[data-tinte='turquesa'\]\s*\{\s*--tono-fuerte:/);
     });
 
     it('la fibra de papel es un fondo del propio papel: sin capas extra ni mezcla', () => {

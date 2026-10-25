@@ -2334,3 +2334,92 @@
     grid-column: 1 / -1;
   }
 }
+
+/* =========================================================================
+   10. DEGRADADOS POR TINTE (mock aprobado el 2026-10-25)
+   Cada superficie nace de su tinte de módulo (DESIGN.md §0.4) y vuelve al papel claro, para que
+   las cifras sigan mandando. Las tarjetas de Papel traen su propio degradado en Papel.module.css.
+   ========================================================================= */
+
+.heroCard {
+  background-image: linear-gradient(115deg, var(--papel-arena) 0%, var(--bg-card) 58%);
+  border-color: var(--papel-arena-fuerte);
+}
+
+/* Cada métrica nace de su tinte: energía y hábitos (salvia), tareas (pizarra), foco (turquesa), notas (ámbar). */
+.kpiStrip > * {
+  background-image: linear-gradient(145deg, var(--tinte-metrica), color-mix(in srgb, var(--tinte-metrica) 55%, var(--bg-card)));
+}
+
+.kpiStrip > :nth-child(1) { --tinte-metrica: var(--papel-salvia); }
+.kpiStrip > :nth-child(2) {
+  --tinte-metrica: var(--papel-pizarra);
+  --color-muted: var(--papel-texto-suave);
+}
+.kpiStrip > :nth-child(3) { --tinte-metrica: var(--papel-turquesa); }
+.kpiStrip > :nth-child(4) { --tinte-metrica: var(--papel-ambar); }
+
+/* Cada acceso apunta a un módulo; el tinte ayuda a reconocer el destino. */
+.quickBtnTask {
+  border-left-color: var(--color-accent-terracotta);
+  --tinte-acceso: var(--papel-terracota);
+}
+.quickBtnEvent {
+  border-left-color: var(--color-accent-slate);
+  --tinte-acceso: var(--papel-pizarra);
+}
+.quickBtnNote {
+  border-left-color: var(--color-accent-amber);
+  --tinte-acceso: var(--papel-ambar);
+}
+.quickBtnLink {
+  border-left-color: var(--color-primary);
+  --tinte-acceso: var(--papel-rosa);
+}
+.quickGrid > button {
+  background-image: linear-gradient(125deg, color-mix(in srgb, var(--tinte-acceso) 62%, var(--bg-card)), var(--bg-card));
+}
+
+/* Energía y hábitos son áreas de decisión: una cartulina salvia y otra neutra. */
+.bentoTrio > :first-child {
+  background-color: var(--bg-card);
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 60%, var(--bg-card)), var(--bg-card) 72%);
+}
+
+/* El foco pertenece a To-Do: terracota en el marco, cartulina clara al escribir. */
+.focusBanner {
+  background-color: var(--papel-terracota);
+  background-image: linear-gradient(130deg, color-mix(in srgb, var(--papel-terracota) 65%, var(--bg-card)), var(--bg-card));
+  border-color: var(--papel-terracota-fuerte);
+}
+
+/* El compromiso comparte el tono cálido de To-Do con el foco. */
+.distractionBox {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-terracota) 56%, var(--bg-card)), var(--bg-card) 78%);
+}
+
+/* Las áreas son carpetas: el contenedor cede el rosa a sus fichas sin teñir los datos. */
+.areasSection {
+  background-image: linear-gradient(150deg, color-mix(in srgb, var(--papel-rosa) 58%, var(--bg-card)), var(--bg-card) 56%);
+}
+.areaFolderCard {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 50%, var(--bg-card)), var(--bg-card));
+}
+
+/* Ámbar para escribir, salvia para cerrar el día y turquesa para leer métricas. */
+.notesSection {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 62%, var(--bg-card)), var(--bg-card) 68%);
+}
+.paperGridContainer {
+  background-image:
+    linear-gradient(to right, var(--color-grid-bujo) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid-bujo) 1px, transparent 1px),
+    linear-gradient(140deg, color-mix(in srgb, var(--papel-ambar) 55%, var(--bg-card)), var(--bg-card));
+  background-size: 16px 16px, 16px 16px, auto;
+}
+.reflectionSection {
+  background-image: linear-gradient(140deg, color-mix(in srgb, var(--papel-salvia) 58%, var(--bg-card)), var(--bg-card) 66%);
+}
+.metricsSection {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 55%, var(--bg-card)), var(--bg-card) 56%);
+}
