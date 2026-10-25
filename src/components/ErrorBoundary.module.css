@@ -1,0 +1,38 @@
+.pantalla {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 32px 16px;
+  text-align: center;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+.titulo {
+  margin: 0;
+  font-family: var(--font-headline);
+  font-size: var(--text-display-md);
+  line-height: 1.15;
+}
+
+.texto {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--color-body);
+}
+
+.boton {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  padding: 0 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
