@@ -2,6 +2,8 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <!-- GitHub Pages no permite cabeceras, así que el CSP va como meta. style-src admite 'unsafe-inline' porque los componentes usan atributos style; no hay scripts en línea. frame-ancestors no funciona en meta. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#faf9f5" />

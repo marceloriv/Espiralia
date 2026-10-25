@@ -1,10 +1,17 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig, type Plugin } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+
+// En desarrollo el CSP de index.html se quita: el preámbulo de React Refresh es un script en línea y lo bloquearía.
+const sinCspEnDesarrollo = (): Plugin => ({
+  name: 'sin-csp-en-desarrollo',
+  apply: 'serve',
+  transformIndexHtml: html => html.replace(/\s*<meta http-equiv="Content-Security-Policy"[^>]*>/, ''),
+})
 
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
-  plugins: [react({ compiler: true })],
+  plugins: [react({ compiler: true }), sinCspEnDesarrollo()],
   build: {
     rollupOptions: {
       output: {
