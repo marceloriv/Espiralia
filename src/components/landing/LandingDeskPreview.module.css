@@ -595,7 +595,7 @@
 .quickNoteTag {
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  color: #927557;
+  color: #7e654b;
 }
 
 .quickNoteContent {
@@ -613,7 +613,7 @@
   gap: 6px;
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  color: #8c7359;
+  color: #7b654e;
   border-top: 1px dashed rgba(212, 198, 178, 0.8);
   padding-top: 0.625rem;
 }

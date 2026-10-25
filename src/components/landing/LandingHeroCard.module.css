@@ -276,7 +276,7 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #7e7436;
+  color: #766d33;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -302,7 +302,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.75rem;
-  color: #7e7436;
+  color: #766d33;
   font-family: var(--font-body, sans-serif);
 }
 
