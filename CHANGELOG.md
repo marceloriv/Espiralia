@@ -4,6 +4,43 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.4.0] - 2026-10-25
+
+### Added
+
+- **Sistema de papeles (`Papel` y `Pliego`)**: cada módulo tiene su tinte (arena en el Dashboard, pizarra en Agenda, salvia en Planner, terracota en To-Do, ámbar en Notas, rosa en Carpetas y turquesa en Integraciones). Las tarjetas son de papel rasgado con cuadrícula y el pliego encuadernado con anillas lleva la tarea principal de cada vista.
+- **Degradados por tinte y hoja de origami**: cada superficie nace de su tinte y vuelve al papel claro; la barra lateral estrena un degradado y una hoja con tres figuras plegadas en CSS (molinillo, caracol y rosa). La hoja solo se muestra desde 1024px de ancho y 900px de alto, y el giro del molinillo se detiene con `prefers-reduced-motion`.
+- **Borrar un perfil desde Ajustes**: elimina el perfil y todos sus datos. En un perfil protegido exige el PIN actual.
+- **Respaldo y restauración por perfil** con cifrado opcional; el respaldo del acceso usa el mismo formato que la Bóveda Offline.
+- **Planner**: columna del día de hoy resaltada, bloques ordenados por hora con la hora a la cabeza, y hábitos y energía reales en el cajón de la semana.
+- **Dashboard**: franja de cuatro indicadores de serenidad, fecha como hoja de calendario, bloques y hábitos del domingo, y orden pensado para móvil con las tareas primero.
+- **Barra inferior móvil** con cuatro destinos y un botón "Más" (Notas, Carpetas, Integraciones).
+- **Transición de página** de 240ms al cambiar de vista y grano de papel en el fondo, ambos sin movimiento con `prefers-reduced-motion`.
+- **Medición de cobertura** con `@vitest/coverage-v8` y umbral de 80% en líneas y ramas; eslint corre ahora antes del despliegue.
+
+### Changed
+
+- **Tipografía autoalojada**: Fraunces, Atkinson Hyperlegible Next, Reenie Beanie y Spline Sans Mono, con escala fluida en los titulares. Ya no se carga nada desde Google Fonts.
+- **Acceso por PIN** unificado en un solo diálogo; el acceso y el fondo de la app quedan en marfil liso, sin cuadrícula de puntos.
+- **Textos**: la interfaz queda en español, sin contenido personal de ejemplo, sin números de versión ni afirmaciones que la app no cumple (certificaciones, cifrado en la landing). Los perfiles nuevos ven estados vacíos honestos.
+- **Contraste**: tokens de texto con 4.5:1 como mínimo, incluido el texto del Papel en la esquina más oscura del degradado; piso de 11px en tipografía.
+- **Áreas táctiles** de 44px como mínimo en controles y checkboxes de To-Do y Planner, con anillo de foco visible.
+- Umbral de bundle de `AGENTS.md` §17.1 medido sobre la carga inicial real.
+
+### Fixed
+
+- Aviso de PIN olvidado: ya no promete una recuperación que no existe.
+- `QuotaExceededError` de `localStorage` se captura y avisa sin dejar la interfaz en blanco.
+- Desbordes horizontales en el encabezado entre 769px y 1280px, en Carpetas a 1440px y en el Planner en móvil.
+- Los diálogos de foco, área y metas se cierran con Escape.
+- Métricas del Dashboard (semana, rendimiento y almacenamiento) calculadas con datos reales.
+- La copia completa de Integraciones se puede restaurar.
+
+### Security
+
+- Fuentes servidas desde el propio sitio: la app no hace peticiones a dominios externos (guardián en `noExternalRequests.test.ts`).
+- Sin cambios en las claves ni en la forma de los datos guardados: los datos de versiones anteriores se leen igual (`legacyDataCompat.test.tsx`).
+
 ## [0.3.0] - 2026-10-16
 
 ### Added

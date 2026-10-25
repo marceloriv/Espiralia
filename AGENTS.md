@@ -30,12 +30,12 @@ Espiralia es una SPA (Single Page Application) de productividad personal en clie
 
 ## 2. Stack técnico
 
-- Lenguaje: TypeScript 5.8 / Node 24.x
-- Framework: React 19.2 (Vite 6.4)
+- Lenguaje: TypeScript 6.0 / Node 24.x
+- Framework: React 19 (Vite 8.3)
 - Gestor de paquetes: pnpm 10.x
 - Enrutamiento: React Router 7 (`react-router-dom` con `HashRouter` en `src/routes/`)
-- Iconografía: Lucide React (1.53+)
-- Pruebas: Vitest 3.x + Testing Library React 16.x
+- Iconografía: Lucide React (1.54+)
+- Pruebas: Vitest 5.x + Testing Library React 16.x
 
 ## 3. Estructura del proyecto
 
@@ -420,7 +420,7 @@ Modelo de calidad del producto, edición 2023: 9 características, cada una con 
 | Característica | Subcaracterísticas (2023) | Qué exige en este proyecto | Cómo se verifica |
 | --- | --- | --- | --- |
 | Aptitud funcional | completitud, corrección, adecuación funcional | el sistema hace lo que el requisito dice, con el resultado correcto, sin funciones de más | trazabilidad requisito → test (§7); todo requisito con al menos un caso en `src/tests/` |
-| Eficiencia de desempeño | comportamiento temporal, uso de recursos, capacidad | tiempo de renderizado y respuesta en cliente inmediatos | tiempo de renderizado < 100ms y carga inicial comprimida (gzip de los JS y CSS enlazados desde `dist/index.html`) ≤ 180KB; medida 2026-10-23: 178.5KB. Los chunks por ruta no cuentan: `AgendaView` pesa 89KB por FullCalendar y solo carga en Agenda; `vendor-toast` pesa 45KB y es candidato a diferirse |
+| Eficiencia de desempeño | comportamiento temporal, uso de recursos, capacidad | tiempo de renderizado y respuesta en cliente inmediatos | tiempo de renderizado < 100ms y carga inicial comprimida (gzip de los JS y CSS enlazados desde `dist/index.html`) ≤ 182KB; medida 2026-10-25: 180.2KB (subió 1.7KB desde 178.5KB, medidos el 2026-10-23, por los degradados por tinte y la hoja de origami; el tope sube 2KB y deja 1.8KB de margen). Los chunks por ruta no cuentan: `AgendaView` pesa 89KB por FullCalendar y solo carga en Agenda; `vendor-toast` pesa 45KB y es candidato a diferirse |
 | Compatibilidad | coexistencia, interoperabilidad | contratos estables de tipos TypeScript y esquemas de datos locales | interfaces tipadas en `src/types/` + suites de prueba de esquema |
 | Capacidad de interacción *(era Usabilidad)* | reconocibilidad, aprendibilidad, operabilidad, protección contra errores de usuario, involucramiento, inclusividad, asistencia al usuario, autodescripción | interfaz operable, accesible y con errores comprensibles; inclusividad y autodescripción son subcaracterísticas nuevas de 2023, no opcionales de estilo | WCAG 2.2 AA, tap targets $\ge 44\text{ px}$, contraste $\ge 4.5:1$, mensajes contextuales de empty state; tokens en `DESIGN.md` |
 | Fiabilidad | ausencia de fallos *(antes madurez)*, disponibilidad, tolerancia a fallos, recuperabilidad | funcionamiento offline en cliente, degradación limpia ante fallo de `localStorage` | cobertura de fallbacks y pruebas de camino de error (§7) |
