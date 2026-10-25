@@ -25,6 +25,8 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: './src/tests/setup.ts',
+    // Las pruebas viven solo en src/tests (AGENTS.md §3); .agents trae scripts de skills con pruebas propias.
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
     globals: true,
     testTimeout: 20000,
     coverage: {
