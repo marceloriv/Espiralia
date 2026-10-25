@@ -305,7 +305,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
       {/* Grid Principal & Barra Lateral Stitch */}
       <div className={styles.mainContent}>
-        <main className={styles.gridArea} aria-label="Grilla semanal de bloques">
+        <section className={styles.gridArea} aria-label="Grilla semanal de bloques">
           <Pliego as="div" className={styles.weekPliego}>
           <div className={styles.weeklyGrid}>
             {legacyBlocks.length > 0 && (
@@ -334,7 +334,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
             ))}
           </div>
           </Pliego>
-        </main>
+        </section>
 
         <aside className={styles.drawerArea}>
           {/* Top Priorities con clip dorado */}

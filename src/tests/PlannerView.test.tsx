@@ -216,7 +216,7 @@ describe('PlannerView integración semanal y metas', () => {
   it('pone la semana en un Pliego y las metas en un Papel salvia', () => {
     const { container } = render(<PlannerView profileId={profileId} />);
 
-    const grid = screen.getByRole('main', { name: /grilla semanal/i });
+    const grid = screen.getByRole('region', { name: /grilla semanal/i });
     expect(grid.querySelector('svg')).not.toBeNull();
     expect(container.querySelector('[data-tinte="salvia"]')).not.toBeNull();
   });
