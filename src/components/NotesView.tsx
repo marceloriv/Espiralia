@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useHoy } from '../utils/useHoy';
 import { Plus, BookOpen, FileText, Lightbulb, Feather, Activity, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Note, Folder, Profile, ViewType } from '../types';
@@ -74,6 +75,7 @@ export function getNoteTomo(note: Note): string {
 }
 
 export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, profile }) => {
+  const hoy = useHoy();
   const profileId = profile?.id ?? propProfileId ?? '';
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profileId));
   const [folders, setFolders] = useState<Folder[]>(() => StorageService.getFolders(profileId));
@@ -82,7 +84,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
-  const todayStr = toLocalDateStr(new Date());
+  const todayStr = toLocalDateStr(hoy);
   const [basalEnergy, setBasalEnergy] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [isEditingPliego, setIsEditingPliego] = useState(false);
@@ -225,8 +227,8 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         }
       }
     }
-    return new Date().toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  }, [activeNote]);
+    return hoy.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }, [activeNote, hoy]);
 
   const activeWordCount = useMemo(() => {
     const textToCount = isEditingPliego ? pliegoDraftContent : displayContent;
@@ -542,7 +544,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                   Ritmo &amp; Estado de Ánimo
                 </span>
                 <span className={styles.moodDate}>
-                  {new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}
+                  {hoy.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' })}
                 </span>
               </div>
 

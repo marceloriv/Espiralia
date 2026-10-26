@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useHoy } from '../utils/useHoy';
 import FullCalendar from '@fullcalendar/react';
 import type { CalendarRef, DateClickInfo, DateSelectInfo, EventChangeInfo, EventClickInfo } from '@fullcalendar/react';
 import formaTheme from '@fullcalendar/react/themes/forma';
@@ -62,6 +63,7 @@ export const AgendaView: React.FC<AgendaViewProps> = ({ profileId: propProfileId
 };
 
 const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
+  const hoy = useHoy();
   const activeProfileId = profileId || 'default';
   const calendarRef = useRef<CalendarRef>(null);
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(activeProfileId));
@@ -184,7 +186,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
         <div className={styles.ribbonLeft}>
           <div className={styles.overlineRow}>
             <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.agenda} className={styles.weekTag}>
-              Semana {isoWeekNumber(new Date())}
+              Semana {isoWeekNumber(hoy)}
             </Papel>
           </div>
 
@@ -531,7 +533,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 <h4 className={styles.rhythmTitle}>Ritmo de energía y ánimo</h4>
               </div>
               <span className={styles.rhythmDateBadge}>
-                {new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'short' }).toUpperCase()}
+                {hoy.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' }).toUpperCase()}
               </span>
             </div>
 

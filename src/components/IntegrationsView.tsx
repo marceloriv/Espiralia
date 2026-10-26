@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useId } from 'react';
+import React, { useState, useRef, useId } from 'react';
+import { useHoy } from '../utils/useHoy';
 import {
   Calendar,
   CloudOff,
@@ -28,14 +29,15 @@ export interface IntegrationsViewProps {
 }
 
 export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: propProfile, profileId }) => {
+  const hoy = useHoy();
   const profile = propProfile ?? (profileId ? StorageService.getProfiles().find(p => p.id === profileId) : null) ?? {
     id: profileId || 'default',
     name: 'Usuario',
     avatar: 'U',
-    createdAt: new Date().toISOString(),
+    createdAt: hoy.toISOString(),
   };
   const storageBytes = StorageService.getProfileStorageBytes(profile.id);
-  const todayStr = toLocalDateStr(new Date());
+  const todayStr = toLocalDateStr(hoy);
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profile.id));
   const upcomingEvents = events
@@ -47,10 +49,13 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
   const fileInputRef = useRef<HTMLInputElement>(null);
   const areaSelectId = useId();
 
-  useEffect(() => {
+  // Si cambia el perfil con la vista montada, se vuelve a cargar su información. Se ajusta durante el render (patrón de React) y no en un efecto.
+  const [perfilCargado, setPerfilCargado] = useState(profile.id);
+  if (perfilCargado !== profile.id) {
+    setPerfilCargado(profile.id);
     setEvents(StorageService.getEvents(profile.id));
     setAreas(StorageService.getAreas(profile.id));
-  }, [profile.id]);
+  }
 
   const handleExportIcs = () => {
     let categoryFilter: string | undefined = undefined;

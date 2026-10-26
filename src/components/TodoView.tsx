@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useHoy } from '../utils/useHoy';
 import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag, Check, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
 import { useEscapeKey } from '../utils/useEscapeKey';
@@ -31,6 +32,7 @@ const getEventDayParts = (dateStr?: string) => {
 };
 
 export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, profile, onNavigate }) => {
+  const hoy = useHoy();
   const profileId = profile?.id ?? propProfileId ?? '';
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profileId));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profileId));
@@ -52,7 +54,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
   // Edición rápida de fecha en fila
   const [editingDueDateId, setEditingDueDateId] = useState<string | null>(null);
 
-  const todayStr = toLocalDateStr(new Date());
+  const todayStr = toLocalDateStr(hoy);
 
   // Nivel de energía en tarjeta mini reminders
   const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
@@ -239,7 +241,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
           <div className={styles.bannerMain}>
             <div className={styles.overlineRow}>
               <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.todo} className={styles.weekTag}>
-                Semana {isoWeekNumber(new Date())}
+                Semana {isoWeekNumber(hoy)}
               </Papel>
             </div>
 

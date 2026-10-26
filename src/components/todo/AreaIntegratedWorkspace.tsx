@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { focusOnMount } from '../../utils/useDialogFocus';
 import {
   Calendar,
@@ -63,9 +63,14 @@ export const AreaIntegratedWorkspace: React.FC<AreaIntegratedWorkspaceProps> = (
     setLinks(StorageService.getLinks(profileId).filter(l => l.areaId === area.id));
   }, [profileId, area.id, area.name]);
 
-  useEffect(() => {
+  // Si cambia el perfil o el área con el espacio montado, se vuelven a cargar sus datos. Se ajusta durante el render
+  // (patrón de React) y no en un efecto; en el montaje el estado ya nace cargado.
+  const claveDatos = `${profileId}|${area.id}|${area.name}`;
+  const [claveCargada, setClaveCargada] = useState(claveDatos);
+  if (claveCargada !== claveDatos) {
+    setClaveCargada(claveDatos);
     loadData();
-  }, [loadData]);
+  }
 
   const handleAddTodo = (e: React.FormEvent) => {
     e.preventDefault();

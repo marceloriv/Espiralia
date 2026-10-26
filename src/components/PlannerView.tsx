@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useHoy } from '../utils/useHoy';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { PlannerBlock, DayOfWeek, TimeSlot, Priority, Profile, ViewType, HabitTrackerItem } from '../types';
@@ -31,6 +32,7 @@ interface PlannerViewProps {
 }
 
 export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfileId, profile }) => {
+  const hoy = useHoy();
   const profileId = profile?.id ?? propProfileId ?? '';
   const [blocks, setBlocks] = useState<PlannerBlock[]>(() => StorageService.getPlanner(profileId));
   const weekPriorities = StorageService.getTodos(profileId)
@@ -41,7 +43,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<DayOfWeek | undefined>(1);
   const isFirstMount = useRef(true);
-  const todayStr = toLocalDateStr(new Date());
+  const todayStr = toLocalDateStr(hoy);
   const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
   const [habits, setHabits] = useState<HabitTrackerItem[]>(() => StorageService.getHabits(profileId));
   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
@@ -99,7 +101,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
   }, [loadBlocks]);
 
   const { weekDays, weekLabel } = useMemo(() => {
-    const now = new Date();
+    const now = hoy;
     const currentDay = now.getDay();
     const distToMonday = currentDay === 0 ? -6 : 1 - currentDay;
     const monday = new Date(now);
@@ -126,7 +128,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
     const label = `${monday.getDate()} ${monday.toLocaleString('es-ES', { month: 'short' })} – ${sunday.getDate()} ${sunday.toLocaleString('es-ES', { month: 'short' })} ${sunday.getFullYear()}`;
 
     return { weekDays: days, weekLabel: label };
-  }, [weekOffset]);
+  }, [weekOffset, hoy]);
 
   const totalBlocks = blocks.length;
   const completedBlocks = blocks.filter(b => b.completed).length;
@@ -190,7 +192,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
       <div className={styles.editorialHeader}>
         <div className={styles.headerLeft}>
           <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.planner} className={styles.weekTag}>
-            Semana {isoWeekNumber(new Date())}
+            Semana {isoWeekNumber(hoy)}
           </Papel>
           <h1 className={styles.plannerMainHeading}>plan de enfoque y agenda semanal.</h1>
           <h2 className={styles.pageTitle}>Planner Semanal</h2>
