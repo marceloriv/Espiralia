@@ -16,7 +16,9 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - **Dashboard**: franja de cuatro indicadores de serenidad, fecha como hoja de calendario, bloques y hábitos del domingo, y orden pensado para móvil con las tareas primero.
 - **Barra inferior móvil** con cuatro destinos y un botón "Más" (Notas, Carpetas, Integraciones).
 - **Transición de página** de 240ms al cambiar de vista y grano de papel en el fondo, ambos sin movimiento con `prefers-reduced-motion`.
-- **Medición de cobertura** con `@vitest/coverage-v8` y umbral de 80% en líneas y ramas; eslint corre ahora antes del despliegue.
+- **Medición de cobertura** con `@vitest/coverage-v8` y umbral de 80% en líneas y ramas; eslint corre ahora antes del despliegue. El reporte `lcov` alimenta el análisis de SonarQube local.
+- **Aviso ante errores de render**: si una vista falla, la app muestra "Algo salió mal" con un botón para recargar en vez de una pantalla en blanco; los datos siguen guardados.
+- **Buscadores**: `robots.txt` y una descripción más completa de la página.
 
 ### Changed
 
@@ -26,6 +28,8 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - **Contraste**: tokens de texto con 4.5:1 como mínimo, incluido el texto del Papel en la esquina más oscura del degradado; piso de 11px en tipografía.
 - **Áreas táctiles** de 44px como mínimo en controles y checkboxes de To-Do y Planner, con anillo de foco visible.
 - Umbral de bundle de `AGENTS.md` §17.1 medido sobre la carga inicial real.
+- **Carga**: las cuatro fuentes se precargan, lo que lleva el salto de diseño de la Landing de 0.20 a 0.00 y su carga principal de 1.18 s a 0.85 s.
+- **Foco de los diálogos**: al abrirse llevan el foco a su primer control y lo devuelven al cerrarse; los campos que el usuario revela con un clic reciben el foco al montarse.
 
 ### Fixed
 
@@ -35,10 +39,16 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 - Los diálogos de foco, área y metas se cierran con Escape.
 - Métricas del Dashboard (semana, rendimiento y almacenamiento) calculadas con datos reales.
 - La copia completa de Integraciones se puede restaurar.
+- Accesibilidad: el buscador y la zona de arrastre `.ics` tienen un nombre accesible igual a su texto visible; las reflexiones del Dashboard y las opciones de restauración de la Bóveda tienen etiqueta asociada; el Planner ya no anida un segundo `main`; el pie de la Landing es una navegación con nombre.
+- Contraste de las notas, de la insignia oscura y de los textos del Papel en la Landing, con 4.5:1 como mínimo.
+- Los últimos textos en inglés de la interfaz ("Energy Check", "Client-Side") quedan en español.
 
 ### Security
 
 - Fuentes servidas desde el propio sitio: la app no hace peticiones a dominios externos (guardián en `noExternalRequests.test.ts`).
+- Política de seguridad de contenido en la build: solo recursos del propio sitio, sin objetos incrustados ni formularios hacia otros dominios.
+- Los identificadores nuevos de notas diarias, subtareas y eventos importados usan `crypto.getRandomValues` en vez de `Math.random`.
+- Dependencias de desarrollo `zod` 4.6.7 y `undici` 8.12.3, con los avisos de `pnpm audit` corregidos; `pnpm audit --prod` estaba limpio.
 - Sin cambios en las claves ni en la forma de los datos guardados: los datos de versiones anteriores se leen igual (`legacyDataCompat.test.tsx`).
 
 ## [0.3.0] - 2026-10-16
