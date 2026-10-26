@@ -229,4 +229,61 @@ describe('StorageService', () => {
       expect(localStorage.getItem('espiralia_p-del_areas')).toBeNull();
     });
   });
+
+  describe('Notes & Folders persistence', () => {
+    it('saves and isolates notes and folders per profile and cascades on deleteProfile', () => {
+      StorageService.saveNote({
+        id: 'n-1',
+        profileId: 'p-1',
+        title: 'Reflexión nocturna',
+        content: 'Avance sólido hoy',
+        updatedAt: '2026-10-17',
+        createdAt: '2026-10-17',
+      });
+      StorageService.saveFolder({
+        id: 'f-1',
+        profileId: 'p-1',
+        name: 'Universidad & Admisión',
+        createdAt: '2026-10-17',
+      });
+
+      expect(StorageService.getNotes('p-1')).toHaveLength(1);
+      expect(StorageService.getFolders('p-1')).toHaveLength(1);
+
+      StorageService.deleteProfile('p-1');
+      expect(StorageService.getNotes('p-1')).toEqual([]);
+      expect(StorageService.getFolders('p-1')).toEqual([]);
+    });
+  });
+
+  describe('Habits, Distractions & Mood', () => {
+    it('permite alternar días de hábitos con toggleHabitDay', () => {
+      const profileId = 'p-hab-1';
+      StorageService.saveHabit({ id: 'h-1', profileId, name: 'Lectura', daysCompleted: [false, false, false, false, false, false, false] });
+      StorageService.toggleHabitDay(profileId, 'h-1', 0);
+      expect(StorageService.getHabits(profileId)[0].daysCompleted[0]).toBe(true);
+      StorageService.toggleHabitDay(profileId, 'h-1', 0);
+      expect(StorageService.getHabits(profileId)[0].daysCompleted[0]).toBe(false);
+    });
+
+    it('permite obtener y guardar compromisos antidistracciones', () => {
+      const profileId = 'p-dist-1';
+      StorageService.saveDistractions(profileId, ['Teléfono en otra habitación', 'Cerrar pestañas']);
+      expect(StorageService.getDistractions(profileId)).toEqual(['Teléfono en otra habitación', 'Cerrar pestañas']);
+    });
+
+    it('permite guardar y recuperar el nivel de energía del día', () => {
+      const profileId = 'p-mood-1';
+      StorageService.setTodayMood(profileId, '2026-10-17', '✨');
+      expect(StorageService.getTodayMood(profileId, '2026-10-17')).toBe('✨');
+    });
+
+    it('seedInitialProfileData inicializa habitos y distracciones si estan vacios', () => {
+      const profileId = 'p-seed-new';
+      StorageService.seedInitialProfileData(profileId);
+      expect(StorageService.getHabits(profileId).length).toBeGreaterThan(0);
+      expect(StorageService.getDistractions(profileId).length).toBeGreaterThan(0);
+    });
+  });
 });
+

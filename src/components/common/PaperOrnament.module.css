@@ -1,0 +1,163 @@
+.ornament {
+  display: inline-block;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 1. Clip de Latón Físico (Brass Paperclip) */
+.clip {
+  position: absolute;
+  width: 22px;
+  height: 60px;
+  background-color: transparent;
+  background-image: linear-gradient(90deg, #b58929, #e6c667, #966f1f, #d4af37);
+  border-radius: 11px;
+  box-shadow:
+    inset 2px 0 0 -1px #fff3a6,
+    inset -2px 0 0 -1px #59410d,
+    2px 4px 8px rgba(0, 0, 0, 0.22);
+  filter: drop-shadow(1px 2px 2px rgba(0, 0, 0, 0.16));
+  z-index: 10;
+}
+
+.clip::before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 4px;
+  right: 4px;
+  bottom: 10px;
+  background: var(--bg-card, #FCF9F6);
+  border-radius: 5px;
+  border: 2.5px solid #cca139;
+  border-bottom: none;
+}
+
+.clip::after {
+  content: '';
+  position: absolute;
+  top: 13px;
+  left: 7px;
+  right: 7px;
+  bottom: 10px;
+  background: var(--bg-card, #FCF9F6);
+  border-radius: 3px;
+}
+
+/* 2. Cintas Washi Translúcidas */
+.washi-terracotta,
+.washi-orchid,
+.washi-sage,
+.washi-slate {
+  height: 22px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.washi-terracotta {
+  background-color: rgba(212, 116, 94, 0.55);
+  transform: rotate(-1.5deg);
+}
+
+.washi-orchid {
+  background-color: rgba(237, 150, 215, 0.55);
+  transform: rotate(1deg);
+}
+
+.washi-sage {
+  background-color: rgba(90, 130, 109, 0.45);
+  transform: rotate(-1deg);
+}
+
+.washi-slate {
+  background-color: rgba(225, 230, 235, 0.65);
+  transform: rotate(0.8deg);
+}
+
+/* 3. Sello Notarial de Cera Lacre (Wax Seal) */
+.wax-seal {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 42% 58% 48% 52% / 53% 43% 57% 47%;
+  background: radial-gradient(circle at 35% 35%, #9b111e 0%, var(--color-primary) 60%, #380042 100%);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(74, 4, 4, 0.35),
+    inset 0 2px 3px rgba(255, 120, 120, 0.4),
+    inset 0 -3px 4px rgba(30, 0, 0, 0.6);
+  transform: rotate(-4deg);
+}
+
+.sealRing {
+  position: absolute;
+  inset: 5px;
+  border-radius: 45% 55% 50% 50% / 50% 45% 55% 50%;
+  border: 1.5px dashed rgba(255, 180, 180, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.sealMonogram {
+  font-family: var(--font-primary, serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f7d4d4;
+  text-shadow:
+    1px 1px 0 rgba(255, 180, 180, 0.3),
+    -1px -1px 0 rgba(30, 0, 0, 0.6);
+}
+
+/* 4. Sello Japonés Hanko (Hanko Stamp) */
+.hanko-stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border: 2px solid rgba(198, 69, 69, 0.85);
+  border-radius: 3px;
+  transform: rotate(-6deg);
+  mix-blend-mode: multiply;
+  box-shadow: inset 0 0 0 1px rgba(198, 69, 69, 0.4);
+}
+
+.hankoText {
+  font-family: var(--font-family-3, monospace);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: rgba(198, 69, 69, 0.95);
+  text-transform: uppercase;
+}
+
+/* 5. Alfiler Dorado (Brass Pin) */
+.brass-pin {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff3a6 0%, #d4af37 55%, #7a5d14 100%);
+  box-shadow:
+    1px 3px 5px rgba(0, 0, 0, 0.28),
+    inset 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clip,
+  .washi-terracotta,
+  .washi-orchid,
+  .washi-sage,
+  .washi-slate,
+  .wax-seal,
+  .hanko-stamp {
+    transform: none !important;
+  }
+}

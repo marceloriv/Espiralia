@@ -1,0 +1,243 @@
+.ritmosSection {
+  max-width: 1240px;
+  margin: var(--spacing-xxl, 3rem) auto;
+  padding: 0 var(--spacing-lg, 1.5rem);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: var(--spacing-xl, 2rem);
+}
+
+.sectionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs, 0.5rem);
+  padding: 4px 12px;
+  background-color: var(--color-surface-soft, #f5f0e8);
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  border-radius: var(--radius-pill, 9999px);
+  font-family: var(--font-code, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-primary, #8E1EA2);
+  font-weight: 600;
+  margin-bottom: var(--spacing-sm, 0.75rem);
+}
+
+.sectionTitle {
+  font-family: var(--font-primary, serif);
+  font-size: 2rem;
+  line-height: 1.2;
+  color: var(--color-body-strong, #252523);
+  margin-bottom: var(--spacing-xs, 0.5rem);
+}
+
+.sectionSubtitle {
+  font-family: var(--font-body, sans-serif);
+  font-size: 1rem;
+  color: var(--color-muted);
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.ritmosGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem 1.5rem;
+  padding-top: 1rem;
+}
+
+/* RHYTHM 2: los tres momentos se leen como una lista vertical, no como tres tarjetas iguales. */
+@media (min-width: 860px) {
+  .ritmosGrid {
+    max-width: 720px;
+    margin-inline: auto;
+  }
+}
+
+.ritmosGrid > :nth-child(1) { --tinte-boleto: var(--papel-rosa); }
+.ritmosGrid > :nth-child(2) { --tinte-boleto: var(--papel-terracota); }
+.ritmosGrid > :nth-child(3) { --tinte-boleto: var(--papel-turquesa); }
+
+/* Boleto de Turno / Pliego Cortado Artesanal */
+.ritmoTicket {
+  position: relative;
+  background-color: var(--color-surface-card);
+  /* Cada boleto toma el color de su cinta: rosa, terracota y turquesa (DESIGN.md §0.12). */
+  background-image:
+    radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.5px, transparent 0.5px),
+    linear-gradient(145deg, color-mix(in srgb, var(--tinte-boleto) 55%, var(--color-surface-card)), var(--color-surface-card) 66%);
+  background-size: 14px 14px, auto;
+  padding: 2.25rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: 1px solid var(--color-hairline, #e6dfd8);
+  border-right: 1px solid var(--color-hairline, #e6dfd8);
+  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  filter: drop-shadow(0 4px 12px rgba(26, 25, 23, 0.05));
+  transition: transform 0.25s ease-out, filter 0.25s ease-out;
+  min-height: 270px;
+  clip-path: polygon(
+    0% 7px, 3% 2px, 6% 7px, 9% 2px, 12% 7px, 15% 2px, 18% 7px, 21% 2px,
+    24% 7px, 27% 2px, 30% 7px, 33% 2px, 36% 7px, 39% 2px, 42% 7px, 45% 2px,
+    48% 7px, 51% 2px, 54% 7px, 57% 2px, 60% 7px, 63% 2px, 66% 7px, 69% 2px,
+    72% 7px, 75% 2px, 78% 7px, 81% 2px, 84% 7px, 87% 2px, 90% 7px, 93% 2px,
+    96% 7px, 100% 2px,
+    100% 100%, 0% 100%
+  );
+}
+
+.ritmoTicket:hover {
+  transform: translateY(-3px) rotate(0deg) !important;
+  filter: drop-shadow(0 8px 20px rgba(26, 25, 23, 0.09));
+}
+
+.ticketTiltLeft {
+  transform: rotate(-0.6deg);
+}
+
+.ticketTiltStraight {
+  transform: rotate(0.4deg);
+}
+
+.ticketTiltRight {
+  transform: rotate(-0.4deg);
+}
+
+/* Cinta Washi Tape decorativa superior */
+.ticketWashiTape {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 20px;
+  clip-path: polygon(0% 4%, 3% 0%, 97% 2%, 100% 6%, 98% 94%, 95% 100%, 4% 97%, 0% 93%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.washiMagenta {
+  background: rgba(142, 30, 162, 0.35);
+}
+
+.washiAmber {
+  background: rgba(232, 165, 90, 0.45);
+}
+
+.washiTeal {
+  background: rgba(93, 184, 166, 0.40);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.timeTag {
+  font-family: var(--font-code, monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary, #8E1EA2);
+  background-color: rgba(142, 30, 162, 0.08);
+  padding: 3px 8px;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1px solid rgba(142, 30, 162, 0.15);
+}
+
+.iconWrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface-soft, #f5f0e8);
+  border: 1px solid var(--color-hairline, #e6dfd8);
+  color: var(--color-body-strong, #252523);
+}
+
+.cardTitle {
+  font-family: var(--font-primary, serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-body-strong, #252523);
+  margin: 0 0 0.75rem 0;
+  line-height: 1.3;
+}
+
+.cardDesc {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-body, #3d3d3a);
+  margin: 0 0 1.25rem 0;
+}
+
+.ticketSerial {
+  font-family: var(--font-code, monospace);
+  font-size: var(--text-micro);
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  margin-top: -0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Divisor perforado con muescas circulares laterales */
+.perforatedLine {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  border-top: 1.5px dashed var(--color-hairline, #e6dfd8);
+  margin: 0.75rem 0;
+}
+
+.perforatedLine::before,
+.perforatedLine::after {
+  content: '';
+  position: absolute;
+  top: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--color-canvas, #faf9f5);
+  border: 1px solid var(--color-hairline, #e6dfd8);
+}
+
+.perforatedLine::before {
+  left: -22px;
+}
+
+.perforatedLine::after {
+  right: -22px;
+}
+
+.cardMetric {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-code, monospace);
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+  padding-top: 0.25rem;
+}
+
+@media (max-width: 859px) {
+  .ritmoTicket {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ritmoTicket {
+    transform: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Espiralia — Focus Plan &amp; Agenda Semanal</title>
+<!-- Typography: Newsreader, Cormorant Garamond, Inter, JetBrains Mono & Caveat for tactile handwritten stationery -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&amp;family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config verbatim matching system tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-active": "#C654C3",
+            "hairline": "#e6dfd8",
+            "hairline-soft": "#ebe6df",
+            "muted": "#6c6a64",
+            "muted-soft": "#8e8b82",
+            "on-surface-variant": "#504250",
+            "success": "#5db872",
+            "background": "#fcf9f6",
+            "on-dark": "#faf9f5",
+            "on-primary-fixed": "#35003f",
+            "on-error": "#ffffff",
+            "tertiary-fixed": "#98f3e0",
+            "surface-card": "#efe9de",
+            "surface-dark": "#181715",
+            "canvas": "#faf9f5",
+            "on-surface": "#1c1c1a",
+            "surface-variant": "#e5e2e0",
+            "on-tertiary-fixed": "#00201b",
+            "outline": "#837281",
+            "body": "#3d3d3a",
+            "secondary-container": "#ff86f9",
+            "inverse-on-surface": "#f3f0ee",
+            "on-secondary-fixed-variant": "#7f0682",
+            "surface-cream-strong": "#e8e0d2",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#fab3ff",
+            "tertiary": "#00483e",
+            "on-tertiary": "#ffffff",
+            "surface-container": "#f0edeb",
+            "surface-dim": "#dcd9d7",
+            "surface-container-lowest": "#ffffff",
+            "warning": "#d4a017",
+            "accent-amber": "#e8a55a",
+            "surface-soft": "#f5f0e8",
+            "on-tertiary-container": "#82ddc9",
+            "tertiary-container": "#006255",
+            "on-primary-fixed-variant": "#7b0090",
+            "inverse-surface": "#31302f",
+            "primary-soft": "#ED96D7",
+            "primary-fixed-dim": "#f9acff",
+            "on-tertiary-fixed-variant": "#005045",
+            "error": "#c64545",
+            "on-error-container": "#93000a",
+            "surface-container-highest": "#e5e2e0",
+            "on-secondary-fixed": "#380039",
+            "surface-dark-elevated": "#252320",
+            "accent-teal": "#5db8a6",
+            "surface-container-low": "#f6f3f1",
+            "on-background": "#1c1c1a",
+            "error-container": "#ffdad6",
+            "surface-container-high": "#ebe8e5",
+            "primary-fixed": "#ffd6fe",
+            "secondary": "#9c2c9c",
+            "tertiary-fixed-dim": "#7cd7c4",
+            "outline-variant": "#d4c1d2",
+            "surface-tint": "#982aab",
+            "on-secondary": "#ffffff",
+            "surface-bright": "#fcf9f6",
+            "secondary-fixed": "#ffd7f6",
+            "secondary-fixed-dim": "#ffaaf6",
+            "primary-disabled": "#FFC0DE",
+            "primary": "#6e0081",
+            "primary-container": "#8e1ea2",
+            "ink": "#141413",
+            "on-secondary-container": "#7d0380",
+            "surface": "#fcf9f6",
+            "inverse-primary": "#f9acff",
+            "body-strong": "#252523"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "label-md": ["Inter"],
+            "headline-lg": ["Newsreader"],
+            "code-sm": ["JetBrains Mono"],
+            "headline-sm": ["Newsreader"],
+            "body-sm": ["Inter"],
+            "body-strong": ["Inter"],
+            "body-md": ["Inter"],
+            "code-md": ["JetBrains Mono"],
+            "headline-lg-mobile": ["Newsreader"],
+            "display-lg": ["Newsreader"],
+            "headline-md": ["Newsreader"],
+            "body-lg": ["Inter"],
+            "label-lg": ["Inter"],
+            "handwriting": ["Caveat", "cursive"],
+            "serif": ["Cormorant Garamond", "Newsreader", "serif"]
+          }
+        }
+      }
+    }
+</script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Subtle dot grid for bullet journal notes / brain dump */
+    .bujo-grid {
+      background-color: #faf8f5;
+      background-size: 16px 16px;
+      background-image: 
+        radial-gradient(circle, #b9b1a5 0.9px, transparent 0.9px);
+    }
+    /* Ruled paper lines for planner schedule */
+    .lined-schedule {
+      background-color: #faf7f2;
+      background-image: linear-gradient(to bottom, transparent 96%, #e8dfd2 96%);
+      background-size: 100% 48px;
+    }
+    /* Authentic Washi Tape styling */
+    .washi-strip-slate {
+      background: rgba(143, 163, 184, 0.78);
+      backdrop-filter: blur(0.5px);
+      box-shadow: 0 1px 2px rgba(20, 20, 19, 0.08);
+      clip-path: polygon(1% 0%, 99% 2%, 100% 98%, 98% 100%, 0% 97%);
+    }
+    .washi-strip-magenta {
+      background: rgba(198, 84, 195, 0.38);
+      backdrop-filter: blur(0.5px);
+      box-shadow: 0 1px 2px rgba(20, 20, 19, 0.08);
+      clip-path: polygon(0% 2%, 98% 0%, 100% 98%, 2% 100%);
+    }
+    .washi-strip-khaki {
+      background: rgba(197, 188, 158, 0.75);
+      clip-path: polygon(2% 0%, 98% 1%, 100% 99%, 0% 98%);
+    }
+    /* Simulated torn paper edges */
+    .torn-top {
+      clip-path: polygon(
+        0% 6px, 4% 0px, 8% 5px, 12% 1px, 16% 6px, 20% 0px, 24% 5px, 28% 2px, 
+        32% 6px, 36% 1px, 40% 5px, 44% 0px, 48% 5px, 52% 2px, 56% 6px, 60% 1px,
+        64% 5px, 68% 0px, 72% 5px, 76% 2px, 80% 6px, 84% 1px, 88% 5px, 92% 0px,
+        96% 5px, 100% 2px, 100% 100%, 0% 100%
+      );
+    }
+    .paper-shadow {
+      box-shadow: 0 2px 5px rgba(35, 30, 25, 0.04), 0 14px 30px -10px rgba(35, 30, 25, 0.08);
+    }
+    /* Botanical habit bubble toggle */
+    .habit-bubble {
+      transition: all 0.15s ease-in-out;
+    }
+    .habit-bubble.active {
+      background-color: #5A826D;
+      border-color: #436553;
+      color: white;
+    }
+</style>
+</head>
+<body class="bg-[#ECE5DB] text-ink font-body-md antialiased h-full overflow-hidden flex selection:bg-primary-soft/30 selection:text-ink">
+<!-- ========================================================================= -->
+<!-- SIDEBAR NAVIGATION (Warm Editorial Stationery Desktop Shell)              -->
+<!-- Destination Lock: 'Agenda & Planner' ACTIVE with magenta badge            -->
+<!-- ========================================================================= -->
+<aside class="h-screen w-64 flex flex-col justify-between shrink-0 sticky top-0 left-0 p-4 border-r border-[#ded6c9] bg-[#F7F4EE] z-40 select-none">
+<!-- Top Branding & Navigation -->
+<div>
+<!-- Logo Monogram -->
+<div class="flex items-center gap-3 px-2 py-2 mb-5">
+<div class="w-10 h-10 rounded-lg bg-surface-card border border-hairline flex items-center justify-center text-primary shadow-xs overflow-hidden" title="Monograma Espiralia">
+<span class="font-headline-md text-headline-sm font-semibold tracking-tighter text-primary">Es</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-md font-headline-lg font-semibold tracking-tight text-ink leading-none">Espiralia</span>
+<span class="text-label-md font-label-md text-muted mt-0.5 tracking-wider uppercase text-[10px]">Taller de Escritorio</span>
+</div>
+</div>
+<!-- Quick CTA Button -->
+<button class="w-full mb-5 flex items-center justify-center gap-2 bg-primary text-on-primary py-2.5 px-4 rounded-lg font-body-strong text-body-sm hover:bg-primary-active transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Nueva Entrada</span>
+</button>
+<!-- Main Navigation Items -->
+<nav class="space-y-1">
+<!-- 1. Resumen -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span>Resumen</span>
+</a>
+<!-- 2. Agenda & Planner [ACTIVE TAB MATCH] -->
+<a class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-surface-card text-primary font-body-strong text-body-sm border-l-4 border-primary shadow-xs" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span>Agenda &amp; Planner</span>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+</a>
+<!-- 3. Tareas & Áreas -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">checklist</span>
+<span>Tareas &amp; Áreas</span>
+</a>
+<!-- 4. Notas & Terapia -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">menu_book</span>
+<span>Notas &amp; Terapia</span>
+</a>
+<!-- 5. Archivos & Vínculos -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">folder_open</span>
+<span>Archivos &amp; Vínculos</span>
+</a>
+<!-- 6. Sincronización -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">sync</span>
+<span>Sincronización</span>
+</a>
+</nav>
+</div>
+<!-- Footer Stationery Card & User Profile Indicator -->
+<div class="space-y-3 pt-3 border-t border-[#ded6c9]">
+<!-- Daily desk note -->
+<div class="p-3 bg-surface-card/70 border border-hairline rounded-lg relative overflow-hidden">
+<div class="flex items-center gap-1.5 text-muted mb-1">
+<span class="material-symbols-outlined text-[15px] text-accent-amber">lightbulb</span>
+<span class="text-[10px] font-semibold tracking-wider uppercase text-muted">Hábito de hoy</span>
+</div>
+<p class="font-handwriting text-[17px] text-body leading-tight">
+        "Un renglón a la vez. No apresures la encuadernación de tu día."
+      </p>
+</div>
+<!-- User indicator: Romina & quick access -->
+<div class="flex items-center justify-between px-2 pt-1">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-[#e3d7c5] border border-[#cbbeab] flex items-center justify-center text-primary font-bold text-xs">
+          R
+        </div>
+<div>
+<span class="block text-body-sm font-semibold text-ink leading-tight">Romina</span>
+<span class="block text-[11px] text-muted">Plan Semestral II</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-muted">
+<button class="p-1 hover:text-ink" title="Perfil PIN">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</button>
+<button class="p-1 hover:text-ink" title="Ajustes">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+</div>
+</div>
+</aside>
+<!-- ========================================================================= -->
+<!-- MAIN WORKSPACE: Pliego de Papelería & Focus Plan                           -->
+<!-- ========================================================================= -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden bg-[#ECE5DB]">
+<!-- TOP BAR: Search, View Switchers, Date, Export .ics & Concentration Controls -->
+<header class="sticky top-0 z-30 flex items-center justify-between w-full px-6 py-2.5 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#DDD5C6] shrink-0">
+<!-- Search bar on left -->
+<div class="flex items-center gap-3 w-80">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted text-[18px]">search</span>
+<input class="w-full pl-9 pr-12 py-1.5 bg-[#F2EDE4] border border-[#DDD5C6] rounded-lg text-body-sm text-ink placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 text-xs transition-all" placeholder="Buscar en planner, horarios, metas... (⌘K)" type="text"/>
+<kbd class="absolute right-2.5 top-1/2 -translate-y-1/2 px-1.5 py-0.5 text-code-sm font-code-sm text-muted bg-[#E8E1D5] border border-[#D5CCBF] rounded text-[9px]">⌘K</kbd>
+</div>
+</div>
+<!-- View Switcher & Date Badge -->
+<div class="hidden lg:flex items-center gap-4">
+<!-- Date Indicator -->
+<div class="flex items-center gap-2 px-3 py-1 bg-[#F0EAE1] rounded-full border border-[#DCD3C4] text-xs text-body font-medium">
+<span class="material-symbols-outlined text-[16px] text-primary">calendar_today</span>
+<span class="font-semibold text-ink">Semana 41 · Octubre 2026</span>
+<span class="text-hairline">|</span>
+<span class="font-code-sm text-[11px] text-muted">Lunes 12 — Domingo 18</span>
+</div>
+<!-- View Switchers (Semanal Active) -->
+<nav class="flex items-center p-0.5 bg-[#EAE3D6] rounded-lg border border-[#D8CFC0] text-xs">
+<button class="px-3 py-1 rounded bg-[#FAF7F2] text-primary font-bold shadow-2xs">
+          Semanal
+        </button>
+<button class="px-3 py-1 rounded text-muted hover:text-ink transition-colors font-medium">
+          Mensual
+        </button>
+<button class="px-3 py-1 rounded text-muted hover:text-ink transition-colors font-medium">
+          Matriz Focus
+        </button>
+</nav>
+</div>
+<!-- Trailing Action Controls -->
+<div class="flex items-center gap-2.5">
+<!-- Exportar .ics -->
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#DDD5C6] bg-[#FAF7F2] hover:bg-white text-ink text-xs font-medium shadow-2xs transition-all">
+<span class="material-symbols-outlined text-[16px] text-muted">download</span>
+<span>Exportar .ics</span>
+</button>
+<!-- Concentration / Print Action -->
+<button class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#DDD5C6] bg-[#FAF7F2] hover:bg-white text-ink text-xs font-medium shadow-2xs transition-all" onclick="window.print()" title="Modo Concentración / Imprimir Pliego">
+<span class="material-symbols-outlined text-[16px] text-accent-amber">auto_awesome</span>
+<span>Modo Concentración</span>
+</button>
+<!-- Bloquear Cuaderno PIN CTA -->
+<button class="flex items-center gap-1.5 bg-primary text-on-primary px-3 py-1.5 rounded-lg font-body-strong text-xs hover:bg-primary-active transition-all shadow-xs">
+<span class="material-symbols-outlined text-[15px]">lock</span>
+<span>Bloquear Cuaderno</span>
+</button>
+</div>
+</header>
+<!-- ======================================================================= -->
+<!-- SCROLLABLE WORKSPACE SHEET (Exact replica of SCREEN_12 + PlannerView)    -->
+<!-- ======================================================================= -->
+<main class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+<!-- ATMOSPHERIC DESK CONTAINER / PLIEGO DE PAPEL EDITORIAL -->
+<div class="max-w-[1320px] mx-auto bg-[#FCF9F6] border border-[#DDD5C6] rounded-2xl paper-shadow p-6 sm:p-8 md:p-10 relative overflow-hidden">
+<!-- Atmospheric Botanical Sketches in background -->
+<svg class="absolute top-4 right-8 w-28 h-28 text-[#8C9AA7]/20 pointer-events-none select-none" fill="none" stroke="currentColor" stroke-width="1.2" viewbox="0 0 100 100">
+<path d="M50 95 C 45 65, 60 40, 85 15"></path>
+<path d="M60 70 C 45 60, 35 62, 30 68 C 38 72, 52 72, 60 70"></path>
+<path d="M68 50 C 78 40, 90 42, 92 48 C 84 54, 72 52, 68 50"></path>
+<path d="M78 30 C 65 24, 60 14, 66 8 C 72 14, 77 22, 78 30"></path>
+<polygon fill="none" opacity="0.35" points="25,20 28,27 35,28 30,33 32,40 25,36 18,40 20,33 15,28 22,27" stroke="#9EABB7" stroke-width="0.9"></polygon>
+</svg>
+<!-- =================================================================== -->
+<!-- 2. PAPERCRAFT HERO HEADER (Exact Screen 12 Replica)                  -->
+<!-- =================================================================== -->
+<header class="relative pb-6 mb-7 border-b border-[#E3DCce]">
+<div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+<!-- Left: Tilted Pinned Post-it + Monumental Editorial Headline -->
+<div class="flex items-start gap-5">
+<!-- Tilted post-it note pinned with metallic brass clip / tape -->
+<div class="relative bg-[#EFE9DF] border border-[#D5CCBE] p-3.5 rounded shadow-sm w-44 rotate-[-3deg] transform hover:rotate-0 transition-transform shrink-0">
+<!-- Golden brass pin -->
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 z-10 w-4 h-4 rounded-full bg-gradient-to-tr from-[#9B7F4A] via-[#E2C589] to-[#FFF3D1] shadow-xs border border-[#8C6D34] flex items-center justify-center">
+<div class="w-1.5 h-1.5 bg-white/70 rounded-full"></div>
+</div>
+<!-- Botanical sprig -->
+<div class="absolute -top-5 -left-3 rotate-[-20deg] text-[#5A826D] text-lg select-none pointer-events-none">🌿</div>
+<div class="text-center font-handwriting leading-tight pt-1">
+<p class="text-[13px] text-[#4E443B]">discipline today,</p>
+<p class="text-[15px] font-bold text-[#2A3742]">peace tomorrow.</p>
+<span class="inline-block text-primary text-[14px] mt-0.5">♡</span>
+</div>
+</div>
+<!-- Main Title Block matching SCREEN_12 -->
+<div class="pt-1">
+<div class="flex items-center gap-2 mb-1.5">
+<span class="text-[11px] uppercase tracking-[0.25em] text-muted font-bold block">
+                  cuaderno editorial · edición universitaria / semestre ii
+                </span>
+</div>
+<h1 class="text-4xl sm:text-5xl md:text-6xl font-serif text-[#253238] font-semibold tracking-tight lowercase leading-none">
+                focus plan &amp; agenda semanal<span class="text-primary italic font-serif">.</span>
+</h1>
+<p class="font-serif italic text-base sm:text-lg text-muted mt-1.5 tracking-wide">
+                plan your studies. track your progress. achieve your goals. ♡
+              </p>
+</div>
+</div>
+<!-- Right: Stamped Date Banner & Filter Tabs -->
+<div class="flex flex-col items-start lg:items-end gap-3 self-end w-full lg:w-auto">
+<!-- Washi-taped Date Box from SCREEN_12 -->
+<div class="relative bg-[#F4EFE6] border border-[#DDD5C5] rounded-xl px-5 py-3 shadow-2xs">
+<!-- Slate washi strip -->
+<div class="absolute -top-2.5 right-6 w-24 h-4 washi-strip-slate rounded-xs"></div>
+<div class="flex items-center space-x-3 text-xs sm:text-sm">
+<span class="font-serif italic text-muted text-[13px] uppercase tracking-wider">FECHA:</span>
+<span class="font-code-md font-semibold text-ink text-[13px]">12 - 18 / Octubre / 2026</span>
+</div>
+<div class="flex items-center space-x-3 text-[11px] text-muted mt-1 pt-1 border-t border-[#E8DFD0]">
+<span>Semestre: <strong class="text-ink font-code-sm">2026-II</strong></span>
+<span>•</span>
+<span>Semana: <strong class="text-primary font-code-sm">#41</strong></span>
+</div>
+</div>
+<!-- Action button & Area filter pills -->
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<!-- Magenta CTA matching prompt exactly -->
+<button class="flex items-center gap-1.5 bg-primary-container text-on-primary px-3.5 py-2 rounded-lg font-body-strong text-xs hover:bg-primary transition-all shadow-xs">
+<span class="material-symbols-outlined text-[17px]">add_circle</span>
+<span>+ Agregar Bloque de Enfoque</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Filter by Life Area (01. Estudios & Clase B, 02. Introspección & Terapia, 03. Universidad) -->
+<div class="mt-4 pt-3 border-t border-dashed border-[#E3DCce] flex flex-wrap items-center justify-between gap-3 text-xs">
+<div class="flex items-center gap-2">
+<span class="font-serif italic text-muted text-xs">Filtro por Área de Vida:</span>
+<div class="inline-flex gap-1.5">
+<button class="px-2.5 py-1 rounded-md bg-[#faefe0] text-[#7a4e1d] font-semibold border border-accent-amber/40 shadow-2xs">
+                01. Estudios &amp; Clase B
+              </button>
+<button class="px-2.5 py-1 rounded-md bg-[#fbf2fa] text-primary font-semibold border border-primary/30 shadow-2xs">
+                02. Introspección &amp; Terapia
+              </button>
+<button class="px-2.5 py-1 rounded-md bg-[#eaf5f2] text-tertiary-container font-semibold border border-accent-teal/40 shadow-2xs">
+                03. Universidad &amp; Admisión
+              </button>
+</div>
+</div>
+<div class="font-handwriting text-[15px] text-muted">
+            «cada bloque es un compromiso sagrado contigo misma»
+          </div>
+</div>
+</header>
+<!-- =================================================================== -->
+<!-- 3. MAIN CONTENT GRID (Interactive 7-Day Grid + GoalsDrawer)         -->
+<!-- =================================================================== -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-7 items-start">
+<!-- ================================================================= -->
+<!-- LEFT / MAIN AREA (Col 1-8): Interactive Weekly Time Grid 7 Days  -->
+<!-- ================================================================= -->
+<section class="xl:col-span-8 space-y-5">
+<!-- Timetable Paper Card -->
+<div class="bg-canvas border border-[#DDD5C6] rounded-xl paper-shadow overflow-hidden relative">
+<!-- Subtle top Washi tape strip anchor -->
+<div class="absolute -top-2.5 left-12 w-28 h-4 washi-strip-khaki rotate-[-0.5deg] z-10 rounded-xs pointer-events-none select-none"></div>
+<!-- Matrix Header Banner with tactile stationery strip -->
+<div class="bg-[#F5EFE6] px-5 py-3 border-b border-[#DDD5C6] flex flex-wrap items-center justify-between gap-2 relative">
+<div class="flex items-center gap-2.5">
+<span class="w-3 h-3 rounded-full bg-primary inline-block"></span>
+<h2 class="font-headline-sm text-[16px] font-semibold text-ink">
+                  Horario de Estudio &amp; Bloques Activos
+                </h2>
+</div>
+<div class="flex items-center gap-2 text-xs text-muted">
+<span class="font-code-sm text-[11px]">Zona horaria: Santiago (GMT-3)</span>
+<span class="w-2 h-2 rounded-full bg-success animate-pulse" title="Sincronizado"></span>
+</div>
+</div>
+<!-- Weekly 7-Day Matrix Table -->
+<div class="overflow-x-auto">
+<div class="min-w-[740px]">
+<!-- Header Row: 7 Days Columns -->
+<div class="grid grid-cols-8 border-b border-[#DDD5C6] bg-[#EFE9DE]/60 text-center font-sans text-xs">
+<div class="py-2.5 px-2 border-r border-[#DDD5C6] font-code-sm text-[10px] text-muted uppercase font-semibold">
+                    Hora
+                  </div>
+<!-- Lunes 12 -->
+<div class="py-2.5 px-2 border-r border-[#DDD5C6]">
+<span class="block font-semibold text-ink">Lunes</span>
+<span class="block font-code-sm text-[10px] text-muted">12 Oct</span>
+</div>
+<!-- Martes 13 (Hoy - Highlighted tab in magenta soft tone) -->
+<div class="py-2.5 px-2 border-r border-[#DDD5C6] bg-primary-soft/15 border-t-2 border-t-primary">
+<span class="block font-bold text-primary">Martes · Hoy</span>
+<span class="block font-code-sm text-[10px] text-primary font-medium">13 Oct</span>
+</div>
+<!-- Miércoles 14 -->
+<div class="py-2.5 px-2 border-r border-[#DDD5C6]">
+<span class="block font-semibold text-ink">Miércoles</span>
+<span class="block font-code-sm text-[10px] text-muted">14 Oct</span>
+</div>
+<!-- Jueves 15 -->
+<div class="py-2.5 px-2 border-r border-[#DDD5C6]">
+<span class="block font-semibold text-ink">Jueves</span>
+<span class="block font-code-sm text-[10px] text-muted">15 Oct</span>
+</div>
+<!-- Viernes 16 -->
+<div class="py-2.5 px-2 border-r border-[#DDD5C6]">
+<span class="block font-semibold text-ink">Viernes</span>
+<span class="block font-code-sm text-[10px] text-muted">16 Oct</span>
+</div>
+<!-- Sábado 17 -->
+<div class="py-2.5 px-2 border-r border-[#DDD5C6] bg-[#F5EFE6]/40">
+<span class="block font-medium text-muted">Sábado</span>
+<span class="block font-code-sm text-[10px] text-muted">17 Oct</span>
+</div>
+<!-- Domingo 18 -->
+<div class="py-2.5 px-2 bg-[#F5EFE6]/40">
+<span class="block font-medium text-muted">Domingo</span>
+<span class="block font-code-sm text-[10px] text-muted">18 Oct</span>
+</div>
+</div>
+<!-- Ruled Hourly Time Grid (07:00 to 21:00) with tactile bullet journal dot grid -->
+<div class="divide-y divide-[#E6DFD4] bg-[#FAF7F2] bujo-grid">
+<!-- 07:00 Slot -->
+<div class="grid grid-cols-8 h-12 items-stretch text-xs">
+<div class="p-1.5 border-r border-[#DDD5C6] font-code-sm text-[11px] text-muted text-right pr-2.5 bg-[#EFE9DE]/25 pt-1">
+                      07:00
+                    </div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Tuesday: Morning Routine -->
+<div class="border-r border-[#DDD5C6] p-1 bg-primary-soft/5">
+<div class="h-full rounded bg-[#FAF5EC] border border-[#D5CCBF] px-2 py-0.5 text-[10px] flex items-center justify-between text-body paper-shadow">
+<span class="truncate font-medium">Rutina &amp; Café</span>
+<span class="font-code-sm text-[9px] text-accent-amber">☀️ 07:15</span>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6]"></div>
+<div class="border-r border-[#DDD5C6]"></div>
+<div class="border-r border-[#DDD5C6]"></div>
+<div class="border-r border-[#DDD5C6] bg-[#F5EFE6]/20"></div>
+<div class="bg-[#F5EFE6]/20"></div>
+</div>
+<!-- 08:00 - 09:30 Slot: Teoría Conaset Clase B (Módulo Señalética) -->
+<div class="grid grid-cols-8 h-20 items-stretch text-xs">
+<div class="p-1.5 border-r border-[#DDD5C6] font-code-sm text-[11px] text-muted text-right pr-2.5 bg-[#EFE9DE]/25 pt-1">
+                      08:00
+                    </div>
+<!-- Lunes 08:00: Teoría Conaset -->
+<div class="border-r border-[#DDD5C6] p-1">
+<div class="h-full rounded-lg border border-accent-amber/50 bg-[#faefe0] p-1.5 text-xs text-ink paper-shadow">
+<div class="flex items-center justify-between font-code-sm text-[9px] text-[#8C6026] font-semibold">
+<span>08:00 — 09:30</span>
+<span class="material-symbols-outlined text-[12px]">directions_car</span>
+</div>
+<p class="font-body-strong text-[11px] leading-tight text-ink mt-0.5">Teoría Conaset Clase B</p>
+<span class="text-[9px] text-muted truncate block">Módulo Señalética</span>
+</div>
+</div>
+<!-- Martes Today: Teoría Conaset -->
+<div class="border-r border-[#DDD5C6] p-1 bg-primary-soft/5">
+<div class="h-full rounded-lg border border-accent-amber/60 bg-[#faefe0] p-1.5 text-xs text-ink paper-shadow">
+<div class="flex items-center justify-between font-code-sm text-[9px] text-[#8C6026] font-semibold">
+<span>08:00 — 09:30</span>
+<span class="material-symbols-outlined text-[12px]">menu_book</span>
+</div>
+<p class="font-body-strong text-[11px] text-ink leading-tight mt-0.5">Teoría Conaset Clase B</p>
+<span class="text-[9px] text-[#8C6026] font-medium truncate block">Módulo Señalética</span>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Jueves 08:30 Práctica Manejo -->
+<div class="border-r border-[#DDD5C6] p-1">
+<div class="h-full rounded-lg border border-accent-amber/50 bg-[#faefe0] p-1.5 text-xs text-ink paper-shadow">
+<span class="font-code-sm text-[9px] text-[#8C6026] font-semibold block">08:30 — 09:45</span>
+<p class="font-body-strong text-[11px] leading-tight">Práctica Manejo</p>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6]"></div>
+<div class="border-r border-[#DDD5C6] bg-[#F5EFE6]/20"></div>
+<div class="bg-[#F5EFE6]/20"></div>
+</div>
+<!-- 10:00 - 11:30 Slot: Laboratorio Fisiología & Bioquímica -->
+<div class="grid grid-cols-8 h-20 items-stretch text-xs">
+<div class="p-1.5 border-r border-[#DDD5C6] font-code-sm text-[11px] text-muted text-right pr-2.5 bg-[#EFE9DE]/25 pt-1">
+                      10:00
+                    </div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Martes Today: Laboratorio Fisiología & Bioquímica -->
+<div class="border-r border-[#DDD5C6] p-1 bg-primary-soft/5">
+<div class="h-full rounded-lg border border-accent-teal/60 bg-[#eaf5f2] p-1.5 text-xs text-ink paper-shadow">
+<div class="flex items-center justify-between font-code-sm text-[9px] text-tertiary-container font-semibold">
+<span>10:00 — 11:30</span>
+<span class="material-symbols-outlined text-[12px]">biotech</span>
+</div>
+<p class="font-body-strong text-[11px] text-tertiary-container leading-tight mt-0.5">Laboratorio Fisiología</p>
+<span class="text-[9px] text-muted block">&amp; Bioquímica celular</span>
+</div>
+</div>
+<!-- Miércoles 10:00 Lab -->
+<div class="border-r border-[#DDD5C6] p-1">
+<div class="h-full rounded-lg border border-accent-teal/50 bg-[#eaf5f2] p-1.5 text-xs text-ink paper-shadow">
+<span class="font-code-sm text-[9px] text-tertiary-container font-semibold block">10:00 — 12:00</span>
+<p class="font-body-strong text-[11px] leading-tight">Laboratorio Micro</p>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Viernes 10:15 Seminario Ética -->
+<div class="border-r border-[#DDD5C6] p-1">
+<div class="h-full rounded-lg border border-[#DDD5C6] bg-[#F5EFE6] p-1.5 text-xs paper-shadow">
+<span class="font-code-sm text-[9px] text-muted block">10:15 — 11:30</span>
+<p class="font-body-strong text-[11px] leading-tight">Seminario Ética</p>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6] bg-[#F5EFE6]/20"></div>
+<div class="bg-[#F5EFE6]/20"></div>
+</div>
+<!-- 11:45 - 13:00 Slot: Sesión Terapia & Desahogo Guiado -->
+<div class="grid grid-cols-8 h-20 items-stretch text-xs">
+<div class="p-1.5 border-r border-[#DDD5C6] font-code-sm text-[11px] text-muted text-right pr-2.5 bg-[#EFE9DE]/25 pt-1">
+                      11:45
+                    </div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Martes Today: Sesión Terapia & Desahogo Guiado (Dr. Arismendi) -->
+<div class="border-r border-[#DDD5C6] p-1 bg-primary-soft/5">
+<div class="h-full rounded-lg border-2 border-primary/40 bg-[#fbf2fa] p-1.5 text-xs paper-shadow">
+<div class="flex items-center justify-between text-primary font-code-sm text-[9px] font-semibold">
+<span>11:45 — 13:00</span>
+<span class="material-symbols-outlined text-[13px]">psychology</span>
+</div>
+<p class="font-body-strong text-[11px] text-primary leading-tight mt-0.5">Sesión Terapia &amp; Desahogo</p>
+<span class="text-[9px] text-muted block">Guiado (Dr. Arismendi)</span>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6]"></div>
+<div class="border-r border-[#DDD5C6]"></div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Sábado Yoga / Caminata -->
+<div class="border-r border-[#DDD5C6] p-1 bg-[#F5EFE6]/20">
+<div class="h-full rounded-lg border border-[#DDD5C6] bg-[#F5EFE6] p-1.5 text-xs paper-shadow">
+<span class="font-code-sm text-[9px] text-muted block">11:00 — 12:00</span>
+<p class="font-body-strong text-[10px]">Caminata consciente</p>
+</div>
+</div>
+<div class="bg-[#F5EFE6]/20"></div>
+</div>
+<!-- 13:00 - 14:00 Slot: Almuerzo mindful & desconexión sin pantallas -->
+<div class="grid grid-cols-8 h-11 items-stretch bg-[#F2EDE4]/60 border-t border-b border-dashed border-[#D5CCBF]">
+<div class="p-1.5 border-r border-[#DDD5C6] font-code-sm text-[11px] text-muted text-right pr-2.5 bg-[#EFE9DE]/25 pt-0.5">
+                      13:00
+                    </div>
+<div class="col-span-7 flex items-center justify-center gap-2 text-muted font-handwriting text-[17px] tracking-wide px-3">
+<span class="text-[#5A826D]">🌿</span>
+<span>13:00 — 14:00 · Almuerzo mindful &amp; desconexión sin pantallas</span>
+<span class="text-[#5A826D]">🌿</span>
+</div>
+</div>
+<!-- 14:30 - 16:00 Slot: Simulacro examen teórico -->
+<div class="grid grid-cols-8 h-18 items-stretch text-xs">
+<div class="p-1.5 border-r border-[#DDD5C6] font-code-sm text-[11px] text-muted text-right pr-2.5 bg-[#EFE9DE]/25 pt-1">
+                      14:30
+                    </div>
+<!-- Lunes 14:00 Tutoría -->
+<div class="border-r border-[#DDD5C6] p-1">
+<div class="h-full rounded-lg border border-[#DDD5C6] bg-[#F5EFE6] p-1 text-xs paper-shadow">
+<span class="font-code-sm text-[9px] text-muted block">14:00 — 15:30</span>
+<p class="font-body-strong text-[10px] leading-tight">Tutoría de Cálculo</p>
+</div>
+</div>
+<!-- Martes Today: Simulacro examen teórico 50 preguntas -->
+<div class="border-r border-[#DDD5C6] p-1 bg-primary-soft/5">
+<div class="h-full rounded-lg border border-accent-amber/50 bg-[#faefe0] p-1.5 text-xs text-ink paper-shadow">
+<div class="flex items-center justify-between font-code-sm text-[9px] text-[#8C6026] font-semibold">
+<span>14:30 — 16:00</span>
+<span class="material-symbols-outlined text-[12px]">quiz</span>
+</div>
+<p class="font-body-strong text-[11px] text-ink leading-tight mt-0.5">Simulacro examen teórico</p>
+<span class="text-[9px] text-[#8C6026]">50 preguntas Conaset</span>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Jueves 14:30 Grupo de Estudio -->
+<div class="border-r border-[#DDD5C6] p-1">
+<div class="h-full rounded-lg border border-accent-teal/40 bg-[#eaf5f2] p-1 text-xs paper-shadow">
+<span class="font-code-sm text-[9px] text-tertiary-container block">14:30 — 16:00</span>
+<p class="font-body-strong text-[10px] leading-tight">Grupo de Estudio</p>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6]"></div>
+<div class="border-r border-[#DDD5C6] bg-[#F5EFE6]/20"></div>
+<div class="bg-[#F5EFE6]/20"></div>
+</div>
+<!-- 16:30 - 18:00 Slot: Redacción Carta Motivacional -->
+<div class="grid grid-cols-8 h-20 items-stretch text-xs">
+<div class="p-1.5 border-r border-[#DDD5C6] font-code-sm text-[11px] text-muted text-right pr-2.5 bg-[#EFE9DE]/25 pt-1">
+                      16:30
+                    </div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Martes Today: Redacción Carta Motivacional Admisión Universidad 2026 -->
+<div class="border-r border-[#DDD5C6] p-1 bg-primary-soft/5">
+<div class="h-full rounded-lg border border-primary/40 bg-[#f9edfa] p-1.5 text-xs paper-shadow">
+<div class="flex items-center justify-between text-secondary font-code-sm text-[9px] font-semibold">
+<span>16:30 — 18:00</span>
+<span class="material-symbols-outlined text-[13px]">edit_note</span>
+</div>
+<p class="font-body-strong text-[11px] text-ink leading-tight mt-0.5">Redacción Carta Motivacional</p>
+<span class="text-[9px] text-muted block">Admisión Universidad 2026</span>
+</div>
+</div>
+<!-- Miércoles 16:00 Biblioteca -->
+<div class="border-r border-[#DDD5C6] p-1">
+<div class="h-full rounded-lg border border-[#DDD5C6] bg-[#F5EFE6] p-1 text-xs paper-shadow">
+<span class="font-code-sm text-[9px] text-muted block">16:00 — 17:30</span>
+<p class="font-body-strong text-[10px] leading-tight">Biblioteca Central</p>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Viernes 16:00 Entrega Portafolio -->
+<div class="border-r border-[#DDD5C6] p-1">
+<div class="h-full rounded-lg border border-accent-amber/40 bg-[#faefe0] p-1 text-xs paper-shadow">
+<span class="font-code-sm text-[9px] text-[#8C6026] font-semibold block">16:00 — 17:30</span>
+<p class="font-body-strong text-[10px] leading-tight">Entrega Portafolio</p>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6] bg-[#F5EFE6]/20"></div>
+<!-- Domingo 16:30 Review -->
+<div class="p-1 bg-[#F5EFE6]/20">
+<div class="h-full rounded-lg border border-[#DDD5C6] bg-canvas p-1 text-xs paper-shadow">
+<span class="font-code-sm text-[9px] text-muted block">16:30 — 18:00</span>
+<p class="font-body-strong text-[10px] leading-tight">Review de Planner</p>
+</div>
+</div>
+</div>
+<!-- 19:00 - 20:00 Slot: Caminata consciente -->
+<div class="grid grid-cols-8 h-16 items-stretch text-xs">
+<div class="p-1.5 border-r border-[#DDD5C6] font-code-sm text-[11px] text-muted text-right pr-2.5 bg-[#EFE9DE]/25 pt-1">
+                      19:00
+                    </div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Martes Today: Caminata consciente -->
+<div class="border-r border-[#DDD5C6] p-1 bg-primary-soft/5">
+<div class="h-full rounded-lg border border-[#5A826D]/50 bg-[#eaf5f2] p-1.5 text-xs paper-shadow">
+<div class="flex items-center justify-between font-code-sm text-[9px] text-[#436553] font-semibold">
+<span>19:00 — 20:00</span>
+<span class="material-symbols-outlined text-[12px]">directions_walk</span>
+</div>
+<p class="font-body-strong text-[11px] text-ink leading-tight mt-0.5">Caminata consciente</p>
+<span class="text-[9px] text-[#436553]">7.000 pasos (Bienestar)</span>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6]"></div>
+<div class="border-r border-[#DDD5C6]"></div>
+<!-- Viernes 19:00 Cine debate -->
+<div class="border-r border-[#DDD5C6] p-1">
+<div class="h-full rounded-lg border border-[#DDD5C6] bg-[#F5EFE6] p-1 text-xs flex items-center gap-1 text-muted paper-shadow">
+<span class="material-symbols-outlined text-[13px]">nightlife</span>
+<span class="text-[10px]">Cine debate</span>
+</div>
+</div>
+<div class="border-r border-[#DDD5C6] bg-[#F5EFE6]/20"></div>
+<div class="bg-[#F5EFE6]/20"></div>
+</div>
+<!-- 20:30 - 21:00 Slot: Desconexión total -->
+<div class="grid grid-cols-8 h-12 items-stretch text-xs">
+<div class="p-1.5 border-r border-[#DDD5C6] font-code-sm text-[11px] text-muted text-right pr-2.5 bg-[#EFE9DE]/25 pt-0.5">
+                      20:30
+                    </div>
+<div class="col-span-7 flex items-center justify-between px-3 text-muted text-xs">
+<span class="font-handwriting text-[16px] text-body">Desconexión total, té de hierbas &amp; lectura física en papel</span>
+<span class="font-code-sm text-[10px] text-muted">21:00 Cierre</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Badge row of timetable -->
+<div class="p-3.5 bg-[#F5EFE6] border-t border-[#DDD5C6] flex flex-wrap items-center justify-between gap-3 text-xs">
+<div class="flex items-center gap-4 text-[11px]">
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+<span class="text-body font-medium">Universidad &amp; Admisión</span>
+</span>
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-accent-amber inline-block"></span>
+<span class="text-body font-medium">Conaset Clase B</span>
+</span>
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-[#5A826D] inline-block"></span>
+<span class="text-body font-medium">Terapia &amp; Salud Mental</span>
+</span>
+</div>
+<div class="font-handwriting text-[17px] text-muted">
+                "Progreso constante sobre perfección apresurada."
+              </div>
+</div>
+</div>
+<!-- Torn-paper mini section: TODAY'S MAIN FOCUS (from SCREEN_12) -->
+<div class="bg-[#EAE4D8]/80 border border-[#D5CDBD] rounded-xl p-4.5 relative paper-shadow">
+<div class="absolute -top-2.5 right-8 w-20 h-4 washi-strip-magenta rounded-xs pointer-events-none"></div>
+<div class="flex items-center gap-2 mb-1.5">
+<span class="material-symbols-outlined text-primary text-[17px]">target</span>
+<span class="text-[11px] tracking-[0.2em] font-bold uppercase text-[#5B6774]">
+                TODAY'S MAIN FOCUS
+              </span>
+</div>
+<div class="bg-white/85 border border-[#DDD5C6] rounded-lg p-3 font-serif italic text-base sm:text-lg text-[#253238] paper-shadow">
+              "Rendir test CONASET con mínimo 33/35 y revisar borrador de admisión universitaria."
+            </div>
+</div>
+</section>
+<!-- ================================================================= -->
+<!-- RIGHT COLUMN (Col 9-12): Lateral GoalsDrawer & Papercraft Trackers -->
+<!-- (Top Priorities, Habit Tracker, Energy Check, Reminders, Notes)   -->
+<!-- ================================================================= -->
+<aside class="xl:col-span-4 space-y-6">
+<!-- 1. TOP PRIORITIES DE LA SEMANA (with golden paperclip, check icon, deadline) -->
+<div class="bg-[#FBF9F5] border border-[#DDD5C6] rounded-xl p-5 paper-shadow relative">
+<!-- Golden Metallic Paperclip SVG at top-left -->
+<div class="absolute -top-3.5 left-4 z-10">
+<svg fill="none" height="40" viewbox="0 0 24 42" width="22">
+<path d="M7 10 V 28 C 7 32 17 32 17 28 V 6 C 17 2 3 2 3 8 V 32 C 3 39 21 39 21 30 V 12" stroke="#B89552" stroke-linecap="round" stroke-width="2.6"></path>
+</svg>
+</div>
+<div class="pl-6">
+<div class="flex items-center justify-between pb-2.5 mb-3 border-b border-[#EBE3D5]">
+<div class="flex items-center gap-1.5">
+<h3 class="font-sans text-xs tracking-wider uppercase font-bold text-[#354350]">
+                    TOP PRIORITIES DE LA SEMANA
+                  </h3>
+</div>
+<span class="font-code-sm text-[11px] text-muted">05 / 05</span>
+</div>
+<!-- 5 Priorities -->
+<div class="space-y-3 text-xs font-sans">
+<!-- 1. Ensayo Admisión (Completed) -->
+<div class="flex items-start gap-2.5 pb-2 border-b border-dashed border-[#DDD5C6]">
+<span class="font-editorial text-sm font-bold text-primary shrink-0 mt-0.5">1.</span>
+<div class="flex-1">
+<p class="font-body-strong text-ink leading-snug">Ensayo Admisión: 1er Borrador Completo</p>
+<span class="text-[10px] font-code-sm text-primary font-medium">Límite: Jueves 15, 23:59</span>
+</div>
+<span class="material-symbols-outlined text-primary text-[18px]">check_box</span>
+</div>
+<!-- 2. Test Simulados -->
+<div class="flex items-start gap-2.5 pb-2 border-b border-dashed border-[#DDD5C6]">
+<span class="font-editorial text-sm font-bold text-primary shrink-0 mt-0.5">2.</span>
+<div class="flex-1">
+<p class="font-body-strong text-ink leading-snug">Completar 3 test simulados Conaset Clase B</p>
+<span class="text-[10px] font-code-sm text-accent-amber font-semibold">Puntaje meta: 35/38</span>
+</div>
+<span class="material-symbols-outlined text-muted-soft text-[18px]">check_box_outline_blank</span>
+</div>
+<!-- 3. Bitácora Terapia -->
+<div class="flex items-start gap-2.5 pb-2 border-b border-dashed border-[#DDD5C6]">
+<span class="font-editorial text-sm font-bold text-primary shrink-0 mt-0.5">3.</span>
+<div class="flex-1">
+<p class="font-body-strong text-ink leading-snug">Escribir bitácora reflexiva post-terapia</p>
+<span class="text-[10px] font-code-sm text-muted">20 min sin pantallas</span>
+</div>
+<span class="material-symbols-outlined text-muted-soft text-[18px]">check_box_outline_blank</span>
+</div>
+<!-- 4. Fisiología Anki -->
+<div class="flex items-start gap-2.5 pb-2 border-b border-dashed border-[#DDD5C6]">
+<span class="font-editorial text-sm font-bold text-primary shrink-0 mt-0.5">4.</span>
+<div class="flex-1">
+<p class="font-body-strong text-ink leading-snug">Repaso Capítulo 4 Fisiología</p>
+<span class="text-[10px] font-code-sm text-tertiary-container font-medium">Anki flashcards activas</span>
+</div>
+<span class="material-symbols-outlined text-muted-soft text-[18px]">check_box_outline_blank</span>
+</div>
+<!-- 5. Caminata 7.000 pasos -->
+<div class="flex items-start gap-2.5">
+<span class="font-editorial text-sm font-bold text-primary shrink-0 mt-0.5">5.</span>
+<div class="flex-1">
+<p class="font-body-strong text-ink leading-snug">Caminar 7.000 pasos diarios mínimo</p>
+<span class="text-[10px] font-code-sm text-[#5A826D] font-medium">Monitorear bienestar físico</span>
+</div>
+<span class="material-symbols-outlined text-primary text-[18px]">check_box</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 2. HABIT TRACKER SEMANAL (Matrix L M X J V S D with botanical sage green circles) -->
+<div class="bg-[#FBF9F5] border border-[#DDD5C6] rounded-xl p-5 paper-shadow relative">
+<div class="flex items-center justify-between pb-2.5 mb-3 border-b border-[#EBE3D5]">
+<div class="flex items-center gap-1.5">
+<span class="text-base text-[#5A826D]">🌿</span>
+<h3 class="font-sans text-xs tracking-wider uppercase font-bold text-[#354350]">
+                  HABIT TRACKER SEMANAL
+                </h3>
+</div>
+<!-- Day Headers -->
+<div class="flex gap-2 text-[10px] font-code-sm font-semibold text-muted">
+<span class="w-4 text-center">L</span>
+<span class="w-4 text-center text-primary font-bold">M</span>
+<span class="w-4 text-center">X</span>
+<span class="w-4 text-center">J</span>
+<span class="w-4 text-center">V</span>
+<span class="w-4 text-center text-accent-amber">S</span>
+<span class="w-4 text-center text-accent-amber">D</span>
+</div>
+</div>
+<!-- 4 Habits -->
+<div class="space-y-3 text-xs font-sans">
+<!-- Habit 1: Despertar 06:45 AM -->
+<div class="flex items-center justify-between">
+<span class="text-ink truncate max-w-[160px]">🌅 Despertar 06:45 AM</span>
+<div class="flex gap-2">
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+</div>
+</div>
+<!-- Habit 2: Beber 2L agua -->
+<div class="flex items-center justify-between">
+<span class="text-ink truncate max-w-[160px]">💧 Beber 2L agua</span>
+<div class="flex gap-2">
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+</div>
+</div>
+<!-- Habit 3: Estudio Conaset (45m) -->
+<div class="flex items-center justify-between">
+<span class="text-ink truncate max-w-[160px]">🚗 Estudio Conaset (45m)</span>
+<div class="flex gap-2">
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+</div>
+</div>
+<!-- Habit 4: Cero pantallas en cama -->
+<div class="flex items-center justify-between">
+<span class="text-ink truncate max-w-[160px]">📵 Cero pantallas en cama</span>
+<div class="flex gap-2">
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-[#5A826D] border border-[#436553] flex items-center justify-center text-[9px] text-white">✓</button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+<button class="w-4 h-4 rounded-full bg-white border border-[#D5CCBF]"></button>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. ENERGY CHECK & MOOD TRACKER (Lunar phases & 5 faces) -->
+<div class="bg-[#FBF9F5] border border-[#DDD5C6] rounded-xl p-5 shadow-xs relative">
+<div class="flex items-center justify-between pb-2 mb-3 border-b border-[#EBE3D5]">
+<h3 class="font-sans text-xs tracking-wider uppercase font-bold text-[#354350]">
+                ENERGY CHECK &amp; MOOD
+              </h3>
+<span class="font-serif italic text-xs text-muted">fase actual</span>
+</div>
+<!-- Lunar sequence: 🌙 🌘 🌑 🌒 🌕 -->
+<div class="flex items-center justify-between px-3 py-2 bg-[#F4EFE6] rounded-lg border border-[#E3DACB] mb-3 text-sm">
+<span class="opacity-50 hover:opacity-100 cursor-pointer select-none" title="Luna creciente">🌙</span>
+<span class="opacity-60 hover:opacity-100 cursor-pointer select-none" title="Cuarto creciente">🌘</span>
+<span class="text-base text-primary font-bold scale-110 select-none" title="Luna nueva / activa">🌑</span>
+<span class="opacity-60 hover:opacity-100 cursor-pointer select-none" title="Gibosa">🌒</span>
+<span class="opacity-75 hover:opacity-100 cursor-pointer select-none" title="Luna llena">🌕</span>
+</div>
+<!-- 5 Mood faces from SCREEN_12: Plena, En calma, Neutra, Cansada, Drenada -->
+<p class="text-center font-serif italic text-xs text-muted mb-2">
+              ¿Cómo sientes tu energía mental hoy?
+            </p>
+<div class="grid grid-cols-5 gap-1.5 text-center">
+<button class="p-1 rounded-lg border border-transparent hover:border-[#DDD5C5] transition-all flex flex-col items-center">
+<span class="text-xl">😊</span>
+<span class="text-[9px] uppercase font-semibold text-[#667380] mt-1">Plena</span>
+</button>
+<button class="p-1 rounded-lg border border-[#A6BAA4] bg-[#EBF2EA] transition-all flex flex-col items-center shadow-2xs">
+<span class="text-xl">😌</span>
+<span class="text-[9px] uppercase font-semibold text-[#486348] mt-1">En calma</span>
+</button>
+<button class="p-1 rounded-lg border border-transparent hover:border-[#DDD5C5] transition-all flex flex-col items-center">
+<span class="text-xl">😐</span>
+<span class="text-[9px] uppercase font-semibold text-[#667380] mt-1">Neutra</span>
+</button>
+<button class="p-1 rounded-lg border border-transparent hover:border-[#DDD5C5] transition-all flex flex-col items-center">
+<span class="text-xl">🥱</span>
+<span class="text-[9px] uppercase font-semibold text-[#667380] mt-1">Cansada</span>
+</button>
+<button class="p-1 rounded-lg border border-transparent hover:border-[#DDD5C5] transition-all flex flex-col items-center">
+<span class="text-xl">🥀</span>
+<span class="text-[9px] uppercase font-semibold text-[#667380] mt-1">Drenada</span>
+</button>
+</div>
+</div>
+<!-- 4. MINI REMINDERS (Taped with slate washi tape) -->
+<div class="relative bg-[#F4EFE6] border border-[#D9D0BF] rounded-xl p-5 shadow-xs rotate-[0.5deg]">
+<!-- Slate Washi Tape on top -->
+<div class="absolute -top-2.5 left-6 w-24 h-4 washi-strip-slate rounded-xs"></div>
+<!-- Botanical sprig in corner -->
+<div class="absolute top-2 right-3 text-[#5A826D] text-xl opacity-80 pointer-events-none select-none">🌸</div>
+<div class="flex items-center justify-between pb-2 mb-2 border-b border-[#E3D9C7] pt-0.5">
+<h3 class="font-sans text-xs tracking-wider uppercase font-bold text-[#4B5763]">
+                MINI REMINDERS
+              </h3>
+<span class="font-handwriting text-sm text-[#7D6B57]">amabilidad</span>
+</div>
+<!-- Reminders from prompt -->
+<div class="space-y-2 text-xs font-handwriting text-[17px] text-[#3A454F] leading-snug">
+<div class="flex items-start gap-1.5 pb-1 border-b border-dashed border-[#DDD2C0]">
+<span class="text-primary font-bold">✧</span>
+<p>5 min de silencio antes de cada bloque de 90m.</p>
+</div>
+<div class="flex items-start gap-1.5 pb-1 border-b border-dashed border-[#DDD2C0]">
+<span class="text-primary font-bold">✧</span>
+<p>Ajustar retrovisores antes del encendido del vehículo.</p>
+</div>
+<div class="flex items-start gap-1.5">
+<span class="text-primary font-bold">✧</span>
+<p>Reponer infusión de menta a las 16:00.</p>
+</div>
+</div>
+<div class="mt-2.5 text-right">
+<span class="font-serif italic text-stone-500 text-[11px]">«Respira hondo, vas a tiempo»</span>
+</div>
+</div>
+<!-- 5. NOTES / BRAIN DUMP (Bujo Dot Grid with Botanical Leaf Stamp & Cursive Memo) -->
+<div class="relative bg-[#FAF8F5] border border-[#DDD5C6] rounded-xl p-4 paper-shadow flex flex-col">
+<!-- Washi tape at corner -->
+<div class="absolute -bottom-2 -right-2 w-16 h-4 washi-strip-khaki rotate-[-10deg] rounded-xs pointer-events-none"></div>
+<div class="flex items-center justify-between pb-2 mb-2 border-b border-[#EBE3D5]">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[17px] text-[#738290]">draw</span>
+<h3 class="font-sans text-xs tracking-wider uppercase font-bold text-[#354350]">
+                  NOTES / BRAIN DUMP
+                </h3>
+</div>
+<span class="text-[10px] font-code-sm text-muted">Cuadrícula Bujo</span>
+</div>
+<!-- Bujo Dot Grid Textarea with enhanced depth -->
+<div class="relative min-h-[140px] rounded-lg bujo-grid p-3 border border-[#E8DFCF] paper-shadow">
+<!-- Botanical leaf stamp at top-right inside grid -->
+<div class="absolute top-2 right-2 text-[#5A826D]/40 text-xl pointer-events-none select-none">🍃</div>
+<textarea class="w-full h-full min-h-[120px] bg-transparent border-0 p-0 text-xs text-[#2B353E] font-serif focus:ring-0 resize-none leading-relaxed" placeholder="Descarga de ideas, bocetos y pendientes rápidos...">Idea proyecto: crear flashcards con diagramas de cruces viales y rotondas para simplificar las prioridades de paso.
+
+Recordatorio: llamar a la facultad el lunes a primera hora sobre convalidación de créditos.</textarea>
+</div>
+<div class="flex justify-between items-center mt-2 px-1 text-[11px] text-muted">
+<span class="font-handwriting text-sm text-[#6F7F91]">mente clara, espacio despejado ♡</span>
+<span class="font-code-sm text-[9px]">auto-guardado</span>
+</div>
+</div>
+</aside>
+</div>
+<!-- =================================================================== -->
+<!-- 5. BOTTOM REFLECTION & JOURNALING FOOTER                            -->
+<!-- =================================================================== -->
+<footer class="mt-10 pt-7 border-t-2 border-[#E7DFD1] relative">
+<div class="text-center mb-6">
+<h3 class="font-sans text-xs uppercase tracking-[0.25em] font-bold text-[#4B5A68] inline-flex items-center gap-1.5">
+<span>END OF DAY REFLECTION</span>
+<span class="font-handwriting text-primary text-[19px]">♡</span>
+</h3>
+<p class="font-serif italic text-xs text-muted mt-0.5">
+            cerrando la jornada con gratitud e intención
+          </p>
+</div>
+<!-- 3 Neat Reflection Paper Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1: ¿Qué salió bien hoy? -->
+<div class="bg-[#F6F2E9]/75 p-4 rounded-xl border border-[#DDD4C5] shadow-2xs">
+<label class="block font-serif text-sm font-semibold text-[#384654] mb-1.5 italic">
+              ¿Qué salió bien hoy?
+            </label>
+<textarea class="w-full bg-transparent border-0 border-b border-[#CCC3B0] focus:border-[#4B5A68] p-1 text-xs text-ink focus:ring-0 resize-none font-serif leading-relaxed" placeholder="Escribe tu pequeño triunfo de hoy..." rows="2">Mantuve el foco por 90 min seguidos sin tocar el móvil. Logré responder 48 de 50 preguntas correctas en el simulador.</textarea>
+</div>
+<!-- Card 2: ¿Qué puedo mejorar mañana? -->
+<div class="bg-[#F6F2E9]/75 p-4 rounded-xl border border-[#DDD4C5] shadow-2xs">
+<label class="block font-serif text-sm font-semibold text-[#384654] mb-1.5 italic">
+              ¿Qué puedo mejorar mañana?
+            </label>
+<textarea class="w-full bg-transparent border-0 border-b border-[#CCC3B0] focus:border-[#4B5A68] p-1 text-xs text-ink focus:ring-0 resize-none font-serif leading-relaxed" placeholder="Un ajuste consciente sin juzgarte..." rows="2">No posponer la caminata de la tarde; mi mente se satura si paso más de 4 horas sentado.</textarea>
+</div>
+<!-- Card 3: ¿Cuál será mi primer paso mañana? -->
+<div class="bg-[#F6F2E9]/75 p-4 rounded-xl border border-[#DDD4C5] shadow-2xs">
+<label class="block font-serif text-sm font-semibold text-[#384654] mb-1.5 italic">
+              ¿Cuál será mi primer paso mañana?
+            </label>
+<textarea class="w-full bg-transparent border-0 border-b border-[#CCC3B0] focus:border-[#4B5A68] p-1 text-xs text-ink focus:ring-0 resize-none font-serif leading-relaxed" placeholder="Tu primera victoria matutina..." rows="2">Repasar 20 minutos de señalética apenas termine el desayuno.</textarea>
+</div>
+</div>
+<!-- Bottom Editorial Mantra & System Stamp -->
+<div class="mt-8 text-center space-y-1.5">
+<p class="font-handwriting text-xl sm:text-2xl text-primary font-semibold tracking-wide">
+            « Small steps every day lead to big results. ♡ »
+          </p>
+<p class="text-[10px] uppercase font-sans tracking-widest text-[#7E8B99]">
+            ESPIRALIA · PAPELERÍA DE PENSAMIENTO Y ESTUDIO · Pliego activo: Semanal &amp; Diario v0.3.0
+          </p>
+</div>
+</footer>
+</div>
+<!-- Desk Footnote Bar -->
+<div class="max-w-[1320px] mx-auto flex flex-col sm:flex-row justify-between items-center px-4 text-xs text-muted gap-2 pb-6">
+<div class="flex items-center space-x-2">
+<span class="inline-block w-2.5 h-2.5 rounded-full bg-[#5A826D]"></span>
+<span>Pliego activo: <strong class="text-ink font-code-sm">Semanal &amp; Diario v0.3.0</strong></span>
+<span>•</span>
+<span>Sincronizado con Almacenamiento Local</span>
+</div>
+<div class="font-serif italic text-stone-600">
+        «El orden exterior nutre la serenidad interior»
+      </div>
+</div>
+</main>
+</div>
+</body></html>

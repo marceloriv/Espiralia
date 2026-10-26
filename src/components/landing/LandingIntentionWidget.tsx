@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Target, Compass, Heart } from 'lucide-react';
+import { Leaf, Target, Compass, Heart } from 'lucide-react';
 import styles from './LandingIntentionWidget.module.css';
 
 export type IntentionType = 'calma' | 'foco' | 'claridad' | 'gratitud';
@@ -21,7 +21,7 @@ interface IntentionData {
 const INTENTIONS: Record<IntentionType, IntentionData> = {
   calma: {
     label: 'Calma mental',
-    icon: Sparkles,
+    icon: Leaf,
     quote: '“No tienes que resolver toda tu vida hoy. Solo necesitas habitar con serenidad este instante presente y dar el siguiente paso honesto.”',
     author: 'Cuaderno de Calma • Espiralia',
     steps: [
@@ -31,13 +31,13 @@ const INTENTIONS: Record<IntentionType, IntentionData> = {
     ],
   },
   foco: {
-    label: 'Foco implacable',
+    label: 'Enfoque profundo',
     icon: Target,
     quote: '“La concentración profunda es el acto de amor más grande hacia tus proyectos. Cierra el ruido del mundo para escuchar tu maestría.”',
     author: 'Bloque de Enfoque • Espiralia',
     steps: [
       { num: '01. Mesa limpia', title: '01. Mesa limpia', desc: 'Elimina toda pestaña, notificación y objeto fuera de tu tarea.' },
-      { num: '02. Bloque sagrado', title: '02. Bloque sagrado', desc: 'Protege 50 minutos ininterrumpidos en tu planner.' },
+      { num: '02. Bloque continuo', title: '02. Bloque continuo', desc: 'Protege 50 minutos ininterrumpidos en tu planner.' },
       { num: '03. Cierre nítido', title: '03. Cierre nítido', desc: 'Verifica el avance y deja la mesa lista para mañana.' },
     ],
   },
@@ -55,7 +55,7 @@ const INTENTIONS: Record<IntentionType, IntentionData> = {
   gratitud: {
     label: 'Gratitud & Reflexión',
     icon: Heart,
-    quote: '“El progreso no solo se mide por lo que falta construir, sino por la belleza del suelo que ya sostienes bajo tus pies.”',
+    quote: '“El progreso reside en valorar lo que ya sostienes mientras das el siguiente paso con calma.”',
     author: 'Pausa Contemplativa • Espiralia',
     steps: [
       { num: '01. Reconocimiento', title: '01. Reconocimiento', desc: 'Agradece un logro o aprendizaje reciente.' },
@@ -72,10 +72,6 @@ export const LandingIntentionWidget: React.FC = () => {
   return (
     <section className={styles.widgetContainer} aria-labelledby="intention-heading">
       <div className={styles.widgetHeader}>
-        <div className={styles.badge}>
-          <Sparkles size={14} aria-hidden="true" />
-          <span>Brújula Interior Inmediata</span>
-        </div>
         <h2 id="intention-heading" className={styles.title}>
           Elige tu intención para hoy
         </h2>

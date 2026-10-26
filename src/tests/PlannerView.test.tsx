@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { PlannerView } from '../components/PlannerView';
@@ -191,5 +191,112 @@ describe('PlannerView integración semanal y metas', () => {
 
     expect(screen.getByText('Bloque Alta Prioridad')).toBeInTheDocument();
     expect(screen.getByText('Bloque Baja Prioridad')).toBeInTheDocument();
+  });
+
+  it('renderiza la cabecera focus plan, filtros de area, rejilla semanal de 7 columnas y top priorities con clip', () => {
+    render(<PlannerView profileId={profileId} />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /plan de enfoque y agenda semanal\./i })).toBeInTheDocument();
+    expect(screen.getByText(/01\. estudios/i)).toBeInTheDocument();
+    expect(screen.getByText(/prioridades de la semana/i)).toBeInTheDocument();
+    expect(screen.getByText(/hábitos de la semana/i)).toBeInTheDocument();
+    expect(screen.getByText(/disciplina hoy, paz mañana/i)).toBeInTheDocument();
+  });
+
+  it('muestra la semana ISO en una pieza de Papel y no conserva los ornamentos de plano técnico', () => {
+    const { container } = render(<PlannerView profileId={profileId} />);
+
+    expect(screen.getByText(/^Semana \d{1,2}$/)).toBeInTheDocument();
+    expect(container.querySelector('[class*="satinBookmarkRibbon"]')).toBeNull();
+    expect(container.querySelector('[class*="registrationCross"]')).toBeNull();
+    expect(container.querySelector('[class*="brassClip"]')).toBeNull();
+    expect(screen.queryByText(/recordatorios y notas rápidas/i)).not.toBeInTheDocument();
+  });
+
+  it('pone la semana en un Pliego y las metas en un Papel salvia', () => {
+    const { container } = render(<PlannerView profileId={profileId} />);
+
+    const grid = screen.getByRole('region', { name: /grilla semanal/i });
+    expect(grid.querySelector('svg')).not.toBeNull();
+    expect(container.querySelector('[data-tinte="salvia"]')).not.toBeNull();
+  });
+
+  describe('Hábitos y energía reales', () => {
+    it('sin hábitos muestra un estado vacío y no inventa "Lectura 25 min"', () => {
+      render(<PlannerView profileId={profileId} />);
+
+      expect(screen.getByText(/sin hábitos registrados/i)).toBeInTheDocument();
+      expect(screen.queryByText(/lectura 25 min/i)).not.toBeInTheDocument();
+    });
+
+    it('marca un día de un hábito del Dashboard y lo guarda en la clave de hábitos', async () => {
+      const user = userEvent.setup();
+      StorageService.saveHabit({
+        id: 'h-1',
+        profileId,
+        name: 'Caminar',
+        daysCompleted: [false, false, false, false, false, false, false],
+      });
+      render(<PlannerView profileId={profileId} />);
+
+      const miercoles = screen.getByRole('button', { name: 'Caminar: miércoles' });
+      expect(miercoles).toHaveAttribute('aria-pressed', 'false');
+      await user.click(miercoles);
+
+      expect(miercoles).toHaveAttribute('aria-pressed', 'true');
+      expect(StorageService.getHabits(profileId)[0].daysCompleted[2]).toBe(true);
+    });
+
+    it('guarda la energía del día con los mismos valores que To-Do y la recuerda al recargar', async () => {
+      const user = userEvent.setup();
+      const hoy = new Date();
+      const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(hoy.getDate()).padStart(2, '0')}`;
+      const { unmount } = render(<PlannerView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: 'Energía Baja' }));
+      expect(StorageService.getTodayMood(profileId, hoyStr)).toBe('☁️');
+      unmount();
+
+      render(<PlannerView profileId={profileId} />);
+      expect(screen.getByRole('button', { name: 'Energía Baja' })).toHaveAttribute('aria-pressed', 'true');
+    });
+  });
+
+  describe('Eje de horas', () => {
+    // Técnica: partición de equivalencia (con hora desordenada / sin hora).
+    it('ordena los bloques del día por hora y deja al final los que no tienen', () => {
+      const base = { profileId, period: 'semanal' as const, priority: 'media' as const, completed: false, dayOfWeek: 1 as const };
+      StorageService.savePlanner({ ...base, id: 'pb-t', timeSlot: 'tarde', title: 'Revisión', time: '15:00' });
+      StorageService.savePlanner({ ...base, id: 'pb-s', timeSlot: 'noche', title: 'Sin hora' });
+      StorageService.savePlanner({ ...base, id: 'pb-m', timeSlot: 'mañana', title: 'Lectura', time: '08:30' });
+
+      render(<PlannerView profileId={profileId} />);
+
+      const lunes = within(screen.getByRole('region', { name: 'Columna Lunes' }));
+      const orden = lunes.getAllByRole('checkbox').map(c => c.getAttribute('aria-label'));
+      expect(orden).toEqual(['Completar Lectura', 'Completar Revisión', 'Completar Sin hora']);
+      expect(lunes.getByText('08:30').tagName).toBe('TIME');
+    });
+  });
+
+  describe('Columna de hoy', () => {
+    it('marca solo la columna del día actual con aria-current y la etiqueta "Hoy"', () => {
+      render(<PlannerView profileId={profileId} />);
+
+      const hoy = screen.getAllByRole('region').filter(el => el.getAttribute('aria-current') === 'date');
+      expect(hoy).toHaveLength(1);
+      const nombres = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      expect(hoy[0]).toHaveAttribute('aria-label', `Columna ${nombres[new Date().getDay()]}`);
+      expect(hoy[0]).toHaveTextContent('Hoy');
+    });
+
+    it('en otra semana ninguna columna se marca como hoy', async () => {
+      const user = userEvent.setup();
+      render(<PlannerView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /semana siguiente/i }));
+
+      expect(screen.queryAllByRole('region').filter(el => el.getAttribute('aria-current') === 'date')).toHaveLength(0);
+    });
   });
 });

@@ -71,7 +71,7 @@ const GlobalSearchModalContent: React.FC<GlobalSearchModalProps> = ({
       const res = await SearchService.search(profileId, query);
       if (!cancelled) setResults(res);
     };
-    performSearch();
+    void performSearch();
     return () => { cancelled = true; };
   }, [profileId, query]);
 

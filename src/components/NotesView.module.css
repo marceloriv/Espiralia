@@ -1,309 +1,1084 @@
-.container {
+.notesContainer {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  max-width: 1200px;
+  gap: 28px;
+  max-width: 1400px;
   margin: 0 auto;
-  width: 100%;
+  padding: 8px 4px 40px;
 }
 
-.header {
+/* ========================================================================= */
+/* 1. Header Editorial                                                       */
+/* ========================================================================= */
+
+.deskHeader {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--color-hairline);
+  padding-bottom: 12px;
 }
 
-@media (min-width: 768px) {
-  .header {
+/* Título y solapas de tomo solo comparten fila en pantallas muy anchas: si no, las solapas se encogían hasta truncar sus nombres. */
+@media (min-width: 1700px) {
+  .deskHeader {
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
   }
 }
 
-.titleArea {
+.deskHeaderMain {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 6px;
 }
 
-.title {
-  font-family: var(--font-headline, serif);
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: var(--color-ink, #141413);
-  margin: 0;
-}
-
-.subtitle {
-  font-size: 0.875rem;
-  color: var(--color-ink-muted, #666);
-  margin: 0;
-}
-
-.actionsArea {
+.overlineRow {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 8px;
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
 }
 
-.btnAdd {
+.bullet {
+  color: var(--color-hairline);
+}
+
+.overlineSub {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.editorialH1 {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: var(--text-display-md);
+  font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.15;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cifradoBadge {
+  font-family: var(--font-family-3);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background-color: rgba(93, 184, 166, 0.15);
+  color: var(--color-text-teal);
+  border: 1px solid rgba(93, 184, 166, 0.35);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========================================================================= */
+/* ESTANTE DE ARCHIVADORES FÍSICOS (Office Binder Spines / Biblioratos)      */
+/* ========================================================================= */
+
+.binderCabinetRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 10px 6px 0;
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 10;
+  scrollbar-width: none;
+}
+
+.binderCabinetRow::-webkit-scrollbar {
+  display: none;
+}
+
+/* Lomo de archivador rígido (Office Lever-Arch Binder Spine) */
+.binderSpineBtn,
+.flatFolderTab {
+  position: relative;
+  flex: 0 1 200px;
+  min-width: 132px;
+  height: 54px;
+  background: var(--binder-spine-bg, #2e2620);
+  border: 1px solid var(--binder-border, #1c1714);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: 0 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.binderSpineBtn:hover,
+.flatFolderTab:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.04);
+}
+
+.binderSpineBtn:focus-visible,
+.flatFolderTab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.binderSpineBtn.binderActive,
+.binderSpineBtn.flatFolderActive,
+.binderSpineBtn[aria-current="page"] {
+  height: 60px;
+  z-index: 20;
+  transform: translateY(-2px);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.25);
+  border-color: var(--binder-border-active, #c29d59);
+}
+
+@media (max-width: 640px) {
+  .binderCabinetRow {
+    gap: 8px;
+    padding: 6px 4px 0;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .binderSpineBtn,
+.flatFolderTab {
+    width: 168px;
+    min-width: 148px;
+    height: 46px;
+    padding: 0 8px;
+    scroll-snap-align: start;
+  }
+
+  .binderSpineBtn.binderActive,
+  .binderSpineBtn.flatFolderActive,
+  .binderSpineBtn[aria-current="page"] {
+    height: 52px;
+  }
+
+  .binderLabelText {
+    font-size: 0.72rem;
+  }
+
+  .binderCountPill {
+    font-size: var(--text-micro);
+    padding: 1px 4px;
+  }
+}
+
+/* Etiqueta de cartulina blanca/crema insertada en el porta-etiquetas */
+.binderLabelPaper {
+  width: 100%;
+  background: #faf7f0;
+  border: 1px solid #d4c8b6;
+  border-radius: 2px;
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.binderLabelText {
+  font-family: var(--font-family-2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1c1917;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+/* Píldora de conteo del archivador */
+.binderCountPill {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.25);
+  color: #f5f0e8;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  margin-left: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* --- Variaciones de Tomos de Archivador --- */
+/* Tomo 01: Archivador Burdeos / Cuero Terapéutico */
+.binderTomo01 {
+  --binder-spine-bg: #4a1525;
+  --binder-border: #310c17;
+  --binder-border-active: #c29d59;
+}
+.binderTomo01.binderActive,
+.binderTomo01[aria-current="page"] {
+  --binder-spine-bg: #5c1b2e;
+}
+
+/* Tomo 02: Archivador Ocre / Mostaza Taller */
+.binderTomo02 {
+  --binder-spine-bg: #422d0d;
+  --binder-border: #291c07;
+  --binder-border-active: #eab308;
+}
+.binderTomo02.binderActive,
+.binderTomo02[aria-current="page"] {
+  --binder-spine-bg: #523810;
+}
+
+/* Tomo 03: Archivador Verde Bosque / Conaset */
+.binderTomo03 {
+  --binder-spine-bg: #0f3529;
+  --binder-border: #09211a;
+  --binder-border-active: #34d399;
+}
+.binderTomo03.binderActive,
+.binderTomo03[aria-current="page"] {
+  --binder-spine-bg: #144434;
+}
+
+.btnAddNoteHeader {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 44px;
-  padding: 0.5rem 1.25rem;
-  background: var(--color-primary);
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-primary);
+  background-color: var(--color-primary);
   color: var(--color-on-primary);
-  border: none;
-  border-radius: var(--radius-sm, 0.25rem);
-  font-size: 0.875rem;
+  font-family: var(--font-family-2);
+  font-size: var(--text-caption);
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.15s ease, opacity 0.15s ease;
+  transition: all 0.15s ease;
+  min-height: var(--tap-min);
 }
 
-.btnAdd:hover {
-  background: var(--color-primary-active);
+.btnAddNoteHeader:hover {
+  background-color: var(--color-primary-active);
+}
+
+.folioContainer {
+  overflow: visible;
+}
+
+@media (max-width: 640px) {
+  .pliegoTitleInput {
+    font-size: 1.35rem;
+  }
+
+  .bujoCanvas {
+    padding: 24px 16px 20px;
+  }
+}
+
+.folioGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: start;
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 1024px) {
+  .folioGrid {
+    grid-template-columns: 1.8fr 1fr;
+  }
+}
+
+/* 2.1 Columna Izquierda: Manuscrito Terapéutico */
+.folioLeftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.folioPageMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid #e5dcd0;
+  padding-bottom: 14px;
+}
+
+.metaDateGroup {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.metaLabel {
+  font-family: var(--font-family-3);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  letter-spacing: 0.1em;
+}
+
+.metaDateUnderlined {
+  font-family: var(--font-primary);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-decoration-color: #d4c1d2;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.metaDetailsGroup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-family-3);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.iconTeal {
+  color: var(--color-text-teal);
+}
+
+.iconPrimary {
+  color: var(--color-primary);
+}
+
+.activePliegoBadge {
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background-color: rgba(142, 30, 162, 0.12);
+  color: var(--color-primary);
+  border: 1px solid rgba(142, 30, 162, 0.3);
+  display: inline-flex;
+  align-items: center;
+}
+
+.bujoCanvas {
+  position: relative;
+  background-color: #FAF7F0;
+  border: 1px solid #e4dacb;
+  border-radius: 14px;
+  padding: 32px 36px 28px;
+  min-height: 460px;
+  /* Papel verjurado: finas líneas horizontales a 28px combinadas con dot grid tenue */
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(142, 30, 162, 0.032) 27px, rgba(142, 30, 162, 0.032) 28px),
+    radial-gradient(#d6cdc3 1.15px, transparent 1.15px);
+  background-size: 100% 28px, 20px 20px;
+  box-shadow: 
+    inset 1px 1px 0 rgba(255, 255, 255, 0.8),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.02),
+    0 2px 8px rgba(26, 25, 23, 0.04);
+  overflow: visible;
+}
+
+.bookmarkRibbon {
+  position: absolute;
+  top: -10px;
+  left: 32px;
+  width: 16px;
+  height: 44px;
+  background-color: var(--color-primary);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.bujoTextContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pliegoEditorContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pliegoTitleInput {
+  width: 100%;
+  font-family: var(--font-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md, 8px);
+  padding: 10px 14px;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.pliegoTitleInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(142, 30, 162, 0.15);
+  background-color: #ffffff;
+}
+
+.pliegoContentTextarea {
+  width: 100%;
+  min-height: 280px;
+  font-family: var(--font-family-2);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--color-body-strong);
+  background-color: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md, 8px);
+  padding: 14px 16px;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.pliegoContentTextarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(142, 30, 162, 0.15);
+  background-color: #ffffff;
+}
+
+.pliegoTitleInput:focus-visible,
+.pliegoContentTextarea:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.journalSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionHeading {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectionSymbol {
+  font-family: var(--font-family-3);
+  font-size: 0.85rem;
+  color: var(--color-primary);
+}
+
+.journalParagraph {
+  margin: 0;
+  font-family: var(--font-family-2);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--color-body-strong);
+  text-align: justify;
+}
+
+.conasetEmbeddedBox {
+  padding: 16px 20px;
+  border-radius: 10px;
+  background-color: rgba(239, 233, 222, 0.7);
+  border: 1px solid var(--color-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.conasetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.conasetTitle {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.conasetIcon {
+  font-size: 1.1rem;
+}
+
+.conasetBadge {
+  font-family: var(--font-family-3);
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: rgba(93, 184, 114, 0.18);
+  color: #047857;
+  font-weight: 600;
+}
+
+.conasetText {
+  margin: 0;
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
+  color: var(--color-body);
+  line-height: 1.5;
+}
+
+.writingStatusBar {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #ece3d7;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-family-3);
+  font-size: 0.7rem;
+  color: var(--color-muted);
+}
+
+.blinkingCursor {
+  width: 2px;
+  height: 16px;
+  background-color: var(--color-primary);
+}
+
+.wordCount {
+  margin-left: auto;
+  color: var(--color-muted);
+}
+
+/* ========================================================================= */
+/* 2.2 Columna Derecha: Accesorios de Escritorio                            */
+/* ========================================================================= */
+
+.folioRightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Post-it con Clip de Latón */
+.stickyPostItWrapper {
+  position: relative;
+  padding-top: 18px;
+}
+
+.brassPaperclip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  filter: drop-shadow(0 2px 3px rgba(30, 25, 20, 0.25));
+  pointer-events: none;
+}
+
+.stickyPostItCard {
+  background-color: #FFF8D6;
+  border: 1px solid #f0e3a6;
+  border-radius: 4px;
+  padding: 44px 20px 16px;
+  box-shadow: 1px 2px 4px rgba(20, 20, 19, 0.06), 3px 8px 16px rgba(20, 20, 19, 0.09);
+  transform: rotate(-2deg);
+  transition: transform 0.2s ease;
+  text-align: center;
+}
+
+.stickyPostItCard:hover {
+  transform: rotate(0deg);
+}
+
+.stickyOverline {
+  display: block;
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-amber);
+  margin-bottom: 6px;
+}
+
+.stickyScript {
+  margin: 0;
+  font-family: var(--font-script);
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #3b3210;
+  line-height: 1.25;
+}
+
+.stickyDivider {
+  width: 44px;
+  height: 1px;
+  background-color: #e3d58d;
+  margin: 8px auto;
+}
+
+.stickySub {
+  margin: 0;
+  font-family: var(--font-script);
+  font-size: var(--text-script-min);
+  color: #57491b;
+  line-height: 1.35;
+}
+
+/* Ritmo & Estado de Ánimo */
+.moodTrackerCard {
+  background-color: rgba(239, 233, 222, 0.7);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 1px 3px rgba(20, 20, 19, 0.03);
+}
+
+.moodHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-hairline);
+  padding-bottom: 8px;
+}
+
+.moodTitle {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.moodDate {
+  font-family: var(--font-family-3);
+  font-size: 0.7rem;
+  color: var(--color-muted);
+}
+
+.energyScale {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scaleLabel {
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+}
+
+.scaleButtonsRow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+
+.scaleBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 2px;
+  border-radius: 6px;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-hairline);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.85rem;
+}
+
+.scaleBtn:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.scaleBtnActive {
+  background-color: rgba(142, 30, 162, 0.12);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.scaleBtnText {
+  font-family: var(--font-family-2);
+  font-size: var(--text-micro);
+  margin-top: 2px;
+}
+
+/* Sello Notarial de Bóveda */
+.vaultStampCard {
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px dashed var(--color-hairline);
+  background-color: rgba(250, 249, 245, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.vaultTitle {
+  display: block;
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.vaultDesc {
+  margin: 2px 0 0;
+  font-family: var(--font-family-2);
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  line-height: 1.35;
+}
+
+/* Barra Analógica Inferior */
+.folioBottomToolbar {
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid #e8ded2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.toolbarActionsGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btnEditPliego {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-background);
+  color: var(--color-body);
+  font-family: var(--font-family-2);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnEditPliego:hover {
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btnSavePliego {
+  padding: 6px 16px;
+  border-radius: 6px;
+  border: none;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-family-2);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnSavePliego:hover {
+  background-color: var(--color-primary-active);
+}
+
+/* ========================================================================= */
+/* 3. Archivo de Notas & Filtros                                             */
+/* ========================================================================= */
+
+.archiveSection {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .filterBar {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background: var(--color-surface, #fcf9f6);
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  border-radius: var(--radius-md, 0.375rem);
-  padding: 0.75rem 1rem;
-}
-
-@media (min-width: 768px) {
-  .filterBar {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 .tabs {
   display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .tabBtn {
-  min-height: 44px;
-  padding: 0.5rem 1rem;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--color-ink-muted, #666);
-  border-radius: var(--radius-sm, 0.25rem);
-  font-size: 0.875rem;
-  font-weight: 500;
+  min-height: var(--tap-min);
+  padding: 0 14px;
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-soft);
+  color: var(--color-body);
+  font-family: var(--font-family-2);
+  font-size: var(--text-caption);
   cursor: pointer;
-  white-space: nowrap;
+  transition: all 0.15s ease;
 }
 
 .tabBtn:hover {
-  color: var(--color-ink, #141413);
-  background: var(--color-hairline, #e6dfd8);
+  border-color: var(--color-primary-soft);
 }
 
 .tabBtnActive {
-  background: var(--color-canvas, #faf9f5);
-  border-color: var(--color-hairline, #e6dfd8);
-  color: var(--color-accent, #c96442);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
   font-weight: 600;
 }
 
 .searchInput {
-  min-height: 44px;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  border-radius: var(--radius-sm, 0.25rem);
-  background: var(--color-canvas, #faf9f5);
-  color: var(--color-ink, #141413);
-  font-size: 0.875rem;
-  width: 100%;
-  max-width: 320px;
+  width: 260px;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-hairline);
+  border-radius: 8px;
+  background-color: var(--color-background);
+  font-family: var(--font-family-2);
+  font-size: var(--text-caption);
+  color: var(--color-ink);
 }
 
 .searchInput:focus {
-  border-color: var(--color-accent, #c96442);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
 }
 
-.searchInput:focus-visible {
+.searchInput:focus-visible,
+.btnAdd:focus-visible,
+.card:focus-visible {
   outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-  border-color: var(--color-primary);
+  outline-offset: 2px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  background-color: var(--color-surface-soft);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--color-hairline);
+  gap: 8px;
+}
+
+.emptyTitle {
+  margin: 8px 0 0;
+  font-family: var(--font-primary);
+  font-size: var(--text-title-sm);
+  color: var(--color-ink);
+}
+
+.emptyText {
+  margin: 0;
+  font-size: var(--text-body-sm);
+  color: var(--color-muted);
+  max-width: 480px;
+}
+
+.btnAdd {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.25rem;
-}
-
-@media (min-width: 640px) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  }
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
 }
 
 .card {
-  background: var(--color-surface, #fcf9f6);
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  border-radius: var(--radius-md, 0.375rem);
-  padding: 1.25rem;
+  padding: 18px;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-hairline);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  gap: 10px;
+  transition: all 0.15s ease;
 }
 
 .card:hover {
+  border-color: var(--color-primary-soft);
   box-shadow: var(--shadow-md);
-}
-
-.cardReflection {
-  border-left: 4px solid var(--color-accent, #c96442);
 }
 
 .cardHeader {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 6px;
 }
 
 .cardTopRow {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
-  gap: 0.5rem;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .cardTitle {
-  font-family: var(--font-headline, serif);
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-ink, #141413);
   margin: 0;
-  line-height: 1.3;
+  font-family: var(--font-primary);
+  font-size: var(--text-title-sm);
+  color: var(--color-ink);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  font-size: 0.75rem;
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--radius-sm, 0.25rem);
-  font-weight: 600;
-  white-space: nowrap;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
 }
 
 .reflectionBadge {
-  background: rgba(201, 100, 66, 0.12);
-  color: var(--color-accent, #c96442);
+  background-color: rgba(142, 30, 162, 0.12);
+  color: var(--color-primary);
+  border: 1px solid rgba(142, 30, 162, 0.2);
 }
 
 .folderBadge {
-  background: rgba(59, 130, 246, 0.12);
-  color: #2563eb;
+  background-color: var(--color-surface-soft);
+  color: var(--color-muted);
+  border: 1px solid var(--color-hairline);
+  align-self: flex-start;
 }
 
 .cardContent {
-  font-size: 0.875rem;
-  color: var(--color-ink, #141413);
-  line-height: 1.6;
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
+  color: var(--color-body);
+  line-height: 1.5;
   white-space: pre-wrap;
-  word-break: break-word;
-  max-height: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 6;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
-}
-
-.cardFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid var(--color-hairline, #e6dfd8);
-  padding-top: 0.75rem;
-  margin-top: 0.25rem;
-}
-
-.dateInfo {
-  font-size: 0.75rem;
-  color: var(--color-ink-muted, #666);
-}
-
-.cardActions {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.iconBtn {
-  min-height: 44px;
-  min-width: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: transparent;
-  color: var(--color-ink-muted, #666);
-  cursor: pointer;
-  border-radius: var(--radius-sm, 0.25rem);
-}
-
-.iconBtn:hover {
-  background: var(--color-hairline, #e6dfd8);
-  color: var(--color-ink, #141413);
+  overflow: hidden;
 }
 
 .tagList {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.25rem;
+  gap: 6px;
 }
 
 .tag {
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  color: var(--color-muted);
+  background-color: var(--color-surface-card);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.cardFooter {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dateInfo {
+  font-family: var(--font-family-3);
   font-size: 0.7rem;
-  background: var(--color-canvas, #faf9f5);
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  padding: 0.15rem 0.4rem;
-  border-radius: var(--radius-sm, 0.25rem);
-  color: var(--color-ink-muted, #666);
+  color: var(--color-muted);
+}
+
+.cardActions {
+  display: flex;
+  gap: 4px;
+}
+
+.iconBtn {
+  padding: 6px;
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.iconBtn:hover {
+  color: var(--color-primary);
+  background-color: var(--color-surface-soft);
+}
+
+/* Degradados por tinte (mock aprobado el 2026-10-25): la energía es el cierre del día (salvia)
+   y el vacío de notas cede el ámbar de Notas. */
+.moodTrackerCard {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 60%, var(--bg-card)), var(--bg-card) 72%);
 }
 
 .emptyState {
-  background: var(--color-surface, #fcf9f6);
-  border: 1px dashed var(--color-hairline, #e6dfd8);
-  border-radius: var(--radius-md, 0.375rem);
-  padding: 3rem 1.5rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.emptyTitle {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-ink, #141413);
-  margin: 0;
-}
-
-.emptyText {
-  font-size: 0.875rem;
-  color: var(--color-ink-muted, #666);
-  max-width: 420px;
-  margin: 0;
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 52%, var(--bg-card)), var(--bg-card) 66%);
 }

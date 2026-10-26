@@ -1,14 +1,19 @@
 {
   "name": "espiralia",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "lint:ox": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:coverage": "vitest run --coverage",
+    "sonar:start": "powershell -ExecutionPolicy Bypass -File ./start-sonar.ps1",
+    "sonar:scan": "powershell -ExecutionPolicy Bypass -File ./run-sonar-scanner.ps1",
+    "sonar:stop": "powershell -ExecutionPolicy Bypass -File ./stop-sonar.ps1"
   },
   "dependencies": {
     "@fullcalendar/react": "7.1.0",
@@ -29,6 +34,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/coverage-v8": "5.0.3",
     "eslint": "^10.10.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",

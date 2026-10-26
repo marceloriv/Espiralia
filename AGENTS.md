@@ -30,12 +30,12 @@ Espiralia es una SPA (Single Page Application) de productividad personal en clie
 
 ## 2. Stack técnico
 
-- Lenguaje: TypeScript 5.8 / Node 24.x
-- Framework: React 19.2 (Vite 6.4)
+- Lenguaje: TypeScript 6.0 / Node 24.x
+- Framework: React 19 (Vite 8.3)
 - Gestor de paquetes: pnpm 10.x
 - Enrutamiento: React Router 7 (`react-router-dom` con `HashRouter` en `src/routes/`)
-- Iconografía: Lucide React (1.53+)
-- Pruebas: Vitest 3.x + Testing Library React 16.x
+- Iconografía: Lucide React (1.54+)
+- Pruebas: Vitest 5.x + Testing Library React 16.x
 
 ## 3. Estructura del proyecto
 
@@ -420,7 +420,7 @@ Modelo de calidad del producto, edición 2023: 9 características, cada una con 
 | Característica | Subcaracterísticas (2023) | Qué exige en este proyecto | Cómo se verifica |
 | --- | --- | --- | --- |
 | Aptitud funcional | completitud, corrección, adecuación funcional | el sistema hace lo que el requisito dice, con el resultado correcto, sin funciones de más | trazabilidad requisito → test (§7); todo requisito con al menos un caso en `src/tests/` |
-| Eficiencia de desempeño | comportamiento temporal, uso de recursos, capacidad | tiempo de renderizado y respuesta en cliente inmediatos | tiempo de renderizado < 100ms y bundle total comprimido < 150KB en `dist/` |
+| Eficiencia de desempeño | comportamiento temporal, uso de recursos, capacidad | tiempo de renderizado y respuesta en cliente inmediatos | tiempo de renderizado < 100ms y carga inicial comprimida (gzip de los JS y CSS enlazados desde `dist/index.html`) ≤ 182KB; medida 2026-10-25: 180.9KB (subió 2.4KB desde 178.5KB, medidos el 2026-10-23, por los degradados por tinte, la hoja de origami y el aviso de error de render; el tope sube 2KB y deja 1.1KB de margen). Los chunks por ruta no cuentan: `AgendaView` pesa 89KB por FullCalendar y solo carga en Agenda; `vendor-toast` pesa 45KB y es candidato a diferirse |
 | Compatibilidad | coexistencia, interoperabilidad | contratos estables de tipos TypeScript y esquemas de datos locales | interfaces tipadas en `src/types/` + suites de prueba de esquema |
 | Capacidad de interacción *(era Usabilidad)* | reconocibilidad, aprendibilidad, operabilidad, protección contra errores de usuario, involucramiento, inclusividad, asistencia al usuario, autodescripción | interfaz operable, accesible y con errores comprensibles; inclusividad y autodescripción son subcaracterísticas nuevas de 2023, no opcionales de estilo | WCAG 2.2 AA, tap targets $\ge 44\text{ px}$, contraste $\ge 4.5:1$, mensajes contextuales de empty state; tokens en `DESIGN.md` |
 | Fiabilidad | ausencia de fallos *(antes madurez)*, disponibilidad, tolerancia a fallos, recuperabilidad | funcionamiento offline en cliente, degradación limpia ante fallo de `localStorage` | cobertura de fallbacks y pruebas de camino de error (§7) |
@@ -520,3 +520,17 @@ Obligaciones que se traducen en trabajo técnico dentro del repositorio:
 Estos puntos tienen contraparte técnica directa en §17.2: el RAT se apoya en A.8.11/A.8.10 (enmascaramiento y eliminación), la notificación de brechas en A.8.15/A.8.16 (registro y monitoreo) y los derechos ARCO en A.8.3 (restricción de acceso).
 
 Esta tabla es orientación técnica de implementación, no asesoría legal: el alcance real de cada ley sobre este proyecto lo define el área legal, no el equipo de desarrollo ni el agente.
+
+<!-- antislop:start -->
+## antislop
+For UI, copy, people, mobile layout, or code comments work, read `antislop.md` (core) and then the skill for the task:
+- UI / visual: `skills/antislop-ui/SKILL.md`
+- Copy & text: `skills/antislop-copywriting/SKILL.md`
+- People: `skills/antislop-human/SKILL.md`
+- Mobile / responsive: `skills/antislop-layoutmobile/SKILL.md`
+- Code comments: `skills/antislop-code/SKILL.md`
+Before starting, follow the core's "Two Usage Modes" section in strict order: explicit session instruction first, then global preference, then ask. A session instruction always wins. For a resolved mode, say `antislop active: <mode> (session override).` or `antislop active: <mode> (global preference).` once before presenting findings or making edits, using the actual mode and source. Acknowledging the user's request without naming the source does not replace this notice.
+Only an explicit choice of antislop during or after selects a session mode. A request to review, audit, or avoid file edits does not select a mode; read the global preference in that case. Another skill's mode does not select antislop's mode.
+If the mode is unresolved, ask during/after and end the response; wait for the answer before any UI review, planning, or concept. For read-only tasks, put the active-mode notice only at the start of the final answer, never in progress messages. For editing tasks, announce before the first edit and omit it from the final answer.
+To update antislop later: download `antislop.md` again, or run `npx antislop-ai --update` if it was installed as skill folders.
+<!-- antislop:end -->

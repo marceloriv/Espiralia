@@ -122,3 +122,24 @@ export interface LinkItem {
   description?: string;
   createdAt: string;
 }
+
+export type NoteItem = Note;
+export type FolderItem = Folder;
+
+export interface HabitTrackerItem {
+  id: string;
+  profileId: string;
+  name: string;
+  daysCompleted: boolean[];
+  category?: string;
+}
+
+export interface MoodEntry {
+  id: string;
+  profileId: string;
+  date: string;
+  moonPhase?: 'new' | 'crescent' | 'full';
+  energyLevel?: 'low' | 'medium' | 'high';
+  note?: string;
+}
+

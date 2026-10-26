@@ -59,7 +59,7 @@ const LinkModalContent: React.FC<LinkModalProps> = ({
   };
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div className={styles.modalOverlay} onClick={onClose} role="presentation">
       <div
         className={styles.modalBox}
         onClick={(e) => e.stopPropagation()}
@@ -82,7 +82,7 @@ const LinkModalContent: React.FC<LinkModalProps> = ({
               className={styles.input}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Ej: Simulador Conaset, Portal Postulaciones..."
+              placeholder="Ej: Portal de la universidad, Recursos de estudio..."
               required
               autoFocus
             />

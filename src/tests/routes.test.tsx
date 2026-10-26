@@ -58,7 +58,7 @@ describe('AppRoutes con rutas protegidas', () => {
       </MemoryRouter>
     );
 
-    expect(await screen.findByText(/mis tareas/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: /to-do & áreas integradas/i })).toBeInTheDocument();
   });
 
   it('navega a /agenda y resuelve componente diferido con Suspense', async () => {
@@ -102,5 +102,33 @@ describe('AppRoutes con rutas protegidas', () => {
     );
 
     expect(await screen.findByRole('heading', { level: 2, name: /carpetas & vínculos/i }, { timeout: 10000 })).toBeInTheDocument();
+  });
+
+  it('navega a /planner y resuelve vista lazy de planner', async () => {
+    render(
+      <MemoryRouter initialEntries={['/planner']}>
+        <AppRoutes
+          activeProfile={mockProfile}
+          onSelectProfile={vi.fn()}
+          onLockProfile={vi.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByRole('heading', { level: 2, name: /planner semanal/i }, { timeout: 10000 })).toBeInTheDocument();
+  });
+
+  it('navega a /integrations y resuelve vista lazy de integraciones', async () => {
+    render(
+      <MemoryRouter initialEntries={['/integrations']}>
+        <AppRoutes
+          activeProfile={mockProfile}
+          onSelectProfile={vi.fn()}
+          onLockProfile={vi.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByRole('heading', { level: 1, name: /integraciones & enlace externo/i }, { timeout: 10000 })).toBeInTheDocument();
   });
 });

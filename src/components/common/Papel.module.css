@@ -1,0 +1,116 @@
+/* Papel rasgado (DESIGN.md §0.3 y §0.4). La sombra va en el contenedor porque clip-path recorta box-shadow. */
+.sombra {
+  position: relative;
+  min-width: 0;
+  /* El primer filtro dibuja un filo claro en el borde rasgado; los otros dos, la sombra. Solo las tarjetas usan filter. */
+  filter: drop-shadow(0 -1px 0 color-mix(in srgb, var(--color-surface-bright) 75%, transparent))
+          drop-shadow(0 1px 1px color-mix(in srgb, var(--color-ink) 18%, transparent))
+          drop-shadow(0 5px 7px color-mix(in srgb, var(--color-ink) 9%, transparent));
+  transform: rotate(-0.3deg);
+}
+
+.sombra[data-forma='tarjeta'] {
+  display: flex;
+  flex-direction: column;
+}
+
+.sombra[data-forma='tarjeta'] > .papel {
+  flex: 1;
+}
+
+.sombra[data-forma='pieza'] {
+  display: inline-block;
+  transform: rotate(1.2deg);
+  /* Sombra rectangular: la pieza es pequeña y su borde irregular casi no se nota, y así no suma otro filter. */
+  filter: none;
+  box-shadow: 0 2px 4px color-mix(in srgb, var(--color-ink) 16%, transparent);
+}
+
+.papel {
+  --tono: var(--papel-arena);
+  /* Fibra de papel: ruido alargado en horizontal, tinta oscura translúcida. Es un fondo, no una capa mezclada. */
+  --fibra: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9 .05' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .15 1.2 0 0 0 -.4'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23f)' opacity='.13'/%3E%3C/svg%3E");
+  display: block;
+  box-sizing: border-box;
+  background-color: var(--tono);
+  background-image: var(--fibra);
+  background-size: 240px 240px;
+  color: var(--color-ink);
+  /* Los tintes saturados piden texto secundario algo más oscuro; los hijos heredan estos tokens (valores en index.css). */
+  --color-muted: var(--papel-texto-suave);
+  --color-text-success: var(--papel-texto-exito);
+  --color-text-teal: var(--papel-texto-turquesa);
+  --color-text-amber: var(--papel-texto-ambar);
+  --color-text-primary-active: var(--papel-texto-magenta);
+  --color-text-error: var(--papel-texto-error);
+}
+
+.papel[data-tinte='pizarra'] { --tono: var(--papel-pizarra); }
+.papel[data-tinte='salvia'] { --tono: var(--papel-salvia); }
+.papel[data-tinte='terracota'] { --tono: var(--papel-terracota); }
+.papel[data-tinte='ambar'] { --tono: var(--papel-ambar); }
+.papel[data-tinte='rosa'] { --tono: var(--papel-rosa); }
+.papel[data-tinte='turquesa'] { --tono: var(--papel-turquesa); }
+
+/* Tarjeta: bordes superior e inferior rasgados y cuadrícula bujo (misma forma que usaba bentoCardTorn). */
+.papel[data-forma='tarjeta'] {
+  padding: 28px 24px 30px;
+  /* La esquina inferior derecha se oscurece hacia el tinte fuerte: separa el papel del lienzo sin velar el texto. */
+  background-image:
+    radial-gradient(var(--color-grid-bujo) 0.65px, transparent 0.65px),
+    linear-gradient(155deg, transparent 54%, color-mix(in srgb, var(--tono-fuerte) 58%, transparent)),
+    var(--fibra);
+  background-size: 16px 16px, auto, 240px 240px;
+  clip-path: polygon(
+    0% 10px, 3% 5px, 6% 11px, 9% 6px, 13% 12px, 17% 7px, 21% 11px, 25% 5px,
+    29% 12px, 34% 6px, 38% 10px, 42% 5px, 47% 11px, 51% 6px, 56% 12px, 60% 7px,
+    65% 11px, 69% 5px, 74% 12px, 78% 6px, 83% 11px, 87% 5px, 91% 12px, 95% 7px,
+    98% 10px, 100% 6px,
+    100% calc(100% - 9px), 98% calc(100% - 3px), 95% calc(100% - 10px), 91% calc(100% - 4px),
+    87% calc(100% - 11px), 82% calc(100% - 5px), 78% calc(100% - 12px), 73% calc(100% - 4px),
+    69% calc(100% - 10px), 64% calc(100% - 3px), 59% calc(100% - 11px), 55% calc(100% - 5px),
+    50% calc(100% - 12px), 46% calc(100% - 4px), 41% calc(100% - 11px), 36% calc(100% - 3px),
+    31% calc(100% - 10px), 27% calc(100% - 4px), 22% calc(100% - 11px), 18% calc(100% - 5px),
+    13% calc(100% - 12px), 9% calc(100% - 4px), 5% calc(100% - 10px), 2% calc(100% - 3px),
+    0% calc(100% - 8px)
+  );
+}
+
+/* Pieza: etiqueta, pestaña u hoja pequeña, rasgada en los lados y con el tinte fuerte. */
+.papel[data-forma='pieza'] {
+  padding: 4px 14px;
+  background-color: var(--tono-fuerte, var(--tono));
+  clip-path: polygon(
+    3px 0, calc(100% - 2px) 0, 100% 22%, calc(100% - 3px) 48%, 100% 74%, calc(100% - 2px) 100%,
+    3px 100%, 0 78%, 3px 52%, 0 26%
+  );
+}
+
+.papel[data-tinte='arena'] { --tono-fuerte: var(--papel-arena-fuerte); }
+.papel[data-tinte='pizarra'] { --tono-fuerte: var(--papel-pizarra-fuerte); }
+.papel[data-tinte='salvia'] { --tono-fuerte: var(--papel-salvia-fuerte); }
+.papel[data-tinte='terracota'] { --tono-fuerte: var(--papel-terracota-fuerte); }
+.papel[data-tinte='ambar'] { --tono-fuerte: var(--papel-ambar-fuerte); }
+.papel[data-tinte='rosa'] { --tono-fuerte: var(--papel-rosa-fuerte); }
+.papel[data-tinte='turquesa'] { --tono-fuerte: var(--papel-turquesa-fuerte); }
+
+/* Sin recorte (modo de alto contraste), el papel conserva un borde visible. */
+@media (forced-colors: active) {
+  .sombra {
+    filter: none;
+    transform: none;
+  }
+
+  .papel[data-forma] {
+    clip-path: none;
+    border: 1px solid CanvasText;
+    background-image: none;
+  }
+}
+
+/* Móvil: el relleno de escritorio sobra en una pantalla de 375px. */
+@media (max-width: 600px) {
+  .papel[data-forma='tarjeta'] {
+    padding: 22px 16px 24px;
+  }
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AppLayout } from '../components/AppLayout';
 import type { ViewType, Profile } from '../types';
+import { turnPage } from '../utils/pageTurn';
 
 interface ProtectedRouteProps {
   activeProfile: Profile | null;
@@ -23,12 +24,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Deduce current view from pathname
   const path = location.pathname.replace('/', '') || 'dashboard';
-  const currentView: ViewType = ['dashboard', 'agenda', 'planner', 'todo', 'notes', 'folders'].includes(path)
+  const currentView: ViewType = ['dashboard', 'agenda', 'planner', 'todo', 'notes', 'folders', 'integrations'].includes(path)
     ? (path as ViewType)
     : 'dashboard';
 
   const handleViewChange = (view: ViewType) => {
-    navigate(`/${view}`);
+    turnPage(() => navigate(`/${view}`));
   };
 
   return (

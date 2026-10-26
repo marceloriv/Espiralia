@@ -21,6 +21,74 @@ describe('AgendaView', () => {
     vi.restoreAllMocks();
   });
 
+  it('renderiza el almanaque de mesa, la agenda diaria y el ritmo de energía en español', () => {
+    render(<AgendaView profileId={profileId} />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /octubre 2026/i })).toBeInTheDocument();
+    expect(screen.getByText(/almanaque de mesa/i)).toBeInTheDocument();
+    expect(screen.queryByText(/formato imprenta/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/agenda diaria/i)).toBeInTheDocument();
+    expect(screen.getByText(/ritmo de energía y ánimo/i)).toBeInTheDocument();
+    expect(screen.queryByText(/energy & mood/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/the weekly flow/i)).not.toBeInTheDocument();
+  });
+
+  // DESIGN.md §0.9, paso 4: el almanaque es el pliego; el resumen del día, un papel pizarra; formulario y ritmo, cartulina.
+  describe('materiales de papel', () => {
+    it('el almanaque va en un pliego con anillas, sin la regla de latón ni el acento de encuadernación', () => {
+      const { container } = render(<AgendaView profileId={profileId} />);
+
+      expect(container.querySelector('[class*="calendarCard"] [class*="ringsLeft"]')).toBeInTheDocument();
+      for (const clase of ['brassRuler', 'rulerMarks', 'bindingAccent', 'bindingRivet']) {
+        expect(container.querySelector(`[class*="${clase}"]`), clase).not.toBeInTheDocument();
+      }
+    });
+
+    it('el resumen del día es un papel pizarra con su titular', () => {
+      render(<AgendaView profileId={profileId} />);
+
+      const resumen = screen.getByRole('region', { name: /eventos del/i });
+      expect(resumen.querySelector('[data-tinte="pizarra"][data-forma="tarjeta"]')).toBeInTheDocument();
+    });
+
+    it('la semana ISO y el contador de prioritarias son piezas de papel pizarra', () => {
+      render(<AgendaView profileId={profileId} />);
+
+      for (const pieza of [screen.getByText(/^semana \d+$/i), screen.getByText(/prioritarias?$/i)]) {
+        expect(pieza.closest('[data-forma="pieza"][data-tinte="pizarra"]')).not.toBeNull();
+      }
+    });
+
+    it('queda un solo clip y lo lleva la nota del día; sin cinta washi ni muescas de boleto', () => {
+      seed({ id: 'e1', title: 'Clase', startTime: '09:00' });
+      const { container } = render(<AgendaView profileId={profileId} />);
+
+      const clips = container.querySelectorAll('[class*="goldenMetalClip"]');
+      expect(clips).toHaveLength(1);
+      expect(clips[0].closest('[class*="motivationalPostIt"]')).not.toBeNull();
+      for (const clase of ['postItWashi', 'ticketNotch', 'ticketPerforation']) {
+        expect(container.querySelector(`[class*="${clase}"]`), clase).not.toBeInTheDocument();
+      }
+    });
+
+    it('el formulario y el ritmo de energía son cartulina lisa, sin tinte de papel', () => {
+      render(<AgendaView profileId={profileId} />);
+
+      const formulario = screen.getByRole('form', { name: /nuevo evento/i });
+      const ritmo = screen.getByText(/ritmo de energía y ánimo/i).closest('[class*="rhythmCard"]');
+      expect(formulario.closest('[data-tinte]')).toBeNull();
+      expect(ritmo).not.toBeNull();
+      expect(ritmo?.closest('[data-tinte]')).toBeNull();
+    });
+
+    it('no inventa un recordatorio que la persona no escribió ni un número de cuaderno', () => {
+      render(<AgendaView profileId={profileId} />);
+
+      expect(screen.queryByText(/comprar papel kraft/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/cuaderno #04|tomo primavera/i)).not.toBeInTheDocument();
+    });
+  });
+
   // Técnica: partición de equivalencia sobre datos de entrada (perfil propio, ajeno, esquema viejo).
   it('muestra en el panel del día los eventos del perfil activo', () => {
     seed({ id: 'e1', title: 'Clase de conducción', startTime: '09:00', endTime: '10:00', category: 'estudio' });
@@ -249,3 +317,4 @@ describe('AgendaView', () => {
     expect(screen.getByRole('heading', { name: /nuevo evento para 2026-12-25/i })).toBeInTheDocument();
   });
 });
+

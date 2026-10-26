@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { Folder } from '../../types';
 import styles from './FolderModal.module.css';
 
-const DEFAULT_COLORS = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#6b7280'];
+const DEFAULT_COLORS = ['#7b8c9e', '#5a826d', '#8e1ea2', '#e8a55a', '#9c4a3b', '#8e8b82'];
 
 interface FolderModalProps {
   isOpen: boolean;
@@ -45,7 +45,7 @@ const FolderModalContent: React.FC<FolderModalProps> = ({
   };
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div className={styles.modalOverlay} onClick={onClose} role="presentation">
       <div
         className={styles.modalBox}
         onClick={(e) => e.stopPropagation()}
@@ -68,7 +68,7 @@ const FolderModalContent: React.FC<FolderModalProps> = ({
               className={styles.input}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Ej: Conducción Clase B, Universidad..."
+              placeholder="Ej: Proyectos, Universidad..."
               required
               autoFocus
             />

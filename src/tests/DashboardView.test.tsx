@@ -109,7 +109,7 @@ describe('DashboardView', () => {
     await user.click(screen.getByRole('checkbox', { name: /completar pagar arriendo/i }));
 
     expect(StorageService.getTodos(profile.id).find(t => t.id === 'c1')?.completed).toBe(true);
-    expect(screen.getByText('Nada crítico pendiente')).toBeInTheDocument();
+    expect(screen.getByText(/todo al día • ninguna tarea crítica pendiente/i)).toBeInTheDocument();
     expect(within(screen.getByRole('list', { name: /resumen/i })).getByText('0 críticos')).toBeInTheDocument();
   });
 
@@ -127,13 +127,13 @@ describe('DashboardView', () => {
     renderDashboard();
 
     expect(within(screen.getByRole('list', { name: /planner/i })).getByText('Bloque de foco')).toBeInTheDocument();
-    expect(screen.getByText('No hay eventos para hoy')).toBeInTheDocument();
-    expect(screen.getByText('Nada crítico pendiente')).toBeInTheDocument();
+    expect(screen.getByText(/día despejado • sin eventos agendados para hoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/todo al día • ninguna tarea crítica pendiente/i)).toBeInTheDocument();
   });
 
-  // Revisión final, Minor 1 re-graduado: el contador cuenta todos los bloques semanales, la lista muestra 4.
-  // Técnica: valor límite (6 > tope de 4).
-  it('cuenta todos los bloques semanales aunque liste solo 4', () => {
+  // El contador y la lista muestran todos los bloques semanales: el tope de 4 ocultaba los del domingo.
+  // Técnica: valor límite (6 > el antiguo tope de 4).
+  it('lista todos los bloques semanales y no solo los 4 primeros', () => {
     for (let i = 1; i <= 6; i++) {
       StorageService.savePlanner({
         id: `b${i}`,
@@ -149,7 +149,7 @@ describe('DashboardView', () => {
     renderDashboard();
 
     expect(screen.getByText('6 bloques')).toBeInTheDocument();
-    expect(within(screen.getByRole('list', { name: /planner/i })).getAllByRole('listitem')).toHaveLength(4);
+    expect(within(screen.getByRole('list', { name: /planner/i })).getAllByRole('listitem')).toHaveLength(6);
   });
 
   it('hidrata los datos de almacenamiento sincronicamente en el render inicial sin flash vacio', () => {
@@ -177,7 +177,7 @@ describe('DashboardView', () => {
     renderDashboard();
 
     const areasSection = screen.getByRole('region', { name: /áreas temáticas clave/i });
-    expect(within(areasSection).getByText('Estudios')).toBeInTheDocument();
+    expect(within(areasSection).getAllByText('Estudios')[0]).toBeInTheDocument();
     expect(within(areasSection).getByText('50%')).toBeInTheDocument();
     expect(within(areasSection).getByText('1 pendiente')).toBeInTheDocument();
   });
@@ -187,5 +187,32 @@ describe('DashboardView', () => {
     for (const label of [/documentos confidenciales/i, /cifrado cuántico/i]) {
       expect(screen.queryByText(label)).not.toBeInTheDocument();
     }
+  });
+
+  it('renderiza el dashboard completo con cabecera editorial, bento de serenidad, today focus y reflexion nocturna', () => {
+    renderDashboard();
+
+    expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName(/\d{1,2} de [a-záéíóú]+/i);
+    expect(screen.getByText(/foco principal de hoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/prioridades de hoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/horario de hoy/i)).toBeInTheDocument();
+    expect(screen.getByText(/progreso por áreas temáticas/i)).toBeInTheDocument();
+    expect(screen.getByText(/reflexión del día/i)).toBeInTheDocument();
+  });
+
+  it('Planner de la semana muestra los bloques del domingo, con su día y de lunes a domingo', () => {
+    const base = { profileId: 'p-dash-semana', period: 'semanal' as const, timeSlot: 'mañana' as const, priority: 'media' as const, completed: false };
+    StorageService.savePlanner({ ...base, id: 'b-dom', title: 'Revisar la semana', dayOfWeek: 0 });
+    for (const [n, dia] of [[1, 1], [2, 2], [3, 3], [4, 4], [5, 5]] as const) {
+      StorageService.savePlanner({ ...base, id: `b-${n}`, title: `Bloque ${n}`, dayOfWeek: dia });
+    }
+    render(<DashboardView profile={{ id: 'p-dash-semana', name: 'Ana', avatar: 'A', createdAt: '2026-10-01' }} onNavigate={() => {}} />);
+
+    const lista = screen.getByRole('list', { name: /planner de la semana/i });
+    const filas = Array.from(lista.querySelectorAll('li'));
+    expect(filas).toHaveLength(6);
+    expect(filas[0]).toHaveTextContent('Lun');
+    expect(filas[filas.length - 1]).toHaveTextContent('Dom');
+    expect(filas[filas.length - 1]).toHaveTextContent('Revisar la semana');
   });
 });

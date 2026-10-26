@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Lock, Shield, ShieldAlert, ShieldCheck, Unlock, X } from 'lucide-react';
+import { Lock, Shield, ShieldAlert, ShieldCheck, Trash2, Unlock, X } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../../types';
 import { PIN_PATTERN, isPinProtected } from '../../services/pinHash';
-import { updateProfilePin, removeProfilePin } from '../../services/profileOperations';
+import { updateProfilePin, removeProfilePin, deleteProfileData } from '../../services/profileOperations';
+import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './ProfileSettingsModal.module.css';
 
 export interface ProfileSettingsModalProps {
@@ -11,6 +12,7 @@ export interface ProfileSettingsModalProps {
   onClose: () => void;
   profile: Profile;
   onProfileUpdated: (updatedProfile: Profile) => void;
+  onProfileDeleted?: () => void;
 }
 
 export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
@@ -18,6 +20,7 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   onClose,
   profile,
   onProfileUpdated,
+  onProfileDeleted,
 }) => {
   const protectedPin = isPinProtected(profile);
 
@@ -25,8 +28,11 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   const [newPin, setNewPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
   const [removeCurrentPin, setRemoveCurrentPin] = useState('');
+  const [confirmName, setConfirmName] = useState('');
+  const [deletePin, setDeletePin] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const dialogRef = useDialogFocus(isOpen);
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -108,14 +114,40 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
       });
   };
 
+  const handleDeleteProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (confirmName.trim() !== profile.name) return;
+
+    setIsSubmitting(true);
+    deleteProfileData(profile, deletePin)
+      .then(res => {
+        setIsSubmitting(false);
+        if (!res.success) {
+          sileo.error({ title: res.error || 'Error al eliminar el perfil' });
+          return;
+        }
+
+        sileo.success({ title: 'Perfil eliminado' });
+        onProfileDeleted?.();
+        onClose();
+      })
+      .catch(() => {
+        setIsSubmitting(false);
+        sileo.error({ title: 'Error al eliminar el perfil' });
+      });
+  };
+
   return (
     <div className={styles.backdrop} role="presentation" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div
-        className={styles.modal}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="profile-settings-modal-title"
-      >
+      <div className={styles.modalWrap} role="presentation" onClick={e => e.target === e.currentTarget && onClose()}>
+        <div className={styles.washiTape} aria-hidden="true" />
+        <div
+          ref={dialogRef}
+          className={styles.modal}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="profile-settings-modal-title"
+        >
         <div className={styles.header}>
           <div className={styles.titleGroup}>
             <span className={styles.iconWrap} aria-hidden="true">
@@ -254,8 +286,63 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
               </form>
             </section>
           )}
+
+          <section className={styles.dangerSection} aria-labelledby="settings-delete-title">
+            <h3 id="settings-delete-title" className={styles.sectionTitle}>
+              Eliminar perfil
+            </h3>
+            <p className={styles.label}>
+              Se borran el perfil y todas sus tareas, eventos, bloques, notas y carpetas de este navegador. No se puede
+              deshacer. Exporta un respaldo desde Bóveda Offline antes de continuar.
+            </p>
+            <form onSubmit={handleDeleteProfile} className={styles.form}>
+              <div className={styles.field}>
+                <label htmlFor="settings-delete-name" className={styles.label}>
+                  Escribe el nombre del perfil para confirmar
+                </label>
+                <input
+                  id="settings-delete-name"
+                  name="settingsDeleteName"
+                  type="text"
+                  autoComplete="off"
+                  className={styles.input}
+                  placeholder={profile.name}
+                  value={confirmName}
+                  onChange={e => setConfirmName(e.target.value)}
+                />
+              </div>
+              {protectedPin && (
+                <div className={styles.field}>
+                  <label htmlFor="settings-delete-pin" className={styles.label}>
+                    PIN actual para eliminar
+                  </label>
+                  <input
+                    id="settings-delete-pin"
+                    name="settingsDeletePin"
+                    type="password"
+                    inputMode="numeric"
+                    maxLength={6}
+                    className={styles.input}
+                    placeholder="••••"
+                    value={deletePin}
+                    onChange={e => setDeletePin(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
+              <button
+                type="submit"
+                className={styles.dangerBtn}
+                disabled={isSubmitting || confirmName.trim() !== profile.name}
+              >
+                <Trash2 size={16} aria-hidden="true" />
+                <span>Eliminar perfil y sus datos</span>
+              </button>
+            </form>
+          </section>
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };

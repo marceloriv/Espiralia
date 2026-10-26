@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Target, Plus, X } from 'lucide-react';
 import { sileo } from 'sileo';
+import { useEscapeKey } from '../../utils/useEscapeKey';
 import type { Goal, GoalSubItem } from '../../types';
 import { StorageService } from '../../services/storage';
 import { GoalCard } from './GoalCard';
+import { Papel, TINTE_DE_MODULO } from '../common/Papel';
 import styles from './GoalsDrawer.module.css';
 
 interface GoalsDrawerProps {
@@ -14,6 +16,7 @@ interface GoalsDrawerProps {
 export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChange }) => {
   const [goals, setGoals] = useState<Goal[]>(() => StorageService.getGoals(profileId));
   const [isModalOpen, setIsModalOpen] = useState(false);
+  useEscapeKey(() => setIsModalOpen(false), isModalOpen);
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Metas Académicas');
   const [description, setDescription] = useState('');
@@ -63,7 +66,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
     if (!subItemInput.trim()) return;
 
     const newItem: GoalSubItem = {
-      id: `sub-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
+      id: `sub-${Date.now()}-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36).slice(0, 3)}`,
       title: subItemInput.trim(),
       completed: false,
     };
@@ -102,6 +105,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
 
   return (
     <aside className={styles.drawerContainer} aria-label="Panel de metas semanales">
+      <Papel as="div" tinte={TINTE_DE_MODULO.planner}>
       <div className={styles.drawerHeader}>
         <div className={styles.titleArea}>
           <span className={styles.subHeading}>Objetivos de Horizonte</span>
@@ -135,6 +139,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
           ))
         )}
       </div>
+      </Papel>
 
       {isModalOpen && (
         <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="modal-goal-title">
@@ -149,7 +154,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
                   className={styles.input}
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  placeholder="Ej. Avanzar módulos Clase B"
+                  placeholder="Ej. Avanzar módulos del curso"
                   required
                   autoFocus
                 />

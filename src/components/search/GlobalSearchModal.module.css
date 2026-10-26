@@ -57,7 +57,7 @@
 }
 
 .searchInput::placeholder {
-  color: var(--color-muted-soft);
+  color: var(--color-muted);
 }
 
 .clearButton {

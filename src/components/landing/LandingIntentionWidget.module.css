@@ -1,5 +1,7 @@
 .widgetContainer {
   background-color: var(--color-surface-card);
+  /* Salvia: la intención de calma cierra el día, como la energía en las vistas (DESIGN.md §0.12). */
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 58%, var(--color-surface-card)), var(--color-surface-card) 66%);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-xl);
   padding: var(--spacing-xl);
@@ -144,17 +146,21 @@
   padding-top: var(--spacing-md);
 }
 
-@media (min-width: 640px) {
-  .stepsGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+/* Los pasos se leen como una lista numerada, no como tres tarjetas iguales. */
+.stepCard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-hairline-soft);
 }
 
-.stepCard {
-  background-color: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline-soft);
-  border-radius: var(--radius-md);
-  padding: var(--spacing-sm) var(--spacing-md);
+@media (min-width: 640px) {
+  .stepCard {
+    grid-template-columns: 11rem 1fr;
+    gap: var(--spacing-md);
+    align-items: baseline;
+  }
 }
 
 .stepTitle {

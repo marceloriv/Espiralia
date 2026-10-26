@@ -38,4 +38,34 @@ describe('VaultModal', () => {
 
     expect(screen.getByLabelText(/contraseña de cifrado/i)).toBeInTheDocument();
   });
+
+  it('renderiza el modal envuelto en contenedor de papel rasgado con washi tape decorativa', () => {
+    render(<VaultModal isOpen={true} onClose={vi.fn()} profile={mockProfile} />);
+
+    const dialog = screen.getByRole('dialog', { name: /bóveda offline/i });
+    expect(dialog).toBeInTheDocument();
+
+    const modalWrap = dialog.closest('div[class*="modalWrap"]');
+    expect(modalWrap).toBeInTheDocument();
+
+    const washiTape = modalWrap?.querySelector('div[class*="washiTape"]');
+    expect(washiTape).toBeInTheDocument();
+    expect(washiTape).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('cierra el modal cuando el usuario hace clic fuera de la hoja de papel rasgado (overlay)', async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+
+    const { container } = render(
+      <VaultModal isOpen={true} onClose={onClose} profile={mockProfile} />
+    );
+
+    const overlay = container.querySelector('div[class*="modalOverlay"]');
+    expect(overlay).toBeInTheDocument();
+    if (overlay) {
+      await user.click(overlay);
+      expect(onClose).toHaveBeenCalledTimes(1);
+    }
+  });
 });

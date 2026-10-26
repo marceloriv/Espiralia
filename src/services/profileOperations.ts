@@ -1,6 +1,6 @@
 import type { Profile } from '../types';
 import { StorageService } from './storage';
-import { hashPin, verifyPin } from './pinHash';
+import { hashPin, verifyPin, isPinProtected } from './pinHash';
 
 export interface CreateProfileResult {
   success: boolean;
@@ -11,6 +11,11 @@ export interface CreateProfileResult {
 export interface UpdateProfilePinResult {
   success: boolean;
   updated?: Profile;
+  error?: string;
+}
+
+export interface DeleteProfileResult {
+  success: boolean;
   error?: string;
 }
 
@@ -104,5 +109,23 @@ export async function removeProfilePin(
       success: false,
       error: err instanceof Error ? err.message : 'Error al remover el PIN',
     };
+  }
+}
+
+export async function deleteProfileData(profile: Profile, pin?: string): Promise<DeleteProfileResult> {
+  try {
+    if (isPinProtected(profile)) {
+      if (!pin) {
+        return { success: false, error: 'Ingresa tu PIN actual para confirmar' };
+      }
+      if (!(await verifyPin(profile, pin))) {
+        return { success: false, error: 'El PIN actual es incorrecto' };
+      }
+    }
+
+    StorageService.deleteProfile(profile.id);
+    return { success: true };
+  } catch {
+    return { success: false, error: 'Error al eliminar el perfil' };
   }
 }

@@ -1,4 +1,4 @@
-import type { AgendaEvent, TodoItem, Area } from '../../types';
+import type { AgendaEvent, TodoItem, Area, HabitTrackerItem, PlannerBlock, DayOfWeek } from '../../types';
 import { occursOn } from '../agenda/eventMapping';
 import { addDaysToDateStr, toLocalDateStr } from '../../utils/localDate';
 
@@ -68,4 +68,88 @@ export const computeAreaSummaries = (areas: Area[], todos: TodoItem[]): AreaSumm
       completionPercentage,
     };
   });
+
+/**
+ * Racha de hábitos: días consecutivos con al menos un hábito marcado como cumplido hasta el día actual de la semana.
+ * @param habits Lista de hábitos del perfil
+ * @param todayHabitIdx Índice del día actual (0=Lunes, 6=Domingo)
+ */
+export const computeHabitStreak = (habits: HabitTrackerItem[], todayHabitIdx: number): number => {
+  if (habits.length === 0) return 0;
+
+  const isDayDone = (dayIdx: number) => habits.some(h => Boolean(h.daysCompleted?.[dayIdx]));
+
+  let streak = 0;
+  let startIdx = todayHabitIdx;
+  if (!isDayDone(todayHabitIdx)) {
+    startIdx = todayHabitIdx - 1;
+  }
+
+  for (let i = startIdx; i >= 0; i--) {
+    if (isDayDone(i)) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+};
+
+export interface NetFocusResult {
+  hours: number;
+  count: number;
+}
+
+/**
+ * Horas de foco neto hoy: suma de duración de eventos de hoy + 1.5h por cada bloque del planner de hoy.
+ */
+export const computeNetFocusHours = (
+  events: AgendaEvent[],
+  plannerBlocks: PlannerBlock[],
+  todayStr: string,
+  todayDayOfWeek: DayOfWeek
+): NetFocusResult => {
+  const todayEvents = events.filter(e => occursOn(e, todayStr));
+  const todayBlocks = plannerBlocks.filter(b => b.dayOfWeek === todayDayOfWeek);
+
+  let totalMinutes = 0;
+  for (const ev of todayEvents) {
+    if (ev.startTime && ev.endTime) {
+      const [startH, startM] = ev.startTime.split(':').map(Number);
+      const [endH, endM] = ev.endTime.split(':').map(Number);
+      const diff = (endH * 60 + endM) - (startH * 60 + startM);
+      totalMinutes += diff > 0 ? diff : 60;
+    } else {
+      totalMinutes += 60;
+    }
+  }
+
+  totalMinutes += todayBlocks.length * 90;
+
+  const hours = Math.round((totalMinutes / 60) * 10) / 10;
+  const count = todayEvents.length + todayBlocks.length;
+
+  return { hours, count };
+};
+
+export interface TaskPerformanceResult {
+  /** `null` cuando no hay tareas: un porcentaje sin base sería inventado. */
+  percentage: number | null;
+  completed: number;
+  total: number;
+}
+
+/**
+ * Rendimiento de tareas: porcentaje global de tareas completadas del perfil y conteos.
+ */
+export const computeTaskPerformance = (todos: TodoItem[]): TaskPerformanceResult => {
+  const total = todos.length;
+  if (total === 0) {
+    return { percentage: null, completed: 0, total: 0 };
+  }
+  const completed = todos.filter(t => t.completed || t.status === 'completada').length;
+  const percentage = Math.round((completed / total) * 100);
+  return { percentage, completed, total };
+};
 

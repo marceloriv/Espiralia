@@ -1,12 +1,56 @@
 .dashboardContainer {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 32px;
   max-width: 1280px;
   margin: 0 auto;
+  padding-bottom: 48px;
 }
 
-/* ---------- Saludo ---------- */
+/* =========================================================================
+   1. HERO CARD & POST-IT ARTESANAL
+   ========================================================================= */
+
+.heroCard {
+  position: relative;
+  background-color: var(--bg-card, var(--color-canvas));
+  border: 1px solid var(--border-hairline, var(--color-hairline));
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  box-shadow: var(--shadow-card-stack, var(--shadow-paper));
+  overflow: hidden;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 32px;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 960px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.heroLeftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.heroHead {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.metaDot {
+  color: var(--color-hairline);
+}
 
 .hero {
   display: flex;
@@ -14,17 +58,87 @@
   gap: 8px;
 }
 
-.heroDate {
-  margin: 0;
+/* Fecha como hoja de calendario (DESIGN.md §0.5): el numeral va en una pieza de Papel y el titular lo acompaña. */
+.fechaBloque {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 8px;
+}
+
+.fechaHoja {
+  flex: none;
+}
+
+.fechaNumero {
+  display: block;
+  padding: 16px 10px 6px;
+  font-family: var(--font-primary);
+  font-size: clamp(3.5rem, 2rem + 6vw, 6rem);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--color-ink);
+  text-shadow: 2px 2px 0 color-mix(in srgb, var(--color-accent-slate) 55%, transparent);
+}
+
+.fechaTexto {
+  min-width: 0;
+  padding-bottom: 6px;
+}
+
+.metaSemana {
+  margin: 0 0 6px;
   font-family: var(--font-family-3);
   font-size: var(--text-caption);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--color-muted);
+}
+
+.heroDate {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+}
+
+.fechaSubrayado {
+  display: block;
+  width: 120px;
+  max-width: 100%;
+  height: 4px;
+  margin-top: 12px;
+  border-radius: 2px;
+  background-color: var(--color-primary);
+}
+
+.pestanaTexto {
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .fechaNumero {
+    text-shadow: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .fechaNumero {
+    text-shadow: none;
+  }
 }
 
 .heroTitle {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: var(--text-display-md);
+  font-size: var(--text-display-lg, 36px);
   line-height: 1.15;
   color: var(--color-ink);
   overflow-wrap: anywhere;
@@ -36,21 +150,32 @@
   color: var(--color-body);
 }
 
-.heroChips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 4px 0 0;
-  padding: 0;
-  list-style: none;
+.heroSubtitle em {
+  font-family: var(--font-primary);
+  font-style: italic;
+  color: var(--color-muted);
+  display: block;
+  margin-bottom: 2px;
 }
 
 .heroAphorism {
-  margin: 6px 0;
-  padding: 10px 16px;
-  border-left: 3px solid var(--color-primary);
+  margin: 8px 0;
+  padding: 14px 18px;
+  border-left: 4px solid var(--color-primary);
   background-color: var(--color-surface-soft);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brassClip {
+  display: none;
+}
+
+.aphorismQuoteIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .aphorismText {
@@ -60,6 +185,15 @@
   font-size: var(--text-body-md);
   color: var(--color-body-strong);
   line-height: 1.5;
+}
+
+.heroChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
 }
 
 .chip {
@@ -74,17 +208,124 @@
 
 .chipCritical {
   border-color: var(--color-error);
-  /* Error sobre canvas = 4.59:1; sobre surface-card quedaba en 4.01:1 (WCAG 1.4.3). */
   background-color: var(--color-canvas);
   color: var(--color-error);
 }
 
-/* ---------- Atajos ---------- */
+/* Right Post-it with Brass Paperclip */
+.heroRightCol {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
 
-.quickSection {
+.tactilePostIt {
+  position: relative;
+  width: 256px;
+  padding: 22px 18px 16px;
+  background-color: #fff9d6;
+  border: 1px solid #ecd98c;
+  border-radius: var(--radius-xs);
+  box-shadow: var(--shadow-postit);
+  transform: rotate(2deg);
+  transition: transform 0.25s ease;
+  background-image: radial-gradient(#eadc96 0.75px, transparent 0.75px);
+  background-size: 14px 14px;
+}
+
+.tactilePostIt:hover {
+  transform: rotate(0deg);
+}
+
+.brassPaperclip {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 40px;
+  border: 2.5px solid var(--color-accent-amber);
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #fef08a 0%, #fde047 50%, var(--color-accent-amber) 100%);
+  box-shadow: var(--shadow-sm);
+  z-index: 20;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brassInnerLoop {
+  width: 14px;
+  height: 24px;
+  border-bottom: 2px solid var(--color-accent-amber);
+  border-left: 2px solid var(--color-accent-amber);
+  border-radius: 0 0 9999px 9999px;
+}
+
+.postItContent {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+  padding-top: 18px;
+}
+
+.postItMottoLabel {
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(120, 53, 15, 0.75);
+}
+
+.postItHandwriting {
+  margin: 8px 0 4px;
+  font-family: var(--font-script);
+  font-size: 26px;
+  line-height: 1.25;
+  color: #451a03;
+  font-weight: 700;
+}
+
+.postItFooter {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-primary);
+  margin-top: 6px;
+}
+
+.postItHeart {
+  color: var(--color-primary);
+}
+
+.postItState {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: #78350f;
+}
+
+/* =========================================================================
+   2. ACCIONES INSTANTÁNEAS (A un solo clic)
+   ========================================================================= */
+
+.quickSection {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-hairline);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quickHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .sectionLabel {
@@ -94,6 +335,19 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quickHeaderIcon {
+  color: var(--color-primary);
+}
+
+.quickSubtext {
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
   color: var(--color-muted);
 }
 
@@ -109,7 +363,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 520px) {
   .quickGrid {
     grid-template-columns: 1fr;
   }
@@ -118,109 +372,868 @@
 .quickBtn {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: 56px;
+  gap: 14px;
+  min-height: 58px;
   padding: 12px 16px;
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
-  background-color: var(--color-surface-card);
+  background-color: var(--color-surface-soft);
   color: var(--color-ink);
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 .quickBtn:hover {
+  transform: translateY(-2px);
+  background-color: var(--color-surface-cream-strong);
   border-color: var(--color-primary-soft);
+  box-shadow: var(--shadow-sm);
 }
 
-.quickIcon {
+.quickBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.quickBtnTask {
+  border-left: 3.5px solid var(--color-primary);
+}
+
+.quickBtnEvent {
+  border-left: 3.5px solid var(--color-accent-amber);
+}
+
+.quickBtnNote {
+  border-left: 3.5px solid var(--color-secondary);
+}
+
+.quickBtnLink {
+  border-left: 3.5px solid var(--color-tertiary);
+}
+
+.quickBtnTask:hover,
+.quickBtnTask:focus-visible {
+  border-left-color: var(--color-primary);
+}
+
+.quickBtnEvent:hover,
+.quickBtnEvent:focus-visible {
+  border-left-color: var(--color-accent-amber);
+}
+
+.quickBtnNote:hover,
+.quickBtnNote:focus-visible {
+  border-left-color: var(--color-secondary);
+}
+
+.quickBtnLink:hover,
+.quickBtnLink:focus-visible {
+  border-left-color: var(--color-tertiary);
+}
+
+.quickIconBox {
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-md);
+  transition: all 0.15s ease;
 }
 
 .quickIconTask {
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
+  background-color: rgba(142, 30, 162, 0.12);
+  color: var(--color-primary);
 }
 
 .quickIconEvent {
-  background-color: var(--color-accent-teal);
-  color: var(--color-ink);
+  background-color: rgba(232, 165, 90, 0.2);
+  color: var(--color-text-amber);
 }
 
 .quickIconNote {
-  background-color: var(--color-accent-amber);
-  color: var(--color-ink);
+  background-color: rgba(156, 44, 156, 0.15);
+  color: var(--color-text-primary-active);
 }
 
 .quickIconLink {
-  background-color: var(--color-primary-soft);
-  color: var(--color-ink);
+  background-color: rgba(93, 184, 166, 0.2);
+  color: var(--color-text-teal);
 }
 
 .quickText {
   display: flex;
   flex-direction: column;
-  min-width: 0;
 }
 
 .quickTitle {
-  font-size: var(--text-body-md);
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
   font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.25;
 }
 
 .quickHint {
   font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+/* =========================================================================
+   3. BENTO SECTION: PRODUCTIVIDAD SERENA & ENERGY PHASES
+   ========================================================================= */
+
+/* Franja de métricas: cuatro indicadores en una fila, y 2 o 1 columnas cuando no caben. */
+.kpiStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 16px;
+}
+
+.kpiStrip .metricQuadTile {
+  padding: 16px;
+  gap: 4px;
+  background-color: var(--bg-card, #FCF9F6);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-paper);
+}
+
+.metricTileBar {
+  height: 6px;
+  margin: 6px 0 2px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-hairline);
+  overflow: hidden;
+}
+
+.metricTileBarFill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-primary);
+}
+
+/* Energía y hábitos: dos tarjetas, la de hábitos necesita ~350px para sus siete días de 44px. */
+.bentoTrio {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .bentoTrio {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bentoCard {
+  position: relative;
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
+  border-radius: var(--radius-xl);
+  padding: 22px;
+  box-shadow: var(--shadow-paper);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.bentoCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.bentoTag {
+  font-family: var(--font-family-3);
   font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bentoBadge {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-surface-soft);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-hairline);
+}
+
+/* Lunar Cycle Visualizer */
+.lunarCycleVisualizer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 8px;
   color: var(--color-muted);
 }
 
-/* ---------- Tarjetas ---------- */
+.moonVector {
+  width: 22px;
+  height: 22px;
+  color: var(--color-muted);
+  cursor: default;
+  transition: all 0.2s ease;
+}
 
-.cardsGrid {
+.moonVectorActive {
+  width: 26px;
+  height: 26px;
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 6px rgba(110, 0, 129, 0.25));
+}
+
+.clarityQuestion {
+  text-align: center;
+  font-family: var(--font-primary);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--color-body);
+  margin: 4px 0 12px;
+}
+
+.energySelector {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.energyBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.energyBtn:hover {
+  background-color: var(--color-surface-cream-strong);
+}
+
+.energyBtnActive {
+  background-color: var(--color-surface-card);
+  border: 2px solid var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.energyBtnActive .energyLabel {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.energyEmoji {
+  font-size: 18px;
+  margin-bottom: 3px;
+}
+
+.energyLabel {
+  font-family: var(--font-family-2);
+  font-size: 11px;
+  color: var(--color-ink);
+}
+
+.bentoCardFooter {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.statusStable {
+  color: var(--color-text-success);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.statusStableDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--color-success);
+}
+
+.metricQuadTile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  display: flex;
+  flex-direction: column;
+}
+
+.metricTileLabel {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.metricTileValueBox {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin: 3px 0;
+}
+
+.metricTileValAccent {
+  font-family: var(--font-primary);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.metricTileVal {
+  font-family: var(--font-primary);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-ink);
+  line-height: 1;
+}
+
+.metricTileValTeal {
+  font-family: var(--font-primary);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-text-teal);
+  line-height: 1;
+}
+
+.metricTileValPurple {
+  font-family: var(--font-primary);
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--color-text-primary-active);
+  line-height: 1;
+}
+
+.metricTileUnit {
+  font-size: 12px;
+  color: var(--color-body);
+}
+
+.metricTileSub {
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  color: var(--color-muted);
+}
+
+/* Card 3: Habit Tracker */
+.habitRowsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.habitRowItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.habitInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.habitIcon {
+  color: var(--color-muted);
+}
+
+.habitTitle {
+  font-size: var(--text-body-sm);
+  color: var(--color-ink);
+  font-weight: 500;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Siete columnas de 44px cuando caben; si la tarjeta es más angosta, los días pasan a una segunda fila en vez de cortarse. */
+.habitPillsRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+  justify-items: center;
+}
+
+/* El botón mide 44px (R-03) y ocupa una columna de la fila; el círculo visible se dibuja detrás con ::before. */
+.habitPillChecked,
+.habitPillEmpty {
+  position: relative;
+  isolation: isolate;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  transition: transform 0.12s ease;
+  box-sizing: border-box;
+}
+
+.habitPillChecked::before,
+.habitPillEmpty::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  z-index: -1;
+  border-radius: 9999px;
+  box-sizing: border-box;
+}
+
+.habitPillChecked {
+  color: #ffffff;
+  font-size: var(--text-micro);
+  font-weight: bold;
+}
+
+.habitPillChecked::before {
+  background-color: #5a826d;
+}
+
+.habitPillEmpty {
+  color: var(--color-muted);
+}
+
+.habitPillEmpty::before {
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-surface-soft);
+}
+
+.habitPillChecked:hover,
+.habitPillEmpty:hover {
+  transform: scale(1.15);
+}
+
+.habitPillChecked:focus-visible,
+.habitPillEmpty:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.addHabitBtn {
+  font-family: var(--font-family-3, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: transparent;
+  border: 1px solid var(--color-hairline);
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+}
+
+.addHabitBtn:hover {
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-primary);
+}
+
+.addHabitBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.habitEditBtn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.habitEditBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.statusSuccess {
+  color: var(--color-text-success);
+  font-weight: 600;
+}
+
+/* =========================================================================
+   4. MAIN LAYOUT GRID (7 cols / 5 cols)
+   ========================================================================= */
+
+.mainLayoutGrid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 28px;
   align-items: start;
 }
 
-.card {
+@media (max-width: 960px) {
+  .mainLayoutGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mainLeftCol,
+.mainRightCol {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  min-width: 0;
+  gap: 24px;
+}
+
+/* Today's Main Focus Slate Card */
+.focusBanner {
+  position: relative;
+  background-color: #eceef1;
+  border: 1px solid #d6dbe0;
+  border-radius: var(--radius-xl);
   padding: 20px;
+  box-shadow: var(--shadow-paper);
+  overflow: hidden;
+}
+
+.washiTapeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(123, 140, 158, 0.4);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #1e293b;
+  text-transform: uppercase;
+  transform: rotate(-1deg);
+  margin-bottom: 12px;
+}
+
+.washiTape {
+  display: inline-block;
+  padding: 2px 8px;
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  background-color: rgba(142, 30, 162, 0.15);
+  color: var(--color-primary);
+  border-radius: var(--radius-xs);
+  margin-bottom: 6px;
+}
+
+.focusInnerCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #d6dbe0;
+  box-shadow: var(--shadow-sm);
+}
+
+.focusCheckboxHit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  margin: -10px 0 -10px -12px;
+  cursor: pointer;
+}
+
+.focusCheckbox {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  accent-color: var(--color-primary);
+}
+
+.focusDetails {
+  flex: 1;
+}
+
+.focusTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.focusChipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-3);
+  font-size: 12px;
+  color: var(--color-muted);
+  margin-top: 8px;
+}
+
+.focusChipArea {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.focusChipDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--color-primary);
+}
+
+.focusHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.changeFocusBtn {
+  font-family: var(--font-family-3, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid #d6dbe0;
+  border-radius: var(--radius-xs);
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: var(--tap-min);
+  display: inline-flex;
+  align-items: center;
+}
+
+.changeFocusBtn:hover {
+  background-color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.changeFocusBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.emptyPrioritiesState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 16px;
+  gap: 8px;
+}
+
+.emptyPrioritiesIcon {
+  color: var(--color-text-success);
+  opacity: 0.85;
+}
+
+.emptyPrioritiesTitle {
+  margin: 0;
+  font-family: var(--font-primary, serif);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.emptyPrioritiesSub {
+  margin: 0 0 8px 0;
+  font-size: var(--text-body-sm, 13px);
+  color: var(--color-muted);
+  max-width: 340px;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(20, 20, 19, 0.5);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.focusModalCard {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--bg-card, #fcf9f6);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
-  background-color: var(--color-surface-card);
+  box-shadow: 0 14px 28px rgba(26, 25, 23, 0.16);
+  padding: 20px;
+}
+
+.focusModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--color-hairline);
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.focusModalTitle {
+  margin: 0;
+  font-family: var(--font-primary, serif);
+  font-size: 1.15rem;
+  color: var(--color-ink);
+}
+
+.focusModalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.focusModalDesc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+}
+
+.focusModalList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.focusModalItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--color-ink);
+  text-align: left;
+  transition: all 0.12s ease;
+  min-height: 44px;
+}
+
+.focusModalItem:hover {
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-primary);
+}
+
+.focusModalItemActive {
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-muted);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.closeBtn:hover {
+  background-color: var(--color-surface-soft);
+  color: var(--color-ink);
+}
+
+.priorityHighBadge {
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  background-color: #fef3c7;
+  color: #92400e;
+  font-weight: 600;
+  font-size: 11px;
 }
 
 .cardHeader {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-hairline);
+  margin-bottom: 14px;
+}
+
+.cardHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cardHeaderRight {
+  display: flex;
+  align-items: center;
   gap: 8px;
 }
 
 .cardTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-ink);
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0;
-  font-family: var(--font-primary);
-  font-size: var(--text-title-sm);
-  color: var(--color-ink);
-}
-
-.cardTitle svg {
-  color: var(--color-primary);
 }
 
 .cardMeta {
@@ -230,155 +1243,480 @@
 }
 
 .list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.eventRow,
-.criticalRow,
-.plannerRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 8px 10px;
-  border: 1px solid var(--color-hairline-soft);
-  border-radius: var(--radius-md);
-  background-color: var(--color-canvas);
 }
 
 .criticalRow {
-  box-shadow: inset 3px 0 0 var(--color-error);
-}
-
-.timeBlock {
-  flex-shrink: 0;
-  min-width: 56px;
-  font-family: var(--font-family-3);
-  font-size: var(--text-caption);
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
-.rowBody {
   display: flex;
-  flex: 1;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-
-.rowTitle {
-  /* Base 8rem: en filas angostas el badge baja de línea en vez de aplastar el título. */
-  flex: 1 1 8rem;
-  min-width: 0;
-  font-size: var(--text-body-sm);
-  font-weight: 500;
-  color: var(--color-ink);
-  overflow-wrap: anywhere;
-}
-
-.rowTitleDone {
-  color: var(--color-muted);
-  text-decoration: line-through;
-}
-
-.badge,
-.slotTag {
-  flex-shrink: 0;
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  font-family: var(--font-family-3);
-  font-size: var(--text-caption);
-}
-
-.slotTag {
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
   background-color: var(--color-surface-soft);
-  color: var(--color-primary);
-  text-transform: capitalize;
+  border: 1px solid var(--color-hairline);
 }
 
-.dueTag {
-  flex-shrink: 0;
-  font-family: var(--font-family-3);
-  font-size: var(--text-caption);
-  font-weight: 600;
-  color: var(--color-error);
+.criticalTextCol {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 8px;
 }
 
 .checkbox {
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  padding: 12px;
-  margin: -12px;
-  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
   accent-color: var(--color-primary);
   cursor: pointer;
+  flex-shrink: 0;
+}
+
+.priorityNum {
+  font-family: var(--font-primary);
+  font-weight: bold;
+  font-size: 16px;
+  color: var(--color-ink);
+}
+
+.rowTitle {
+  flex: 1;
+  font-size: var(--text-body-sm);
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.rowTitleDone {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  text-decoration: none;
+  color: var(--color-muted);
+  opacity: 0.75;
+  transition: color 200ms ease;
+}
+
+.rowTitleDone::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 52%;
+  height: 2px;
+  background: linear-gradient(90deg, #7B188E 0%, #9426A8 65%, #7B188E 100%);
+  transform: translateY(-50%) rotate(-0.35deg);
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: dashInkStrokeDraw 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.dueTag {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface-card);
+  color: var(--color-muted);
+  border: 1px solid var(--color-hairline);
 }
 
 .emptyNotice {
-  margin: 0;
-  padding: 12px 0;
+  margin: 12px 0 0;
+  font-family: var(--font-primary);
+  font-style: italic;
   font-size: var(--text-body-sm);
   color: var(--color-muted);
 }
 
 .cardLink {
-  align-self: flex-start;
-  min-height: 44px;
-  padding: 0 4px;
+  margin-top: 14px;
+  background: none;
   border: none;
-  background: transparent;
-  color: var(--color-primary);
-  font-size: var(--text-body-sm);
+  padding: 0;
+  font-family: var(--font-family-2);
+  font-size: var(--text-caption);
   font-weight: 600;
+  color: var(--color-primary);
   cursor: pointer;
+  text-align: left;
 }
 
 .cardLink:hover {
   text-decoration: underline;
 }
 
-.quickBtn:focus-visible,
-.cardLink:focus-visible,
-.checkbox:focus-visible {
-  outline: 2px solid var(--color-primary);
+/* Eliminate Distractions Box with Metallic Paperclip */
+.distractionBox {
+  position: relative;
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-paper);
+}
+
+.distractionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 24px;
+  margin-bottom: 8px;
+}
+
+.distractionTitle {
+  margin: 0;
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.distractionCommitment {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.distractionList {
+  margin: 0;
+  padding-left: 24px;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: var(--text-body-sm);
+  color: var(--color-body);
+}
+
+.distractionList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.distractionDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--color-error);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.distractionListItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.distractionDelBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.distractionDelBtn:hover {
+  opacity: 1;
+  color: var(--color-error);
+}
+
+.distractionDelBtn:focus-visible {
+  outline: 2px solid var(--color-error);
   outline-offset: 2px;
 }
 
-/* ---------- Métricas ---------- */
+.distractionForm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-left: 24px;
+}
 
-.metricsSection {
+.distractionInput {
+  flex: 1;
+  height: 32px;
+  padding: 0 10px;
+  font-family: inherit;
+  font-size: var(--text-body-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xs);
+  color: var(--color-ink);
+}
+
+.distractionInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.distractionAddBtn {
+  height: 32px;
+  width: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+
+.distractionAddBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Focus Schedule (08:00 - 20:00) Routine Timeline */
+.routineTimeline {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-.metricsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+.routineSlotDone {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  font-size: var(--text-body-sm);
 }
 
-/* ---------- Áreas Temáticas Clave ---------- */
+.routineSlotPending {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-size: var(--text-body-sm);
+  transition: all 0.15s ease;
+}
+
+.routineSlotPending:hover {
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-hairline);
+}
+
+.routineTime {
+  font-family: var(--font-family-3);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.routineDotDone {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--color-success);
+  flex-shrink: 0;
+}
+
+.routineDotTeal {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--color-accent-teal);
+  flex-shrink: 0;
+}
+
+.routineTitleDone {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  flex: 1;
+  font-size: 12px;
+  color: var(--color-muted);
+  text-decoration: none;
+  opacity: 0.75;
+}
+
+.routineTitleDone::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 52%;
+  height: 1.5px;
+  background: linear-gradient(90deg, #7B188E 0%, #9426A8 65%, #7B188E 100%);
+  transform: translateY(-50%) rotate(-0.3deg);
+  border-radius: 9999px;
+  pointer-events: none;
+  animation: dashInkStrokeDraw 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.routineTitle {
+  flex: 1;
+  font-size: 12px;
+  color: var(--color-ink);
+}
+
+.routineStatusTag {
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  color: var(--color-text-success);
+}
+
+.routineMutedTag {
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  color: var(--color-muted);
+}
+
+.badge {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+}
+
+.remindersList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.reminderItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  font-size: var(--text-body-sm);
+  color: var(--color-ink);
+}
+
+.reminderDatePill {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.reminderDatePillMuted {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+/* Planner de la semana */
+.plannerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+}
+
+.plannerRow {
+  gap: 10px;
+}
+
+.dayTag {
+  flex-shrink: 0;
+  min-width: 2.4em;
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.plannerRow .rowTitle {
+  flex: 1;
+  min-width: 0;
+}
+
+.slotTag {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background-color: var(--color-surface-card);
+  color: var(--color-muted);
+  border: 1px solid var(--color-hairline);
+  text-transform: capitalize;
+}
+
+/* =========================================================================
+   5. PROGRESO POR ÁREAS TEMÁTICAS (Solapas Folder Tabs - FULL WIDTH!)
+   ========================================================================= */
 
 .areasSection {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  position: relative;
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
+  border-radius: var(--radius-xl);
+  padding: 26px 28px;
+  box-shadow: var(--shadow-paper);
 }
 
 .areasHeader {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-hairline);
+  margin-bottom: 24px;
+}
+
+.areasEmpty {
+  margin: 0 0 var(--spacing-md);
+  padding: var(--spacing-lg);
+  border: 1px dashed var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-warm);
+  color: var(--color-muted);
+  font-size: var(--text-body-sm);
+  text-align: center;
+}
+
+.areasSubTitle {
+  margin: 4px 0 0;
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
+  color: var(--color-muted);
+}
+
+.areasHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .areasMeta {
@@ -387,63 +1725,114 @@
   color: var(--color-muted);
 }
 
-.areasGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-}
-
-.areaCard {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px;
+.manageAreasBtn {
+  font-family: var(--font-family-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  background-color: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-surface-card);
-  box-shadow: var(--elevation-sm);
-  transition: border-color 0.15s ease;
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.areaCard:hover {
+.manageAreasBtn:hover {
+  background-color: var(--color-surface-cream-strong);
   border-color: var(--color-primary-soft);
 }
 
-.areaTop {
+.areasGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .areasGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.areaFolderCard {
+  position: relative;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  box-shadow: var(--shadow-paper);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 20px 20px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.areaFolderCard:hover {
+  border-color: rgba(110, 0, 129, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Simulated folder tab protruding from top edge */
+.folderTabTop {
+  position: absolute;
+  top: -12px;
+  left: 18px;
+  padding: 2px 14px;
+  border-radius: 6px 6px 0 0;
+  background-color: #e5dfd4;
+  border-top: 1px solid var(--color-hairline);
+  border-left: 1px solid var(--color-hairline);
+  border-right: 1px solid var(--color-hairline);
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.areaFolderBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.areaFolderTopRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 8px;
 }
 
-.areaIdentity {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
-.areaDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.areaName {
-  margin: 0;
-  font-size: var(--text-body-md);
-  font-weight: 600;
-  color: var(--color-ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.areaCategoryBadge {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.02em;
 }
 
 .areaPercent {
   font-family: var(--font-family-3);
-  font-size: var(--text-caption);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+.areaFolderName {
+  margin: 6px 0 0;
+  font-family: var(--font-primary);
+  font-size: 17px;
   font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.3;
+}
+
+.areaFolderDesc {
+  margin: 6px 0 0;
+  font-family: var(--font-family-2);
+  font-size: 12px;
+  line-height: 1.5;
   color: var(--color-muted);
 }
 
@@ -453,6 +1842,7 @@
   border-radius: var(--radius-pill);
   background-color: var(--color-hairline);
   overflow: hidden;
+  margin: 14px 0 12px;
 }
 
 .progressBarFill {
@@ -461,62 +1851,575 @@
   transition: width 0.3s ease;
 }
 
-.areaBottom {
+.areaMilestones {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--color-body);
+}
+
+.milestoneItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.milestoneCheckIcon {
+  color: var(--color-text-success);
+  flex-shrink: 0;
+}
+
+.milestonePendingDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: var(--color-accent-amber);
+  flex-shrink: 0;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.areaFolderBottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-hairline);
+  margin-top: 16px;
 }
 
-.areaPendingCount {
+.areaMetaDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.areaDeadlineText {
   font-family: var(--font-family-3);
-  font-size: var(--text-caption);
+  font-size: 11px;
   color: var(--color-muted);
 }
 
+.areaPendingPill {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+/* Must maintain min-height: 44px for accessibility and test suites */
 .areaActionBtn {
-  min-height: 44px;
-  padding: 8px 12px;
   background: none;
   border: none;
-  color: var(--color-primary);
-  font-family: var(--font-family-2);
-  font-size: var(--text-caption);
-  font-weight: 600;
-  cursor: pointer;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  padding: 0 4px;
+  font-family: var(--font-family-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .areaActionBtn:hover {
   text-decoration: underline;
+  transform: translateX(2px);
 }
 
-.areaActionBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+/* =========================================================================
+   6. NOTES / BRAIN DUMP (Parchment Paper Grid - FULL WIDTH!)
+   ========================================================================= */
+
+.notesSection {
+  position: relative;
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
+  border-radius: var(--radius-xl);
+  padding: 26px 28px;
+  box-shadow: var(--shadow-paper);
+  overflow: hidden;
 }
 
-/* ---------- Responsive ---------- */
+.notesWashiSlate {
+  position: absolute;
+  top: -8px;
+  left: 48px;
+  width: 96px;
+  height: 20px;
+  background: rgba(123, 140, 158, 0.45);
+  border-radius: var(--radius-xs);
+  pointer-events: none;
+  z-index: 10;
+}
 
-@media (min-width: 769px) and (max-width: 1023px) {
-  .cardsGrid {
+.notesCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--color-hairline);
+  margin-bottom: 16px;
+}
+
+.notesTitleBox {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.notesCardTitle {
+  margin: 0;
+  font-family: var(--font-family-3);
+  font-size: var(--text-caption);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.notesCardTag {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.notesHeaderIcon {
+  color: var(--color-muted);
+}
+
+.paperGridContainer {
+  padding: 18px 20px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  background-image: linear-gradient(to right, #ece4d8 1px, transparent 1px),
+                    linear-gradient(to bottom, #ece4d8 1px, transparent 1px);
+  background-size: 16px 16px;
+  min-height: 140px;
+  position: relative;
+}
+
+.notesHandwriting {
+  margin: 0;
+  font-family: var(--font-script);
+  font-size: 24px;
+  line-height: 1.6;
+  color: #1e293b;
+  max-width: 680px;
+}
+
+.autoSaveIndicator {
+  position: absolute;
+  bottom: 10px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.notesCardBtn {
+  margin-top: 14px;
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-hairline);
+  background: none;
+  font-family: var(--font-family-3);
+  font-size: 12px;
+  color: var(--color-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.notesCardBtn:hover {
+  background-color: var(--color-surface-soft);
+  border-style: solid;
+}
+
+/* =========================================================================
+   7. CIERRE DE PLIEGO REFLEXIVO (End of day reflection ♡ - FULL WIDTH!)
+   ========================================================================= */
+
+.reflectionSection {
+  position: relative;
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-paper);
+}
+
+.reflectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-hairline);
+  margin-bottom: 22px;
+}
+
+.reflectionTitleBox {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.reflectionTitle {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.reflectionHeart {
+  color: var(--color-primary);
+}
+
+.reflectionSubtext {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.reflectionNotice {
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.reflectionGrid3Col {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .reflectionGrid3Col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.reflectionField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reflectionLabel {
+  font-family: var(--font-primary);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--color-body-strong);
+}
+
+.reflectionTextarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
+  color: var(--color-ink);
+  resize: none;
+  background-image: repeating-linear-gradient(transparent, transparent 27px, var(--color-hairline) 28px);
+  line-height: 28px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.reflectionTextarea:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+.reflectionFooterRow {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.closingMotto {
+  margin: 0;
+  font-family: var(--font-script);
+  font-size: 24px;
+  color: var(--color-body);
+  font-weight: 600;
+}
+
+.sovereigntyStamp {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.sovereigntyIcon {
+  color: var(--color-text-teal);
+}
+
+.saveReflectionBtn {
+  margin-top: 16px;
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.saveReflectionBtn:hover {
+  background-color: var(--color-primary-active);
+}
+
+/* =========================================================================
+   8. MÉTRICAS Y RENDIMIENTO (FULL WIDTH!)
+   ========================================================================= */
+
+.metricsSection {
+  background-color: var(--bg-card, #FCF9F6);
+  border: 1px solid var(--border-hairline, var(--color-hairline));
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-paper);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+@media (max-width: 960px) {
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboardContainer {
+    gap: 20px;
+  }
+  .heroCard {
+    padding: 18px 16px;
+    border-radius: var(--radius-lg);
+  }
+  .heroTitle {
+    font-size: 24px;
+  }
+  .tactilePostIt {
+    width: 100%;
+    max-width: 320px;
+    margin: 8px auto 0;
+    transform: none;
+  }
+  .heroRightCol {
+    justify-content: center;
+  }
+  .areasSection,
+  .notesSection,
+  .reflectionSection,
+  .metricsSection {
+    padding: 18px 16px;
+    border-radius: var(--radius-lg);
+  }
+}
+
+/* =========================================================================
+   9. TRAZO DE TINTA CALIGRÁFICO (FOUNTAIN PEN INK STROKE)
+   ========================================================================= */
+
+@keyframes dashInkStrokeDraw {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0.6;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rowTitleDone::after,
+  .routineTitleDone::after {
+    animation: none;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* =========================================================================
+   Estado móvil del Dashboard (antislop-layoutmobile, DESIGN.md §0.10.4).
+   El encabezado esencial, las tareas y los accesos van primero. El aforismo, el lema y las tarjetas
+   de serenidad pasan después. Solo cambia el orden: el contenido es el mismo y escritorio no se toca.
+   El hero deja de ser una tarjeta (display: contents) para que sus piezas se ordenen una por una.
+   ========================================================================= */
+@media (max-width: 960px) {
+  .dashboardContainer > * {
+    order: 10;
+  }
+
+  .heroCard,
+  .heroGrid,
+  .heroLeftCol,
+  .heroRightCol {
+    display: contents;
+  }
+
+  .heroHead {
+    order: 0;
+  }
+
+  .mainLayoutGrid {
+    order: 1;
+  }
+
+  .quickSection {
+    order: 2;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .heroAphorism {
+    order: 3;
+    margin: 0;
+  }
+
+  .tactilePostIt {
+    order: 4;
+    align-self: center;
+  }
+
+  .kpiStrip,
+  .bentoTrio {
+    order: 5;
+  }
+
+  .quickGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 768px) {
-  .quickGrid,
-  .cardsGrid,
-  .metricsGrid,
-  .areasGrid {
-    grid-template-columns: minmax(0, 1fr);
+/* Tableta (600 a 960px): una sola columna estiraría Horario, Recordatorios y Planner a todo el ancho. */
+@media (min-width: 600px) and (max-width: 960px) {
+  .mainRightCol {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
   }
 
-  .heroTitle {
-    font-size: var(--text-display-sm);
+  .mainRightCol > :last-child {
+    grid-column: 1 / -1;
   }
 }
 
+/* =========================================================================
+   10. DEGRADADOS POR TINTE (mock aprobado el 2026-10-25)
+   Cada superficie nace de su tinte de módulo (DESIGN.md §0.4) y vuelve al papel claro, para que
+   las cifras sigan mandando. Las tarjetas de Papel traen su propio degradado en Papel.module.css.
+   ========================================================================= */
+
+.heroCard {
+  background-image: linear-gradient(115deg, var(--papel-arena) 0%, var(--bg-card) 58%);
+  border-color: var(--papel-arena-fuerte);
+}
+
+/* Cada métrica nace de su tinte: energía y hábitos (salvia), tareas (pizarra), foco (turquesa), notas (ámbar). */
+.kpiStrip > * {
+  background-image: linear-gradient(145deg, var(--tinte-metrica), color-mix(in srgb, var(--tinte-metrica) 55%, var(--bg-card)));
+}
+
+.kpiStrip > :nth-child(1) { --tinte-metrica: var(--papel-salvia); }
+.kpiStrip > :nth-child(2) {
+  --tinte-metrica: var(--papel-pizarra);
+  --color-muted: var(--papel-texto-suave);
+}
+.kpiStrip > :nth-child(3) { --tinte-metrica: var(--papel-turquesa); }
+.kpiStrip > :nth-child(4) { --tinte-metrica: var(--papel-ambar); }
+
+/* Cada acceso apunta a un módulo; el tinte ayuda a reconocer el destino. */
+.quickBtnTask {
+  border-left-color: var(--color-accent-terracotta);
+  --tinte-acceso: var(--papel-terracota);
+}
+.quickBtnEvent {
+  border-left-color: var(--color-accent-slate);
+  --tinte-acceso: var(--papel-pizarra);
+}
+.quickBtnNote {
+  border-left-color: var(--color-accent-amber);
+  --tinte-acceso: var(--papel-ambar);
+}
+.quickBtnLink {
+  border-left-color: var(--color-primary);
+  --tinte-acceso: var(--papel-rosa);
+}
+.quickGrid > button {
+  background-image: linear-gradient(125deg, color-mix(in srgb, var(--tinte-acceso) 62%, var(--bg-card)), var(--bg-card));
+}
+
+/* Energía y hábitos son áreas de decisión: una cartulina salvia y otra neutra. */
+.bentoTrio > :first-child {
+  background-color: var(--bg-card);
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 60%, var(--bg-card)), var(--bg-card) 72%);
+}
+
+/* El foco pertenece a To-Do: terracota en el marco, cartulina clara al escribir. */
+.focusBanner {
+  background-color: var(--papel-terracota);
+  background-image: linear-gradient(130deg, color-mix(in srgb, var(--papel-terracota) 65%, var(--bg-card)), var(--bg-card));
+  border-color: var(--papel-terracota-fuerte);
+}
+
+/* El compromiso comparte el tono cálido de To-Do con el foco. */
+.distractionBox {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-terracota) 56%, var(--bg-card)), var(--bg-card) 78%);
+}
+
+/* Las áreas son carpetas: el contenedor cede el rosa a sus fichas sin teñir los datos. */
+.areasSection {
+  background-image: linear-gradient(150deg, color-mix(in srgb, var(--papel-rosa) 58%, var(--bg-card)), var(--bg-card) 56%);
+}
+.areaFolderCard {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 50%, var(--bg-card)), var(--bg-card));
+}
+
+/* Ámbar para escribir, salvia para cerrar el día y turquesa para leer métricas. */
+.notesSection {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 62%, var(--bg-card)), var(--bg-card) 68%);
+}
+.paperGridContainer {
+  background-image:
+    linear-gradient(to right, var(--color-grid-bujo) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid-bujo) 1px, transparent 1px),
+    linear-gradient(140deg, color-mix(in srgb, var(--papel-ambar) 55%, var(--bg-card)), var(--bg-card));
+  background-size: 16px 16px, 16px 16px, auto;
+}
+.reflectionSection {
+  background-image: linear-gradient(140deg, color-mix(in srgb, var(--papel-salvia) 58%, var(--bg-card)), var(--bg-card) 66%);
+}
+.metricsSection {
+  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 55%, var(--bg-card)), var(--bg-card) 56%);
+}

@@ -3,20 +3,29 @@
   --color-primary: #8E1EA2;
   --color-primary-active: #C654C3;
   --color-primary-soft: #ED96D7;
+  --color-primary-light: #FDF4FA;
   --color-primary-disabled: #FFC0DE;
 
-  /* Claude design tokens */
+  /* Claude & Editorial Stationery tokens */
   --color-ink: #141413;
   --color-body: #3d3d3a;
   --color-body-strong: #252523;
-  --color-muted: #6c6a64;
+  --color-muted: #64625c;
   --color-muted-soft: #8e8b82;
   --color-hairline: #e6dfd8;
   --color-hairline-soft: #ebe6df;
   --color-canvas: #faf9f5;
+  --color-canvas-paper: #faf9f5;
   --color-surface-soft: #f5f0e8;
   --color-surface-card: #efe9de;
+  --color-surface-warm: #f6f2ec;
   --color-surface-cream-strong: #e8e0d2;
+  --color-surface-slate: #e8edf2;
+  --color-washi-primary: rgba(142, 30, 162, 0.15);
+  --color-washi-slate: rgba(123, 140, 158, 0.25);
+  --color-grid-bujo: #dfd8cc;
+  --color-accent-sage: #5a826d;
+  --color-accent-terracotta: #9c4a3b;
   --color-surface-dark: #181715;
   --color-surface-dark-elevated: #252320;
   --color-surface-dark-soft: #1f1e1b;
@@ -24,10 +33,46 @@
   --color-on-dark: #faf9f5;
   --color-on-dark-soft: #a09d96;
   --color-accent-teal: #5db8a6;
+  /* Texto teal sobre superficies oscuras (5.5:1 sobre #29322d); --color-text-teal es para fondos claros. */
+  --color-text-teal-on-dark: #5db8a6;
   --color-accent-amber: #e8a55a;
   --color-success: #5db872;
+  /* Variantes de texto (>=4.5:1 sobre canvas, tarjetas, solapas y blanco). Los tokens de arriba quedan para fondos, bordes e iconos. */
+  --color-text-success: #316f3f;
+  --color-text-teal: #2f6b60;
+  --color-text-amber: #8e5414;
+  --color-text-primary-active: #9e359b;
+  --color-text-error: #b13636;
+  --color-accent-slate: #7b8c9e;
   --color-warning: #d4a017;
   --color-error: #c64545;
+
+  /* Alias y tokens analógicos HIBI / Stitch Papercraft */
+  --bg-canvas: #F3EFE6;
+  --bg-card: #FCF9F6;
+  --bg-manila: #EDE3D0;
+  --bg-postit: #FFF9D6;
+  --bg-postit-lavender: #F3E8FA;
+  --bg-slate-paper: #E8EDF2;
+  --bg-surface-soft: #F5F0E8;
+
+  --primary: #8E1EA2;
+  --primary-deep: #6E0081;
+  --primary-active: #C654C3;
+  --accent-amber: #E8A55A;
+  --accent-terracotta: #D4745E;
+  --accent-teal: #5DB8A6;
+  --accent-sage: #5A826D;
+  --error: #C64545;
+
+  --border-subtle: rgba(20, 20, 19, 0.12);
+  --border-hairline: #DDD5C6;
+
+  /* Sombras multicapa 3D de papelería */
+  --shadow-sheet: 0 1px 2px rgba(26, 25, 23, 0.08), 0 10px 24px -4px rgba(26, 25, 23, 0.08);
+  --shadow-card-stack: 0 1px 2px rgba(26, 25, 23, 0.08), 0 4px 0 -1px #FAF6F0, 0 5px 2px -1px rgba(26, 25, 23, 0.07), 0 14px 28px -6px rgba(26, 25, 23, 0.12);
+  --shadow-pin: 1px 3px 5px rgba(0, 0, 0, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.7);
+  --shadow-recessed: inset 0 2px 4px rgba(20, 20, 19, 0.08), 0 1px 0 rgba(255, 255, 255, 0.8);
 
   /* Sileo Toast Design Tokens */
   --sileo-state-success: var(--color-success);
@@ -43,19 +88,28 @@
   --sileo-duration: 600ms;
 
   /* Typography */
-  /* Copernicus/StyreneB son comerciales y no se cargan aún (sin @font-face): los fallbacks definen lo que se ve hoy. */
-  --font-primary: "Copernicus", "Tiempos Headline", Georgia, "Times New Roman", serif;
-  --font-family-2: "StyreneB", Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-family-3: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  /* Familias autoalojadas en src/fonts.css (DESIGN.md §0.6): Fraunces, Atkinson Hyperlegible Next, Reenie Beanie y Spline Sans Mono. */
+  --font-primary: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-display: var(--font-primary);
+  --font-family-2: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body: var(--font-family-2);
+  --font-sans: var(--font-family-2);
+  --font-script: "Reenie Beanie", cursive;
+  --font-handwriting: var(--font-script);
+  --font-family-3: "Spline Sans Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --font-code: var(--font-family-3);
+  /* El manuscrito se lee mal por debajo de 22px (Reenie Beanie tiene la altura de x muy baja). */
+  --text-script-min: 1.375rem;
 
   /* Type scale & metrics */
-  --text-display-xl: 64px;
+  /* Escala fluida de titulares (DESIGN.md §0.6). */
+  --text-display-xl: clamp(3rem, 1.5rem + 6vw, 6rem);
   --leading-display-xl: 1.05;
   --tracking-display-xl: -1.5px;
-  --text-display-lg: 48px;
+  --text-display-lg: clamp(2.25rem, 1.4rem + 3.5vw, 4rem);
   --leading-display-lg: 1.1;
   --tracking-display-lg: -1px;
-  --text-display-md: 36px;
+  --text-display-md: clamp(1.75rem, 1.3rem + 2vw, 2.5rem);
   --leading-display-md: 1.15;
   --tracking-display-md: -0.5px;
   --text-display-sm: 28px;
@@ -76,7 +130,11 @@
   --text-body-sm: 14px;
   --leading-body-sm: 1.55;
   --tracking-body-sm: 0;
+  --text-script-quote: 18px;
+  --leading-script-quote: 1.4;
+  --tracking-script-quote: 0.01em;
   --text-caption: 13px;
+  --text-micro: 11px;
   --leading-caption: 1.4;
   --tracking-caption: 0;
   --text-caption-uppercase: 12px;
@@ -111,19 +169,64 @@
   --radius-pill: 9999px;
   --radius-full: 9999px;
 
-  /* Elevación y sombras antislop (R-12) */
+  /* Elevación y sombras antislop (R-12) & Papercraft */
   --shadow-sm: 0 1px 3px rgba(20, 20, 19, 0.06);
   --shadow-md: 0 4px 12px rgba(20, 20, 19, 0.08);
   --shadow-lg: 0 12px 32px rgba(20, 20, 19, 0.14);
+  --shadow-paper: 0 1px 3px rgba(26, 25, 23, 0.07), 0 6px 18px -2px rgba(26, 25, 23, 0.06);
+  --shadow-folder-tab: 0 4px 14px rgba(26, 25, 23, 0.05), 0 12px 28px rgba(26, 25, 23, 0.04);
+  --shadow-postit: 0 6px 16px rgba(26, 25, 23, 0.08), 0 1px 2px rgba(26, 25, 23, 0.08);
+  --shadow-dark-elevated: 0 8px 30px rgba(0, 0, 0, 0.12);
   --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-primary);
+  --tap-min: 44px;
+
+  /* Tintes de Papel (DESIGN.md §0.4): el color codifica el módulo. Claro para superficies, fuerte para piezas pequeñas. */
+  /* Valores directos: los acentos de origen son tan tenues (slate 15%, sage 18% de saturación) que mezclarlos con el canvas deja papeles grises. */
+  --papel-arena: #ece0cb;
+  --papel-arena-fuerte: #e6d3b3;
+  --papel-pizarra: #ccdaea;
+  --papel-pizarra-fuerte: #b8cde5;
+  --papel-salvia: #d0e6cc;
+  --papel-salvia-fuerte: #b7deaf;
+  --papel-terracota: #f1cfc5;
+  --papel-terracota-fuerte: #eebaaa;
+  --papel-ambar: #fae1bd;
+  --papel-ambar-fuerte: #f9d59f;
+  --papel-rosa: #f8cee8;
+  --papel-rosa-fuerte: #f6b6df;
+  --papel-turquesa: #c7efe7;
+  --papel-turquesa-fuerte: #adebde;
+  /* Sobre esos tintes los textos globales bajan de 4.5:1; dentro del Papel se usan estas variantes más oscuras.
+     El degradado de esquina de la tarjeta (Papel.module.css) llega al 58% del tinte fuerte: su peor caso, 4.55:1, fija estos valores. */
+  --papel-texto-suave: #585651;
+  --papel-texto-exito: #2b6137;
+  --papel-texto-turquesa: #295f55;
+  --papel-texto-ambar: #7d4a12;
+  --papel-texto-magenta: #8c2f89;
+  --papel-texto-error: #9c3030;
 
   /* Tokens de compatibilidad y alias historicos */
   --color-surface: var(--color-surface-soft);
+  --color-background: var(--bg-card);
+  --color-surface-bright: #FFFFFF;
+  --color-secondary: var(--color-primary-active);
+  --color-tertiary: var(--color-accent-teal);
+  --color-danger: var(--color-error);
+  --color-bg-postit: var(--bg-postit);
+  --color-primary-hover: var(--color-primary-active);
+  --color-error-container: rgba(198, 69, 69, 0.12);
+  --color-accent-red: var(--color-error);
+  --font-mono: var(--font-family-3);
+  --text-headline-sm: 18px;
   --color-accent: var(--color-primary);
   --color-ink-muted: var(--color-muted);
   --font-headline: var(--font-primary);
   --elevation-lg: 0 12px 32px rgba(20, 20, 19, 0.14);
   --text-heading-sm: 16px;
+  --folder-color: #e5b23e;
+  --binder-spine-bg: #2e2620;
+  --binder-border: #1c1714;
+  --binder-border-active: #c29d59;
 
   font-family: var(--font-family-2);
   color: var(--color-body);
@@ -140,12 +243,16 @@ body {
   padding: 0;
   background-color: var(--color-canvas);
   color: var(--color-body);
-  min-height: 100vh;
+  min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  /* Grano de papel al 3 % (DESIGN.md §0.7): ruido SVG como fondo del body, no una capa fija, para no repintar al hacer scroll. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .15 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='.03'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 
 #root {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -160,10 +267,72 @@ h1, h2, h3, h4 {
   navigation: auto;
 }
 
+/* Pasar la página (DESIGN.md §0.7): 240ms y 8px de desplazamiento, solo en el contenido (`view-transition-name: pagina`).
+   El resto de la pantalla no se anima. Con `prefers-reduced-motion` la función `turnPage` ni siquiera inicia la transición. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+::view-transition-old(pagina) {
+  animation: pagina-sale 120ms ease-in both;
+}
+
+::view-transition-new(pagina) {
+  animation: pagina-entra 240ms ease-out both;
+}
+
+@keyframes pagina-sale {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pagina-entra {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
 /* Accessibility: Focus visible indicator (WCAG 2.4.7 / 1.4.11) */
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* Objetivo táctil mínimo 44x44px (antislop R-03). Sube el 40px de DESIGN.md por decisión del dueño. */
+button,
+[role='button'],
+[role='tab'] {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+}
+
+select,
+input:not([type='checkbox']):not([type='radio']):not([type='hidden']):not([type='range']),
+a[class] {
+  min-height: var(--tap-min);
+}
+
+a[class] {
+  min-width: var(--tap-min);
+}
+
+/* Móvil: los hijos de flex/grid dentro de las vistas pueden encoger en vez de empujar el ancho de la página (R-03).
+   Los controles se excluyen: conservan su mínimo táctil de 44px (también el label que envuelve un checkbox). */
+@media (max-width: 768px) {
+  main *:not(button):not([role='button']):not([role='tab']):not(a[class]):not(label:has(> input[type='checkbox'])) {
+    min-width: 0;
+  }
 }
 
 /* Accessibility: Avoid focus obscured by fixed headers (WCAG 2.4.11) */

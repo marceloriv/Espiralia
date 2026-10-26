@@ -1,0 +1,44 @@
+version: 2
+updates:
+  # Monitoreo de dependencias de frontend (npm / package.json)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Santiago"
+    target-branch: "develop"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "marceloriv"
+    commit-message:
+      prefix: ":wrench: chore(deps)"
+      include: "scope"
+    groups:
+      lint-and-types:
+        patterns:
+          - "@types/*"
+          - "eslint*"
+          - "oxlint*"
+      testing:
+        patterns:
+          - "vitest*"
+          - "@testing-library/*"
+          - "@vitest/*"
+
+  # Monitoreo de dependencias de GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Santiago"
+    target-branch: "develop"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "marceloriv"
+    commit-message:
+      prefix: ":wrench: chore(ci)"
+      include: "scope"
