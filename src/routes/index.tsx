@@ -14,6 +14,7 @@ const NotesView = lazy(() => import('../components/NotesView').then(m => ({ defa
 const FoldersView = lazy(() => import('../components/FoldersView').then(m => ({ default: m.FoldersView })));
 const IntegrationsView = lazy(() => import('../components/IntegrationsView').then(m => ({ default: m.IntegrationsView })));
 const LandingView = lazy(() => import('../components/LandingView').then(m => ({ default: m.LandingView })));
+const NotFoundView = lazy(() => import('../components/NotFoundView').then(m => ({ default: m.NotFoundView })));
 
 interface AppRoutesProps {
   activeProfile: Profile | null;
@@ -163,8 +164,18 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
         />
       </Route>
 
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      {/* Dirección desconocida: pantalla 404 en vez de una redirección en silencio */}
+      <Route
+        path="*"
+        element={
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <NotFoundView
+              hasActiveProfile={Boolean(activeProfile)}
+              onNavigateHome={() => navigate(activeProfile ? '/dashboard' : '/inicio')}
+            />
+          </Suspense>
+        }
+      />
     </Routes>
   );
 };

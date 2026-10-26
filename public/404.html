@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Página no encontrada · Espiralia</title>
+    <!-- Página autónoma: no carga el bundle ni fuentes, así que los colores van fijos (los mismos de src/index.css). -->
+    <style>
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 32px 16px;
+        box-sizing: border-box;
+        background: #faf9f5;
+        color: #141413;
+        font-family: Georgia, "Times New Roman", serif;
+        text-align: center;
+      }
+      main { max-width: 44ch; }
+      h1 { margin: 0 0 12px; font-size: 2rem; line-height: 1.15; }
+      p { margin: 0 0 20px; color: #3d3d3a; }
+      a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 24px;
+        border-radius: 8px;
+        background: #8e1ea2;
+        color: #ffffff;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      a:focus-visible { outline: 3px solid #8e1ea2; outline-offset: 3px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Esta página no existe</h1>
+      <p>La dirección que escribiste no lleva a ningún cuaderno. Revisa que esté bien escrita o vuelve al punto de partida.</p>
+      <a id="volver" href="/">Volver al inicio</a>
+    </main>
+    <script>
+      // GitHub Pages sirve este archivo para cualquier URL que no existe. La app usa rutas con hash, así que la dirección
+      // se lleva al hash (/Espiralia/agenda pasa a /Espiralia/#/agenda) y la app decide si existe: si no, muestra su 404
+      // con el Nautilus. Esta página solo es el puente y el respaldo sin JavaScript.
+      // El sitio publicado vive en /Espiralia/; en desarrollo o con dominio propio vive en la raíz.
+      (function () {
+        var SITIO = '/Espiralia/';
+        var base = location.pathname.indexOf(SITIO) === 0 ? SITIO : '/';
+        document.getElementById('volver').setAttribute('href', base);
+        var resto = location.pathname.slice(base.length);
+        if (resto) location.replace(base + '#/' + resto);
+      })();
+    </script>
+  </body>
+</html>

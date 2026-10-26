@@ -1,0 +1,83 @@
+.pantalla {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 16px;
+  text-align: center;
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+/* La hoja que sostiene el origami: mismo degradado y borde rasgado que la hoja de la barra lateral. */
+.hoja {
+  display: flex;
+  justify-content: center;
+  width: min(100%, 340px);
+  padding: 30px 0 22px;
+  margin-bottom: 8px;
+  background-color: var(--papel-arena);
+  background-image: linear-gradient(120deg,
+    color-mix(in srgb, var(--papel-pizarra) 65%, var(--bg-card)),
+    var(--papel-arena) 48%,
+    color-mix(in srgb, var(--papel-rosa) 65%, var(--bg-card)));
+  clip-path: polygon(0 4%, 5% 2%, 10% 5%, 16% 1%, 23% 4%, 30% 2%, 38% 4%, 47% 1%, 55% 4%, 64% 2%, 73% 5%, 82% 1%, 91% 4%, 100% 2%, 100% 96%, 94% 99%, 87% 96%, 79% 99%, 70% 96%, 61% 99%, 52% 96%, 43% 99%, 34% 96%, 25% 99%, 16% 96%, 8% 99%, 0 96%);
+}
+
+.etiqueta {
+  margin: 0;
+  font-family: var(--font-code);
+  font-size: var(--text-caption-uppercase);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--papel-texto-magenta);
+}
+
+.titulo {
+  margin: 0;
+  font-size: var(--text-display-md);
+  line-height: 1.15;
+}
+
+/* El título recibe el foco por código al montarse: un anillo tenue deja ver adónde se movió, sin un marco duro. */
+.titulo:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+  outline-offset: 8px;
+  border-radius: 6px;
+}
+
+.texto {
+  margin: 0;
+  max-width: 44ch;
+  color: var(--color-body);
+}
+
+.direccion {
+  margin: 0;
+  max-width: 100%;
+  font-family: var(--font-code);
+  font-size: var(--text-code);
+  color: var(--color-body);
+  overflow-wrap: anywhere;
+}
+
+.boton {
+  min-width: var(--tap-min);
+  min-height: var(--tap-min);
+  margin-top: 8px;
+  padding: 0 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boton:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
