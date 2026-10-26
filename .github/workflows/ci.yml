@@ -254,6 +254,9 @@ jobs:
           firma='^co-authored-by:|generated with|-session:'
           fallos=0
           while read -r sha; do
+            # Un PR de release arrastra los commits de Dependabot de develop,
+            # con su formato propio (chore(ci)(deps)): se omiten por autor.
+            [[ $(git log -1 --format=%an "$sha") == 'dependabot[bot]' ]] && continue
             asunto=$(git log -1 --format=%s "$sha")
             if ! [[ $asunto =~ $patron ]]; then
               echo "::error::${sha:0:7} no cumple ':emoji: tipo(alcance): sujeto': $asunto"

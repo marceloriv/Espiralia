@@ -14,7 +14,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
   - **Pruebas** con cobertura y umbral de 80 % en líneas y ramas.
   - **Build** con presupuesto de 182 KB comprimidos para la carga inicial.
   - **Auditoría** con `pnpm audit`: en producción con cualquier severidad y en todo el árbol con severidad alta.
-  - **Commits**: valida Gitmoji y Conventional Commits, rechaza firmas de agente y omite los PRs de Dependabot.
+  - **Commits**: valida Gitmoji y Conventional Commits, rechaza firmas de agente y omite los PRs y commits de Dependabot.
   - **CI**: estado único que resume los anteriores.
 - Las acciones del workflow de CI están fijadas a SHA, con permisos `contents: read` y sin secretos.
 - **`.gitattributes`** con `* text=auto eol=lf` para fijar el fin de línea LF en todo el repositorio.
