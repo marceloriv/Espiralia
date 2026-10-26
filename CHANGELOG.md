@@ -4,6 +4,33 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.4.1] - 2026-10-26
+
+### Added
+
+- **Integración continua** en `.github/workflows/ci.yml`: corre en PRs a `develop` y `main`, en push a `develop`, los lunes a las 06:30 (hora de Santiago) y de forma manual. Jobs:
+  - **Lint** con eslint.
+  - **Tipos** con `tsc -b`.
+  - **Pruebas** con cobertura y umbral de 80 % en líneas y ramas.
+  - **Build** con presupuesto de 182 KB comprimidos para la carga inicial.
+  - **Auditoría** con `pnpm audit`: en producción con cualquier severidad y en todo el árbol con severidad alta.
+  - **Commits**: valida Gitmoji y Conventional Commits, rechaza firmas de agente y omite los PRs y commits de Dependabot.
+  - **CI**: estado único que resume los anteriores.
+- Las acciones del workflow de CI están fijadas a SHA, con permisos `contents: read` y sin secretos.
+- **`.gitattributes`** con `* text=auto eol=lf` para fijar el fin de línea LF en todo el repositorio.
+
+### Changed
+
+- **Dependencias de producción**: `react` y `react-dom` 19.3.1, `lucide-react` 1.61.0, `sileo` 0.1.6 y `@fullcalendar/react` 7.1.3.
+- **Dependencias de desarrollo**: `vite` 8.3.5, `vitest` y `@vitest/coverage-v8` 5.0.5, `@testing-library/user-event` 14.6.8, `jsdom` 30.1.3, `eslint` 10.13.0, `oxlint` 1.89.0 y `typescript-eslint` 8.72.0. Quedan fuera `@types/node` 26 (el runtime es Node 24.x) y `oxc-transform-react` 0.155.0. `pnpm audit` sin avisos; la carga inicial mide 181.0 KB de 182 KB.
+- **GitHub Actions** actualizadas: `actions/checkout` 7, `actions/setup-node` 7, `actions/upload-pages-artifact` 5, `github/codeql-action` 4 y `pnpm/action-setup` 6.
+- **`.gitignore`** ampliado y ordenado: ignora todas las variantes de `.env` salvo `.env.example` (antes `.env.production` quedaba fuera), además de `.tgrep/`, `.projectmem/.current_issue`, `Thumbs.db` y `desktop.ini`.
+- Sin cambios en el código de la app ni en las claves o la forma de los datos de `localStorage`.
+
+### Fixed
+
+- `dashboardMobileOrder.test.ts` fallaba en clones nuevos de Windows con `core.autocrlf=true` porque el checkout traía CRLF; `.gitattributes` fuerza LF y la prueba pasa.
+
 ## [0.4.0] - 2026-10-25
 
 ### Added
