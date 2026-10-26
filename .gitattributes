@@ -1,0 +1,4 @@
+# Fin de línea LF en todo checkout, también en Windows con core.autocrlf=true.
+# Sin esto, src/tests/dashboardMobileOrder.test.ts falla en un clon nuevo:
+# su regex busca "\n" y el checkout lo entrega como CRLF.
+* text=auto eol=lf

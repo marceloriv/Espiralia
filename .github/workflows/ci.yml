@@ -1,0 +1,294 @@
+name: Integración continua
+
+# Puerta de calidad de cada cambio. deploy.yml solo corre al publicar en main,
+# así que sin este workflow un PR a develop llegaba sin pruebas ni build.
+#
+# Jobs en paralelo: Lint, Tipos, Pruebas (con umbral de cobertura), Build (con
+# presupuesto de peso), Auditoría y Commits. El job "CI" los resume en un único
+# estado: es el que conviene marcar como check requerido en la protección de
+# ramas.
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop]
+  schedule:
+    # Lunes 06:30 (Santiago, verano): detecta CVE nuevos en dependencias sin cambios.
+    - cron: '30 9 * * 1'
+  workflow_dispatch:
+
+# Mínimo privilegio: ningún job necesita escribir en el repositorio.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 24
+  PNPM_VERSION: 10
+  # Carga inicial comprimida máxima en KB (AGENTS.md §17.1).
+  PRESUPUESTO_KB: 182
+
+# Las acciones van fijadas a un SHA de commit: los tags son mutables y un tag
+# reescrito en una acción comprometida ejecutaría código ajeno con acceso al
+# repositorio. El comentario indica la versión que corresponde a cada SHA.
+jobs:
+  lint:
+    name: Lint
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Ejecutar ESLint
+        run: pnpm exec eslint .
+
+  tipos:
+    name: Tipos
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Verificar tipos
+        run: pnpm exec tsc -b
+
+  pruebas:
+    name: Pruebas
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      # Los umbrales de líneas y ramas (80 %) viven en vite.config.ts: si la
+      # cobertura baja de ahí, este paso falla.
+      - name: Ejecutar pruebas con cobertura
+        run: pnpm exec vitest run --coverage
+
+      - name: Resumir cobertura
+        if: ${{ !cancelled() && hashFiles('coverage/lcov.info') != '' }}
+        run: |
+          node - <<'EOF'
+          const fs = require('node:fs');
+          const lcov = fs.readFileSync('coverage/lcov.info', 'utf8');
+          const suma = (clave) =>
+            [...lcov.matchAll(new RegExp(`^${clave}:(\\d+)$`, 'gm'))].reduce((total, m) => total + Number(m[1]), 0);
+          const porcentaje = (hechas, total) => (total ? ((hechas / total) * 100).toFixed(1) : '0.0');
+          const lineas = porcentaje(suma('LH'), suma('LF'));
+          const ramas = porcentaje(suma('BRH'), suma('BRF'));
+          fs.appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            `### Cobertura\n\n| Métrica | Cobertura |\n| --- | --- |\n| Líneas | ${lineas} % |\n| Ramas | ${ramas} % |\n`,
+          );
+          EOF
+
+      - name: Subir reporte de cobertura
+        if: ${{ !cancelled() && hashFiles('coverage/lcov.info') != '' }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: cobertura
+          path: coverage/lcov.info
+          retention-days: 7
+
+  build:
+    name: Build
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Compilar bundle de producción
+        run: pnpm build
+
+      # Mide igual que AGENTS.md §17.1: gzip de los JS y CSS enlazados desde
+      # dist/index.html. Los chunks por ruta (Agenda, toasts) no cuentan.
+      - name: Verificar presupuesto de peso
+        run: |
+          node - <<'EOF'
+          const fs = require('node:fs');
+          const zlib = require('node:zlib');
+          const presupuesto = Number(process.env.PRESUPUESTO_KB);
+          const html = fs.readFileSync('dist/index.html', 'utf8');
+          const archivos = [...html.matchAll(/(?:src|href)="\.?\/?(assets\/[^"]+\.(?:js|css))"/g)].map((m) => m[1]);
+          if (archivos.length === 0) {
+            console.log('::error::dist/index.html no enlaza ningún JS ni CSS: no se puede medir el peso.');
+            process.exit(1);
+          }
+          const kb = archivos.reduce((total, f) => total + zlib.gzipSync(fs.readFileSync(`dist/${f}`)).length, 0) / 1024;
+          fs.appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            `### Peso de la carga inicial\n\n${kb.toFixed(1)} KB comprimidos en ${archivos.length} archivos (presupuesto: ${presupuesto} KB)\n`,
+          );
+          if (kb > presupuesto) {
+            console.log(`::error::La carga inicial pesa ${kb.toFixed(1)} KB y el presupuesto es ${presupuesto} KB.`);
+            process.exit(1);
+          }
+          console.log(`Carga inicial: ${kb.toFixed(1)} KB de ${presupuesto} KB.`);
+          EOF
+
+      - name: Subir bundle compilado
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
+
+  auditoria:
+    name: Auditoría
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # pnpm audit lee pnpm-lock.yaml: no hace falta instalar dependencias.
+      # Producción falla con cualquier severidad (es lo que llega al navegador);
+      # el conjunto completo solo con severidad alta o crítica para que un aviso
+      # menor de una herramienta de desarrollo no bloquee todos los PRs.
+      - name: Auditar dependencias de producción
+        run: pnpm audit --prod
+
+      - name: Auditar todas las dependencias
+        run: pnpm audit --audit-level=high
+
+  commits:
+    name: Commits
+    # Dependabot usa su propio formato (chore(ci)(deps)) definido en dependabot.yml.
+    # Se filtra por autor del PR y no por github.actor, que cambia a quien
+    # pulsa "rebase" o hace push sobre el PR.
+    if: github.event_name == 'pull_request' && github.event.pull_request.user.login != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      # AGENTS.md §11: Gitmoji + Conventional Commits, sin firmas de agente.
+      # Los merge commits quedan fuera. El largo del sujeto solo avisa: 16 de los
+      # últimos 150 commits ya lo pasan y no es motivo para bloquear.
+      - name: Validar mensajes de commit
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          patron='^:[a-z0-9_+-]+: (feat|fix|style|refactor|test|chore|docs|perf|build|ci|revert)(\([a-z0-9-]+\))?!?: .+'
+          firma='^co-authored-by:|generated with|-session:'
+          fallos=0
+          while read -r sha; do
+            # Un PR de release arrastra los commits de Dependabot de develop,
+            # con su formato propio (chore(ci)(deps)): se omiten por autor.
+            [[ $(git log -1 --format=%an "$sha") == 'dependabot[bot]' ]] && continue
+            asunto=$(git log -1 --format=%s "$sha")
+            if ! [[ $asunto =~ $patron ]]; then
+              echo "::error::${sha:0:7} no cumple ':emoji: tipo(alcance): sujeto': $asunto"
+              fallos=1
+            fi
+            sujeto=${asunto#*: *: }
+            if (( ${#sujeto} > 72 )); then
+              echo "::warning::${sha:0:7} tiene un sujeto de ${#sujeto} caracteres (máximo recomendado: 72)."
+            fi
+            if git log -1 --format=%B "$sha" | grep -qiE "$firma"; then
+              echo "::error::${sha:0:7} lleva una firma de agente o de autoría automática."
+              fallos=1
+            fi
+          done < <(git log --no-merges --format=%H "$BASE_SHA..$HEAD_SHA")
+          exit $fallos
+
+  # Estado único para la protección de ramas. Con "always()" corre aunque un job
+  # falle y marca rojo si alguno falló o se canceló; "commits" omitido en un push
+  # no cuenta como fallo.
+  ci:
+    name: CI
+    if: ${{ always() && github.event_name != 'schedule' }}
+    needs: [lint, tipos, pruebas, build, auditoria, commits]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Resumir resultado
+        env:
+          RESULTADOS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Resultados: $RESULTADOS"
+          if grep -qE 'failure|cancelled' <<< "$RESULTADOS"; then
+            echo "::error::Al menos un job de CI falló o se canceló."
+            exit 1
+          fi

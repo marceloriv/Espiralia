@@ -1,7 +1,7 @@
 {
   "name": "espiralia",
   "private": true,
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -16,35 +16,35 @@
     "sonar:stop": "powershell -ExecutionPolicy Bypass -File ./stop-sonar.ps1"
   },
   "dependencies": {
-    "@fullcalendar/react": "7.1.0",
+    "@fullcalendar/react": "7.1.3",
     "@tanstack/charts": "^1.1.0",
-    "lucide-react": "^1.54.0",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "lucide-react": "^1.61.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.4",
-    "sileo": "^0.1.5",
+    "sileo": "^0.1.6",
     "temporal-polyfill": "1.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^14.6.7",
+    "@testing-library/user-event": "^14.6.8",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
-    "@vitest/coverage-v8": "5.0.3",
-    "eslint": "^10.10.0",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "^10.13.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
-    "jsdom": "^30.1.2",
+    "jsdom": "^30.1.3",
     "oxc-transform-react": "^0.153.0",
-    "oxlint": "^1.87.0",
+    "oxlint": "^1.89.0",
     "typescript": "~6.0.2",
-    "typescript-eslint": "^8.69.0",
-    "vite": "^8.3.0",
-    "vitest": "^5.0.3"
+    "typescript-eslint": "^8.72.0",
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
   }
 }
