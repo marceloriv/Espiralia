@@ -37,14 +37,14 @@ export const HabitModal: React.FC<HabitModalProps> = ({
   });
 
   useEffect(() => {
-    if (isOpen) {
-      setName(habit?.name ?? '');
-      setCategory(habit?.category ?? 'General');
-      // Foco accesible al abrir
-      setTimeout(() => {
-        nameInputRef.current?.focus();
-      }, 50);
-    }
+    if (!isOpen) return;
+    setName(habit?.name ?? '');
+    setCategory(habit?.category ?? 'General');
+    // Foco accesible al abrir; se cancela si el modal se cierra antes de los 50 ms
+    const focusTimer = setTimeout(() => {
+      nameInputRef.current?.focus();
+    }, 50);
+    return () => clearTimeout(focusTimer);
   }, [isOpen, habit]);
 
   useEffect(() => {
