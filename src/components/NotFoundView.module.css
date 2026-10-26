@@ -4,20 +4,97 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 32px 16px;
-  text-align: center;
+  padding: 40px 16px;
   background-color: var(--color-canvas);
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(20, 20, 19, 0.03) 1px, transparent 1px),
+    radial-gradient(var(--color-grid-bujo) 1px, transparent 1px);
+  background-size: 100% 100%, 20px 20px;
   color: var(--color-ink);
+  box-sizing: border-box;
 }
 
-/* La hoja que sostiene el origami: mismo degradado y borde rasgado que la hoja de la barra lateral. */
+/* Pliego central de la "Página Perdida": simula una hoja de cuaderno arrancada con anillas/perforaciones laterales y cinta washi */
+.pliego {
+  position: relative;
+  width: min(100%, 500px);
+  padding: 44px 32px 36px 44px;
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 4px 14px rgba(26, 25, 23, 0.04),
+    0 12px 28px rgba(26, 25, 23, 0.03);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+/* Cinta washi tape diagonal sujeta en la esquina superior derecha */
+.washiTape {
+  position: absolute;
+  top: -10px;
+  right: 28px;
+  width: 90px;
+  height: 22px;
+  background: var(--color-washi-primary);
+  border-left: 2px dashed rgba(142, 30, 162, 0.28);
+  border-right: 2px dashed rgba(142, 30, 162, 0.28);
+  transform: rotate(3deg);
+  pointer-events: none;
+}
+
+/* Perforaciones de espiral en el margen izquierdo del pliego */
+.perforaciones {
+  position: absolute;
+  left: 12px;
+  top: 24px;
+  bottom: 24px;
+  width: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  pointer-events: none;
+}
+
+.perforacion {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-canvas);
+  border: 1px solid color-mix(in srgb, var(--color-hairline), var(--color-ink) 12%);
+  box-shadow: inset 0 1px 2px rgba(20, 20, 19, 0.12);
+}
+
+/* Sello de imprenta artesanal desgastado "404" */
+.sello {
+  position: absolute;
+  top: 18px;
+  left: 36px;
+  padding: 4px 10px;
+  border: 2px solid var(--papel-texto-magenta);
+  border-radius: 4px;
+  font-family: var(--font-code);
+  font-size: var(--text-code);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--papel-texto-magenta);
+  transform: rotate(-3deg);
+  opacity: 0.88;
+  mask-image: radial-gradient(circle at 40% 60%, black 75%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+}
+
+/* Hoja rasgada que sostiene el origami: degradado y corte artesanal */
 .hoja {
   display: flex;
   justify-content: center;
-  width: min(100%, 340px);
-  padding: 30px 0 22px;
-  margin-bottom: 8px;
+  width: min(100%, 300px);
+  padding: 24px 0 16px;
+  margin-top: 8px;
   background-color: var(--papel-arena);
   background-image: linear-gradient(120deg,
     color-mix(in srgb, var(--papel-pizarra) 65%, var(--bg-card)),
@@ -50,8 +127,9 @@
 
 .texto {
   margin: 0;
-  max-width: 44ch;
+  max-width: 42ch;
   color: var(--color-body);
+  line-height: 1.5;
 }
 
 .direccion {
@@ -61,6 +139,10 @@
   font-size: var(--text-code);
   color: var(--color-body);
   overflow-wrap: anywhere;
+  background-color: var(--color-canvas);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--color-hairline);
 }
 
 .boton {
@@ -75,9 +157,45 @@
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.boton:hover {
+  background-color: var(--color-primary-active);
+  transform: translateY(-1px);
 }
 
 .boton:focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pliego {
+    animation: pliegoEntrada 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  @keyframes pliegoEntrada {
+    from {
+      opacity: 0;
+      transform: scale(0.98) translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .pliego {
+    padding: 36px 16px 28px 24px;
+  }
+  .perforaciones {
+    left: 6px;
+  }
+  .sello {
+    left: 20px;
+    top: 14px;
+    font-size: 0.75rem;
+  }
 }

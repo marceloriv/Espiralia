@@ -171,7 +171,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           <Suspense fallback={<RouteLoadingFallback />}>
             <NotFoundView
               hasActiveProfile={Boolean(activeProfile)}
-              onNavigateHome={() => navigate(activeProfile ? '/dashboard' : '/inicio')}
+              onNavigateHome={() => turnPage(() => navigate(activeProfile ? '/dashboard' : '/inicio'))}
             />
           </Suspense>
         }
