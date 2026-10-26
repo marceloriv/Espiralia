@@ -29,12 +29,12 @@ describe('Sin peticiones externas al cargar', () => {
 
   it('cada @font-face apunta a un archivo woff2 que existe', () => {
     const files = [...fontsCss.matchAll(/url\("\.\/([^"]+\.woff2)"\)/g)].map(m => m[1]);
-    expect(files.length).toBeGreaterThanOrEqual(4);
+    expect(files.length).toBeGreaterThanOrEqual(5);
     for (const f of files) expect(existsSync(path.join('src', f)), f).toBe(true);
   });
 
   // Técnica: tabla de decisión. Cada familia que el CSS nombra primero debe tener su @font-face.
-  it.each(['Fraunces', 'Atkinson Hyperlegible Next', 'Reenie Beanie', 'Spline Sans Mono'])('la familia %s está autoalojada con font-display swap', family => {
+  it.each(['Fraunces', 'Atkinson Hyperlegible Next', 'Playball', 'Reenie Beanie', 'Spline Sans Mono'])('la familia %s está autoalojada con font-display swap', family => {
     const block = fontsCss.split('@font-face').find(b => b.includes(`font-family: "${family}"`));
     expect(block, family).toBeDefined();
     expect(block).toMatch(/font-display:\s*swap/);

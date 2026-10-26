@@ -88,8 +88,9 @@
   --sileo-duration: 600ms;
 
   /* Typography */
-  /* Familias autoalojadas en src/fonts.css (DESIGN.md §0.6): Fraunces, Atkinson Hyperlegible Next, Reenie Beanie y Spline Sans Mono. */
+  /* Familias autoalojadas en src/fonts.css (DESIGN.md §0.6): Fraunces, Playball, Atkinson Hyperlegible Next, Reenie Beanie y Spline Sans Mono. */
   --font-primary: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-title: "Playball", var(--font-primary);
   --font-display: var(--font-primary);
   --font-family-2: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-body: var(--font-family-2);
@@ -261,6 +262,12 @@ h1, h2, h3, h4 {
   font-family: var(--font-primary);
   color: var(--color-ink);
   margin-top: 0;
+}
+
+/* Títulos h1 en Playball (DESIGN.md §0.6). Cada h1 lleva una clase de CSS Modules con su propia font-family; este selector, más específico, las gana a todas. Una caligrafía enlazada no admite interletraje negativo. */
+h1[class] {
+  font-family: var(--font-title);
+  letter-spacing: 0;
 }
 
 @view-transition {
