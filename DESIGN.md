@@ -77,13 +77,15 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 | Rol | Familia | Uso |
 | :--- | :--- | :--- |
 | Display | **Fraunces** (variable; ejes `opsz` y `wght`, `SOFT` fijo en 100) | Fecha, titulares y citas. |
+| Título | **Playball** (un solo peso, 400) | Todo `h1` de la app, incluida la marca de la barra lateral. A 22px o más (`--text-script-min`), sin interletraje negativo: es una caligrafía enlazada. |
 | Cuerpo | **Atkinson Hyperlegible Next** | Listas, formularios, controles. Reemplaza a Inter, que es la sans por defecto de este tipo de interfaz. |
 | Manuscrito | **Reenie Beanie** | Aforismos y notas, a 22px o más. Reemplaza a Caveat. |
 | Técnica | **Spline Sans Mono** | Semana ISO, horas, almacenamiento, metadatos. Reemplaza a JetBrains Mono. |
 
-- Las cuatro familias se publican con licencia abierta (OFL); se confirma al descargar cada una.
+- Las cinco familias se publican con licencia abierta (OFL); se confirma al descargar cada una.
+- **Los `h1` van en Playball** (descargada de Google Fonts el 2026-10-26). Cada `h1` tiene una clase de CSS Modules con su propia `font-family`, así que la regla `h1[class]` de `src/index.css` los cubre a todos con un selector más específico; los `h1` nuevos la heredan sin tocar su módulo.
 - Se sirven desde el sitio, en `woff2`, con subconjunto latino y `font-display: swap`. Para bajar el peso se fijan los ejes que no se usan (`WONK`, `SOFT`) con `fonttools`.
-- **El presupuesto se mide antes de comprometerlo.** Hasta tener el número real, la ruta crítica (display y cuerpo) no supera 120KB; el manuscrito y la monoespaciada se cargan por `unicode-range` solo si se usan.
+- **El presupuesto se mide antes de comprometerlo.** Display, cuerpo y título (Fraunces, Atkinson y Playball) no superan 130KB en la ruta crítica: miden 127KB, y Playball pesa 31KB y se precarga porque el `h1` está sobre el pliegue en todas las vistas. El tope era 120KB antes de sumar Playball. El manuscrito y la monoespaciada se cargan por `unicode-range` solo si se usan.
 - Escala fluida: `display-xl: clamp(3rem, 1.5rem + 6vw, 6rem)`, `display-lg: clamp(2.25rem, 1.4rem + 3.5vw, 4rem)`, `display-md: clamp(1.75rem, 1.3rem + 2vw, 2.5rem)`. Cuerpo mínimo de 15px; el mínimo absoluto sigue siendo `--text-micro` (11px).
 
 ### 0.7 Movimiento y grano
@@ -171,7 +173,10 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 - **Landing y Acceso** (no son módulos, §0.4): la mesa de trabajo lleva arena; los tres pilares, pizarra, salvia y ámbar (el color de su solapa); los tres momentos del día, rosa, terracota y turquesa (el de su cinta); la intención de hoy, salvia. El Acceso pierde la cuadrícula de puntos del fondo y conserva sus papeles, que ya traen el degradado de esquina.
 - **Contraste del degradado de esquina:** al 58% el texto secundario del Papel bajaba a 4.18:1; los seis `--papel-texto-*` se oscurecieron un 6% y `textTokensContrast.test.ts` mide la esquina de los siete tintes.
 - **Barra lateral:** degradado pizarra, arena y rosa (160°), y debajo de la navegación una hoja de origami en CSS (`OrigamiHoja`: molinillo, caracol y rosa, con el alfiler magenta de las tres figuras). Solo se muestra con 1024px de ancho y 900px de alto o más; el riel de íconos, el móvil y `forced-colors` la ocultan.
-- **Excepción a R-19 (movimiento sin propósito), mantenida por la persona dueña:** el molinillo gira una vuelta cada 24 s, solo con `prefers-reduced-motion: no-preference`. Es la única animación infinita de la app fuera del spinner de carga (`antislopMotion.test.ts`).
+- **Excepción a R-19 (movimiento sin propósito), mantenida por la persona dueña:** el molinillo gira una vuelta cada 24 s, solo con `prefers-reduced-motion: no-preference`. Junto con el Nautilus de la página 404, es la única animación infinita de la app fuera del spinner de carga (`antislopMotion.test.ts`).
+- **Página 404 y Nautilus (decisión de la persona dueña, 2026-10-26):** una dirección desconocida muestra `NotFoundView`, a pantalla completa y con o sin sesión, en vez de redirigir en silencio a la raíz. La ilustra `OrigamiNautilus`, un origami en CSS con la técnica de `OrigamiHoja`: caparazón de franjas radiales que nacen del centro de la espiral, cuatro cámaras como anillos, capucha de dos tonos con el alfiler magenta y cinco tentáculos. Va fuera del árbol de accesibilidad, sin `drop-shadow` y oculto con `forced-colors`.
+- **Movimiento del Nautilus (segunda excepción a R-19):** el caparazón se pliega una vez al entrar y después el animal flota 8 s por ciclo, con los tentáculos ondulando 5 s. Todo bajo `prefers-reduced-motion: no-preference`; sin movimiento queda quieto y completo.
+- **`public/404.html`:** GitHub Pages lo sirve para cualquier URL inexistente. Lleva `/Espiralia/<ruta>` a `/Espiralia/#/<ruta>` para que la app decida si la ruta existe y, si no, muestre su 404; sin JavaScript queda como página mínima con enlace de regreso.
 - **Presupuesto de sombras (§0.10.7):** la hoja de origami no usa `filter: drop-shadow`, para no sumar a las cuatro de las tarjetas de Papel.
 
 ---

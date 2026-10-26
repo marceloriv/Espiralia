@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Página no encontrada · Espiralia</title>
+    <!-- Página autónoma: no carga el bundle ni fuentes externas para mantener autonomía sin red. -->
+    <style>
+      :root {
+        --color-primary: #8e1ea2;
+        --color-primary-hover: #79188a;
+        --color-canvas: #faf9f5;
+        --color-card: #ffffff;
+        --color-ink: #141413;
+        --color-body: #3d3d3a;
+        --color-muted: #64625c;
+        --color-hairline: #e6dfd8;
+        --papel-arena: #f5eedf;
+        --papel-arena-fuerte: #ebdcc3;
+        --papel-terracota: #f2e3dc;
+        --papel-terracota-fuerte: #dfbead;
+        --color-bujo-grid: #dfd8cc;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 40px 16px;
+        background-color: var(--color-canvas);
+        /* Trama sutil de cuaderno bujo / textura analógica */
+        background-image:
+          radial-gradient(circle at 50% 50%, rgba(20, 20, 19, 0.03) 1px, transparent 1px),
+          radial-gradient(var(--color-bujo-grid) 1px, transparent 1px);
+        background-size: 100% 100%, 20px 20px;
+        color: var(--color-ink);
+        font-family: Georgia, "Times New Roman", -apple-system, serif;
+        text-align: center;
+      }
+
+      main {
+        position: relative;
+        max-width: 500px;
+        width: 100%;
+        background-color: var(--color-card);
+        border: 1px solid var(--color-hairline);
+        border-radius: 16px;
+        padding: 44px 32px 36px 44px;
+        box-shadow:
+          0 4px 14px rgba(26, 25, 23, 0.04),
+          0 12px 28px rgba(26, 25, 23, 0.03);
+      }
+
+      /* Tira decorativa de washi tape en la esquina superior derecha */
+      .washi-tape {
+        position: absolute;
+        top: -10px;
+        right: 28px;
+        width: 90px;
+        height: 22px;
+        background: rgba(142, 30, 162, 0.16);
+        border-left: 2px dashed rgba(142, 30, 162, 0.28);
+        border-right: 2px dashed rgba(142, 30, 162, 0.28);
+        transform: rotate(3deg);
+        pointer-events: none;
+      }
+
+      /* Perforaciones de espiral en el margen izquierdo */
+      .perforaciones {
+        position: absolute;
+        left: 12px;
+        top: 24px;
+        bottom: 24px;
+        width: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        pointer-events: none;
+      }
+
+      .perforacion {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: var(--color-canvas);
+        border: 1px solid rgba(26, 25, 23, 0.15);
+        box-shadow: inset 0 1px 2px rgba(20, 20, 19, 0.12);
+      }
+
+      /* Sello de tinta "404" desgastado */
+      .sello {
+        position: absolute;
+        top: 18px;
+        left: 36px;
+        padding: 4px 10px;
+        border: 2px solid var(--color-primary);
+        border-radius: 4px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: var(--color-primary);
+        transform: rotate(-3deg);
+        opacity: 0.88;
+        pointer-events: none;
+      }
+
+      /* Hoja recortada artesanal para el motivo visual del Nautilus */
+      .hoja {
+        position: relative;
+        margin: 0 auto 24px;
+        width: 220px;
+        height: 150px;
+        background-color: var(--papel-arena);
+        background-image: linear-gradient(135deg, var(--papel-arena) 35%, var(--papel-arena-fuerte) 100%);
+        clip-path: polygon(
+          0 4%, 6% 1%, 14% 4%, 22% 1%, 31% 3%, 40% 1%, 49% 4%, 58% 1%, 67% 3%, 76% 1%, 85% 4%, 93% 1%, 100% 3%,
+          100% 97%, 94% 99%, 86% 96%, 78% 99%, 69% 97%, 60% 99%, 51% 96%, 42% 99%, 33% 97%, 24% 99%, 15% 96%, 7% 99%, 0 97%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Silueta geométrica plegada CSS puro de Nautilus */
+      .nautilo {
+        position: relative;
+        width: 140px;
+        height: 110px;
+        pointer-events: none;
+      }
+
+      .nautilo i {
+        position: absolute;
+        display: block;
+      }
+
+      .caparazon {
+        left: 10px;
+        top: 6px;
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        background: repeating-conic-gradient(
+          from 95deg at 22% 51%,
+          var(--papel-arena) 0 12deg,
+          var(--papel-arena-fuerte) 12deg 20deg,
+          #e3d1b6 20deg 30deg
+        );
+      }
+
+      .caparazon::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        clip-path: polygon(46% 0, 100% 0, 100% 100%, 30% 100%);
+        background: rgba(20, 20, 19, 0.08);
+      }
+
+      .camara {
+        left: 20px;
+        box-sizing: border-box;
+        border: 2px solid rgba(138, 114, 84, 0.5);
+        border-radius: 50%;
+      }
+
+      .camara:nth-child(2) {
+        top: 21px;
+        width: 70px;
+        height: 70px;
+        border-top-color: transparent;
+        transform: rotate(-20deg);
+      }
+
+      .camara:nth-child(3) {
+        top: 32px;
+        width: 48px;
+        height: 48px;
+        border-bottom-color: transparent;
+        transform: rotate(25deg);
+      }
+
+      .camara:nth-child(4) {
+        top: 40px;
+        width: 32px;
+        height: 32px;
+        border-top-color: transparent;
+        transform: rotate(-30deg);
+      }
+
+      .alfiler {
+        left: 31px;
+        top: 53px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--color-primary);
+      }
+
+      .capucha {
+        left: 70px;
+        top: 38px;
+        width: 58px;
+        height: 52px;
+        clip-path: polygon(0 40%, 16% 10%, 50% 0, 88% 14%, 100% 48%, 92% 84%, 60% 100%, 26% 92%, 6% 70%);
+        background: linear-gradient(152deg, var(--papel-terracota) 0 50%, var(--papel-terracota-fuerte) 50% 100%);
+      }
+
+      .ojo {
+        left: 82px;
+        top: 60px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #141413;
+      }
+
+      .tentaculo {
+        width: 22px;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--papel-arena-fuerte);
+        left: 114px;
+        transform-origin: left center;
+      }
+      .tentaculo:nth-child(8) { top: 48px; transform: rotate(-14deg); }
+      .tentaculo:nth-child(9) { top: 56px; transform: rotate(-5deg); }
+      .tentaculo:nth-child(10) { top: 64px; transform: rotate(4deg); }
+      .tentaculo:nth-child(11) { top: 72px; transform: rotate(14deg); }
+
+      /* Animación suave de flotación editorial del origami */
+      @media (prefers-reduced-motion: no-preference) {
+        main {
+          animation: pliegoEntrada 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+        @keyframes pliegoEntrada {
+          from { opacity: 0; transform: scale(0.98) translateY(6px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .nautilo {
+          animation: nautilusFlota 8s ease-in-out infinite alternate;
+        }
+        @keyframes nautilusFlota {
+          0% { transform: translateY(0) rotate(0deg); }
+          100% { transform: translateY(-4px) rotate(1.2deg); }
+        }
+      }
+
+      @media (forced-colors: active) {
+        .hoja, .nautilo, .perforaciones, .washi-tape, .sello {
+          display: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        main {
+          padding: 36px 16px 28px 24px;
+        }
+        .perforaciones {
+          left: 6px;
+        }
+        .sello {
+          left: 20px;
+          top: 14px;
+          font-size: 0.75rem;
+        }
+      }
+
+      .etiqueta {
+        margin: 0 0 6px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--color-primary);
+        font-weight: 700;
+      }
+
+      h1 {
+        margin: 0 0 14px;
+        font-size: 2rem;
+        line-height: 1.15;
+        font-weight: 700;
+        color: var(--color-ink);
+        letter-spacing: -0.015em;
+      }
+
+      p.descripcion {
+        margin: 0 0 28px;
+        color: var(--color-body);
+        font-size: 1rem;
+        line-height: 1.55;
+      }
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 28px;
+        border-radius: 8px;
+        background: var(--color-primary);
+        color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: background-color 0.15s ease, transform 0.15s ease;
+      }
+
+      a:hover {
+        background: var(--color-primary-hover);
+        transform: translateY(-1px);
+      }
+
+      a:focus-visible {
+        outline: 3px solid var(--color-primary);
+        outline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="washi-tape" aria-hidden="true"></div>
+      <div class="perforaciones" aria-hidden="true">
+        <span class="perforacion"></span>
+        <span class="perforacion"></span>
+        <span class="perforacion"></span>
+        <span class="perforacion"></span>
+        <span class="perforacion"></span>
+        <span class="perforacion"></span>
+      </div>
+      <div class="sello" aria-hidden="true">404</div>
+
+      <div class="hoja" aria-hidden="true">
+        <div class="nautilo">
+          <i class="caparazon"></i>
+          <i class="camara"></i>
+          <i class="camara"></i>
+          <i class="camara"></i>
+          <i class="alfiler"></i>
+          <i class="capucha"></i>
+          <i class="ojo"></i>
+          <i class="tentaculo"></i>
+          <i class="tentaculo"></i>
+          <i class="tentaculo"></i>
+          <i class="tentaculo"></i>
+        </div>
+      </div>
+      <div class="etiqueta">Error 404</div>
+      <h1>Esta página no existe</h1>
+      <p class="descripcion">La dirección que escribiste no lleva a ningún cuaderno. Revisa que esté bien escrita o vuelve al punto de partida.</p>
+      <a id="volver" href="/">Volver al inicio</a>
+    </main>
+    <script>
+      // GitHub Pages sirve este archivo para cualquier URL que no existe. La app usa rutas con hash, así que la dirección
+      // se lleva al hash (/Espiralia/agenda pasa a /Espiralia/#/agenda) y la app decide si existe: si no, muestra su 404
+      // con el Nautilus. Esta página solo es el puente y el respaldo sin JavaScript.
+      // El sitio publicado vive en /Espiralia/; en desarrollo o con dominio propio vive en la raíz.
+      (function () {
+        var SITIO = '/Espiralia/';
+        var base = location.pathname.indexOf(SITIO) === 0 ? SITIO : '/';
+        document.getElementById('volver').setAttribute('href', base);
+        var resto = location.pathname.slice(base.length);
+        if (resto) location.replace(base + '#/' + resto);
+      })();
+    </script>
+  </body>
+</html>
