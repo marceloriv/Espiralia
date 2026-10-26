@@ -77,13 +77,15 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 | Rol | Familia | Uso |
 | :--- | :--- | :--- |
 | Display | **Fraunces** (variable; ejes `opsz` y `wght`, `SOFT` fijo en 100) | Fecha, titulares y citas. |
+| Título | **Playball** (un solo peso, 400) | Todo `h1` de la app, incluida la marca de la barra lateral. A 22px o más (`--text-script-min`), sin interletraje negativo: es una caligrafía enlazada. |
 | Cuerpo | **Atkinson Hyperlegible Next** | Listas, formularios, controles. Reemplaza a Inter, que es la sans por defecto de este tipo de interfaz. |
 | Manuscrito | **Reenie Beanie** | Aforismos y notas, a 22px o más. Reemplaza a Caveat. |
 | Técnica | **Spline Sans Mono** | Semana ISO, horas, almacenamiento, metadatos. Reemplaza a JetBrains Mono. |
 
-- Las cuatro familias se publican con licencia abierta (OFL); se confirma al descargar cada una.
+- Las cinco familias se publican con licencia abierta (OFL); se confirma al descargar cada una.
+- **Los `h1` van en Playball** (descargada de Google Fonts el 2026-10-26). Cada `h1` tiene una clase de CSS Modules con su propia `font-family`, así que la regla `h1[class]` de `src/index.css` los cubre a todos con un selector más específico; los `h1` nuevos la heredan sin tocar su módulo.
 - Se sirven desde el sitio, en `woff2`, con subconjunto latino y `font-display: swap`. Para bajar el peso se fijan los ejes que no se usan (`WONK`, `SOFT`) con `fonttools`.
-- **El presupuesto se mide antes de comprometerlo.** Hasta tener el número real, la ruta crítica (display y cuerpo) no supera 120KB; el manuscrito y la monoespaciada se cargan por `unicode-range` solo si se usan.
+- **El presupuesto se mide antes de comprometerlo.** Display, cuerpo y título (Fraunces, Atkinson y Playball) no superan 130KB en la ruta crítica: miden 127KB, y Playball pesa 31KB y se precarga porque el `h1` está sobre el pliegue en todas las vistas. El tope era 120KB antes de sumar Playball. El manuscrito y la monoespaciada se cargan por `unicode-range` solo si se usan.
 - Escala fluida: `display-xl: clamp(3rem, 1.5rem + 6vw, 6rem)`, `display-lg: clamp(2.25rem, 1.4rem + 3.5vw, 4rem)`, `display-md: clamp(1.75rem, 1.3rem + 2vw, 2.5rem)`. Cuerpo mínimo de 15px; el mínimo absoluto sigue siendo `--text-micro` (11px).
 
 ### 0.7 Movimiento y grano
