@@ -134,11 +134,11 @@ export function parseBujoContent(content: string, defaultTitle?: string): BujoBl
     }
 
     // 1. Detección de encabezados (§ o #)
-    const headingMatch = trimmed.match(/^(?:#+|§)\s*(.*)$/);
+    const headingMatch = trimmed.match(/^(?:#+|§)/);
     if (headingMatch) {
       flushParagraph();
       headingCount++;
-      const rawTitle = headingMatch[1] || '';
+      const rawTitle = trimmed.slice(headingMatch[0].length).trim();
       const cleanTitle = cleanHeadingTitle(rawTitle);
 
       blocks.push({
@@ -159,7 +159,7 @@ export function parseBujoContent(content: string, defaultTitle?: string): BujoBl
       }
 
       const match = calloutText.match(
-        /^\[(caja|hito|callout):\s*([^|\]]+)(?:\|\s*([^|\]]+))?(?:\|\s*([^\]]+))?\]/
+        /^\[(caja|hito|callout):([^|\]]+)(?:\|([^|\]]+))?(?:\|([^\]]+))?\]/
       );
 
       if (match) {
@@ -179,15 +179,15 @@ export function parseBujoContent(content: string, defaultTitle?: string): BujoBl
         }
 
         const emojiMatch = part1.match(
-          /^(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)\s*(.*)$/u
+          /^\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*/u
         );
 
         let icon: string;
         let title: string;
 
         if (emojiMatch) {
-          icon = emojiMatch[1];
-          title = emojiMatch[2]?.trim() || '';
+          icon = emojiMatch[0];
+          title = part1.slice(emojiMatch[0].length).trim();
         } else {
           icon = DEFAULT_TAG_ICONS[tag] || '📌';
           title = part1;

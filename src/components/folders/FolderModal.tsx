@@ -45,7 +45,7 @@ const FolderModalContent: React.FC<FolderModalProps> = ({
   };
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div className={styles.modalOverlay} onClick={onClose} role="presentation">
       <div
         className={styles.modalBox}
         onClick={(e) => e.stopPropagation()}

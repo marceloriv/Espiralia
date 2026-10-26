@@ -6,7 +6,6 @@ export const LandingHeroCard: React.FC = () => {
     <div
       className={styles.heroVignetteContainer}
       data-interactive-stack="true"
-      tabIndex={0}
       role="group"
       aria-label="Bodegón de papelería interactivo: dossier, día de ejemplo y aforismo"
     >

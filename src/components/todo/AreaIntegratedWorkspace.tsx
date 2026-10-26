@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { focusOnMount } from '../../utils/useDialogFocus';
 import {
   Calendar,
   CheckSquare,
@@ -217,7 +218,7 @@ export const AreaIntegratedWorkspace: React.FC<AreaIntegratedWorkspaceProps> = (
                 placeholder="Título del evento..."
                 value={quickEventTitle}
                 onChange={e => setQuickEventTitle(e.target.value)}
-                autoFocus
+                ref={focusOnMount}
               />
               <button type="submit" className={styles.btnAddTodo}>Guardar</button>
               <button type="button" className={styles.btnDeleteTask} onClick={() => setIsAddingEvent(false)}>✕</button>

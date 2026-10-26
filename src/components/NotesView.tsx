@@ -212,7 +212,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       if (raw) {
         try {
           const d = new Date(raw);
-          if (!isNaN(d.getTime())) {
+          if (!Number.isNaN(d.getTime())) {
             return d.toLocaleDateString('es-CL', {
               weekday: 'long',
               year: 'numeric',

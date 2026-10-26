@@ -90,7 +90,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
 
   // Formato del título del mes actual
   const [yearStr, monthStr] = selectedDate.split('-');
-  const monthIdx = parseInt(monthStr, 10) - 1;
+  const monthIdx = Number.parseInt(monthStr, 10) - 1;
   const currentMonthTitle = `${MONTH_NAMES[monthIdx] || 'Octubre'} ${yearStr || '2026'}`;
 
   // Cambiar de día no descarta lo escrito: en edición conserva el formulario; si no, solo mueve fecha y horas.

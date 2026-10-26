@@ -85,10 +85,6 @@ export class VaultService {
     const restoredProfile: Profile = {
       ...backup.profile,
       id: destProfileId,
-      name:
-        mode === 'new_profile' && backup.profile.name === 'Perfil Origen'
-          ? backup.profile.name
-          : backup.profile.name,
       createdAt: mode === 'new_profile' ? new Date().toISOString() : backup.profile.createdAt,
     };
 

@@ -246,7 +246,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     }
 
     const newNote: Note = {
-      id: `note-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      id: `note-${Date.now()}-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36).slice(0, 5)}`,
       profileId: profile.id,
       title: `Reflexión diaria: ${formatHeroDate(now)}`,
       content: lines.join('\n\n'),
@@ -993,7 +993,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               const dueDates = pendingAreaTodos
                 .filter(t => Boolean(t.dueDate))
                 .map(t => t.dueDate!)
-                .sort();
+                .sort((a, b) => a.localeCompare(b));
               const deadline = dueDates.length > 0 ? `Plazo: ${dueDates[0]}` : 'Sin fecha límite fijada';
               const actionLabel = `Ver área`;
               const displayTitle = s.area.name;
@@ -1141,8 +1141,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* 3-Column Ruled Lines Grid */}
         <div className={styles.reflectionGrid3Col}>
           <div className={styles.reflectionField}>
-            <label className={styles.reflectionLabel}>¿Qué salió bien hoy?</label>
+            <label className={styles.reflectionLabel} htmlFor="reflexion-salio-bien">¿Qué salió bien hoy?</label>
             <textarea
+              id="reflexion-salio-bien"
               className={styles.reflectionTextarea}
               placeholder="Escribe aquí los momentos de calma, avances o pequeñas victorias..."
               rows={3}
@@ -1152,8 +1153,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           <div className={styles.reflectionField}>
-            <label className={styles.reflectionLabel}>¿Qué puedo mejorar?</label>
+            <label className={styles.reflectionLabel} htmlFor="reflexion-mejorar">¿Qué puedo mejorar?</label>
             <textarea
+              id="reflexion-mejorar"
               className={styles.reflectionTextarea}
               placeholder="Reconoce tropiezos con amabilidad y sin juzgarte con dureza..."
               rows={3}
@@ -1163,8 +1165,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           <div className={styles.reflectionField}>
-            <label className={styles.reflectionLabel}>¿Cuál será mi primer paso mañana?</label>
+            <label className={styles.reflectionLabel} htmlFor="reflexion-primer-paso">¿Cuál será mi primer paso mañana?</label>
             <textarea
+              id="reflexion-primer-paso"
               className={styles.reflectionTextarea}
               placeholder="Define la primera acción precisa de las 08:00 AM..."
               rows={3}
@@ -1220,6 +1223,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {isFocusModalOpen && (
         <div
           className={styles.modalBackdrop}
+          role="presentation"
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsFocusModalOpen(false);
           }}

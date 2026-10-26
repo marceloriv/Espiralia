@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 
 const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
+/** Foco al montar un campo que el usuario acaba de revelar; equivale a `autoFocus` sin enfocar al cargar la página. */
+export const focusOnMount = (node: HTMLElement | null) => node?.focus();
+
 /**
  * Foco de un diálogo (WCAG 2.4.3): al abrirse lleva el foco a su primer control, salvo que el diálogo ya lo
  * haya enfocado, y al cerrarse lo devuelve al elemento que lo tenía. Hay que llamarlo antes de los efectos

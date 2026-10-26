@@ -30,7 +30,7 @@ export const BujoCard: React.FC<BujoCardProps> = ({
     if (!rawDate) return '';
     try {
       const d = new Date(rawDate);
-      if (!isNaN(d.getTime())) {
+      if (!Number.isNaN(d.getTime())) {
         return d.toLocaleDateString('es-CL');
       }
     } catch {

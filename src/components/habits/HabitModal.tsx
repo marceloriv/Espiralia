@@ -83,6 +83,7 @@ export const HabitModal: React.FC<HabitModalProps> = ({
   return (
     <div
       className={styles.backdrop}
+      role="presentation"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose();

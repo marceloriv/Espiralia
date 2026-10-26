@@ -149,8 +149,8 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
   };
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div className={styles.modalWrap} onClick={(e) => e.stopPropagation()}>
+    <div className={styles.modalOverlay} onClick={onClose} role="presentation">
+      <div className={styles.modalWrap} onClick={(e) => e.stopPropagation()} role="presentation">
         <div className={styles.washiTape} aria-hidden="true" />
         <div
           ref={dialogRef}
@@ -340,14 +340,12 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
                       checked={restoreMode === 'overwrite'}
                       onChange={() => setRestoreMode('overwrite')}
                     />
-                    <div>
-                      <div className={styles.radioOptionTitle}>
-                        Sobrescribir datos en perfil actual ({profile.name})
-                      </div>
-                      <div className={styles.radioOptionDesc}>
-                        Reemplaza los registros de este perfil con los datos contenidos en el respaldo.
-                      </div>
-                    </div>
+                    <span className={styles.radioOptionTitle}>
+                      Sobrescribir datos en perfil actual ({profile.name})
+                    </span>
+                    <span className={styles.radioOptionDesc}>
+                      Reemplaza los registros de este perfil con los datos contenidos en el respaldo.
+                    </span>
                   </label>
 
                   <label className={styles.radioOption}>
@@ -358,14 +356,12 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
                       checked={restoreMode === 'new_profile'}
                       onChange={() => setRestoreMode('new_profile')}
                     />
-                    <div>
-                      <div className={styles.radioOptionTitle}>
-                        Importar como nuevo perfil independiente
-                      </div>
-                      <div className={styles.radioOptionDesc}>
-                        Crea un nuevo perfil en la lista manteniendo el perfil actual intacto.
-                      </div>
-                    </div>
+                    <span className={styles.radioOptionTitle}>
+                      Importar como nuevo perfil independiente
+                    </span>
+                    <span className={styles.radioOptionDesc}>
+                      Crea un nuevo perfil en la lista manteniendo el perfil actual intacto.
+                    </span>
                   </label>
                 </div>
 

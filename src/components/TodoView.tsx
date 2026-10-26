@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag, Check, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
 import { useEscapeKey } from '../utils/useEscapeKey';
+import { focusOnMount } from '../utils/useDialogFocus';
 import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE, energyLabel } from '../utils/energyLevels';
 import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
 import { StorageService } from '../services/storage';
@@ -607,7 +608,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                                   aria-label={`cambiar fecha ${todo.title}`}
                                   defaultValue={todo.dueDate || ''}
                                   onBlur={e => handleSaveDueDate(todo.id, e.target.value)}
-                                  autoFocus
+                                  ref={focusOnMount}
                                 />
                                 <button
                                   type="button"

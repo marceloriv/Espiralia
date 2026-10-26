@@ -66,7 +66,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
     if (!subItemInput.trim()) return;
 
     const newItem: GoalSubItem = {
-      id: `sub-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
+      id: `sub-${Date.now()}-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36).slice(0, 3)}`,
       title: subItemInput.trim(),
       completed: false,
     };

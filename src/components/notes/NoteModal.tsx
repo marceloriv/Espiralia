@@ -107,7 +107,7 @@ const NoteModalContent: React.FC<NoteModalProps> = ({
   };
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div className={styles.modalOverlay} onClick={onClose} role="presentation">
       <div
         ref={dialogRef}
         className={styles.modalBox}
