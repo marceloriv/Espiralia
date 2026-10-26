@@ -4,6 +4,38 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.5.0] - 2026-10-26
+
+### Added
+
+- **Página 404 propia**: toda ruta desconocida muestra una pantalla a pantalla completa, con o sin sesión.
+  - Tiene un único `h1` que recibe el foco, porque un cambio de ruta no anuncia nada a un lector de pantalla.
+  - El título del documento es "Página no encontrada · Espiralia".
+  - La dirección pedida aparece escrita como texto.
+  - Un botón de 44 px lleva al Dashboard con sesión y al inicio sin ella.
+  - El diseño es un pliego de cuaderno con cinta washi, perforaciones y sello "404".
+  - Va en un chunk perezoso, así que no suma a la carga inicial.
+- **Nautilus de origami** en la 404, hecho solo con CSS: caparazón de franjas radiales, cuatro cámaras, capucha de dos tonos, alfiler magenta, ojo y cinco tentáculos.
+  - Es decorativo (`aria-hidden`) y se oculta con colores forzados.
+  - Solo se anima con `prefers-reduced-motion: no-preference`: el caparazón se pliega una vez y después flota en ciclos de 8 s, con los tentáculos ondulando cada 5 s. Sin esa preferencia queda quieto.
+  - La flotación infinita amplía la excepción a la regla R-19 de movimiento, que cubría solo el molinillo de la barra lateral, por decisión de la persona dueña.
+- **`public/404.html`**: GitHub Pages lo sirve para cualquier URL inexistente.
+  - Con JavaScript, lleva `/Espiralia/<ruta>` a `/Espiralia/#/<ruta>`, de modo que la app decide si la ruta existe y muestra su 404.
+  - Sin JavaScript, es una página completa y autónoma con el mismo pliego y el Nautilus.
+- **Pruebas**: de 760 a 791, con 4 nuevas de la tipografía y 27 de la 404. Incluye el plan de la página en la documentación.
+
+### Changed
+
+- **Rutas desconocidas**: antes redirigían en silencio a la raíz; ahora muestran la página 404.
+- **Títulos en Playball**: todos los `h1` de la app pasan a Playball, una caligrafía enlazada de un solo peso, autoalojada, de 31 KB y con licencia OFL.
+  - Se aplica con una sola regla `h1[class]` y sin interletraje negativo.
+  - La marca de la barra lateral y el título del Planner en móvil suben de 20 px a 22 px, el piso de esta caligrafía.
+  - La fuente se precarga.
+  - La ruta crítica de fuentes pasa de 96 KB a 127 KB y el tope sube de 120 KB a 130 KB.
+  - La carga inicial mide 181.2 KB de 182 KB.
+- **Herramientas de trabajo local**: `.projectmem/`, `anti-slop/` y `.superpowers/` quedan ignorados y se sacan del índice 8 archivos que seguían versionados.
+- Sin cambios en las claves ni en la forma de los datos de `localStorage`.
+
 ## [0.4.1] - 2026-10-26
 
 ### Added
