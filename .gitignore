@@ -47,9 +47,6 @@ scratchpad/
 .scannerwork/
 coverage/
 
-# Estado local de projectmem
-.projectmem/events.jsonl
-.projectmem/watch.pid
-.projectmem/watch.log
-.projectmem/structure.json
-.projectmem/.current_issue
+# Memoria de projectmem y auditorías de antislop: material de trabajo local, no del producto
+.projectmem/
+anti-slop/
