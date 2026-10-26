@@ -36,6 +36,9 @@ jobs:
       - name: Instalar dependencias
         run: pnpm install --frozen-lockfile
 
+      - name: Ejecutar linter
+        run: pnpm exec eslint .
+
       - name: Ejecutar pruebas unitarias
         run: pnpm exec vitest run
 

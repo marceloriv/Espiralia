@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Espiralia - Agenda &amp; Planner</title>
+<!-- Google Fonts: Inter, Newsreader, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#d4c1d2",
+            "surface-container": "#f0edeb",
+            "on-tertiary-fixed": "#00201b",
+            "on-primary": "#ffffff",
+            "ink": "#141413",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-high": "#ebe8e5",
+            "on-secondary-container": "#7d0380",
+            "surface": "#fcf9f6",
+            "error": "#c64545",
+            "on-secondary-fixed": "#380039",
+            "surface-bright": "#fcf9f6",
+            "surface-dim": "#dcd9d7",
+            "on-dark": "#faf9f5",
+            "success": "#5db872",
+            "inverse-on-surface": "#f3f0ee",
+            "tertiary-fixed-dim": "#7cd7c4",
+            "on-error-container": "#93000a",
+            "secondary": "#9c2c9c",
+            "canvas": "#faf9f5",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#006255",
+            "outline": "#837281",
+            "primary-disabled": "#FFC0DE",
+            "tertiary-fixed": "#98f3e0",
+            "on-secondary": "#ffffff",
+            "primary-container": "#8e1ea2",
+            "muted": "#6c6a64",
+            "surface-container-highest": "#e5e2e0",
+            "on-secondary-fixed-variant": "#7f0682",
+            "inverse-primary": "#f9acff",
+            "primary-fixed": "#ffd6fe",
+            "secondary-fixed": "#ffd7f6",
+            "on-surface": "#1c1c1a",
+            "on-tertiary-fixed-variant": "#005045",
+            "accent-amber": "#e8a55a",
+            "warning": "#d4a017",
+            "body": "#3d3d3a",
+            "on-background": "#1c1c1a",
+            "accent-teal": "#5db8a6",
+            "on-tertiary-container": "#82ddc9",
+            "hairline-soft": "#ebe6df",
+            "secondary-fixed-dim": "#ffaaf6",
+            "primary-active": "#C654C3",
+            "primary-soft": "#ED96D7",
+            "muted-soft": "#8e8b82",
+            "surface-container-low": "#f6f3f1",
+            "tertiary": "#00483e",
+            "surface-tint": "#982aab",
+            "surface-variant": "#e5e2e0",
+            "surface-dark": "#181715",
+            "surface-soft": "#f5f0e8",
+            "on-tertiary": "#ffffff",
+            "hairline": "#e6dfd8",
+            "on-primary-fixed-variant": "#7b0090",
+            "on-primary-fixed": "#35003f",
+            "secondary-container": "#ff86f9",
+            "surface-card": "#efe9de",
+            "inverse-surface": "#31302f",
+            "background": "#fcf9f6",
+            "primary": "#6e0081",
+            "surface-dark-elevated": "#252320",
+            "on-primary-container": "#fab3ff",
+            "surface-cream-strong": "#e8e0d2",
+            "body-strong": "#252523",
+            "primary-fixed-dim": "#f9acff",
+            "on-surface-variant": "#504250"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "margin": "2rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem"
+          },
+          "fontFamily": {
+            "code-md": ["JetBrains Mono"],
+            "label-md": ["Inter"],
+            "display-lg": ["Newsreader"],
+            "body-md": ["Inter"],
+            "headline-lg": ["Newsreader"],
+            "headline-sm": ["Newsreader"],
+            "headline-md": ["Newsreader"],
+            "headline-lg-mobile": ["Newsreader"],
+            "body-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-strong": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "label-lg": ["Inter"]
+          },
+          "fontSize": {
+            "code-md": ["0.8125rem", { "lineHeight": "1.4", "fontWeight": "400" }],
+            "label-md": ["0.75rem", { "lineHeight": "1.2", "fontWeight": "500" }],
+            "display-lg": ["3.5rem", { "lineHeight": "1.15", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "headline-lg": ["2.5rem", { "lineHeight": "1.2", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "headline-sm": ["1.375rem", { "lineHeight": "1.4", "fontWeight": "400" }],
+            "headline-md": ["1.75rem", { "lineHeight": "1.3", "fontWeight": "600" }],
+            "headline-lg-mobile": ["2rem", { "lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["1.125rem", { "lineHeight": "1.65", "fontWeight": "400" }],
+            "body-sm": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "body-strong": ["1rem", { "lineHeight": "1.6", "fontWeight": "600" }],
+            "code-sm": ["0.6875rem", { "lineHeight": "1.3", "fontWeight": "400" }],
+            "label-lg": ["0.875rem", { "lineHeight": "1.25", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .paper-shadow {
+      box-shadow: 0 1px 3px rgba(37, 35, 32, 0.04), 0 12px 28px -4px rgba(45, 35, 25, 0.08);
+    }
+    .paper-stack {
+      box-shadow: 2px 3px 0px #efe9de, 4px 6px 0px #e8e0d2, 0 16px 32px rgba(20, 20, 19, 0.08);
+    }
+    .washi-tape {
+      background: rgba(220, 185, 215, 0.55);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .washi-tape-sage {
+      background: rgba(162, 190, 175, 0.55);
+      backdrop-filter: blur(2px);
+    }
+    .torn-edge {
+      mask-image: radial-gradient(circle at 10px -5px, transparent 12px, white 13px);
+      mask-size: 20px 100%;
+    }
+    .grid-dots {
+      background-image: radial-gradient(#d4cbbf 0.75px, transparent 0.75px);
+      background-size: 14px 14px;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #e6dfd8;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-surface text-ink antialiased h-full flex flex-row overflow-hidden selection:bg-primary-soft selection:text-primary">
+<!-- ============================================================== -->
+<!-- SIDEBAR PERSISTENTE (Shared Component JSON: SideNavBar)       -->
+<!-- ============================================================== -->
+<aside class="h-screen w-64 flex flex-col justify-between shrink-0 h-screen sticky top-0 left-0 p-4 border-r border-hairline dark:border-surface-dark-elevated bg-surface-soft dark:bg-surface-dark z-40">
+<!-- Brand Anchor & Profile Subtext -->
+<div>
+<div class="flex items-center gap-3 px-2 py-2 mb-4">
+<div class="w-10 h-10 rounded-lg bg-surface-card border border-hairline flex items-center justify-center text-primary shadow-xs font-headline-md text-headline-md font-semibold">
+          E
+        </div>
+<div class="overflow-hidden">
+<div class="text-headline-md font-headline-lg font-semibold tracking-tight text-ink dark:text-on-dark leading-none">Espiralia</div>
+<div class="text-label-md font-label-md text-muted truncate mt-0.5">Taller de Escritorio</div>
+</div>
+</div>
+<!-- Action Button (CTA) -->
+<button class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-active text-on-primary font-body-strong text-body-sm py-2.5 px-4 rounded-lg transition-all duration-150 shadow-sm active:scale-98 mb-6">
+<span class="material-symbols-outlined text-lg">add</span>
+<span>Nueva Entrada</span>
+</button>
+<!-- Main Navigation Menu -->
+<nav class="space-y-1">
+<!-- Tab 0: Resumen -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">dashboard</span>
+<span>Resumen</span>
+</a>
+<!-- Tab 1: Agenda & Planner (ACTIVE DESTINATION) -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-card dark:bg-surface-dark-elevated text-primary dark:text-primary-soft font-body-strong text-body-sm border-l-2 border-primary dark:border-primary-soft shadow-sm" href="#">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+<span>Agenda &amp; Planner</span>
+</a>
+<!-- Tab 2: Tareas & Áreas -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">checklist</span>
+<span>Tareas &amp; Áreas</span>
+</a>
+<!-- Tab 3: Notas & Terapia -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">menu_book</span>
+<span>Notas &amp; Terapia</span>
+</a>
+<!-- Tab 4: Archivos & Vínculos -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">folder_open</span>
+<span>Archivos &amp; Vínculos</span>
+</a>
+<!-- Tab 5: Sincronización -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">sync</span>
+<span>Sincronización</span>
+</a>
+</nav>
+</div>
+<!-- User / Profile / Security Footer -->
+<div class="border-t border-hairline pt-3 mt-auto space-y-1">
+<div class="flex items-center gap-3 px-2 py-2 mb-1 rounded-lg bg-surface-cream-strong/50">
+<div class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary text-xs font-bold font-body-strong">
+          RV
+        </div>
+<div class="flex-1 min-w-0">
+<p class="text-body-sm font-body-strong text-ink truncate leading-tight">Romina V.</p>
+<p class="text-code-sm font-code-sm text-muted">Cuaderno #04</p>
+</div>
+<span class="w-2 h-2 rounded-full bg-success"></span>
+</div>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted dark:text-muted-soft hover:text-ink hover:bg-surface-cream-strong font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">lock</span>
+<span>Perfil PIN</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-muted dark:text-muted-soft hover:text-ink hover:bg-surface-cream-strong font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">tune</span>
+<span>Ajustes</span>
+</a>
+</div>
+</aside>
+<!-- ============================================================== -->
+<!-- MAIN WORKSPACE & CONTENT CANVAS                               -->
+<!-- ============================================================== -->
+<div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+<!-- TopNavBar (Shared Component JSON) -->
+<header class="sticky top-0 z-30 flex items-center justify-between w-full px-6 py-3 bg-canvas/95 dark:bg-surface-dark/95 backdrop-blur-sm border-b border-hairline dark:border-surface-dark-elevated shrink-0">
+<!-- Left: Search input & Brand hint -->
+<div class="flex items-center gap-4 flex-1 max-w-md">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted text-base">search</span>
+<input class="w-full bg-surface-soft border border-hairline rounded-lg pl-9 pr-3 py-1.5 text-body-sm font-body-sm text-ink placeholder:text-muted focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-colors" placeholder="Buscar eventos, entradas o reflexiones..." type="text"/>
+</div>
+</div>
+<!-- Center: Timeframe navigation tabs -->
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-muted dark:text-muted-soft font-body-md hover:text-ink dark:hover:text-on-dark transition-colors pb-1" href="#">Hoy</a>
+<a class="text-muted dark:text-muted-soft font-body-md hover:text-ink dark:hover:text-on-dark transition-colors pb-1" href="#">Semana</a>
+<a class="text-primary dark:text-primary-soft font-body-strong border-b-2 border-primary dark:border-primary-soft pb-1" href="#">Mes</a>
+<a class="text-muted dark:text-muted-soft font-body-md hover:text-ink dark:hover:text-on-dark transition-colors pb-1" href="#">Reflexión</a>
+</nav>
+<!-- Right: Action cluster -->
+<div class="flex items-center gap-2">
+<button class="p-2 text-muted hover:text-primary hover:bg-surface-soft rounded-lg transition-colors" title="Horarios">
+<span class="material-symbols-outlined text-xl">schedule</span>
+</button>
+<button class="p-2 text-muted hover:text-primary hover:bg-surface-soft rounded-lg transition-colors relative" title="Notificaciones">
+<span class="material-symbols-outlined text-xl">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary-container"></span>
+</button>
+<button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hairline bg-canvas hover:bg-surface-soft text-body-sm font-body-md text-ink transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+<span>Exportar .ics</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hairline bg-surface-card hover:bg-surface-cream-strong text-body-sm font-body-strong text-ink transition-colors">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="hidden sm:inline">Bloquear Cuaderno</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Desk Canvas -->
+<main class="flex-1 overflow-y-auto custom-scroll p-4 md:p-6 lg:p-8 bg-surface">
+<div class="max-w-[1360px] mx-auto">
+<!-- Header Ribbon: Editorial Breadcrumbs + Month Title -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 pb-3 border-b border-hairline">
+<div>
+<div class="flex items-center gap-2 text-code-sm font-code-sm text-muted uppercase tracking-wider mb-1">
+<span>Cuaderno #04</span>
+<span>•</span>
+<span>Tomo Primavera-Verano</span>
+<span>•</span>
+<span class="text-primary font-semibold">Semana 42</span>
+</div>
+<div class="flex items-baseline gap-3">
+<h1 class="font-headline-lg text-headline-lg font-semibold text-ink leading-tight">Octubre 2024</h1>
+<span class="font-headline-sm text-headline-sm text-muted italic">Planificador Mensual &amp; Ritmos</span>
+</div>
+</div>
+<!-- Calendar Controls -->
+<div class="flex items-center gap-2 self-start sm:self-auto">
+<div class="inline-flex items-center bg-surface-card rounded-lg border border-hairline p-1">
+<button class="p-1 hover:bg-surface rounded text-muted hover:text-ink transition-colors">
+<span class="material-symbols-outlined text-base">chevron_left</span>
+</button>
+<span class="px-3 text-label-md font-label-md text-ink">Mes en curso</span>
+<button class="p-1 hover:bg-surface rounded text-muted hover:text-ink transition-colors">
+<span class="material-symbols-outlined text-base">chevron_right</span>
+</button>
+</div>
+<button class="px-3 py-1.5 bg-canvas border border-hairline hover:border-outline rounded-lg text-label-md font-label-md text-ink transition-colors flex items-center gap-1.5 shadow-xs">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+<span>Filtrar</span>
+</button>
+</div>
+</div>
+<!-- BENTO DESK SURFACE (Main Grid: Calendar Sheet + Physical Daily Planners) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- ============================================================== -->
+<!-- LEFT / CENTER: THE MAIN MONTHLY CALENDAR SHEET (8 Cols)       -->
+<!-- ============================================================== -->
+<div class="lg:col-span-8 bg-canvas rounded-xl border border-hairline paper-shadow p-5 relative overflow-hidden">
+<!-- Subtle Grid Background Watermark / Binding accent -->
+<div class="absolute top-0 right-0 left-0 h-1.5 bg-gradient-to-r from-primary-soft via-accent-teal to-accent-amber opacity-70"></div>
+<!-- Calendar Header Toolbar -->
+<div class="flex items-center justify-between mb-4 pt-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">auto_stories</span>
+<span class="text-label-lg font-body-strong text-ink">Almanaque de Mesa</span>
+<span class="text-code-sm font-code-sm text-muted bg-surface-card px-2 py-0.5 rounded border border-hairline">Formato Imprenta</span>
+</div>
+<div class="flex items-center gap-3 text-code-sm font-code-sm text-muted">
+<span class="inline-flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-primary/20 border border-primary"></span> Terapia / Clave
+                </span>
+<span class="inline-flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-emerald-100 border border-emerald-600"></span> Trámites &amp; Conaset
+                </span>
+<span class="inline-flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-blue-100 border border-blue-600"></span> Académico
+                </span>
+</div>
+</div>
+<!-- Month Calendar Grid (FullCalendar v7 inspired stationery) -->
+<div class="border border-hairline rounded-lg overflow-hidden bg-canvas">
+<!-- Weekday Headers -->
+<div class="grid grid-cols-7 border-b border-hairline bg-surface-soft text-center py-2 text-label-md font-body-strong text-ink">
+<div>LUN</div>
+<div>MAR</div>
+<div>MIÉ</div>
+<div>JUE</div>
+<div>VIE</div>
+<div class="text-accent-amber">SÁB</div>
+<div class="text-accent-amber">DOM</div>
+</div>
+<!-- Calendar Days Matrix (5 weeks) -->
+<div class="grid grid-cols-7 auto-rows-fr divide-x divide-y divide-hairline text-ink">
+<!-- Row 1: Sept 30 to Oct 6 -->
+<div class="min-h-[92px] p-1.5 bg-surface-soft/40 text-muted opacity-60">
+<span class="text-code-sm font-code-sm">30</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">1</span>
+<div class="mt-1 text-[11px] leading-tight p-1 rounded bg-surface-card text-muted truncate border border-hairline">
+                    Plan mes
+                  </div>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">2</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">3</span>
+<div class="mt-1 text-[11px] leading-tight p-1 rounded bg-blue-50 text-blue-800 border border-blue-200 truncate">
+                    Draft Ensayo
+                  </div>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">4</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/20 hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-accent-amber font-medium">5</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/20 hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-accent-amber font-medium">6</span>
+</div>
+<!-- Row 2: Oct 7 to Oct 13 -->
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">7</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">8</span>
+<div class="mt-1 text-[11px] leading-tight p-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 truncate font-body-sm">
+                    Estudio Tránsito
+                  </div>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">9</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">10</span>
+<div class="mt-1 text-[11px] leading-tight p-1 rounded bg-purple-50 text-primary border border-purple-200 truncate">
+                    Dra. Morales
+                  </div>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">11</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/20 hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-accent-amber font-medium">12</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/20 hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-accent-amber font-medium">13</span>
+</div>
+<!-- Row 3: Oct 14 to Oct 20 (CONTIENE EL DÍA ACTIVO: 16 DE OCTUBRE) -->
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">14</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">15</span>
+<div class="mt-1 text-[11px] leading-tight p-1 rounded bg-surface-card text-ink border border-hairline truncate">
+                    Revisión bibliografía
+                  </div>
+</div>
+<!-- DÍA HOY (16 OCTUBRE - ACTIVO CON SELLO DE TINTA MAGENTA) -->
+<div class="min-h-[92px] p-1.5 bg-primary/5 relative transition-colors border-2 border-primary/40 rounded-sm">
+<div class="flex items-center justify-between">
+<span class="w-6 h-6 rounded-full bg-primary text-on-primary text-code-sm font-code-sm font-bold flex items-center justify-center shadow-xs">
+                      16
+                    </span>
+<span class="text-[10px] font-bold uppercase tracking-wider text-primary">Hoy</span>
+</div>
+<div class="mt-1.5 space-y-1">
+<div class="text-[11px] leading-tight px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 border border-emerald-300 font-medium truncate">
+                      🚗 Simulacro Conaset
+                    </div>
+<div class="text-[11px] leading-tight px-1.5 py-0.5 rounded bg-purple-100 text-primary border border-purple-300 font-medium truncate">
+                      🌿 Terapia 16:30
+                    </div>
+<div class="text-[11px] leading-tight px-1.5 py-0.5 rounded bg-blue-100 text-blue-900 border border-blue-300 font-medium truncate">
+                      ✍️ Ensayo Final
+                    </div>
+</div>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">17</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">18</span>
+<div class="mt-1 text-[11px] leading-tight p-1 rounded bg-surface-card text-muted truncate border border-hairline">
+                    Cierre semanal
+                  </div>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/20 hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-accent-amber font-medium">19</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/20 hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-accent-amber font-medium">20</span>
+</div>
+<!-- Row 4: Oct 21 to Oct 27 -->
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">21</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">22</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">23</span>
+<div class="mt-1 text-[11px] leading-tight p-1 rounded bg-purple-50 text-primary border border-purple-200 truncate">
+                    Taller Escritura
+                  </div>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">24</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">25</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/20 hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-accent-amber font-medium">26</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/20 hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-accent-amber font-medium">27</span>
+</div>
+<!-- Row 5: Oct 28 to Nov 3 -->
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">28</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">29</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">30</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-canvas hover:bg-surface-soft/40 transition-colors">
+<span class="text-code-sm font-code-sm text-ink">31</span>
+<div class="mt-1 text-[11px] leading-tight p-1 rounded bg-accent-amber/20 text-ink border border-accent-amber/40 truncate">
+                    Reflexión mensual
+                  </div>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/40 text-muted opacity-60">
+<span class="text-code-sm font-code-sm">1</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/40 text-muted opacity-60">
+<span class="text-code-sm font-code-sm">2</span>
+</div>
+<div class="min-h-[92px] p-1.5 bg-surface-soft/40 text-muted opacity-60">
+<span class="text-code-sm font-code-sm">3</span>
+</div>
+</div>
+</div>
+<!-- Bottom Note Card attached to calendar sheet -->
+<div class="mt-5 pt-4 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-4 text-body-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-muted text-base">push_pin</span>
+<span class="text-muted font-body-sm">Ciclo actual: <strong class="text-ink font-body-strong">Crecimiento sereno &amp; Foco oposiciones</strong></span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-code-sm font-code-sm text-muted">Sincronizado con iCloud &amp; Google Cal</span>
+<span class="w-2 h-2 rounded-full bg-success"></span>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- RIGHT COLUMN: THE ANALOG PHYSICAL DESK ARTIFACTS (4 Cols)     -->
+<!-- ============================================================== -->
+<div class="lg:col-span-4 space-y-6">
+<!-- 1. POST-IT MOTIVACIONAL CON WASHI TAPE -->
+<div class="relative bg-[#fcf5c7] text-[#4d4833] p-4 rounded-md shadow-md rotate-1 transform hover:rotate-0 transition-transform duration-200 border-b-2 border-r-2 border-[#e6de9c]">
+<!-- Washi Tape Effect Centered at Top -->
+<div class="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-5 washi-tape rotate-[-2deg]"></div>
+<div class="flex items-start justify-between mb-1 pt-1">
+<span class="material-symbols-outlined text-sm text-[#8c825a]">wb_sunny</span>
+<span class="text-code-sm font-code-sm text-[#8c825a] tracking-tight">NOTA DEL DÍA</span>
+</div>
+<p class="font-headline-sm text-headline-sm italic text-center py-2 text-ink">
+                “small steps every day lead to big results ♡”
+              </p>
+<div class="text-right">
+<span class="text-code-sm font-code-sm text-[#8c825a] italic">- r.v. notas de taller</span>
+</div>
+</div>
+<!-- 2. FICHA DE TAREAS Y CITAS INMEDIATAS CON CLIP METÁLICO DORADO -->
+<div class="relative bg-surface-card rounded-xl border border-hairline paper-stack p-5 pt-7">
+<!-- Clip metálico dorado gráfico (CSS + SVG icon) -->
+<div class="absolute -top-3.5 left-7 z-20 flex flex-col items-center">
+<div class="w-5 h-9 rounded-full border-2 border-[#cfb53b] bg-transparent shadow-xs"></div>
+<div class="w-3.5 h-6 -mt-7 rounded-full border-2 border-[#b59b2d] bg-transparent"></div>
+</div>
+<!-- Header de la ficha rasgada -->
+<div class="flex items-baseline justify-between border-b border-hairline pb-2 mb-4">
+<div>
+<span class="text-code-sm font-code-sm text-primary font-semibold tracking-wider uppercase">Agenda Diaria</span>
+<h3 class="font-headline-md text-headline-sm font-semibold text-ink">Miércoles, 16 Oct</h3>
+</div>
+<span class="px-2 py-0.5 rounded-full text-code-sm font-code-sm bg-primary/10 text-primary border border-primary/20">3 Prioritarias</span>
+</div>
+<!-- Lista de Foco / Citas Requeridas -->
+<div class="space-y-3 mb-5">
+<!-- Item 1: Conaset -->
+<div class="p-3 bg-canvas rounded-lg border-l-4 border-emerald-600 border border-hairline shadow-xs">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded border border-muted flex items-center justify-center text-emerald-700 bg-white cursor-pointer"></span>
+<h4 class="font-body-strong text-body-sm text-ink">Simulacro Conaset Clase B</h4>
+</div>
+<span class="text-code-sm font-code-sm text-emerald-800 bg-emerald-50 px-1.5 py-0.5 rounded">09:30</span>
+</div>
+<p class="text-body-sm font-body-sm text-muted mt-1 pl-6">
+                    Módulo de señalética vial y velocidad reglamentaria. 35 preguntas.
+                  </p>
+</div>
+<!-- Item 2: Terapia Dra Morales -->
+<div class="p-3 bg-canvas rounded-lg border-l-4 border-primary border border-hairline shadow-xs">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded border border-primary flex items-center justify-center text-primary bg-primary/10 cursor-pointer">
+<span class="material-symbols-outlined text-xs">check</span>
+</span>
+<h4 class="font-body-strong text-body-sm text-ink">Sesión Terapia Clínica Dra. Morales</h4>
+</div>
+<span class="text-code-sm font-code-sm text-primary bg-primary/10 px-1.5 py-0.5 rounded">16:30</span>
+</div>
+<p class="text-body-sm font-body-sm text-muted mt-1 pl-6">
+                    Revisión de cuaderno de autorregulación y mapa de carga cognitiva.
+                  </p>
+</div>
+<!-- Item 3: Ensayo Postulacion -->
+<div class="p-3 bg-canvas rounded-lg border-l-4 border-blue-600 border border-hairline shadow-xs">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded border border-muted flex items-center justify-center text-blue-700 bg-white cursor-pointer"></span>
+<h4 class="font-body-strong text-body-sm text-ink">Entrega Ensayo Postulación</h4>
+</div>
+<span class="text-code-sm font-code-sm text-blue-800 bg-blue-50 px-1.5 py-0.5 rounded">19:00</span>
+</div>
+<p class="text-body-sm font-body-sm text-muted mt-1 pl-6">
+                    Ajustar bibliografía en formato APA 7 y exportar copia firmada en PDF.
+                  </p>
+</div>
+</div>
+<!-- Cuadrícula de notas rápidas con micro-perforaciones -->
+<div class="p-3 bg-canvas/80 rounded-lg border border-dashed border-hairline">
+<div class="flex items-center justify-between text-code-sm font-code-sm text-muted mb-1.5">
+<span>RECORDATORIO RÁPIDO</span>
+<span class="material-symbols-outlined text-xs">draw</span>
+</div>
+<p class="text-body-sm font-headline-sm italic text-ink">
+                  Comprar papel kraft gramaje 180g y cinta washi verde salvia en librería central.
+                </p>
+</div>
+<!-- Borde rasgado inferior estético -->
+<div class="h-2 w-full mt-4 bg-repeat-x bg-[length:12px_6px] bg-[radial-gradient(circle,_#efe9de_4px,_transparent_5px)]"></div>
+</div>
+<!-- 3. TRACKER DE ENERGÍA Y ÁNIMO (RHYTHM & MOOD TRACKER) -->
+<div class="bg-surface-card rounded-xl border border-hairline paper-shadow p-5">
+<div class="flex items-center justify-between border-b border-hairline pb-2 mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">bedtime</span>
+<h4 class="font-body-strong text-body-sm text-ink">Energy &amp; Mood Rhythm Tracker</h4>
+</div>
+<span class="text-code-sm font-code-sm text-muted">OCT 16</span>
+</div>
+<!-- Fases Lunares (Energy Check) -->
+<div class="mb-4">
+<div class="flex items-center justify-between text-code-sm font-code-sm text-muted mb-2">
+<span>NIVEL DE ENERGÍA VITAL</span>
+<span class="text-ink font-medium">80% Óptima</span>
+</div>
+<div class="grid grid-cols-5 gap-1.5 p-2 bg-canvas rounded-lg border border-hairline text-center">
+<!-- Fase 1: Descanso -->
+<button class="flex flex-col items-center p-1 rounded hover:bg-surface-soft text-muted transition-colors">
+<span class="material-symbols-outlined text-lg">circle</span>
+<span class="text-[10px] mt-0.5">Baja</span>
+</button>
+<!-- Fase 2: Recuperación -->
+<button class="flex flex-col items-center p-1 rounded hover:bg-surface-soft text-muted transition-colors">
+<span class="material-symbols-outlined text-lg">radio_button_unchecked</span>
+<span class="text-[10px] mt-0.5">Suave</span>
+</button>
+<!-- Fase 3: En equilibrio -->
+<button class="flex flex-col items-center p-1 rounded hover:bg-surface-soft text-muted transition-colors">
+<span class="material-symbols-outlined text-lg">routine</span>
+<span class="text-[10px] mt-0.5">Media</span>
+</button>
+<!-- Fase 4: Activa (SELECCIONADA) -->
+<button class="flex flex-col items-center p-1 rounded bg-primary/10 text-primary font-semibold border border-primary/20 shadow-xs">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">bedtime</span>
+<span class="text-[10px] mt-0.5">Activa</span>
+</button>
+<!-- Fase 5: Plena -->
+<button class="flex flex-col items-center p-1 rounded hover:bg-surface-soft text-muted transition-colors">
+<span class="material-symbols-outlined text-lg">wb_sunny</span>
+<span class="text-[10px] mt-0.5">Plena</span>
+</button>
+</div>
+</div>
+<!-- Estado de Ánimo (Micro-expresiones lineales) -->
+<div>
+<div class="flex items-center justify-between text-code-sm font-code-sm text-muted mb-2">
+<span>DISPOSICIÓN EMOCIONAL</span>
+<span class="text-primary font-medium">En Calma</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<!-- Plena -->
+<div class="p-2 text-center rounded-lg bg-canvas border border-hairline hover:border-primary/50 cursor-pointer transition-all">
+<span class="material-symbols-outlined text-xl text-muted">sentiment_very_satisfied</span>
+<p class="text-[11px] font-label-md text-ink mt-0.5">Plena</p>
+</div>
+<!-- En Calma (ACTIVA) -->
+<div class="p-2 text-center rounded-lg bg-purple-50/80 border-2 border-primary text-primary cursor-pointer shadow-xs">
+<span class="material-symbols-outlined text-xl text-primary" style="font-variation-settings: 'FILL' 1;">sentiment_satisfied</span>
+<p class="text-[11px] font-body-strong text-primary mt-0.5">En Calma</p>
+</div>
+<!-- Neutra -->
+<div class="p-2 text-center rounded-lg bg-canvas border border-hairline hover:border-primary/50 cursor-pointer transition-all">
+<span class="material-symbols-outlined text-xl text-muted">sentiment_neutral</span>
+<p class="text-[11px] font-label-md text-ink mt-0.5">Neutra</p>
+</div>
+<!-- Cansada -->
+<div class="p-2 text-center rounded-lg bg-canvas border border-hairline hover:border-primary/50 cursor-pointer transition-all">
+<span class="material-symbols-outlined text-xl text-muted">sentiment_dissatisfied</span>
+<p class="text-[11px] font-label-md text-ink mt-0.5">Cansada</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- BOTTOM SECTION: QUICK CAPTURE & WEEKLY FLOW STRIP              -->
+<!-- ============================================================== -->
+<div class="mt-8 bg-surface-card rounded-xl border border-hairline p-5 paper-shadow">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-hairline pb-4 mb-4">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                WF
+              </span>
+<div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-ink">The Weekly Flow &amp; Quick Capture</h3>
+<p class="text-body-sm font-body-sm text-muted">Alineación de objetivos de la semana con ritmo biológico y descanso.</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-code-sm font-code-sm text-muted">4 de 6 completados</span>
+<div class="w-32 h-2 rounded-full bg-canvas border border-hairline overflow-hidden">
+<div class="w-2/3 h-full bg-primary"></div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+<!-- Day Capsule: Lunes -->
+<div class="p-3 bg-canvas rounded-lg border border-hairline">
+<div class="flex items-center justify-between mb-1">
+<span class="text-code-sm font-code-sm text-muted">Lunes 14</span>
+<span class="material-symbols-outlined text-success text-sm">check_circle</span>
+</div>
+<p class="text-body-sm font-body-strong text-ink truncate">Planificación Semanal</p>
+<span class="text-code-sm font-code-sm text-muted">1.5 hrs • Foco Alto</span>
+</div>
+<!-- Day Capsule: Martes -->
+<div class="p-3 bg-canvas rounded-lg border border-hairline">
+<div class="flex items-center justify-between mb-1">
+<span class="text-code-sm font-code-sm text-muted">Martes 15</span>
+<span class="material-symbols-outlined text-success text-sm">check_circle</span>
+</div>
+<p class="text-body-sm font-body-strong text-ink truncate">Simulación Ensayo</p>
+<span class="text-code-sm font-code-sm text-muted">2.0 hrs • Análisis</span>
+</div>
+<!-- Day Capsule: Miércoles (Hoy) -->
+<div class="p-3 bg-primary/5 rounded-lg border border-primary/30">
+<div class="flex items-center justify-between mb-1">
+<span class="text-code-sm font-code-sm text-primary font-bold">Miércoles 16 (Hoy)</span>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<p class="text-body-sm font-body-strong text-ink truncate">Conaset + Terapia</p>
+<span class="text-code-sm font-code-sm text-primary">3 eventos agendados</span>
+</div>
+<!-- Day Capsule: Jueves -->
+<div class="p-3 bg-canvas rounded-lg border border-hairline opacity-75">
+<div class="flex items-center justify-between mb-1">
+<span class="text-code-sm font-code-sm text-muted">Jueves 17</span>
+<span class="material-symbols-outlined text-muted text-sm">radio_button_unchecked</span>
+</div>
+<p class="text-body-sm font-body-strong text-ink truncate">Lecturas de Taller</p>
+<span class="text-code-sm font-code-sm text-muted">Programado</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

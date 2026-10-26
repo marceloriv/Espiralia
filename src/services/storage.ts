@@ -1,9 +1,25 @@
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem, HabitTrackerItem, MoodEntry } from '../types';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
 
 const getScopedKey = (profileId: string, domain: string) => `espiralia_${profileId}_${domain}`;
+
+export const STORAGE_ERROR_EVENT = 'espiralia:storage-error';
+
+/** Cuota típica de localStorage por origen en navegadores de escritorio y móvil. */
+export const LOCALSTORAGE_QUOTA_BYTES = 5 * 1024 * 1024;
+
+/** Escribe en localStorage sin lanzar: ante QuotaExceededError avisa con STORAGE_ERROR_EVENT y devuelve false. */
+function writeItem(key: string, value: string): boolean {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch {
+    window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key } }));
+    return false;
+  }
+}
 
 // ponytail: persistencia directa y sincrónica en localStorage. Si un perfil excede 5MB (QuotaExceeded), migrar a IndexedDB asíncrono.
 function getScopedList<T>(key: string): T[] {
@@ -23,17 +39,26 @@ function saveScopedItem<T extends { id: string }>(key: string, item: T): void {
   } else {
     list.push(item);
   }
-  localStorage.setItem(key, JSON.stringify(list));
+  writeItem(key, JSON.stringify(list));
 }
 
 function deleteScopedItem<T extends { id: string }>(key: string, id: string): void {
   const list = getScopedList<T>(key).filter(i => i.id !== id);
-  localStorage.setItem(key, JSON.stringify(list));
+  writeItem(key, JSON.stringify(list));
+}
+
+function getScopedData<T>(key: string, fallback: T): T {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 const DEFAULT_AREAS = [
-  { name: 'Estudios', color: '#3b82f6' },
-  { name: 'Personal', color: '#10b981' },
+  { name: 'Estudios', color: '#7b8c9e' },
+  { name: 'Personal', color: '#5a826d' },
   { name: 'Universidad', color: '#8b5cf6' },
   { name: 'General', color: '#6b7280' },
 ];
@@ -52,7 +77,7 @@ export const StorageService = {
     deleteScopedItem<Profile>(PROFILES_KEY, id);
 
     // Cascade delete profile data
-    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links'];
+    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links', 'habits', 'moods', 'distractions', 'daily_energy'];
     for (const d of domains) {
       localStorage.removeItem(getScopedKey(id, d));
     }
@@ -62,12 +87,23 @@ export const StorageService = {
     }
   },
 
+  /** Bytes que ocupa un perfil en localStorage (UTF-16: 2 bytes por carácter de clave y valor). */
+  getProfileStorageBytes(profileId: string): number {
+    const prefix = `espiralia_${profileId}_`;
+    let chars = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith(prefix)) chars += key.length + (localStorage.getItem(key)?.length ?? 0);
+    }
+    return chars * 2;
+  },
+
   getActiveProfileId(): string | null {
     return localStorage.getItem(ACTIVE_PROFILE_KEY);
   },
 
   setActiveProfileId(id: string): void {
-    localStorage.setItem(ACTIVE_PROFILE_KEY, id);
+    writeItem(ACTIVE_PROFILE_KEY, id);
   },
 
   clearActiveProfileId(): void {
@@ -128,7 +164,7 @@ export const StorageService = {
         color: def.color,
         createdAt: new Date().toISOString(),
       }));
-      localStorage.setItem(getScopedKey(profileId, 'areas'), JSON.stringify(seeded));
+      writeItem(getScopedKey(profileId, 'areas'), JSON.stringify(seeded));
       return seeded;
     } catch {
       return [];
@@ -141,7 +177,7 @@ export const StorageService = {
 
   deleteArea(profileId: string, areaId: string): void {
     const list = this.getAreas(profileId).filter(a => a.id !== areaId);
-    localStorage.setItem(getScopedKey(profileId, 'areas'), JSON.stringify(list));
+    writeItem(getScopedKey(profileId, 'areas'), JSON.stringify(list));
 
     // Reasignar tareas huérfanas al área General o la primera disponible
     const fallbackArea = list.find(a => a.name.toLowerCase() === 'general') ?? list[0];
@@ -155,7 +191,7 @@ export const StorageService = {
         }
       }
       if (changed) {
-        localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(todos));
+        writeItem(getScopedKey(profileId, 'todos'), JSON.stringify(todos));
       }
     }
   },
@@ -212,7 +248,7 @@ export const StorageService = {
     } else {
       list.push(normalized);
     }
-    localStorage.setItem(getScopedKey(todo.profileId, 'todos'), JSON.stringify(list));
+    writeItem(getScopedKey(todo.profileId, 'todos'), JSON.stringify(list));
   },
 
   deleteTodo(profileId: string, todoId: string): void {
@@ -230,7 +266,7 @@ export const StorageService = {
         todo.status = 'completada';
         todo.completed = true;
       }
-      localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
+      writeItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
     }
   },
 
@@ -240,7 +276,7 @@ export const StorageService = {
     if (todo) {
       todo.status = status;
       todo.completed = status === 'completada';
-      localStorage.setItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
+      writeItem(getScopedKey(profileId, 'todos'), JSON.stringify(list));
     }
   },
 
@@ -281,6 +317,62 @@ export const StorageService = {
 
   deleteLink(profileId: string, linkId: string): void {
     deleteScopedItem<LinkItem>(getScopedKey(profileId, 'links'), linkId);
+  },
+
+  // Habits
+  getHabits(profileId: string): HabitTrackerItem[] {
+    return getScopedList<HabitTrackerItem>(getScopedKey(profileId, 'habits'));
+  },
+
+  saveHabit(habit: HabitTrackerItem): void {
+    saveScopedItem(getScopedKey(habit.profileId, 'habits'), habit);
+  },
+
+  deleteHabit(profileId: string, habitId: string): void {
+    deleteScopedItem<HabitTrackerItem>(getScopedKey(profileId, 'habits'), habitId);
+  },
+
+  toggleHabitDay(profileId: string, habitId: string, dayIndex: number): void {
+    const habits = this.getHabits(profileId);
+    const habit = habits.find(h => h.id === habitId);
+    if (!habit) return;
+
+    const days = [...(habit.daysCompleted ?? [false, false, false, false, false, false, false])];
+    while (days.length < 7) {
+      days.push(false);
+    }
+    days[dayIndex] = !days[dayIndex];
+    this.saveHabit({ ...habit, daysCompleted: days });
+  },
+
+  // Distractions
+  getDistractions(profileId: string): string[] {
+    return getScopedData<string[]>(getScopedKey(profileId, 'distractions'), []);
+  },
+
+  saveDistractions(profileId: string, items: string[]): void {
+    writeItem(getScopedKey(profileId, 'distractions'), JSON.stringify(items));
+  },
+
+  // Moods
+  getMoods(profileId: string): MoodEntry[] {
+    return getScopedList<MoodEntry>(getScopedKey(profileId, 'moods'));
+  },
+
+  saveMood(mood: MoodEntry): void {
+    saveScopedItem(getScopedKey(mood.profileId, 'moods'), mood);
+  },
+
+  getTodayMood(profileId: string, dateStr: string): string | undefined {
+    const data = getScopedData<Record<string, string>>(getScopedKey(profileId, 'daily_energy'), {});
+    return data[dateStr];
+  },
+
+  setTodayMood(profileId: string, dateStr: string, energy: string): void {
+    const key = getScopedKey(profileId, 'daily_energy');
+    const data = getScopedData<Record<string, string>>(key, {});
+    data[dateStr] = energy;
+    writeItem(key, JSON.stringify(data));
   },
 
   seedInitialProfileData(profileId: string): void {
@@ -383,6 +475,46 @@ export const StorageService = {
         updatedAt: new Date().toISOString(),
       };
       this.saveNote(initialNote);
+    }
+
+    const currentHabits = this.getHabits(profileId);
+    if (currentHabits.length === 0) {
+      const initialHabits: HabitTrackerItem[] = [
+        {
+          id: `habit-seed-1`,
+          profileId,
+          name: 'Lectura diaria (20 min)',
+          category: estudiosArea.name,
+          daysCompleted: [true, true, false, true, false, false, false],
+        },
+        {
+          id: `habit-seed-2`,
+          profileId,
+          name: 'Práctica de enfoque / Pomodoro',
+          category: estudiosArea.name,
+          daysCompleted: [true, false, true, true, false, false, false],
+        },
+        {
+          id: `habit-seed-3`,
+          profileId,
+          name: 'Caminata y desconexión',
+          category: personalArea.name,
+          daysCompleted: [false, true, true, true, false, false, false],
+        },
+      ];
+      for (const h of initialHabits) {
+        this.saveHabit(h);
+      }
+    }
+
+    const currentDistractions = this.getDistractions(profileId);
+    if (currentDistractions.length === 0) {
+      const initialDistractions = [
+        'Teléfono en otra habitación durante bloques de enfoque',
+        'Cerrar pestañas secundarias y redes sociales',
+        'Silenciar notificaciones innecesarias',
+      ];
+      this.saveDistractions(profileId, initialDistractions);
     }
   },
 };

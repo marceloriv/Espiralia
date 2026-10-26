@@ -68,10 +68,19 @@ describe('Domain types contract', () => {
     expect(todo.areaId).toBe('a-1');
   });
 
-  it('supports allowed ViewType values', () => {
-    const views: ViewType[] = ['dashboard', 'agenda', 'planner', 'todo'];
-    expect(views).toHaveLength(4);
+  it('supports extended ViewType values for full stationery suite', () => {
+    const allViews: ViewType[] = [
+      'dashboard',
+      'agenda',
+      'planner',
+      'todo',
+      'notes',
+      'folders',
+      'integrations',
+    ];
+    expect(allViews).toHaveLength(7);
     const statuses: TaskStatus[] = ['pendiente', 'en_progreso', 'completada'];
     expect(statuses).toHaveLength(3);
   });
 });
+

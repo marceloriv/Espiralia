@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { turnPage } from '../utils/pageTurn';
 import { ProtectedRoute } from './ProtectedRoute';
 import { ProfileGateView } from '../components/ProfileGateView';
 import { RouteLoadingFallback } from '../components/RouteLoadingFallback';
@@ -94,7 +95,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
               <Suspense fallback={<RouteLoadingFallback />}>
                 <DashboardView
                   profile={activeProfile}
-                  onNavigate={view => navigate(`/${view}`)}
+                  onNavigate={view => turnPage(() => navigate(`/${view}`))}
                 />
               </Suspense>
             ) : null

@@ -3,6 +3,8 @@ import { Download, Upload, X, Lock, CheckCircle2, AlertTriangle } from 'lucide-r
 import { sileo } from 'sileo';
 import type { Profile } from '../../types';
 import { VaultService } from '../../services/vaultService';
+import { downloadFile } from '../../utils/downloadFile';
+import { useDialogFocus } from '../../utils/useDialogFocus';
 import { encryptBackup, decryptBackup, isVaultEnvelope, type ProfileBackup, type EncryptedVaultEnvelope } from '../../services/vaultCrypto';
 import styles from './VaultModal.module.css';
 
@@ -41,6 +43,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
   const [restoreMode, setRestoreMode] = useState<'overwrite' | 'new_profile'>('overwrite');
   const [importError, setImportError] = useState<string | null>(null);
 
+  const dialogRef = useDialogFocus();
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -56,24 +59,9 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const triggerDownload = (content: string, filename: string, mimeType: string) => {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = filename;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    URL.revokeObjectURL(url);
-  };
-
   const handleExport = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!exportStats) return;
-
-    const dateStr = new Date().toISOString().split('T')[0];
-    const safeName = profile.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
 
     if (isEncrypted) {
       if (passphrase.length < 6) {
@@ -87,16 +75,16 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
 
       try {
         const envelope = await encryptBackup(exportStats, passphrase);
-        const filename = `espiralia-${safeName}-${dateStr}.vault`;
-        triggerDownload(JSON.stringify(envelope, null, 2), filename, 'application/json');
+        const filename = VaultService.backupFilename(profile.name, 'vault');
+        downloadFile(JSON.stringify(envelope, null, 2), filename, 'application/json');
         sileo.success({ title: 'Respaldo cifrado descargado', description: filename });
         onClose();
       } catch (err) {
         alert('Error al cifrar el respaldo: ' + (err as Error).message);
       }
     } else {
-      const filename = `espiralia-${safeName}-${dateStr}.json`;
-      triggerDownload(JSON.stringify(exportStats, null, 2), filename, 'application/json');
+      const filename = VaultService.backupFilename(profile.name, 'json');
+      downloadFile(JSON.stringify(exportStats, null, 2), filename, 'application/json');
       sileo.success({ title: 'Respaldo plano descargado', description: filename });
       onClose();
     }
@@ -161,14 +149,16 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
   };
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
-      <div
-        className={styles.modalBox}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="vault-modal-title"
-      >
+    <div className={styles.modalOverlay} onClick={onClose} role="presentation">
+      <div className={styles.modalWrap} onClick={(e) => e.stopPropagation()} role="presentation">
+        <div className={styles.washiTape} aria-hidden="true" />
+        <div
+          ref={dialogRef}
+          className={styles.modalBox}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="vault-modal-title"
+        >
         <div className={styles.modalHeader}>
           <div>
             <h3 id="vault-modal-title" className={styles.modalTitle}>
@@ -231,7 +221,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
                 onChange={(e) => setIsEncrypted(e.target.checked)}
               />
               <label htmlFor="vault-encrypt-toggle" className={styles.label}>
-                Cifrar archivo con contraseña (AES-GCM militar offline)
+                Cifrar archivo con contraseña (AES-GCM)
               </label>
             </div>
 
@@ -329,7 +319,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
             {loadedBackup && (
               <div className={styles.infoCard}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <CheckCircle2 size={16} color="#10b981" />
+                  <CheckCircle2 size={16} color="var(--color-success)" />
                   <strong>Respaldo válido: {loadedBackup.profile.name}</strong>
                 </div>
                 <div className={styles.infoGrid} style={{ marginBottom: 12 }}>
@@ -350,14 +340,12 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
                       checked={restoreMode === 'overwrite'}
                       onChange={() => setRestoreMode('overwrite')}
                     />
-                    <div>
-                      <div className={styles.radioOptionTitle}>
-                        Sobrescribir datos en perfil actual ({profile.name})
-                      </div>
-                      <div className={styles.radioOptionDesc}>
-                        Reemplaza los registros de este perfil con los datos contenidos en el respaldo.
-                      </div>
-                    </div>
+                    <span className={styles.radioOptionTitle}>
+                      Sobrescribir datos en perfil actual ({profile.name})
+                    </span>
+                    <span className={styles.radioOptionDesc}>
+                      Reemplaza los registros de este perfil con los datos contenidos en el respaldo.
+                    </span>
                   </label>
 
                   <label className={styles.radioOption}>
@@ -368,14 +356,12 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
                       checked={restoreMode === 'new_profile'}
                       onChange={() => setRestoreMode('new_profile')}
                     />
-                    <div>
-                      <div className={styles.radioOptionTitle}>
-                        Importar como nuevo perfil independiente
-                      </div>
-                      <div className={styles.radioOptionDesc}>
-                        Crea un nuevo perfil en la lista manteniendo el perfil actual intacto.
-                      </div>
-                    </div>
+                    <span className={styles.radioOptionTitle}>
+                      Importar como nuevo perfil independiente
+                    </span>
+                    <span className={styles.radioOptionDesc}>
+                      Crea un nuevo perfil en la lista manteniendo el perfil actual intacto.
+                    </span>
                   </label>
                 </div>
 
@@ -393,7 +379,8 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
         )}
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export const VaultModal: React.FC<VaultModalProps> = (props) => {

@@ -82,7 +82,7 @@
 }
 
 .saveBtn {
-  background: var(--color-primary, #6e0081);
+  background: var(--color-primary);
   color: #ffffff;
   border: none;
   border-radius: var(--radius-md, 0.375rem);

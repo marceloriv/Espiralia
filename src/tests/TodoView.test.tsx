@@ -13,6 +13,16 @@ describe('TodoView', () => {
     vi.clearAllMocks();
   });
 
+  it('renderiza la cabecera to-do, solapas manila con marcas de agua numericas, entrada rapida y agenda asociada', () => {
+    render(<TodoView profileId={profileId} />);
+
+    expect(screen.getByRole('heading', { level: 1, name: /to-do & áreas integradas\./i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /área estudios/i })).toBeInTheDocument();
+    expect(screen.getByText(/entrada rápida/i)).toBeInTheDocument();
+    expect(screen.getByText(/agenda asociada/i)).toBeInTheDocument();
+    expect(screen.getByText(/disciplina hoy,\s*paz mañana/i)).toBeInTheDocument();
+  });
+
   it('permite agregar, alternar y filtrar tareas', async () => {
     const successSpy = vi.spyOn(sileo, 'success');
     const infoSpy = vi.spyOn(sileo, 'info');
@@ -20,7 +30,7 @@ describe('TodoView', () => {
 
     render(<TodoView profileId={profileId} />);
 
-    expect(screen.getByText(/mis tareas/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Semana \d{1,2}$/)).toBeInTheDocument();
 
     const input = screen.getByPlaceholderText(/¿qué tienes pendiente\?/i);
     await user.type(input, 'Comprar insumos{enter}');
@@ -147,7 +157,7 @@ describe('TodoView', () => {
 
     // Filtra por Todas las áreas
     await user.click(within(areaNav).getByRole('button', { name: /todas las áreas/i }));
-    expect(screen.getByText('Reporte trimestral')).toBeInTheDocument();
+    expect(screen.getAllByText('Reporte trimestral')[0]).toBeInTheDocument();
     expect(screen.getByText('Comprar frutas')).toBeInTheDocument();
   });
 
@@ -177,12 +187,13 @@ describe('TodoView', () => {
     const statusFilters = screen.getByRole('region', { name: /filtro de estados/i });
     const progFilter = within(statusFilters).getByRole('button', { name: /en progreso/i });
     await user.click(progFilter);
-    expect(screen.getByText('Escribir artículo')).toBeInTheDocument();
+    expect(screen.getAllByText('Escribir artículo')[0]).toBeInTheDocument();
 
-    // Filtro "Pendientes" no la debe mostrar
+    // Filtro "Pendientes" no la debe mostrar en lista detallada
     const pendFilter = within(statusFilters).getByRole('button', { name: /pendientes/i });
     await user.click(pendFilter);
-    expect(screen.queryByText('Escribir artículo')).not.toBeInTheDocument();
+    const detailedSection = screen.getByText(/tareas que importan/i).closest('div')!;
+    expect(within(detailedSection).queryByText('Escribir artículo')).not.toBeInTheDocument();
   });
 
   it('permite asignar fecha de vencimiento al crear y editarla en la tarjeta', async () => {
@@ -251,5 +262,97 @@ describe('TodoView', () => {
 
     expect(screen.queryByText('Solo Perfil 1')).not.toBeInTheDocument();
     expect(screen.queryByText('Tarea confidencial 1')).not.toBeInTheDocument();
+  });
+
+  describe('Agenda Asociada y Energía Diaria en TodoView', () => {
+    it('conecta Agenda Asociada a los eventos reales del perfil y elimina eventos estáticos de mock', () => {
+      StorageService.saveEvent({
+        id: 'ev-real-1',
+        profileId,
+        title: 'Revisión Técnica de Vehículo',
+        date: '2026-10-20',
+        startTime: '10:00',
+        endTime: '11:00',
+        category: 'personal',
+      });
+
+      render(<TodoView profileId={profileId} />);
+
+      expect(screen.getByText('Revisión Técnica de Vehículo')).toBeInTheDocument();
+      expect(screen.queryByText(/Simulacro Conaset & Práctica en Calle/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Sesión Terapia Clínica Presencial/i)).not.toBeInTheDocument();
+    });
+
+    it('persiste el nivel de energía diario seleccionado en StorageService', async () => {
+      const { toLocalDateStr } = await import('../../src/utils/localDate');
+      const user = userEvent.setup();
+      render(<TodoView profileId={profileId} />);
+
+      const sunBtn = screen.getByRole('button', { name: /nivel plena/i });
+      await user.click(sunBtn);
+
+      const todayStr = toLocalDateStr(new Date());
+      expect(StorageService.getTodayMood(profileId, todayStr)).toBe('☀️');
+    });
+
+    it('conecta Top Priorities a las tareas críticas reales y elimina mocks de conaset', async () => {
+      const user = userEvent.setup();
+      StorageService.saveTodo({
+        id: 'todo-crit-real',
+        profileId,
+        areaId: 'default',
+        title: 'Presentación Directorio Q4',
+        priority: 'alta',
+        status: 'pendiente',
+        completed: false,
+        createdAt: '2026-10-17',
+      });
+
+      render(<TodoView profileId={profileId} />);
+
+      expect(screen.getByRole('heading', { level: 4, name: 'Presentación Directorio Q4' })).toBeInTheDocument();
+      expect(screen.queryByText(/Estudio Conaset: Repasar señales de prioridad/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/Llevar libreta física de desahogo a consulta/i)).not.toBeInTheDocument();
+
+      const checkbox = screen.getByRole('button', { name: /completar prioridad presentación directorio q4/i });
+      await user.click(checkbox);
+
+      expect(StorageService.getTodos(profileId).find(t => t.id === 'todo-crit-real')?.completed).toBe(true);
+    });
+
+    it('Top Priorities muestra estado limpio cuando no hay tareas críticas pendientes', () => {
+      render(<TodoView profileId={profileId} />);
+      expect(screen.getByText(/todo al día • ninguna prioridad crítica pendiente/i)).toBeInTheDocument();
+      expect(screen.queryByText(/Estudio Conaset/i)).not.toBeInTheDocument();
+    });
+
+    it('pone el sello carmín al completar tarea y no conserva grapas ni relleno de ejemplo', () => {
+      StorageService.saveTodo({
+        id: 'todo-staple-test',
+        profileId,
+        areaId: 'default',
+        title: 'Caligrafía y apunte escolar',
+        priority: 'media',
+        status: 'completada',
+        completed: true,
+        createdAt: '2026-10-18',
+      });
+
+      const { container } = render(<TodoView profileId={profileId} />);
+
+      for (const ornamento of ['schoolStaplesBar', 'schoolMarginGuide', 'washiTape', 'tornEdge', 'metalClipAccent', 'metalPaperclipCorner']) {
+        expect(container.querySelector(`[class*="${ornamento}"]`), ornamento).toBeNull();
+      }
+      expect(screen.queryByText(/antidistracciones/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/vaciado mental/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/small steps every day/i)).not.toBeInTheDocument();
+      expect(container.querySelectorAll('[data-tinte="terracota"]').length).toBeGreaterThanOrEqual(2);
+      expect(container.querySelector('[data-tinte="pizarra"]')).not.toBeNull();
+
+      const stamp = container.querySelector('[class*="stampCompletedSeal"]');
+      expect(stamp).toBeInTheDocument();
+      expect(stamp).toHaveAttribute('aria-hidden', 'true');
+      expect(stamp).toHaveTextContent('HECHO');
+    });
   });
 });

@@ -1,0 +1,58 @@
+/* Pliego encuadernado (DESIGN.md §0.2): anillas a la izquierda; en móvil, arriba como un bloc. */
+.pliego {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 24px 24px 24px 52px;
+  background-color: var(--color-surface-warm);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xs) var(--radius-lg) var(--radius-lg) var(--radius-xs);
+  box-shadow: var(--shadow-card-stack);
+}
+
+.ringsLeft,
+.ringsTop {
+  position: absolute;
+  pointer-events: none;
+}
+
+.ringsLeft {
+  top: 12px;
+  left: -12px;
+  width: 40px;
+  height: calc(100% - 24px);
+}
+
+.ringsTop {
+  display: none;
+  top: -12px;
+  left: 12px;
+  width: calc(100% - 24px);
+  height: 40px;
+}
+
+.hole {
+  fill: var(--color-ink);
+  opacity: 0.18;
+}
+
+.wire {
+  fill: none;
+  stroke: var(--color-muted);
+  stroke-width: 2;
+}
+
+@media (max-width: 600px) {
+  .pliego {
+    padding: 48px 16px 20px;
+    border-radius: var(--radius-xs) var(--radius-xs) var(--radius-lg) var(--radius-lg);
+  }
+
+  .ringsLeft {
+    display: none;
+  }
+
+  .ringsTop {
+    display: block;
+  }
+}

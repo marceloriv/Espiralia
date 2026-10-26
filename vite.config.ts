@@ -1,10 +1,17 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig, type Plugin } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+
+// En desarrollo el CSP de index.html se quita: el preámbulo de React Refresh es un script en línea y lo bloquearía.
+const sinCspEnDesarrollo = (): Plugin => ({
+  name: 'sin-csp-en-desarrollo',
+  apply: 'serve',
+  transformIndexHtml: html => html.replace(/\s*<meta http-equiv="Content-Security-Policy"[^>]*>/, ''),
+})
 
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
-  plugins: [react({ compiler: true })],
+  plugins: [react({ compiler: true }), sinCspEnDesarrollo()],
   build: {
     rollupOptions: {
       output: {
@@ -25,7 +32,15 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: './src/tests/setup.ts',
+    // Las pruebas viven solo en src/tests (AGENTS.md §3); .agents trae scripts de skills con pruebas propias.
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
     globals: true,
     testTimeout: 20000,
+    coverage: {
+      provider: 'v8',
+      // Sonar lee coverage/lcov.info (sonar-project.properties); el reporte por defecto de Vitest no lo genera.
+      reporter: ['text', 'lcov'],
+      thresholds: { lines: 80, branches: 80 },
+    },
   },
 })

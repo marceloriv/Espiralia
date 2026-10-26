@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { AppLayout } from '../components/AppLayout';
@@ -89,9 +89,10 @@ describe('AppLayout', () => {
       'Notas',
       'Carpetas',
       'Integraciones',
+      'Más',
       'Ajustes & PIN',
       'Bóveda Offline',
-      'Buscar en Espiralia (Ctrl+K)',
+      'Buscar en Espiralia... Ctrl+K',
       '+ Nueva Nota',
       'Cambiar perfil (Francisca)',
     ]);
@@ -189,6 +190,17 @@ describe('AppLayout', () => {
     expect(screen.getByRole('dialog', { name: /ajustes de perfil/i })).toBeInTheDocument();
   });
 
+  it('al eliminar el perfil desde Ajustes se llama onLockProfile', async () => {
+    const user = userEvent.setup();
+    const { onLockProfile } = renderLayout();
+
+    await user.click(screen.getByRole('button', { name: /ajustes & pin/i }));
+    await user.type(screen.getByLabelText(/escribe el nombre del perfil/i), 'Francisca');
+    await user.click(screen.getByRole('button', { name: /eliminar perfil y sus datos/i }));
+
+    await waitFor(() => expect(onLockProfile).toHaveBeenCalledTimes(1));
+  });
+
   // Revisión final (Minor 6 re-graduado): en móvil la tarjeta del sidebar se oculta; el perfil activo sigue identificable.
   it('identifica el perfil activo en el botón de sesión de la barra superior', () => {
     renderLayout(protectedProfile);
@@ -210,4 +222,55 @@ describe('AppLayout', () => {
     }
     expect(within(nav).getByRole('button', { name: /dashboard/i })).toHaveAttribute('aria-current', 'page');
   });
+
+  // Barra inferior móvil: 4 destinos fijos y un botón "Más" para el resto (los 7 no caben a 375px).
+  describe('Botón Más de la barra móvil', () => {
+    it('abre un menú con Notas, Carpetas e Integraciones', async () => {
+      const user = userEvent.setup();
+      renderLayout();
+
+      const more = screen.getByRole('button', { name: 'Más' });
+      expect(more).toHaveAttribute('aria-haspopup', 'menu');
+      expect(more).toHaveAttribute('aria-expanded', 'false');
+
+      await user.click(more);
+
+      expect(more).toHaveAttribute('aria-expanded', 'true');
+      const menu = screen.getByRole('menu', { name: /más secciones/i });
+      expect(within(menu).getAllByRole('menuitem').map(i => i.textContent)).toEqual(['Notas', 'Carpetas', 'Integraciones']);
+    });
+
+    it('Escape cierra el menú', async () => {
+      const user = userEvent.setup();
+      renderLayout();
+
+      await user.click(screen.getByRole('button', { name: 'Más' }));
+      await user.keyboard('{Escape}');
+
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    });
+
+    it('elegir un destino navega y cierra el menú', async () => {
+      const user = userEvent.setup();
+      const { onViewChange } = renderLayout();
+
+      await user.click(screen.getByRole('button', { name: 'Más' }));
+      await user.click(screen.getByRole('menuitem', { name: 'Carpetas' }));
+
+      expect(onViewChange).toHaveBeenCalledWith('folders');
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+    });
+  });
+
+  it('renderiza la barra lateral editorial con monograma Es, boton de entrada y ficha Local DB', () => {
+    renderLayout();
+
+    expect(screen.getByText('Es')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Espiralia', level: 1 })).toBeInTheDocument();
+    expect(screen.getByText('Taller de Escritorio')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /\+ acción rápida/i })).toBeInTheDocument();
+    expect(screen.getByText(/guardado en este navegador/i)).toBeInTheDocument();
+    expect(screen.queryByText(/aes-256/i)).not.toBeInTheDocument();
+  });
 });
+

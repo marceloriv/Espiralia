@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Espiralia - Notas &amp; Terapia</title>
+<!-- Google Fonts: Newsreader (Editorial Serif), Inter (Sans), JetBrains Mono (Code/Mono) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#d4c1d2",
+            "surface-container": "#f0edeb",
+            "on-tertiary-fixed": "#00201b",
+            "on-primary": "#ffffff",
+            "ink": "#141413",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-high": "#ebe8e5",
+            "on-secondary-container": "#7d0380",
+            "surface": "#fcf9f6",
+            "error": "#c64545",
+            "on-secondary-fixed": "#380039",
+            "surface-bright": "#fcf9f6",
+            "surface-dim": "#dcd9d7",
+            "on-dark": "#faf9f5",
+            "success": "#5db872",
+            "inverse-on-surface": "#f3f0ee",
+            "tertiary-fixed-dim": "#7cd7c4",
+            "on-error-container": "#93000a",
+            "secondary": "#9c2c9c",
+            "canvas": "#faf9f5",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#006255",
+            "outline": "#837281",
+            "primary-disabled": "#FFC0DE",
+            "tertiary-fixed": "#98f3e0",
+            "on-secondary": "#ffffff",
+            "primary-container": "#8e1ea2",
+            "muted": "#6c6a64",
+            "surface-container-highest": "#e5e2e0",
+            "on-secondary-fixed-variant": "#7f0682",
+            "inverse-primary": "#f9acff",
+            "primary-fixed": "#ffd6fe",
+            "secondary-fixed": "#ffd7f6",
+            "on-surface": "#1c1c1a",
+            "on-tertiary-fixed-variant": "#005045",
+            "accent-amber": "#e8a55a",
+            "warning": "#d4a017",
+            "body": "#3d3d3a",
+            "on-background": "#1c1c1a",
+            "accent-teal": "#5db8a6",
+            "on-tertiary-container": "#82ddc9",
+            "hairline-soft": "#ebe6df",
+            "secondary-fixed-dim": "#ffaaf6",
+            "primary-active": "#C654C3",
+            "primary-soft": "#ED96D7",
+            "muted-soft": "#8e8b82",
+            "surface-container-low": "#f6f3f1",
+            "tertiary": "#00483e",
+            "surface-tint": "#982aab",
+            "surface-variant": "#e5e2e0",
+            "surface-dark": "#181715",
+            "surface-soft": "#f5f0e8",
+            "on-tertiary": "#ffffff",
+            "hairline": "#e6dfd8",
+            "on-primary-fixed-variant": "#7b0090",
+            "on-primary-fixed": "#35003f",
+            "secondary-container": "#ff86f9",
+            "surface-card": "#efe9de",
+            "inverse-surface": "#31302f",
+            "background": "#fcf9f6",
+            "primary": "#6e0081",
+            "surface-dark-elevated": "#252320",
+            "on-primary-container": "#fab3ff",
+            "surface-cream-strong": "#e8e0d2",
+            "body-strong": "#252523",
+            "primary-fixed-dim": "#f9acff",
+            "on-surface-variant": "#504250"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "margin": "2rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem"
+          },
+          "fontFamily": {
+            "code-md": ["JetBrains Mono"],
+            "label-md": ["Inter"],
+            "display-lg": ["Newsreader"],
+            "body-md": ["Inter"],
+            "headline-lg": ["Newsreader"],
+            "headline-sm": ["Newsreader"],
+            "headline-md": ["Newsreader"],
+            "headline-lg-mobile": ["Newsreader"],
+            "body-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-strong": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "label-lg": ["Inter"],
+            "script": ["Caveat", "cursive"]
+          },
+          "fontSize": {
+            "code-md": ["0.8125rem", { "lineHeight": "1.4", "fontWeight": "400" }],
+            "label-md": ["0.75rem", { "lineHeight": "1.2", "fontWeight": "500" }],
+            "display-lg": ["3.5rem", { "lineHeight": "1.15", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "headline-lg": ["2.5rem", { "lineHeight": "1.2", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "headline-sm": ["1.375rem", { "lineHeight": "1.4", "fontWeight": "400" }],
+            "headline-md": ["1.75rem", { "lineHeight": "1.3", "fontWeight": "600" }],
+            "headline-lg-mobile": ["2rem", { "lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["1.125rem", { "lineHeight": "1.65", "fontWeight": "400" }],
+            "body-sm": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "body-strong": ["1rem", { "lineHeight": "1.6", "fontWeight": "600" }],
+            "code-sm": ["0.6875rem", { "lineHeight": "1.3", "fontWeight": "400" }],
+            "label-lg": ["0.875rem", { "lineHeight": "1.25", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Dot grid tactile 20px pattern */
+    .bujo-grid {
+      background-image: radial-gradient(#d6cdc3 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+    }
+    .bujo-subtle {
+      background-image: radial-gradient(#dfd8cf 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    /* Ruled paper lines */
+    .ruled-paper {
+      background-image: repeating-linear-gradient(to bottom, transparent, transparent 27px, #e9e2d8 28px);
+      line-height: 28px;
+    }
+    /* Heavy 300g cardstock layered physical shadows */
+    .folio-shadow {
+      box-shadow: 
+        0 1px 2px rgba(20, 20, 19, 0.04),
+        0 4px 12px rgba(20, 20, 19, 0.05),
+        0 18px 36px -4px rgba(32, 28, 24, 0.08);
+    }
+    .sticky-shadow {
+      box-shadow: 
+        1px 2px 4px rgba(20, 20, 19, 0.06),
+        3px 8px 16px rgba(20, 20, 19, 0.09);
+    }
+    /* Clip styling */
+    .brass-clip {
+      filter: drop-shadow(0 2px 3px rgba(30, 25, 20, 0.25));
+    }
+    /* Washi tape jagged edges simulation */
+    .washi-tape-magenta {
+      background-color: rgba(142, 30, 162, 0.22);
+      backdrop-filter: blur(1px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .washi-tape-slate {
+      background-color: rgba(123, 140, 158, 0.35);
+      backdrop-filter: blur(1px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    /* Custom handwriting font */
+    .font-hand {
+      font-family: 'Caveat', cursive;
+    }
+    /* Smooth paper page curve */
+    .paper-curl-bottom {
+      border-bottom-right-radius: 18px 8px;
+      border-bottom-left-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-background text-body font-body-md antialiased min-h-screen flex selection:bg-primary-soft selection:text-ink">
+<!-- ========================================== -->
+<!-- SIDE NAVIGATION (From Shared Components JSON) -->
+<!-- ========================================== -->
+<aside class="h-screen sticky top-0 left-0 p-4 border-r border-hairline dark:border-surface-dark-elevated bg-surface-soft dark:bg-surface-dark z-40 h-screen w-64 flex flex-col justify-between shrink-0 select-none">
+<!-- Header Brand Info -->
+<div>
+<div class="flex items-center gap-3 px-2 py-2 mb-6">
+<div class="w-10 h-10 rounded-lg bg-surface-card border border-hairline flex items-center justify-center text-primary font-headline-md font-semibold shadow-sm">
+<span class="material-symbols-outlined text-primary text-xl">menu_book</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-md font-headline-lg font-semibold tracking-tight text-ink dark:text-on-dark leading-none">Espiralia</span>
+<span class="text-label-md font-label-md text-muted mt-1">Taller de Escritorio</span>
+</div>
+</div>
+<!-- Quick Action / CTA -->
+<button class="w-full flex items-center justify-center gap-2 mb-6 px-3 py-2.5 rounded-lg bg-primary hover:bg-primary-active text-on-primary font-body-strong text-body-sm transition-all duration-150 shadow-sm active:scale-98">
+<span class="material-symbols-outlined text-lg">edit_note</span>
+<span>Nueva Entrada</span>
+</button>
+<!-- Main Navigation Menu -->
+<nav class="space-y-1">
+<!-- 1. Resumen -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">dashboard</span>
+<span>Resumen</span>
+</a>
+<!-- 2. Agenda & Planner -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+<span>Agenda &amp; Planner</span>
+</a>
+<!-- 3. Tareas & Áreas -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">checklist</span>
+<span>Tareas &amp; Áreas</span>
+</a>
+<!-- 4. Notas & Terapia (ACTIVE) -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-card dark:bg-surface-dark-elevated text-primary dark:text-primary-soft font-body-strong text-body-sm border-l-2 border-primary dark:border-primary-soft shadow-sm" href="#">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span>Notas &amp; Terapia</span>
+<span class="ml-auto w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</a>
+<!-- 5. Archivos & Vínculos -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">folder_open</span>
+<span>Archivos &amp; Vínculos</span>
+</a>
+<!-- 6. Sincronización -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#">
+<span class="material-symbols-outlined text-lg">sync</span>
+<span>Sincronización</span>
+</a>
+</nav>
+</div>
+<!-- Footer Information & Profile / PIN -->
+<div class="pt-4 border-t border-hairline dark:border-surface-dark-elevated space-y-2">
+<!-- Database status pill -->
+<div class="px-3 py-2 rounded-lg bg-surface-cream-strong/70 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="text-code-sm font-code-sm text-body-strong">Local DB: Activa</span>
+</div>
+<span class="text-code-sm font-code-sm text-muted">AES-256</span>
+</div>
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors text-body-sm" href="#">
+<div class="flex items-center gap-2.5">
+<div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+            RV
+          </div>
+<span class="font-body-md text-ink font-medium">Romina V.</span>
+</div>
+<span class="material-symbols-outlined text-base">lock</span>
+</a>
+<div class="flex items-center justify-between text-muted text-xs px-2 pt-1">
+<button class="flex items-center gap-1.5 hover:text-ink transition-colors">
+<span class="material-symbols-outlined text-sm">tune</span>
+<span class="font-label-md text-label-md">Ajustes</span>
+</button>
+<span class="font-code-sm text-code-sm text-muted-soft">v2.4.8-analog</span>
+</div>
+</div>
+</aside>
+<!-- ========================================== -->
+<!-- MAIN WORKSPACE & TOP BAR -->
+<!-- ========================================== -->
+<div class="flex-1 flex flex-col min-w-0 bg-background overflow-y-auto">
+<!-- TopNavBar (Docked Full Width) -->
+<header class="sticky top-0 z-30 flex items-center justify-between w-full px-8 py-3 bg-canvas/95 dark:bg-surface-dark/95 backdrop-blur-sm border-b border-hairline dark:border-surface-dark-elevated">
+<!-- Left: Breadcrumb & Search -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="text-headline-sm font-headline-sm text-ink">Cuaderno de Terapia &amp; Reflexión</span>
+<span class="px-2 py-0.5 rounded text-code-sm font-code-sm bg-primary/10 text-primary border border-primary/20">Modo Pausa</span>
+</div>
+<div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface border border-hairline text-muted w-64 focus-within:border-primary transition-colors">
+<span class="material-symbols-outlined text-base">search</span>
+<input class="bg-transparent border-none text-body-sm text-ink placeholder-muted focus:outline-none w-full p-0" placeholder="Buscar en pliegos y anotaciones..." type="text"/>
+</div>
+</div>
+<!-- Center Links from JSON -->
+<nav class="hidden lg:flex items-center gap-6">
+<button class="text-muted font-body-md hover:text-ink transition-colors pb-1">Hoy</button>
+<button class="text-muted font-body-md hover:text-ink transition-colors pb-1">Semana</button>
+<button class="text-muted font-body-md hover:text-ink transition-colors pb-1">Mes</button>
+<button class="text-primary font-body-strong border-b-2 border-primary pb-1">Reflexión</button>
+</nav>
+<!-- Right Trailing Actions -->
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hairline text-body text-body-sm font-body-md hover:bg-surface-soft transition-colors">
+<span class="material-symbols-outlined text-base">file_download</span>
+<span class="hidden sm:inline">Exportar .ics</span>
+</button>
+<button class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-ink text-canvas hover:bg-body-strong transition-colors text-body-sm font-body-md">
+<span class="material-symbols-outlined text-base">lock</span>
+<span>Bloquear Cuaderno</span>
+</button>
+<button class="p-1.5 text-muted hover:text-ink transition-colors rounded-lg hover:bg-surface-soft" title="Notificaciones">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+</div>
+</header>
+<!-- ========================================== -->
+<!-- DESK SURFACE / PHYSICAL FOLIO CONTAINER -->
+<!-- ========================================== -->
+<main class="flex-1 p-6 lg:p-10 max-w-[1400px] w-full mx-auto space-y-8">
+<!-- DESK HEADER: Sub-tabs & Meta -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-hairline">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-label-md font-label-md text-muted uppercase tracking-wider">Espiralia • Cuaderno Analógico Local</span>
+<span class="text-muted">•</span>
+<span class="text-label-md font-label-md text-primary font-semibold">Tomo IV (Octubre - Noviembre 2025)</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-ink tracking-tight flex items-center gap-3">
+            Diario de Autoobservación &amp; Desahogo
+            <span class="text-xs px-2.5 py-1 rounded-full font-code-md bg-accent-teal/15 text-tertiary border border-accent-teal/30">Cifrado Local</span>
+</h1>
+</div>
+<!-- Archival Index Folders / Solapas Superiores -->
+<div class="flex items-end gap-1.5 overflow-x-auto pb-0.5">
+<!-- Solapa 1 Activa -->
+<div class="flex items-center gap-2 px-4 py-2.5 rounded-t-lg bg-[#FAF7F0] border-t-2 border-x border-primary border-b-transparent text-ink font-body-strong text-body-sm shadow-[0_-3px_8px_rgba(0,0,0,0.03)] cursor-pointer">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>01. Diario Íntimo &amp; Terapia</span>
+</div>
+<!-- Solapa 2 Inactiva -->
+<div class="flex items-center gap-2 px-4 py-2 rounded-t-lg bg-surface-card/60 hover:bg-surface-card border-t border-x border-hairline text-muted hover:text-ink font-body-md text-body-sm transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-sm">lightbulb</span>
+<span>02. Ideas &amp; Taller</span>
+</div>
+<!-- Solapa 3 Inactiva -->
+<div class="flex items-center gap-2 px-4 py-2 rounded-t-lg bg-surface-card/60 hover:bg-surface-card border-t border-x border-hairline text-muted hover:text-ink font-body-md text-body-sm transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-sm">directions_car</span>
+<span>03. Conaset &amp; Apuntes B</span>
+</div>
+<button class="px-2.5 py-2 text-muted hover:text-ink transition-colors" title="Añadir solapa">
+<span class="material-symbols-outlined text-lg">add</span>
+</button>
+</div>
+</div>
+<!-- ========================================== -->
+<!-- ANALOG STATIONERY DESK: THE PHYSICAL OPEN FOLIO -->
+<!-- ========================================== -->
+<div class="relative bg-[#FAF7F0] border border-[#e2d8cb] rounded-2xl folio-shadow paper-curl-bottom overflow-hidden p-6 sm:p-10 transition-all">
+<!-- Washi Tape Décor 1 (Top Left Header) -->
+<div class="absolute -top-3 left-14 w-28 h-7 washi-tape-magenta -rotate-2 z-20 pointer-events-none rounded-sm border-y border-dashed border-primary/20"></div>
+<!-- Washi Tape Décor 2 (Top Right Corner) -->
+<div class="absolute -top-2 right-24 w-32 h-7 washi-tape-slate rotate-3 z-20 pointer-events-none rounded-sm border-y border-dashed border-body/20"></div>
+<!-- Traditional Red Hanko Seal Stamp (Watermark Aesthetic) -->
+<div class="absolute right-8 top-8 w-20 h-20 rounded-lg border-2 border-[#b83838]/40 flex flex-col items-center justify-center text-[#b83838]/50 rotate-12 pointer-events-none select-none z-10 font-serif">
+<span class="text-xs tracking-widest uppercase font-bold">済</span>
+<span class="text-[9px] tracking-tighter uppercase font-mono">ESPIRALIA</span>
+<span class="text-[8px] tracking-widest font-mono">AUTÉNTICO</span>
+</div>
+<!-- PHYSICAL PAPER GRID LAYOUT -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+<!-- ========================================= -->
+<!-- LEFT 8 COLUMNS: MAIN THERAPEUTIC NOTEBOOK -->
+<!-- ========================================= -->
+<div class="lg:col-span-8 flex flex-col space-y-6">
+<!-- Page Header Meta (Classic Editorial Stationery) -->
+<div class="flex flex-wrap items-center justify-between pb-4 border-b border-[#e5dcd0] gap-4">
+<div class="flex items-center gap-3">
+<span class="text-xs uppercase font-code-md text-muted tracking-widest">FECHA:</span>
+<span class="font-headline-sm text-ink text-lg italic underline decoration-[#d4c1d2] decoration-2 underline-offset-4">Jueves, 24 de Octubre de 2025</span>
+</div>
+<div class="flex items-center gap-4 text-xs font-code-md text-muted">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-accent-teal">psychology</span>
+<span>Sesión Semanal #14</span>
+</span>
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm text-primary">schedule</span>
+<span>42 min de escritura</span>
+</span>
+</div>
+</div>
+<!-- Therapeutic Prompt / Anchor Question Banner -->
+<div class="p-4 rounded-xl bg-surface-soft/80 border border-hairline flex items-start gap-3.5">
+<span class="material-symbols-outlined text-primary text-xl mt-0.5">spa</span>
+<div>
+<h4 class="font-headline-sm text-base text-ink font-semibold">Pregunta Ancla de la Semana:</h4>
+<p class="font-body-md text-body text-sm mt-0.5 leading-relaxed">
+                  "¿Qué autoexigencias me estoy imponiendo hoy que pertenecen al futuro y no a mi presente inmediato?"
+                </p>
+</div>
+</div>
+<!-- MAIN WRITING CANVAS (Tactile Bujo Dot Grid Area) -->
+<div class="bujo-grid bg-[#FCFBF8] border border-[#e8dfd3] rounded-xl p-6 sm:p-8 min-h-[460px] relative">
+<!-- Subtle Bookmark Ribbon simulation at top -->
+<div class="absolute -top-3 left-8 w-4 h-12 bg-primary/80 rounded-b shadow-sm z-10"></div>
+<!-- Real User Therapeutic Journal Content -->
+<div class="space-y-6 text-body-strong font-body-md leading-relaxed">
+<!-- Section 1: Autoobservación y Desahogo -->
+<div>
+<h3 class="font-headline-md text-xl text-ink font-semibold mb-2 flex items-center gap-2">
+<span class="text-primary font-mono text-sm">§ 1.</span>
+                    Descompresión mental &amp; Autoobservación
+                  </h3>
+<p class="text-body leading-relaxed text-justify">
+                    Hoy inicié la mañana con esa típica tensión en el diafragma. Me descubrí pensando simultáneamente en tres horizontes divergentes: el simulacro de conducción clase B del sábado, la validación del certificado médico y los requerimientos preliminares de ponderación para la postulación universitaria 2026. Al escribirlo aquí, me doy cuenta de que <em>la ansiedad es solo exceso de futuro agolpándose en un día que apenas comienza</em>.
+                  </p>
+<p class="text-body leading-relaxed mt-3 text-justify">
+                    En la sesión de terapia anterior revisamos que la necesidad de control absoluto sobre los resultados suele enmascarar miedo a ser evaluada. Hoy decido soltar la expectativa de perfección. Concluir el día con calma vale más que tachar doce casillas con taquicardia.
+                  </p>
+</div>
+<!-- Section 2: Simulacro Clase B & Conaset -->
+<div class="p-4 rounded-lg bg-surface-card/60 border border-hairline">
+<div class="flex items-center justify-between mb-2">
+<span class="font-headline-sm text-base text-ink font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">directions_car</span>
+                      Avance Conaset - Simulacro Clase B
+                    </span>
+<span class="text-code-sm font-code-sm px-2 py-0.5 bg-success/15 text-success rounded">32 / 35 Aprobado (91%)</span>
+</div>
+<p class="text-body text-sm leading-relaxed">
+                    Puntos críticos a repasar antes de salir a la vía: distancia de frenado en calzada húmeda (coeficiente de adherencia) y prioridad en rotondas de tres pistas. Ya no siento pánico frente al embrague en subida; la memoria muscular se está asentando con naturalidad.
+                  </p>
+</div>
+<!-- Section 3: Postulaciones Universitarias 2026 -->
+<div>
+<h3 class="font-headline-md text-xl text-ink font-semibold mb-2 flex items-center gap-2">
+<span class="text-primary font-mono text-sm">§ 2.</span>
+                    Planes de Postulación 2026 (Diseño &amp; Humanidades)
+                  </h3>
+<p class="text-body leading-relaxed text-justify">
+                    Conversado con el orientador: mantener el ritmo de lectura pausada. La meta no es devorar manuales de admisión como si fueran un trámite punitivo, sino reconectar con la curiosidad genuina por la tipografía, la historia editorial y la arquitectura de la información. Mi valor personal no depende de una tabla de percentiles.
+                  </p>
+</div>
+<!-- Real-time writing cursor & status -->
+<div class="pt-4 flex items-center gap-3 text-xs font-code-md text-muted border-t border-[#ece3d7]">
+<span class="inline-block w-2 h-4 bg-primary animate-pulse"></span>
+<span>Escribiendo en vivo en almacenamiento cifrado local • Sin telemetría en la nube</span>
+<span class="ml-auto text-muted-soft">384 palabras escritas</span>
+</div>
+</div>
+</div>
+<!-- Bottom Reflection Prompts Bar (From Image Inspiration) -->
+<div class="p-5 rounded-xl bg-[#F6F1E8] border border-[#e4dbce] grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="space-y-1">
+<span class="text-code-sm font-code-sm text-primary uppercase font-semibold">¿Qué fluyó bien hoy?</span>
+<p class="text-body-sm text-body">Pude respirar antes de contestar el correo del taller. Pausa de 3 minutos cumplida.</p>
+</div>
+<div class="space-y-1 border-t md:border-t-0 md:border-l border-hairline pt-3 md:pt-0 md:pl-4">
+<span class="text-code-sm font-code-sm text-accent-amber uppercase font-semibold">¿Qué puedo mejorar?</span>
+<p class="text-body-sm text-body">No consultar la bandeja de entrada después de las 20:00 hrs. Desconectar la pantalla azul.</p>
+</div>
+<div class="space-y-1 border-t md:border-t-0 md:border-l border-hairline pt-3 md:pt-0 md:pl-4">
+<span class="text-code-sm font-code-sm text-accent-teal uppercase font-semibold">Intención para mañana:</span>
+<p class="text-body-sm text-body">Caminar 20 min bajo los plátanos orientales sin auriculares ni prisa.</p>
+</div>
+</div>
+</div>
+<!-- ========================================= -->
+<!-- RIGHT 4 COLUMNS: STATIONERY ACCESSORIES & EPHEMERA -->
+<!-- ========================================= -->
+<div class="lg:col-span-4 flex flex-col space-y-6">
+<!-- 1. TACTILE STICKY NOTE WITH REALISTIC BRASS CLIP -->
+<div class="relative pt-6">
+<!-- Golden Brass Paperclip Realistic Render -->
+<div class="absolute top-1 left-1/2 -translate-x-1/2 z-30 brass-clip pointer-events-none">
+<svg fill="none" height="60" viewbox="0 0 34 60" width="34" xmlns="http://www.w3.org/2000/svg">
+<!-- Outer loop -->
+<path d="M10 24V46C10 51.5228 14.4772 56 20 56C25.5228 56 30 51.5228 30 46V14C30 7.37258 24.6274 2 18 2C11.3726 2 6 7.37258 6 14V42C6 45.3137 8.68629 48 12 48C15.3137 48 18 45.3137 18 42V18" stroke="#c99738" stroke-linecap="round" stroke-width="3"></path>
+<!-- Highlight shimmer -->
+<path d="M9 24V46C9 50 13 54.5 19 54.5" stroke="#fef08a" stroke-linecap="round" stroke-width="1.2"></path>
+</svg>
+</div>
+<!-- Sticky Note Body (Yellow Parchment, -1.8deg Tilt) -->
+<div class="bg-[#FFF8D6] border border-[#f0e3a6] rounded-sm p-6 sticky-shadow transform -rotate-2 hover:rotate-0 transition-transform duration-200 relative">
+<!-- Tiny corner curl -->
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-gradient-to-tl from-[#e3d58d] to-transparent pointer-events-none"></div>
+<div class="text-center pt-4 pb-2">
+<span class="text-xs uppercase font-code-md text-[#997e2e] tracking-widest block mb-2">Recordatorio Compasivo</span>
+<p class="font-hand text-2xl text-[#3b3210] leading-snug font-bold">
+                    “discipline today, peace tomorrow ♡”
+                  </p>
+<div class="w-12 h-0.5 bg-[#e3d58d] mx-auto my-3"></div>
+<p class="font-hand text-xl text-[#57491b] leading-normal">
+                    Escribe sin censura.<br/>
+                    El orden exterior nutre la serenidad interior.
+                  </p>
+</div>
+<div class="text-right text-[11px] font-hand text-[#8f7936] mt-2">
+                  — Cuaderno Terapéutico #4
+                </div>
+</div>
+</div>
+<!-- 2. MOOD & VITALITY TRACKER CARD (Analog Dot Matrix) -->
+<div class="bg-surface-card/80 border border-hairline rounded-xl p-5 shadow-sm space-y-4">
+<div class="flex items-center justify-between border-b border-hairline pb-3">
+<span class="font-headline-sm text-base text-ink font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">ecg_heart</span>
+                  Ritmo &amp; Estado de Ánimo
+                </span>
+<span class="text-code-sm font-code-sm text-muted">Oct 24</span>
+</div>
+<!-- Qualitative Mood Scale with Ink Dots -->
+<div>
+<span class="text-xs font-label-md text-muted uppercase tracking-wider block mb-2">Energía Basal:</span>
+<div class="grid grid-cols-5 gap-2 text-center">
+<button class="py-2 rounded-lg bg-surface border border-hairline hover:border-primary text-xs flex flex-col items-center gap-1 transition-all">
+<span class="material-symbols-outlined text-base text-muted">sentiment_dissatisfied</span>
+<span class="text-[10px] font-label-md">Baja</span>
+</button>
+<button class="py-2 rounded-lg bg-surface border border-hairline hover:border-primary text-xs flex flex-col items-center gap-1 transition-all">
+<span class="material-symbols-outlined text-base text-muted">sentiment_neutral</span>
+<span class="text-[10px] font-label-md">Neutro</span>
+</button>
+<button class="py-2 rounded-lg bg-primary/10 border-2 border-primary text-xs flex flex-col items-center gap-1 shadow-xs">
+<span class="material-symbols-outlined text-base text-primary" style="font-variation-settings: 'FILL' 1;">sentiment_satisfied</span>
+<span class="text-[10px] font-label-md font-bold text-primary">Sereno</span>
+</button>
+<button class="py-2 rounded-lg bg-surface border border-hairline hover:border-primary text-xs flex flex-col items-center gap-1 transition-all">
+<span class="material-symbols-outlined text-base text-muted">sentiment_very_satisfied</span>
+<span class="text-[10px] font-label-md">Enérgico</span>
+</button>
+<button class="py-2 rounded-lg bg-surface border border-hairline hover:border-primary text-xs flex flex-col items-center gap-1 transition-all">
+<span class="material-symbols-outlined text-base text-muted">bolt</span>
+<span class="text-[10px] font-label-md">Radiante</span>
+</button>
+</div>
+</div>
+<!-- Energy Levels Bars (Editorial Magenta Palette) -->
+<div class="space-y-3 pt-2">
+<div>
+<div class="flex justify-between text-xs font-label-md text-body mb-1">
+<span>Foco y Claridad Mental</span>
+<span class="font-code-sm font-semibold text-primary">78%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-cream-strong overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-label-md text-body mb-1">
+<span>Calma / Regulación Nerviosa</span>
+<span class="font-code-sm font-semibold text-accent-teal">85%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-cream-strong overflow-hidden">
+<div class="h-full bg-accent-teal rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-label-md text-body mb-1">
+<span>Cansancio Somático</span>
+<span class="font-code-sm font-semibold text-accent-amber">40%</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-cream-strong overflow-hidden">
+<div class="h-full bg-accent-amber rounded-full" style="width: 40%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. SECONDARY LAVENDER NOTEPAD (Quick Brain Dump Snippet) -->
+<div class="bg-[#F5EDF8] border border-[#e5d5eb] rounded-xl p-5 relative shadow-sm rotate-1 hover:rotate-0 transition-transform">
+<div class="w-16 h-5 washi-tape-slate absolute -top-2 left-6 -rotate-1 rounded-sm"></div>
+<div class="flex items-center justify-between pb-2 border-b border-[#e2cfe8] mt-1">
+<span class="font-headline-sm text-sm text-primary font-bold uppercase tracking-wider">Brain Dump Rápido</span>
+<span class="material-symbols-outlined text-primary text-base">push_pin</span>
+</div>
+<ul class="mt-3 space-y-2 text-xs font-body-md text-body">
+<li class="flex items-start gap-2">
+<span class="text-primary mt-0.5">•</span>
+<span>Pedir comprobante oftalmológico para el examen psicotécnico municipal.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-primary mt-0.5">•</span>
+<span>Descargar el temario de Competencia Lectora PAES en PDF limpio.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="text-primary mt-0.5">•</span>
+<span>No olvidar comprar tinta color berenjena para la pluma estilográfica.</span>
+</li>
+</ul>
+</div>
+<!-- 4. ANALOG STAMP BADGE / LOCAL DB VERIFICATION -->
+<div class="p-4 rounded-xl border border-dashed border-hairline bg-surface/60 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full border border-primary/30 bg-primary/5 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-lg">verified_user</span>
+</div>
+<div>
+<span class="text-xs font-body-strong text-ink block">Cuaderno de Terapia Privado</span>
+<span class="text-[11px] font-body-sm text-muted block leading-tight">Registros confinados al dispositivo local. Copia de respaldo automática en bóveda encriptada.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ========================================= -->
+<!-- BOTTOM TOOLBAR INSIDE PHYSICAL FOLIO -->
+<!-- ========================================= -->
+<div class="mt-10 pt-4 border-t border-[#e8ded2] flex flex-wrap items-center justify-between gap-4 text-xs font-code-md text-muted">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5 hover:text-ink cursor-pointer">
+<span class="material-symbols-outlined text-base">draw</span>
+<span>Modo Estilográfica: Activo (Tinta 0.5mm)</span>
+</span>
+<span class="hidden sm:inline text-muted-soft">•</span>
+<span class="hidden sm:flex items-center gap-1.5 hover:text-ink cursor-pointer">
+<span class="material-symbols-outlined text-base">format_paint</span>
+<span>Papel: Tinte Marfil 300g / Verjurado</span>
+</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg border border-hairline bg-surface hover:bg-surface-soft text-body transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">history</span>
+<span>Historial de Versiones</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg bg-primary hover:bg-primary-active text-on-primary font-medium transition-colors flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">bookmark</span>
+<span>Guardar Pliego</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

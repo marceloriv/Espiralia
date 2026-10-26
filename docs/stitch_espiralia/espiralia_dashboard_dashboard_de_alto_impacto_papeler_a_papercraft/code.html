@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Espiralia — Taller de Escritorio &amp; Focus Plan</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-surface-variant": "#504250",
+            "tertiary": "#00483e",
+            "surface-container-low": "#f6f3f1",
+            "tertiary-container": "#006255",
+            "secondary-container": "#ff86f9",
+            "on-secondary": "#ffffff",
+            "surface-variant": "#e5e2e0",
+            "inverse-primary": "#f9acff",
+            "background": "#fcf9f6",
+            "on-tertiary-container": "#82ddc9",
+            "muted": "#6c6a64",
+            "canvas": "#faf9f5",
+            "inverse-surface": "#31302f",
+            "tertiary-fixed": "#98f3e0",
+            "surface-dark-elevated": "#252320",
+            "body": "#3d3d3a",
+            "on-primary": "#ffffff",
+            "on-surface": "#1c1c1a",
+            "surface-bright": "#fcf9f6",
+            "surface-dark": "#181715",
+            "error": "#c64545",
+            "hairline": "#e6dfd8",
+            "on-secondary-container": "#7d0380",
+            "on-primary-container": "#fab3ff",
+            "muted-soft": "#8e8b82",
+            "surface-card": "#efe9de",
+            "surface": "#fcf9f6",
+            "surface-container-high": "#ebe8e5",
+            "success": "#5db872",
+            "outline": "#837281",
+            "on-secondary-fixed-variant": "#7f0682",
+            "primary-disabled": "#FFC0DE",
+            "accent-teal": "#5db8a6",
+            "primary-soft": "#ED96D7",
+            "primary-container": "#8e1ea2",
+            "on-background": "#1c1c1a",
+            "surface-soft": "#f5f0e8",
+            "body-strong": "#252523",
+            "secondary": "#9c2c9c",
+            "surface-container-highest": "#e5e2e0",
+            "hairline-soft": "#ebe6df",
+            "ink": "#141413",
+            "on-secondary-fixed": "#380039",
+            "on-primary-fixed": "#35003f",
+            "on-primary-fixed-variant": "#7b0090",
+            "error-container": "#ffdad6",
+            "primary-fixed-dim": "#f9acff",
+            "tertiary-fixed-dim": "#7cd7c4",
+            "primary-active": "#C654C3",
+            "surface-tint": "#982aab",
+            "surface-cream-strong": "#e8e0d2",
+            "warning": "#d4a017",
+            "surface-dim": "#dcd9d7",
+            "primary": "#6e0081",
+            "on-dark": "#faf9f5",
+            "surface-container-lowest": "#ffffff",
+            "on-error": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "on-error-container": "#93000a",
+            "outline-variant": "#d4c1d2",
+            "primary-fixed": "#ffd6fe",
+            "surface-container": "#f0edeb",
+            "on-tertiary-fixed": "#00201b",
+            "inverse-on-surface": "#f3f0ee",
+            "accent-amber": "#e8a55a",
+            "secondary-fixed": "#ffd7f6",
+            "secondary-fixed-dim": "#ffaaf6",
+            "on-tertiary-fixed-variant": "#005045"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin": "2rem",
+            "margin-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "headline-lg": ["Newsreader"],
+            "headline-sm": ["Newsreader"],
+            "body-sm": ["Inter"],
+            "headline-md": ["Newsreader"],
+            "display-lg": ["Newsreader"],
+            "code-md": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "body-strong": ["Inter"],
+            "headline-lg-mobile": ["Newsreader"],
+            "label-md": ["Inter"],
+            "handwriting": ["Caveat", "cursive"]
+          },
+          "fontSize": {
+            "label-lg": ["0.875rem", { "lineHeight": "1.25", "fontWeight": "500" }],
+            "code-sm": ["0.6875rem", { "lineHeight": "1.3", "fontWeight": "400" }],
+            "body-md": ["1rem", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "headline-lg": ["2.5rem", { "lineHeight": "1.2", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "headline-sm": ["1.375rem", { "lineHeight": "1.4", "fontWeight": "400" }],
+            "body-sm": ["0.875rem", { "lineHeight": "1.5", "fontWeight": "400" }],
+            "headline-md": ["1.75rem", { "lineHeight": "1.3", "fontWeight": "600" }],
+            "display-lg": ["3.5rem", { "lineHeight": "1.15", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "code-md": ["0.8125rem", { "lineHeight": "1.4", "fontWeight": "400" }],
+            "body-lg": ["1.125rem", { "lineHeight": "1.65", "fontWeight": "400" }],
+            "body-strong": ["1rem", { "lineHeight": "1.6", "fontWeight": "600" }],
+            "headline-lg-mobile": ["2rem", { "lineHeight": "1.25", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["0.75rem", { "lineHeight": "1.2", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Stationery & Papercraft Tactile Details */
+    .bg-parchment-texture {
+      background-color: #fcf9f6;
+      background-image: radial-gradient(#e6dfd8 0.65px, transparent 0.65px);
+      background-size: 20px 20px;
+    }
+    .paper-grid {
+      background-image: linear-gradient(to right, #ece4d8 1px, transparent 1px),
+                        linear-gradient(to bottom, #ece4d8 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .ruled-lines {
+      background-image: repeating-linear-gradient(transparent, transparent 27px, #e6dfd8 28px);
+      line-height: 28px;
+    }
+    .pin-shadow {
+      box-shadow: 0 4px 12px rgba(100, 80, 50, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .paper-sheet-shadow {
+      box-shadow: 0 1px 1px rgba(20,20,19,0.03), 0 3px 10px rgba(20,20,19,0.05);
+    }
+    .washi-tape-slate {
+      background: rgba(123, 140, 158, 0.55);
+      backdrop-filter: blur(2px);
+      transform: rotate(-1.5deg);
+    }
+    .washi-tape-orchid {
+      background: rgba(237, 150, 215, 0.45);
+      backdrop-filter: blur(2px);
+      transform: rotate(1.2deg);
+    }
+  </style>
+</head>
+<body class="bg-background text-ink font-body-sm text-body-sm antialiased h-full flex overflow-hidden selection:bg-primary-soft selection:text-ink">
+<!-- =========================================================================
+       1. SIDEBAR EDITORIAL (Shared Component: SideNavBar)
+       ========================================================================= -->
+<aside class="h-screen w-64 flex flex-col justify-between shrink-0 h-screen sticky top-0 left-0 p-4 border-r border-hairline dark:border-surface-dark-elevated bg-surface-soft dark:bg-surface-dark z-40">
+<!-- Top Branding / Monogram -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 px-2 py-1">
+<div class="w-10 h-10 rounded-lg bg-surface-card border border-hairline flex items-center justify-center shadow-inner relative group cursor-pointer">
+<span class="font-headline-md text-headline-md font-semibold text-primary">E</span>
+<div class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-accent-teal border-2 border-surface-soft"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-md font-headline-lg font-semibold tracking-tight text-ink dark:text-on-dark leading-none">Espiralia</span>
+<span class="text-label-md font-label-md text-muted mt-0.5">Taller de Escritorio</span>
+</div>
+</div>
+<!-- Quick CTA Button from JSON -->
+<button class="w-full mt-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-primary-container text-on-primary font-body-strong text-body-sm hover:bg-primary-active transition-all duration-150 shadow-sm active:scale-95">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+<span>Nueva Entrada</span>
+</button>
+<!-- Main Navigation Menu -->
+<nav class="flex flex-col gap-1 mt-2">
+<!-- 1. Resumen (Active as this is the Focus Dashboard) -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-card dark:bg-surface-dark-elevated text-primary dark:text-primary-soft font-body-strong text-body-sm border-l-2 border-primary dark:border-primary-soft shadow-sm" href="#resumen">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span>Resumen</span>
+</a>
+<!-- 2. Agenda & Planner -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#agenda">
+<span class="material-symbols-outlined text-[20px]" data-icon="calendar_today">calendar_today</span>
+<span>Agenda &amp; Planner</span>
+</a>
+<!-- 3. Tareas & Áreas -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#tareas">
+<span class="material-symbols-outlined text-[20px]" data-icon="checklist">checklist</span>
+<span>Tareas &amp; Áreas</span>
+</a>
+<!-- 4. Notas & Terapia -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#notas">
+<span class="material-symbols-outlined text-[20px]" data-icon="menu_book">menu_book</span>
+<span>Notas &amp; Terapia</span>
+</a>
+<!-- 5. Archivos & Vínculos -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#archivos">
+<span class="material-symbols-outlined text-[20px]" data-icon="folder_open">folder_open</span>
+<span>Archivos &amp; Vínculos</span>
+</a>
+<!-- 6. Sincronización -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted dark:text-muted-soft hover:text-ink dark:hover:text-on-dark hover:bg-surface-cream-strong dark:hover:bg-surface-dark-elevated transition-colors font-body-md text-body-sm" href="#sync">
+<span class="material-symbols-outlined text-[20px]" data-icon="sync">sync</span>
+<span>Sincronización</span>
+<span class="ml-auto w-2 h-2 rounded-full bg-accent-teal"></span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Footer / User Profile & PIN Lock -->
+<div class="flex flex-col gap-2 pt-3 border-t border-hairline">
+<!-- Profile Card Mini -->
+<div class="p-2.5 rounded-lg bg-surface-card border border-hairline flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-cream-strong border border-hairline flex items-center justify-center text-primary font-headline-sm text-body-strong">
+          R
+        </div>
+<div class="flex flex-col min-w-0">
+<span class="text-label-md font-label-md font-semibold text-ink truncate">Romina</span>
+<span class="text-code-sm font-code-sm text-muted truncate">Plan Semestral II 2026</span>
+</div>
+</div>
+<!-- Footer Sub-items -->
+<div class="grid grid-cols-2 gap-1 pt-1">
+<button class="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors text-label-md font-label-md">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock">lock</span>
+<span>Perfil PIN</span>
+</button>
+<button class="flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg text-muted hover:text-ink hover:bg-surface-cream-strong transition-colors text-label-md font-label-md">
+<span class="material-symbols-outlined text-[16px]" data-icon="tune">tune</span>
+<span>Ajustes</span>
+</button>
+</div>
+<div class="px-2 pt-1 text-center">
+<span class="text-[10px] font-code-sm text-muted-soft tracking-wider">INDEXEDDB ENCRIPTADO LOCAL</span>
+</div>
+</div>
+</aside>
+<!-- =========================================================================
+       MAIN CANVAS CONTAINER
+       ========================================================================= -->
+<div class="flex-1 flex flex-col h-screen overflow-y-auto bg-parchment-texture relative">
+<!-- Topbar (Shared Component: TopNavBar) -->
+<header class="sticky top-0 z-30 flex items-center justify-between w-full px-6 py-3 bg-canvas/95 backdrop-blur-sm border-b border-hairline">
+<!-- Left: Editorial Search and Current Date Selector -->
+<div class="flex items-center gap-4">
+<div class="relative w-64 md:w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted text-[18px]">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 text-body-sm font-body-sm rounded-lg bg-surface border border-hairline placeholder:text-muted-soft focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all" placeholder="Buscar en pliegos, citas o tareas..." type="text"/>
+</div>
+<div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-soft border border-hairline text-code-md font-code-md text-ink">
+<span class="material-symbols-outlined text-primary text-[18px]">event</span>
+<span>Martes, 13 de Octubre de 2026 · Semana 41</span>
+</div>
+</div>
+<!-- Center Links (from JSON TopNavBar) -->
+<nav class="hidden xl:flex items-center gap-6">
+<a class="text-primary font-body-strong border-b-2 border-primary pb-1" href="#hoy">Hoy</a>
+<a class="text-muted font-body-md hover:text-ink transition-colors pb-1" href="#semana">Semana</a>
+<a class="text-muted font-body-md hover:text-ink transition-colors pb-1" href="#mes">Mes</a>
+<a class="text-muted font-body-md hover:text-ink transition-colors pb-1" href="#reflexion">Reflexión</a>
+</nav>
+<!-- Right Actions: Focus Mode, Lock, Export -->
+<div class="flex items-center gap-2">
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hairline bg-surface text-ink hover:bg-surface-soft text-body-sm font-body-md transition-colors" title="Exportar calendario">
+<span class="material-symbols-outlined text-[16px]">calendar_add_on</span>
+<span>Exportar .ics</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-surface-card border border-hairline text-ink hover:bg-surface-cream-strong text-body-sm font-body-md transition-all shadow-sm">
+<span class="material-symbols-outlined text-accent-amber text-[18px]">timelapse</span>
+<span>Modo Concentración</span>
+</button>
+<button class="p-2 rounded-lg border border-hairline hover:bg-surface-soft text-muted hover:text-ink transition-colors" title="Bloquear Cuaderno">
+<span class="material-symbols-outlined text-[20px]" data-icon="lock">lock</span>
+</button>
+</div>
+</header>
+<!-- Canvas Inner Content Wrapper (Max 1280px) -->
+<main class="w-full max-w-[1280px] mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-6">
+<!-- =====================================================================
+           2. CABECERA EDITORIAL & POST-IT ARTESANAL
+           ===================================================================== -->
+<section class="relative bg-surface rounded-xl border border-hairline p-6 lg:p-8 paper-sheet-shadow overflow-hidden" style="box-shadow: 0 1px 2px rgba(28,28,26,0.04), 0 4px 12px rgba(28,28,26,0.06), 0 16px 32px -4px rgba(28,28,26,0.08);">
+<!-- Washi Tape decorative topper -->
+<div class="absolute -top-3 left-1/4 w-32 h-7 washi-tape-slate z-10 rounded-sm pointer-events-none"></div>
+<div class="absolute -top-3 right-1/3 w-28 h-6 washi-tape-orchid z-10 rounded-sm pointer-events-none"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start relative z-0">
+<!-- Left Display Headline & Metadata -->
+<div class="lg:col-span-8 flex flex-col gap-2">
+<div class="flex flex-wrap items-center gap-3 text-code-sm font-code-sm text-muted">
+<span class="px-2 py-0.5 rounded bg-surface-card border border-hairline uppercase tracking-wide">Cuaderno de Enfoque Personal</span>
+<span>•</span>
+<span class="font-medium text-body">FECHA: 13 / Octubre / 2026</span>
+<span>•</span>
+<span>Semestre: 2026-II</span>
+<span>•</span>
+<span class="text-primary font-semibold">Semana: #41</span>
+</div>
+<h1 class="text-display-lg font-display-lg text-ink lowercase tracking-tight mt-1">
+              focus plan<span class="text-primary">.</span>
+</h1>
+<p class="font-headline-sm text-headline-sm italic text-muted">
+              clarify your mind. prioritize your energy.
+            </p>
+<!-- Aforismo reflexivo de imprenta -->
+<div class="mt-4 p-3.5 rounded-lg bg-surface-soft/80 border-l-4 border-primary border-hairline flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[22px] shrink-0">format_quote</span>
+<blockquote class="text-body-sm font-headline-sm italic text-body-strong">
+                «El orden exterior nutre la serenidad interior. Un renglón a la vez, sin prisa pero sin pausa.»
+              </blockquote>
+</div>
+</div>
+<!-- Right: Tactile Post-it note taped with brass pin -->
+<div class="lg:col-span-4 flex justify-center lg:justify-end"><div class="relative w-64 p-5 bg-[#fff9d6] border border-[#ecd98c] rounded-sm shadow-xl transform rotate-2 hover:rotate-0 transition-transform duration-300 pin-shadow" style="box-shadow: 0 1px 3px rgba(50,40,20,0.08), 0 8px 24px -4px rgba(60,45,20,0.15), 0 20px 30px -10px rgba(50,30,10,0.08); background-image: radial-gradient(#eadc96 0.75px, transparent 0.75px); background-size: 14px 14px;"><div class="absolute -top-3.5 left-1/2 -translate-x-1/2 w-7 h-10 border-2 border-amber-600/80 rounded-full bg-gradient-to-b from-amber-200 via-amber-300 to-amber-500 shadow-md flex items-center justify-center z-20 pointer-events-none"><div class="w-3.5 h-6 border-b-2 border-l-2 border-amber-700/60 rounded-b-full"></div></div><div class="absolute -top-2 -right-3 w-16 h-5 washi-tape-orchid opacity-80 z-10 pointer-events-none"></div><div class="absolute bottom-2.5 right-2.5 w-8 h-8 rounded border border-primary/30 flex items-center justify-center text-primary/40 font-serif text-[13px] font-bold select-none pointer-events-none rotate-6">済</div><div class="flex flex-col items-center text-center pt-2 relative z-10"><span class="text-code-sm font-code-sm uppercase tracking-widest text-amber-900/60 font-semibold">motto del día</span><p class="font-handwriting text-3xl text-amber-950 font-bold mt-2 leading-snug">discipline today,<br/>peace tomorrow.</p><div class="flex items-center gap-1 text-primary mt-2"><span class="material-symbols-outlined text-[16px]">favorite</span><span class="font-code-sm text-xs text-amber-800">espíritu calmado</span></div></div></div></div>
+</div>
+<!-- Barra de 4 Accesos Rápidos ('A un solo clic') -->
+<div class="mt-8 pt-6 border-t border-hairline">
+<div class="flex items-center justify-between mb-3">
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">bolt</span>
+              Acciones Instantáneas — A un solo clic
+            </span>
+<span class="text-code-sm font-code-sm text-muted">Respaldado en memoria local</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+<!-- 1. Nueva Tarea Inmediata -->
+<button class="flex items-center gap-3 p-3 rounded-xl bg-surface-soft hover:bg-surface-cream-strong border border-hairline text-left transition-all duration-150 hover:-translate-y-0.5 group">
+<div class="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">add_task</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-strong text-body-sm text-ink leading-tight">Nueva Tarea</span>
+<span class="text-code-sm text-muted mt-0.5">Clase B / Terapia / U.</span>
+</div>
+</button>
+<!-- 2. Bloque de Foco Rápido -->
+<button class="flex items-center gap-3 p-3 rounded-xl bg-surface-soft hover:bg-surface-cream-strong border border-hairline text-left transition-all duration-150 hover:-translate-y-0.5 group">
+<div class="w-9 h-9 rounded-lg bg-accent-amber/20 text-accent-amber flex items-center justify-center group-hover:bg-accent-amber group-hover:text-ink transition-colors">
+<span class="material-symbols-outlined text-[20px]">hourglass_top</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-strong text-body-sm text-ink leading-tight">Bloque de Foco</span>
+<span class="text-code-sm text-muted mt-0.5">45 min en libreta</span>
+</div>
+</button>
+<!-- 3. Reflexión / Bitácora Libre -->
+<button class="flex items-center gap-3 p-3 rounded-xl bg-surface-soft hover:bg-surface-cream-strong border border-hairline text-left transition-all duration-150 hover:-translate-y-0.5 group">
+<div class="w-9 h-9 rounded-lg bg-secondary/15 text-secondary flex items-center justify-center group-hover:bg-secondary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">auto_stories</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-strong text-body-sm text-ink leading-tight">Bitácora Libre</span>
+<span class="text-code-sm text-muted mt-0.5">Pliego sin límites</span>
+</div>
+</button>
+<!-- 4. Bóveda Local / Archivos -->
+<button class="flex items-center gap-3 p-3 rounded-xl bg-surface-soft hover:bg-surface-cream-strong border border-hairline text-left transition-all duration-150 hover:-translate-y-0.5 group">
+<div class="w-9 h-9 rounded-lg bg-accent-teal/20 text-accent-teal flex items-center justify-center group-hover:bg-accent-teal group-hover:text-ink transition-colors">
+<span class="material-symbols-outlined text-[20px]">drive_file_move</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-strong text-body-sm text-ink leading-tight">Bóveda Local</span>
+<span class="text-code-sm text-muted mt-0.5">Simulador CONASET</span>
+</div>
+</button>
+</div>
+</div>
+</section>
+<!-- =====================================================================
+           3. BENTO SECTION: PRODUCTIVIDAD SERENA & ENERGY PHASES
+           ===================================================================== -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
+<!-- Energy Check & Mood (Col 4) -->
+<div class="lg:col-span-4 bg-surface rounded-xl border border-hairline p-5 paper-sheet-shadow flex flex-col justify-between" style="box-shadow: 0 1px 2px rgba(28,28,26,0.04), 0 6px 16px rgba(28,28,26,0.06), 0 18px 36px -6px rgba(28,28,26,0.08);">
+<div>
+<div class="flex items-center justify-between pb-3 border-b border-hairline">
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">dark_mode</span>
+                Energy Check &amp; Fases
+              </span>
+<span class="text-code-sm font-code-sm text-primary font-medium">Luna Creciente</span>
+</div>
+<!-- Lunar Cycle Visualizer -->
+<div class="flex items-center justify-between py-4 px-2 text-muted">
+<span class="material-symbols-outlined text-[20px] text-muted-soft" title="Nueva">brightness_1</span>
+<span class="material-symbols-outlined text-[22px] text-muted-soft" title="Creciente">bedtime</span>
+<span class="material-symbols-outlined text-[24px] text-primary" title="Gibosa Creciente (Hoy)">wb_twilight</span>
+<span class="material-symbols-outlined text-[22px] text-ink font-bold" title="Luna Llena">radio_button_checked</span>
+<span class="material-symbols-outlined text-[20px] text-muted-soft" title="Menguante">nightlight</span>
+</div>
+<p class="text-center text-body-sm font-headline-sm italic text-body mb-3">
+              ¿Cómo está tu nivel de claridad hoy?
+            </p>
+<!-- Energy State Selector -->
+<div class="grid grid-cols-4 gap-1.5">
+<button class="flex flex-col items-center py-2 px-1 rounded-lg bg-surface-soft border border-hairline hover:bg-surface-cream-strong text-center transition-colors">
+<span class="text-xl mb-1">🌿</span>
+<span class="text-label-md font-label-md text-ink">Plena</span>
+</button>
+<button class="flex flex-col items-center py-2 px-1 rounded-lg bg-surface-card border-2 border-primary text-center">
+<span class="text-xl mb-1">☕</span>
+<span class="text-label-md font-label-md text-primary font-semibold">En Calma</span>
+</button>
+<button class="flex flex-col items-center py-2 px-1 rounded-lg bg-surface-soft border border-hairline hover:bg-surface-cream-strong text-center transition-colors">
+<span class="text-xl mb-1">☁️</span>
+<span class="text-label-md font-label-md text-muted">Neutra</span>
+</button>
+<button class="flex flex-col items-center py-2 px-1 rounded-lg bg-surface-soft border border-hairline hover:bg-surface-cream-strong text-center transition-colors">
+<span class="text-xl mb-1">🕯️</span>
+<span class="text-label-md font-label-md text-muted">Cansada</span>
+</button>
+</div>
+</div>
+<!-- Bottom Metric Note -->
+<div class="mt-4 pt-3 border-t border-hairline flex items-center justify-between text-code-sm font-code-sm text-muted">
+<span>Registro mental diario</span>
+<span class="text-success font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-success"></span> Estable
+            </span>
+</div>
+</div>
+<!-- 4 Serenidad Metrics (Col 4) -->
+<div class="lg:col-span-4 bg-surface rounded-xl border border-hairline p-5 paper-sheet-shadow flex flex-col justify-between relative" style="box-shadow: 0 1px 2px rgba(28,28,26,0.04), 0 6px 16px rgba(28,28,26,0.06), 0 18px 36px -6px rgba(28,28,26,0.08);"><div class="absolute -top-2.5 right-8 w-20 h-5 washi-tape-slate rounded-sm pointer-events-none z-10"></div>
+<div class="flex items-center justify-between pb-3 border-b border-hairline">
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-accent-teal">spa</span>
+              Métricas de Serenidad
+            </span>
+<span class="text-code-sm font-code-sm text-muted">Privacidad local</span>
+</div>
+<div class="grid grid-cols-2 gap-3 py-2">
+<div class="p-3 rounded-lg bg-surface-soft border border-hairline">
+<span class="text-code-sm font-code-sm text-muted block">Racha Serena</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-2xl font-bold font-display-lg text-primary">14</span>
+<span class="text-label-md text-body">días</span>
+</div>
+<span class="text-[11px] text-success font-medium">IndexedDB activo</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-soft border border-hairline">
+<span class="text-code-sm font-code-sm text-muted block">Foco Neto Hoy</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-2xl font-bold font-display-lg text-ink">5.5</span>
+<span class="text-label-md text-body">horas</span>
+</div>
+<span class="text-[11px] text-muted-soft">3 bloques cumplidos</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-soft border border-hairline">
+<span class="text-code-sm font-code-sm text-muted block">Ruido Digital</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-2xl font-bold font-display-lg text-tertiary">0%</span>
+</div>
+<span class="text-[11px] text-accent-teal font-medium">0 rastreadores</span>
+</div>
+<div class="p-3 rounded-lg bg-surface-soft border border-hairline">
+<span class="text-code-sm font-code-sm text-muted block">Rendimiento</span>
+<div class="flex items-baseline gap-1 mt-1">
+<span class="text-2xl font-bold font-display-lg text-secondary">68%</span>
+</div>
+<span class="text-[11px] text-muted-soft">Objetivo semestral</span>
+</div>
+</div>
+<div class="pt-2 text-code-sm font-code-sm text-muted flex items-center justify-between">
+<span>Soberanía de datos</span>
+<span class="text-primary font-medium">100% en tu máquina</span>
+</div>
+</div>
+<!-- Habit Tracker Semanal (Col 4) -->
+<div class="lg:col-span-4 bg-surface rounded-xl border border-hairline p-5 paper-sheet-shadow flex flex-col justify-between relative" style="box-shadow: 0 1px 2px rgba(28,28,26,0.04), 0 6px 16px rgba(28,28,26,0.06), 0 18px 36px -6px rgba(28,28,26,0.08);"><div class="absolute -top-2.5 left-8 w-16 h-5 washi-tape-orchid rounded-sm pointer-events-none z-10 opacity-70"></div>
+<div class="flex items-center justify-between pb-3 border-b border-hairline">
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-success">task_alt</span>
+              Hábitos Semanales
+            </span>
+<div class="flex gap-1 text-code-sm font-code-sm text-muted">
+<span class="w-4 text-center">L</span>
+<span class="w-4 text-center">M</span>
+<span class="w-4 text-center">X</span>
+<span class="w-4 text-center">J</span>
+<span class="w-4 text-center">V</span>
+<span class="w-4 text-center">S</span>
+<span class="w-4 text-center">D</span>
+</div>
+</div>
+<!-- Habit Rows with Sage Green circles (#5A826D) -->
+<div class="space-y-2.5 py-1">
+<!-- Habit 1 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-muted">drive_eta</span>
+<span class="text-body-sm font-body-sm text-ink truncate max-w-[130px]">Test CONASET</span>
+</div>
+<div class="flex gap-1">
+<span class="w-4 h-4 rounded-full bg-[#5A826D] flex items-center justify-center text-white text-[9px]">✓</span>
+<span class="w-4 h-4 rounded-full bg-[#5A826D] flex items-center justify-center text-white text-[9px]">✓</span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+</div>
+</div>
+<!-- Habit 2 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-muted">local_cafe</span>
+<span class="text-body-sm font-body-sm text-ink truncate max-w-[130px]">Pausa sin móvil</span>
+</div>
+<div class="flex gap-1">
+<span class="w-4 h-4 rounded-full bg-[#5A826D] flex items-center justify-center text-white text-[9px]">✓</span>
+<span class="w-4 h-4 rounded-full bg-[#5A826D] flex items-center justify-center text-white text-[9px]">✓</span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+</div>
+</div>
+<!-- Habit 3 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-muted">self_improvement</span>
+<span class="text-body-sm font-body-sm text-ink truncate max-w-[130px]">Registro terapia</span>
+</div>
+<div class="flex gap-1">
+<span class="w-4 h-4 rounded-full bg-[#5A826D] flex items-center justify-center text-white text-[9px]">✓</span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+</div>
+</div>
+<!-- Habit 4 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-muted">bedtime</span>
+<span class="text-body-sm font-body-sm text-ink truncate max-w-[130px]">Dormir antes 23h</span>
+</div>
+<div class="flex gap-1">
+<span class="w-4 h-4 rounded-full bg-[#5A826D] flex items-center justify-center text-white text-[9px]">✓</span>
+<span class="w-4 h-4 rounded-full bg-[#5A826D] flex items-center justify-center text-white text-[9px]">✓</span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+<span class="w-4 h-4 rounded-full border border-hairline bg-surface-soft"></span>
+</div>
+</div>
+</div>
+<div class="pt-2 border-t border-hairline flex items-center justify-between text-code-sm font-code-sm text-muted">
+<span>Cumplimiento: 85%</span>
+<span class="text-success font-medium">Semana 41 en curso</span>
+</div>
+</div>
+</section>
+<!-- =====================================================================
+           4. TAREAS CRÍTICAS DEL DÍA & FOCUS SCHEDULE
+           ===================================================================== -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Column: Today's Main Focus & Top Priorities (Col 7) -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- TODAY'S MAIN FOCUS (Torn paper slate effect with washi tape) -->
+<div class="relative bg-[#eceef1] border border-[#d6dbe0] rounded-xl p-5 paper-sheet-shadow overflow-hidden" style="box-shadow: 0 1px 3px rgba(30,40,50,0.05), 0 6px 18px rgba(30,40,50,0.08), 0 16px 28px -6px rgba(30,40,50,0.08);">
+<!-- Washi tape label -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#7b8c9e]/40 backdrop-blur-sm rounded text-code-sm font-code-sm font-semibold tracking-wider text-slate-800 uppercase mb-3 transform -rotate-1">
+<span class="material-symbols-outlined text-[15px]">star</span>
+              today's main focus
+            </div>
+<div class="p-4 rounded-lg bg-white/70 border border-[#d6dbe0] flex items-start gap-3">
+<input class="mt-1 h-5 w-5 rounded border-muted text-primary focus:ring-primary cursor-pointer" type="checkbox"/>
+<div class="flex-1">
+<p class="font-headline-sm text-headline-sm font-medium text-ink leading-snug">
+                  Completar 3 test CONASET Clase B y registrar fallos de virajes en rotondas
+                </p>
+<div class="flex items-center gap-3 mt-2 text-code-sm font-code-sm text-muted">
+<span class="inline-flex items-center gap-1 text-primary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Área: Licencia de Conducir
+                  </span>
+<span>•</span>
+<span>Estimado: 90 min</span>
+<span>•</span>
+<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-medium">Alta Prioridad</span>
+</div>
+</div>
+</div>
+</div>
+<!-- TOP PRIORITIES (01, 02, 03) Ruled Lines Notebook Card -->
+<div class="bg-surface rounded-xl border border-hairline p-6 paper-sheet-shadow" style="box-shadow: 0 1px 2px rgba(28,28,26,0.04), 0 6px 18px rgba(28,28,26,0.06), 0 20px 36px -8px rgba(28,28,26,0.09);">
+<div class="flex items-center justify-between pb-3 border-b border-hairline">
+<div class="flex items-center gap-2">
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted font-semibold">top priorities</span>
+<span class="text-xs px-2 py-0.5 rounded bg-surface-card text-muted-soft font-code-sm">No negociables</span>
+</div>
+<span class="material-symbols-outlined text-muted text-[18px]">push_pin</span>
+</div>
+<div class="divide-y divide-hairline mt-2">
+<!-- Priority 01 -->
+<div class="py-3 flex items-start gap-3">
+<span class="font-headline-sm text-headline-sm font-bold text-primary">01.</span>
+<input checked="" class="mt-1.5 h-4 w-4 rounded border-muted text-primary focus:ring-primary cursor-pointer" type="checkbox"/>
+<div class="flex-1">
+<span class="text-body-sm font-body-strong text-ink line-through opacity-70">
+                    Revisión de lecturas del Módulo Epistemología para la sesión de terapia
+                  </span>
+<div class="text-code-sm font-code-sm text-success mt-0.5">Completado a las 09:30 · 45 min foco</div>
+</div>
+<span class="material-symbols-outlined text-success text-[18px]">check_circle</span>
+</div>
+<!-- Priority 02 -->
+<div class="py-3 flex items-start gap-3">
+<span class="font-headline-sm text-headline-sm font-bold text-ink">02.</span>
+<input class="mt-1.5 h-4 w-4 rounded border-muted text-primary focus:ring-primary cursor-pointer" type="checkbox"/>
+<div class="flex-1">
+<span class="text-body-sm font-body-strong text-ink">
+                    Borrador preliminar de la Carta de Motivación (Postulación Univ. 2026)
+                  </span>
+<div class="text-code-sm font-code-sm text-muted mt-0.5">Fase: Estructura de 3 párrafos y objetivos</div>
+</div>
+<span class="text-xs px-2 py-0.5 rounded bg-surface-soft border border-hairline text-muted">16:30 hrs</span>
+</div>
+<!-- Priority 03 -->
+<div class="py-3 flex items-start gap-3">
+<span class="font-headline-sm text-headline-sm font-bold text-ink">03.</span>
+<input class="mt-1.5 h-4 w-4 rounded border-muted text-primary focus:ring-primary cursor-pointer" type="checkbox"/>
+<div class="flex-1">
+<span class="text-body-sm font-body-strong text-ink">
+                    Caminata silenciosa de 30 minutos sin auriculares (Reajuste sensorial)
+                  </span>
+<div class="text-code-sm font-code-sm text-muted mt-0.5">Autocuidado · Parque Quinta Normal</div>
+</div>
+<span class="text-xs px-2 py-0.5 rounded bg-surface-soft border border-hairline text-muted">19:00 hrs</span>
+</div>
+</div>
+</div>
+<!-- Eliminate Distractions Card with paperclip -->
+<div class="relative bg-surface-soft rounded-xl border border-hairline p-5 paper-sheet-shadow">
+<!-- Simulated metallic paperclip -->
+<div class="absolute -top-3 left-6 w-4 h-9 border-2 border-slate-400 rounded-full bg-slate-200/50 shadow-sm pointer-events-none"></div>
+<div class="flex items-center justify-between pb-2">
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted font-semibold pl-6">
+                eliminate distractions
+              </span>
+<span class="text-code-sm font-code-sm text-primary font-medium">Compromiso</span>
+</div>
+<ul class="space-y-2 mt-2 text-body-sm font-body-sm text-body pl-6">
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span>Dejar el teléfono inteligente en modo no molestar y en otra habitación.</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span>Cero pestañas de noticias abiertas durante el bloque de estudio técnico.</span>
+</li>
+<li class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span>Si surge una urgencia mental, anotarla en el Brain Dump inferior sin ejecutarla.</span>
+</li>
+</ul>
+</div>
+</div>
+<!-- Right Column: Focus Schedule (08:00 - 20:00) & Mini Reminders (Col 5) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Focus Schedule Timeline Card -->
+<div class="bg-surface rounded-xl border border-hairline p-5 paper-sheet-shadow" style="box-shadow: 0 1px 2px rgba(28,28,26,0.04), 0 6px 18px rgba(28,28,26,0.06), 0 20px 36px -8px rgba(28,28,26,0.09);">
+<div class="flex items-center justify-between pb-3 border-b border-hairline">
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                Focus Schedule de Hoy
+              </span>
+<span class="text-code-sm font-code-sm text-primary">13 Octubre</span>
+</div>
+<div class="space-y-2 mt-3 text-body-sm">
+<!-- 08:00 -->
+<div class="flex items-center gap-3 p-2 rounded-lg bg-surface-soft border border-hairline">
+<span class="font-code-sm text-xs font-semibold text-muted w-12">08:00</span>
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="flex-1 text-muted line-through text-xs">Lectura matutina &amp; té de menta</span>
+<span class="text-[10px] text-success font-code-sm">Completado</span>
+</div>
+<!-- 09:30 -->
+<div class="flex items-center gap-3 p-2 rounded-lg bg-surface-soft border border-hairline">
+<span class="font-code-sm text-xs font-semibold text-muted w-12">09:30</span>
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="flex-1 text-muted line-through text-xs">Lecturas Módulo Epistemología</span>
+<span class="text-[10px] text-success font-code-sm">Completado</span>
+</div>
+<!-- 11:30 (Active Block) -->
+<div class="flex items-center gap-3 p-2.5 rounded-lg bg-[#efe9de] border-2 border-primary shadow-sm">
+<span class="font-code-sm text-xs font-bold text-primary w-12">11:30</span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<div class="flex-1">
+<span class="font-body-strong text-xs text-ink block">Test CONASET Clase B (3 ensayos)</span>
+<span class="text-[10px] text-primary font-code-sm">EN CURSO · 42 min restantes</span>
+</div>
+</div>
+<!-- 14:00 -->
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-soft border border-transparent hover:border-hairline transition-colors">
+<span class="font-code-sm text-xs font-semibold text-muted w-12">14:00</span>
+<span class="w-2 h-2 rounded-full bg-amber-400"></span>
+<span class="flex-1 text-ink text-xs">Almuerzo pausado &amp; digestión tranquila</span>
+<span class="text-[10px] text-muted font-code-sm">Pausa</span>
+</div>
+<!-- 16:30 -->
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-soft border border-transparent hover:border-hairline transition-colors">
+<span class="font-code-sm text-xs font-semibold text-muted w-12">16:30</span>
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="flex-1 text-ink text-xs">Borrador Carta Univ. 2026 (Pliego libre)</span>
+<span class="text-[10px] text-muted font-code-sm">60 min</span>
+</div>
+<!-- 18:30 -->
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-soft border border-transparent hover:border-hairline transition-colors">
+<span class="font-code-sm text-xs font-semibold text-muted w-12">18:30</span>
+<span class="w-2 h-2 rounded-full bg-accent-teal"></span>
+<span class="flex-1 text-ink text-xs">Bitácora semanal de terapia personal</span>
+<span class="text-[10px] text-muted font-code-sm">30 min</span>
+</div>
+<!-- 20:00 -->
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface-soft border border-transparent hover:border-hairline transition-colors">
+<span class="font-code-sm text-xs font-semibold text-muted w-12">20:00</span>
+<span class="w-2 h-2 rounded-full bg-muted-soft"></span>
+<span class="flex-1 text-ink text-xs">Cierre de cuaderno &amp; reflexión nocturna</span>
+<span class="text-[10px] text-muted font-code-sm">15 min</span>
+</div>
+</div>
+</div>
+<!-- Mini Reminders with Washi Tape and botanical touch -->
+<div class="relative bg-surface rounded-xl border border-hairline p-5 paper-sheet-shadow overflow-hidden">
+<div class="absolute -top-2.5 right-6 w-20 h-6 washi-tape-slate rounded-sm pointer-events-none"></div>
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted font-semibold flex items-center gap-1.5 pb-2">
+<span class="material-symbols-outlined text-[16px] text-accent-amber">notifications_active</span>
+              Mini Reminders
+            </span>
+<div class="space-y-2 mt-2">
+<div class="p-2.5 rounded bg-surface-soft border border-hairline flex items-center justify-between">
+<span class="text-body-sm text-ink">Imprimir lámina de señales de tránsito</span>
+<span class="text-code-sm text-primary font-medium">Hoy</span>
+</div>
+<div class="p-2.5 rounded bg-surface-soft border border-hairline flex items-center justify-between">
+<span class="text-body-sm text-ink">Confirmar sesión de terapia de este viernes</span>
+<span class="text-code-sm text-muted">Jueves</span>
+</div>
+<div class="p-2.5 rounded bg-surface-soft border border-hairline flex items-center justify-between">
+<span class="text-body-sm text-ink">Revisar rúbrica de postulación universitaria</span>
+<span class="text-code-sm text-muted">28 Nov</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- =====================================================================
+           5. PROGRESO POR ÁREAS TEMÁTICAS (Solapas Folder Tabs)
+           ===================================================================== -->
+<section class="bg-surface rounded-xl border border-hairline p-6 paper-sheet-shadow" style="box-shadow: 0 1px 2px rgba(28,28,26,0.04), 0 6px 18px rgba(28,28,26,0.06), 0 20px 36px -8px rgba(28,28,26,0.09);">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-4 border-b border-hairline">
+<div>
+<h2 class="font-headline-md text-headline-md text-ink">Progreso por Áreas Temáticas</h2>
+<p class="text-body-sm text-muted font-body-sm">Carpetas activas de vida y proyectos en curso (Plan 2026-II)</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-code-sm font-code-sm text-muted">3 Áreas Activas</span>
+<button class="text-xs px-2.5 py-1 rounded-lg border border-hairline hover:bg-surface-soft text-primary font-medium transition-colors">
+              + Gestionar Áreas
+            </button>
+</div>
+</div>
+<!-- Folder Tabs Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
+<!-- ÁREA 01: Estudios & Licencia Clase B -->
+<div class="relative bg-surface-soft rounded-xl border border-hairline p-5 paper-sheet-shadow flex flex-col justify-between group hover:border-primary/40 transition-colors">
+<!-- Simulated folder tab top edge -->
+<div class="absolute -top-3 left-4 px-3 py-0.5 rounded-t-md bg-[#e5dfd4] border-t border-x border-hairline text-[11px] font-code-sm text-muted font-medium">
+              Carpeta #01
+            </div>
+<div>
+<div class="flex items-center justify-between mt-1 mb-2">
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary-soft/20 text-primary">
+                  Licencia Conducir
+                </span>
+<span class="font-code-sm text-xs font-bold text-ink">75%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-ink">
+                Estudios &amp; Licencia Clase B
+              </h3>
+<p class="text-xs text-muted mt-1 leading-relaxed">
+                Preparación teórica exhaustiva con el Libro del Nuevo Conductor y simulador CONASET.
+              </p>
+<!-- Progress Bar -->
+<div class="w-full h-2 rounded-full bg-hairline mt-3 overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 75%"></div>
+</div>
+<div class="mt-4 space-y-1.5 text-xs text-body">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-success">check</span>
+<span>Capítulo 1 a 6 leídos y sintetizados</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-amber-600">pending</span>
+<span>3 simulaciones pendientes esta semana</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-hairline flex items-center justify-between">
+<span class="text-code-sm text-muted text-[11px]">Examen: Noviembre 2026</span>
+<a class="text-xs text-primary font-medium hover:underline flex items-center gap-0.5" href="#simulador">
+                Abrir simulador <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- ÁREA 02: Introspección & Terapia -->
+<div class="relative bg-surface-soft rounded-xl border border-hairline p-5 paper-sheet-shadow flex flex-col justify-between group hover:border-primary/40 transition-colors">
+<div class="absolute -top-3 left-4 px-3 py-0.5 rounded-t-md bg-[#e5dfd4] border-t border-x border-hairline text-[11px] font-code-sm text-muted font-medium">
+              Carpeta #02
+            </div>
+<div>
+<div class="flex items-center justify-between mt-1 mb-2">
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-accent-teal/20 text-tertiary">
+                  Salud &amp; Calma
+                </span>
+<span class="font-code-sm text-xs font-bold text-ink">60%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-ink">
+                Introspección &amp; Terapia
+              </h3>
+<p class="text-xs text-muted mt-1 leading-relaxed">
+                Diario de autorregulación emocional, mapas cognitivos y bitácora clínica confidencial.
+              </p>
+<!-- Progress Bar -->
+<div class="w-full h-2 rounded-full bg-hairline mt-3 overflow-hidden">
+<div class="h-full bg-accent-teal rounded-full" style="width: 60%"></div>
+</div>
+<div class="mt-4 space-y-1.5 text-xs text-body">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-success">check</span>
+<span>Registro de descompresión completado</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-amber-600">pending</span>
+<span>1 pliego por redactar antes del viernes</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-hairline flex items-center justify-between">
+<span class="text-code-sm text-muted text-[11px]">Cita: Viernes 16:00</span>
+<a class="text-xs text-tertiary font-medium hover:underline flex items-center gap-0.5" href="#notas">
+                Ver bitácora <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- ÁREA 03: Postulación Universitaria 2026 -->
+<div class="relative bg-surface-soft rounded-xl border border-hairline p-5 paper-sheet-shadow flex flex-col justify-between group hover:border-primary/40 transition-colors">
+<div class="absolute -top-3 left-4 px-3 py-0.5 rounded-t-md bg-[#e5dfd4] border-t border-x border-hairline text-[11px] font-code-sm text-muted font-medium">
+              Carpeta #03
+            </div>
+<div>
+<div class="flex items-center justify-between mt-1 mb-2">
+<span class="text-xs font-semibold px-2 py-0.5 rounded bg-accent-amber/20 text-amber-900">
+                  Académico
+                </span>
+<span class="font-code-sm text-xs font-bold text-ink">40%</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm font-semibold text-ink">
+                Postulación Univ. 2026
+              </h3>
+<p class="text-xs text-muted mt-1 leading-relaxed">
+                Recopilación de certificados, cartas de recomendación y portafolio de redacción.
+              </p>
+<!-- Progress Bar -->
+<div class="w-full h-2 rounded-full bg-hairline mt-3 overflow-hidden">
+<div class="h-full bg-accent-amber rounded-full" style="width: 40%"></div>
+</div>
+<div class="mt-4 space-y-1.5 text-xs text-body">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-success">check</span>
+<span>Certificado de egreso digitalizado</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-amber-600">pending</span>
+<span>Borrador de carta en edición</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-hairline flex items-center justify-between">
+<span class="text-code-sm text-muted text-[11px]">Plazo: 28 Noviembre</span>
+<a class="text-xs text-amber-900 font-medium hover:underline flex items-center gap-0.5" href="#archivos">
+                Ver expediente <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- =====================================================================
+           6. NOTES / BRAIN DUMP (Parchment Paper Grid)
+           ===================================================================== -->
+<section class="bg-surface rounded-xl border border-hairline p-6 paper-sheet-shadow relative" style="box-shadow: 0 1px 2px rgba(28,28,26,0.04), 0 6px 18px rgba(28,28,26,0.06), 0 20px 36px -8px rgba(28,28,26,0.09);"><div class="absolute -top-2.5 left-12 w-24 h-5 washi-tape-slate rounded-sm pointer-events-none z-10 opacity-70"></div>
+<div class="flex items-center justify-between pb-3 border-b border-hairline">
+<div class="flex items-center gap-2">
+<span class="text-label-md font-label-md uppercase tracking-wider text-muted font-semibold">
+              notes / brain dump
+            </span>
+<span class="text-xs text-muted-soft font-code-sm">Cuadrícula libre de ideas espontáneas</span>
+</div>
+<span class="material-symbols-outlined text-muted text-[18px]">edit</span>
+</div>
+<div class="mt-4 p-4 rounded-lg bg-surface-soft border border-hairline paper-grid min-h-[140px] relative">
+<!-- Sample scribbled handwritten thoughts -->
+<div class="font-handwriting text-2xl text-slate-800 leading-relaxed max-w-2xl">
+            — Comprar cuaderno de tapas duras tamaño A5 para el módulo de dibujo técnico.<br/>
+            — Recordar que el error en la rotonda fue ceder el paso cuando ya estaba dentro del anillo.<br/>
+            — «Respirar 4 segundos antes de encender la pantalla».
+          </div>
+<div class="absolute bottom-3 right-3 flex items-center gap-1 text-code-sm font-code-sm text-muted-soft">
+<span class="material-symbols-outlined text-[14px]">save</span>
+<span>Guardado automáticamente</span>
+</div>
+</div>
+</section>
+<!-- =====================================================================
+           7. CIERRE DE PLIEGO REFLEXIVO (End of day reflection ♡)
+           ===================================================================== -->
+<section class="bg-surface rounded-xl border border-hairline p-6 lg:p-8 paper-sheet-shadow mb-8" style="box-shadow: 0 1px 2px rgba(28,28,26,0.04), 0 6px 18px rgba(28,28,26,0.06), 0 20px 36px -8px rgba(28,28,26,0.09);">
+<div class="flex items-center justify-between pb-4 border-b border-hairline">
+<div class="flex items-center gap-2">
+<h3 class="font-headline-sm text-headline-sm font-medium text-ink">
+              End of day reflection <span class="text-primary">♡</span>
+</h3>
+<span class="text-xs text-muted font-code-sm hidden sm:inline">• Balance de la jornada</span>
+</div>
+<span class="text-code-sm font-code-sm text-muted">Completar al anochecer</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+<!-- Question 1 -->
+<div class="flex flex-col gap-2">
+<label class="font-headline-sm text-base italic text-body-strong flex items-center gap-1.5">
+<span>¿Qué salió bien hoy?</span>
+</label>
+<textarea class="w-full p-3 rounded-lg bg-surface-soft border border-hairline text-body-sm font-body-sm text-ink placeholder:text-muted-soft focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all resize-none ruled-lines" placeholder="Escribe aquí los momentos de calma, avances o pequeñas victorias..." rows="3"></textarea>
+</div>
+<!-- Question 2 -->
+<div class="flex flex-col gap-2">
+<label class="font-headline-sm text-base italic text-body-strong flex items-center gap-1.5">
+<span>¿Qué puedo mejorar?</span>
+</label>
+<textarea class="w-full p-3 rounded-lg bg-surface-soft border border-hairline text-body-sm font-body-sm text-ink placeholder:text-muted-soft focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all resize-none ruled-lines" placeholder="Reconoce tropiezos con amabilidad y sin juzgarte con dureza..." rows="3"></textarea>
+</div>
+<!-- Question 3 -->
+<div class="flex flex-col gap-2">
+<label class="font-headline-sm text-base italic text-body-strong flex items-center gap-1.5">
+<span>¿Cuál será mi primer paso mañana?</span>
+</label>
+<textarea class="w-full p-3 rounded-lg bg-surface-soft border border-hairline text-body-sm font-body-sm text-ink placeholder:text-muted-soft focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all resize-none ruled-lines" placeholder="Define la primera acción precisa de las 08:00 AM..." rows="3"></textarea>
+</div>
+</div>
+<!-- Footer Motto & Sovereignty Stamp -->
+<div class="mt-8 pt-6 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+<p class="font-handwriting text-2xl text-body font-semibold">
+            « Small steps every day lead to big results. ♡ »
+          </p>
+<div class="flex items-center gap-3 text-code-sm font-code-sm text-muted">
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-accent-teal">verified_user</span>
+              Almacenamiento 100% Client-Side
+            </span>
+<span>•</span>
+<span>Espiralia Taller de Escritorio v2.6</span>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

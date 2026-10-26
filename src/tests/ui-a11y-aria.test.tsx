@@ -54,7 +54,7 @@ describe('AppLayout — jerarquía de headings y mejoras de accesibilidad', () =
     render(
       <MemoryRouter>
         <AppLayout
-          profile={mockProfile as any}
+          profile={mockProfile}
           currentView="dashboard"
           onViewChange={() => {}}
           onLockProfile={() => {}}

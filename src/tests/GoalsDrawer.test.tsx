@@ -60,4 +60,16 @@ describe('GoalsDrawer', () => {
     expect(screen.getByText('Lectura semanal')).toBeInTheDocument();
     expect(screen.getByText('Capítulo 1')).toBeInTheDocument();
   });
+
+  it('se cierra con Escape', async () => {
+    const user = userEvent.setup();
+    render(<GoalsDrawer profileId={profileId} onGoalsChange={() => {}} />);
+
+    await user.click(screen.getByRole('button', { name: /\+ nueva meta/i }));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });

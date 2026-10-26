@@ -1,0 +1,351 @@
+.heroVignetteContainer {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  margin-left: auto;
+  padding-top: 1.5rem;
+  outline: none;
+}
+
+.heroVignetteContainer:focus-visible {
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+/* 1. Carpeta Dossier Manila (Fondo) */
+.dossierFolder {
+  position: relative;
+  background-color: #ede3d0;
+  background-image: radial-gradient(rgba(26, 25, 23, 0.05) 0.75px, transparent 0.75px);
+  background-size: 14px 14px;
+  border: 1px solid #ddd5c6;
+  border-radius: 4px 14px 12px 12px;
+  padding: 2.25rem 1.5rem 1.5rem;
+  box-shadow: 0 4px 16px rgba(26, 25, 23, 0.06), 0 1px 3px rgba(26, 25, 23, 0.04);
+  transform: rotate(-1.5deg);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+  z-index: 1;
+}
+
+.heroVignetteContainer:hover .dossierFolder,
+.heroVignetteContainer:focus-within .dossierFolder {
+  transform: rotate(-2.8deg) translate(-6px, 2px);
+  box-shadow: 0 6px 20px rgba(26, 25, 23, 0.09);
+}
+
+.dossierTab {
+  position: absolute;
+  top: -26px;
+  left: 20px;
+  background: #ede3d0;
+  border: 1px solid #ddd5c6;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: 5px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 -2px 5px rgba(26, 25, 23, 0.03);
+}
+
+.dossierTabDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-primary, #8E1EA2);
+}
+
+.dossierTabLabel {
+  font-family: var(--font-code, monospace);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-body-strong, #252523);
+  text-transform: uppercase;
+}
+
+.dossierTabSub {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.6875rem;
+  color: var(--color-muted);
+}
+
+.dossierSeal {
+  font-family: var(--font-code, monospace);
+  font-size: var(--text-micro);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(142, 30, 162, 0.65);
+  border: 1px dashed rgba(142, 30, 162, 0.4);
+  padding: 3px 8px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+/* 2. Pliego Rasgado de Biorritmo (Capa Intermedia) */
+.tornPaperSlip {
+  position: relative;
+  background-color: var(--color-surface-card);
+  background-image: radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.65px, transparent 0.65px);
+  background-size: 16px 16px;
+  border-left: 1px solid var(--color-hairline, #e6dfd8);
+  border-right: 1px solid var(--color-hairline, #e6dfd8);
+  padding: 1.5rem 1.25rem;
+  box-shadow: 0 4px 14px rgba(26, 25, 23, 0.04);
+  margin-top: -0.75rem;
+  margin-left: 1rem;
+  max-width: 380px;
+  transform: rotate(1deg);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+  z-index: 2;
+  clip-path: polygon(
+    0% 6px, 4% 1px, 8% 6px, 12% 2px, 16% 6px, 20% 1px, 24% 6px, 28% 2px,
+    32% 6px, 36% 1px, 40% 6px, 44% 2px, 48% 6px, 52% 1px, 56% 6px, 60% 2px,
+    64% 6px, 68% 1px, 72% 6px, 76% 2px, 80% 6px, 84% 1px, 88% 6px, 92% 2px,
+    96% 6px, 100% 1px,
+    100% calc(100% - 6px), 96% calc(100% - 1px), 92% calc(100% - 6px), 88% calc(100% - 2px),
+    84% calc(100% - 6px), 80% calc(100% - 1px), 76% calc(100% - 6px), 72% calc(100% - 2px),
+    68% calc(100% - 6px), 64% calc(100% - 1px), 60% calc(100% - 6px), 56% calc(100% - 2px),
+    52% calc(100% - 6px), 48% calc(100% - 1px), 44% calc(100% - 6px), 40% calc(100% - 2px),
+    36% calc(100% - 6px), 32% calc(100% - 1px), 28% calc(100% - 6px), 24% calc(100% - 2px),
+    20% calc(100% - 6px), 16% calc(100% - 1px), 12% calc(100% - 6px), 8% calc(100% - 2px),
+    4% calc(100% - 6px), 0% calc(100% - 1px)
+  );
+}
+
+.heroVignetteContainer:hover .tornPaperSlip,
+.heroVignetteContainer:focus-within .tornPaperSlip {
+  transform: rotate(2.2deg) translate(8px, -4px);
+  box-shadow: 0 8px 22px rgba(26, 25, 23, 0.08);
+}
+
+/* Clip de latón metálico para el pliego */
+.paperClipBrass {
+  position: absolute;
+  top: -8px;
+  left: 24px;
+  width: 12px;
+  height: 34px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #d4af37 0%, #aa820a 50%, #f3e5ab 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Franja washi tape slate */
+.washiTapeSlate {
+  position: absolute;
+  top: -6px;
+  right: 18px;
+  width: 58px;
+  height: 18px;
+  background: rgba(123, 140, 158, 0.35);
+  clip-path: polygon(0% 4%, 4% 0%, 96% 3%, 100% 6%, 98% 95%, 94% 100%, 3% 97%, 0% 92%);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.indexCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+}
+
+.indexCardTitle {
+  font-family: var(--font-primary, serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-body-strong, #252523);
+}
+
+.stampSeal {
+  font-family: var(--font-code, monospace);
+  font-size: var(--text-micro);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 6px;
+  border: 1.5px dashed var(--color-error, #c64545);
+  color: var(--color-error, #c64545);
+  border-radius: 4px;
+  transform: rotate(-4deg);
+  display: inline-block;
+}
+
+.clarityRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--color-body, #3d3d3a);
+  margin-top: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.clarityValue {
+  font-family: var(--font-code, monospace);
+  font-weight: 600;
+  color: var(--color-primary, #8E1EA2);
+}
+
+.progressBarBg {
+  width: 100%;
+  height: 6px;
+  background-color: var(--color-hairline, #e6dfd8);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background-color: var(--color-primary, #8E1EA2);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+.indexCardDesc {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  line-height: 1.45;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* 3. Nota adhesiva amarilla rotada (Capa Superior) */
+.stickyNote {
+  position: relative;
+  background-color: #fcf5c7;
+  color: #332f14;
+  padding: 1.35rem 1.5rem;
+  border-radius: 4px;
+  border: 1px solid #ebd88d;
+  box-shadow: 0 6px 18px rgba(26, 25, 23, 0.1), 0 1px 3px rgba(26, 25, 23, 0.06);
+  transform: rotate(2.5deg);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s ease;
+  margin-top: -2rem;
+  margin-left: 2rem;
+  max-width: 360px;
+  z-index: 3;
+}
+
+.heroVignetteContainer:hover .stickyNote,
+.heroVignetteContainer:focus-within .stickyNote {
+  transform: rotate(4.8deg) translate(14px, -8px);
+  box-shadow: 0 10px 24px rgba(26, 25, 23, 0.12);
+}
+
+/* Clip de latón dorado en la nota */
+.brassClip {
+  position: absolute;
+  top: -12px;
+  left: 28px;
+  width: 14px;
+  height: 38px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #d4af37 0%, #aa820a 50%, #f3e5ab 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  opacity: 0.95;
+  pointer-events: none;
+  transition: filter 0.3s ease;
+}
+
+.heroVignetteContainer:hover .brassClip,
+.heroVignetteContainer:hover .paperClipBrass {
+  filter: brightness(1.12);
+}
+
+/* Cinta washi tape magenta en esquina */
+.washiTapeMagenta {
+  position: absolute;
+  top: -10px;
+  right: 20px;
+  width: 68px;
+  height: 20px;
+  background: rgba(142, 30, 162, 0.45);
+  clip-path: polygon(0% 4%, 3% 0%, 97% 2%, 100% 6%, 98% 94%, 95% 100%, 4% 97%, 0% 93%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  pointer-events: none;
+}
+
+.noteHeader {
+  font-family: var(--font-code, monospace);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #766d33;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.noteNumber {
+  font-weight: 600;
+}
+
+.quoteText {
+  font-family: var(--font-script);
+  font-size: 1.65rem;
+  line-height: 1.35;
+  color: #222118;
+  margin: 0.65rem 0;
+}
+
+.noteFooter {
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(235, 216, 141, 0.7);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #766d33;
+  font-family: var(--font-body, sans-serif);
+}
+
+.noteFooter time {
+  font-family: var(--font-code, monospace);
+  font-size: 0.6875rem;
+}
+
+@media (max-width: 768px) {
+  .heroVignetteContainer {
+    margin: 1.5rem auto 0;
+    max-width: 100%;
+    padding-top: 1.75rem;
+  }
+
+  .dossierFolder,
+  .tornPaperSlip,
+  .stickyNote,
+  .heroVignetteContainer:hover .dossierFolder,
+  .heroVignetteContainer:focus-within .dossierFolder,
+  .heroVignetteContainer:hover .tornPaperSlip,
+  .heroVignetteContainer:focus-within .tornPaperSlip,
+  .heroVignetteContainer:hover .stickyNote,
+  .heroVignetteContainer:focus-within .stickyNote {
+    transform: none !important;
+    margin-left: 0;
+    max-width: 100%;
+  }
+
+  .tornPaperSlip {
+    margin-top: -0.5rem;
+  }
+
+  .stickyNote {
+    margin-top: -0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dossierFolder,
+  .tornPaperSlip,
+  .stickyNote {
+    transform: none !important;
+    transition: none !important;
+  }
+}

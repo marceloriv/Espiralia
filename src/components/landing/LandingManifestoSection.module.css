@@ -1,0 +1,394 @@
+.nocturnoWrapper {
+  background-color: #181715;
+  color: #f5f0e8;
+  padding: 5rem 1.5rem 4rem;
+  margin-top: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Grano o textura sutil */
+.nocturnoWrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(230, 223, 216, 0.2), transparent);
+}
+
+.nocturnoContent {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* Manifiesto Quote */
+.manifestoCard {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.notarySeal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #252320;
+  border: 1.5px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+  font-family: var(--font-primary, serif);
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.15);
+}
+
+.manifestoBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-code, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #d4af37;
+  margin-bottom: 1.25rem;
+}
+
+.manifestoQuote {
+  font-family: var(--font-primary, serif);
+  font-size: 2rem;
+  line-height: 1.35;
+  color: #fcf9f6;
+  font-style: italic;
+  max-width: 820px;
+  margin: 0 auto 1.5rem auto;
+}
+
+@media (min-width: 768px) {
+  .manifestoQuote {
+    font-size: 2.75rem;
+  }
+}
+
+.manifestoAuthor {
+  font-family: var(--font-code, monospace);
+  font-size: 0.8125rem;
+  color: #a8a29e;
+  letter-spacing: 0.04em;
+}
+
+/* Certificado Local-First con orla grabada */
+.certificateCard {
+  background-color: #22201d;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  outline: 1px solid rgba(212, 175, 55, 0.18);
+  outline-offset: -8px;
+  border-radius: var(--radius-lg, 12px);
+  padding: 2.75rem 2.25rem;
+  box-shadow: 1px 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  margin-bottom: 4rem;
+  position: relative;
+}
+
+.certificateHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2.25rem;
+  border-bottom: 1px dashed rgba(230, 223, 216, 0.15);
+  padding-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .certificateHeader {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.certTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.certTitle {
+  font-family: var(--font-primary, serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.certBadge {
+  font-family: var(--font-code, monospace);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text-teal-on-dark);
+  background-color: rgba(93, 184, 166, 0.12);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1px solid rgba(93, 184, 166, 0.3);
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .certBadge {
+    margin-top: 0;
+  }
+}
+
+.certGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 860px) {
+  .certGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.certPillar {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(230, 223, 216, 0.08);
+  border-radius: var(--radius-md, 8px);
+  padding: 1.5rem;
+  transition: all 150ms ease;
+}
+
+.certPillar:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(230, 223, 216, 0.18);
+}
+
+.pillarIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-teal);
+  margin-bottom: 1rem;
+}
+
+.pillarTitle {
+  font-family: var(--font-primary, serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.pillarDesc {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #d6d3d1;
+  margin: 0;
+}
+
+/* Esquinas grabadas de orla dorada */
+.cornerOrnament {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: rgba(212, 175, 55, 0.45);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.cornerTopLeft {
+  top: 12px;
+  left: 12px;
+  border-width: 2px 0 0 2px;
+}
+
+.cornerTopRight {
+  top: 12px;
+  right: 12px;
+  border-width: 2px 2px 0 0;
+}
+
+.cornerBottomLeft {
+  bottom: 12px;
+  left: 12px;
+  border-width: 0 0 2px 2px;
+}
+
+.cornerBottomRight {
+  bottom: 12px;
+  right: 12px;
+  border-width: 0 2px 2px 0;
+}
+
+/* Pie de Certificado con Firma y Sello Notarial */
+.certificateFooter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed rgba(212, 175, 55, 0.25);
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .certificateFooter {
+    flex-direction: row;
+    text-align: left;
+  }
+}
+
+.certSignatureGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.certSignatureLabel {
+  font-family: var(--font-code, monospace);
+  font-size: var(--text-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #a8a29e;
+}
+
+.certSignatureScript {
+  font-family: var(--font-script);
+  font-size: var(--text-script-min);
+  color: #d4af37;
+  letter-spacing: 0.02em;
+}
+
+.certSealTag {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 14px;
+  border: 1px dashed rgba(212, 175, 55, 0.4);
+  border-radius: 4px;
+  background-color: rgba(212, 175, 55, 0.05);
+  font-family: var(--font-code, monospace);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #d4af37;
+}
+
+.certSealSerial {
+  font-size: var(--text-micro);
+  font-weight: 500;
+  color: #a8a29e;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+/* Banner de Cierre */
+.closingBanner {
+  background-color: #211f1c;
+  border: 1px solid rgba(198, 84, 195, 0.3);
+  border-radius: var(--radius-lg, 12px);
+  padding: 3rem 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.washiAccentTop {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 16px;
+  background-color: var(--color-primary, #8E1EA2);
+  opacity: 0.8;
+  border-radius: 2px;
+}
+
+.closingTitle {
+  font-family: var(--font-primary, serif);
+  font-size: 2rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.75rem 0;
+}
+
+@media (min-width: 768px) {
+  .closingTitle {
+    font-size: 2.5rem;
+  }
+}
+
+.closingSubtitle {
+  font-family: var(--font-body, sans-serif);
+  font-size: 1rem;
+  color: #d6d3d1;
+  max-width: 580px;
+  margin: 0 auto 2rem auto;
+  line-height: 1.6;
+}
+
+.closingActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.primaryCtaBtn {
+  min-height: 44px;
+  padding: 10px 24px;
+  background-color: var(--color-primary, #8E1EA2);
+  border: 1px solid var(--color-primary, #8E1EA2);
+  border-radius: var(--radius-md, 8px);
+  color: #ffffff;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(142, 30, 162, 0.4);
+}
+
+.primaryCtaBtn:hover {
+  background-color: var(--color-primary-active, #C654C3);
+  border-color: var(--color-primary-active, #C654C3);
+}
+
+.secondaryOutlineBtn {
+  min-height: 44px;
+  padding: 10px 20px;
+  background-color: transparent;
+  border: 1px solid rgba(230, 223, 216, 0.3);
+  border-radius: var(--radius-md, 8px);
+  color: #e7e5e4;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.secondaryOutlineBtn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(230, 223, 216, 0.6);
+  color: #ffffff;
+}

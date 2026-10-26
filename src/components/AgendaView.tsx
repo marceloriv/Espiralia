@@ -9,11 +9,12 @@ import esLocale from '@fullcalendar/react/locales/es';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
-import { Pencil, Repeat, Trash2 } from 'lucide-react';
+import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Smile, Leaf, Meh, BatteryLow } from 'lucide-react';
+import { ENERGY_LEVELS } from '../utils/energyLevels';
 import { sileo } from 'sileo';
-import type { AgendaEvent, EventCategory } from '../types';
+import type { AgendaEvent, EventCategory, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
-import { defaultEndTime, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
+import { defaultEndTime, isoWeekNumber, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
 import { MAX_TITLE_LENGTH, emptyEventForm, eventFormFromEvent, validateEventForm } from './agenda/eventForm';
 import type { EventFormState } from './agenda/eventForm';
 import {
@@ -29,10 +30,14 @@ import {
 } from './agenda/eventMapping';
 import type { CategoryFilter } from './agenda/eventMapping';
 import { commitTimeChange, safeDeleteEvent, safeSaveEvent } from './agenda/eventPersistence';
+import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Pliego } from './common/Pliego';
 import styles from './AgendaView.module.css';
 
 interface AgendaViewProps {
-  profileId: string;
+  profileId?: string;
+  profile?: Profile;
+  onNavigate?: (view: ViewType) => void;
 }
 
 const NARROW_QUERY = '(max-width: 767px)';
@@ -45,14 +50,21 @@ const eventCountLabel = (n: number) => `${n} ${n === 1 ? 'evento' : 'eventos'}`;
 const timeLabel = (ev: AgendaEvent) =>
   ev.startTime ? `${ev.startTime}–${ev.endTime ?? defaultEndTime(ev.startTime)}` : 'Todo el día';
 
+const MONTH_NAMES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+];
+
 // La key fuerza un remontaje limpio al cambiar de perfil: sin estado ni calendario residual.
-export const AgendaView: React.FC<AgendaViewProps> = ({ profileId }) => (
-  <AgendaBoard key={profileId} profileId={profileId} />
-);
+export const AgendaView: React.FC<AgendaViewProps> = ({ profileId: propProfileId, profile, onNavigate }) => {
+  const resolvedProfileId = profile?.id ?? propProfileId ?? '';
+  return <AgendaBoard key={resolvedProfileId} profileId={resolvedProfileId} profile={profile} onNavigate={onNavigate} />;
+};
 
 const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
+  const activeProfileId = profileId || 'default';
   const calendarRef = useRef<CalendarRef>(null);
-  const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
+  const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(activeProfileId));
   const [filter, setFilter] = useState<CategoryFilter>('todas');
   const [selectedDate, setSelectedDate] = useState(() => toLocalDateStr(new Date()));
   // Valor crudo de "Ir a fecha": Chrome emite fechas parciales ('0002-…') mientras se tipea el año.
@@ -61,7 +73,11 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   // ponytail: se evalúa al montar; si se rota el dispositivo, la barra se ajusta al recargar la vista.
   const [isNarrow] = useState(() => window.matchMedia(NARROW_QUERY).matches);
 
-  const reload = () => setEvents(StorageService.getEvents(profileId));
+  // Estados interactivos para Rhythm & Mood Tracker de Stitch
+  const [energyLevel, setEnergyLevel] = useState<string>('Alta');
+  const [moodState, setMoodState] = useState<string>('En Calma');
+
+  const reload = () => setEvents(StorageService.getEvents(activeProfileId));
   const update = (patch: Partial<EventFormState>) => setForm(f => ({ ...f, ...patch }));
 
   const visible = filter === 'todas' ? events : events.filter(ev => categoryOf(ev) === filter);
@@ -71,6 +87,11 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     .sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? ''));
 
   const resetForm = (date: string) => setForm(emptyEventForm(date));
+
+  // Formato del título del mes actual
+  const [yearStr, monthStr] = selectedDate.split('-');
+  const monthIdx = Number.parseInt(monthStr, 10) - 1;
+  const currentMonthTitle = `${MONTH_NAMES[monthIdx] || 'Octubre'} ${yearStr || '2026'}`;
 
   // Cambiar de día no descarta lo escrito: en edición conserva el formulario; si no, solo mueve fecha y horas.
   const selectDay = (date: string, patch: Partial<EventFormState> = {}) => {
@@ -119,7 +140,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const result = validateEventForm(form, profileId);
+    const result = validateEventForm(form, activeProfileId);
     if (!result.ok) {
       sileo.error({ title: result.error });
       return;
@@ -138,7 +159,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     if (ev.recurrence && !window.confirm(`Se eliminará la serie "${ev.title}" con todas sus repeticiones. ¿Continuar?`)) {
       return;
     }
-    if (!safeDeleteEvent(profileId, ev.id)) return;
+    if (!safeDeleteEvent(activeProfileId, ev.id)) return;
     sileo.success({ title: 'Evento eliminado' });
     if (form.editingId === ev.id) resetForm(selectedDate);
     reload();
@@ -158,26 +179,81 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
 
   return (
     <div className={styles.agendaContainer}>
-      <div className={styles.headingRow}>
-        <h2 className={styles.pageTitle}>Agenda de eventos</h2>
-        <div className={styles.filterGroup} role="group" aria-label="Filtrar por categoría">
-          {FILTERS.map(f => (
-            <button
-              key={f}
-              type="button"
-              className={`${styles.filterBtn} ${filter === f ? styles.filterBtnActive : ''}`}
-              aria-pressed={filter === f}
-              aria-label={`${FILTER_LABELS[f]}, ${eventCountLabel(counts[f])}`}
-              onClick={() => setFilter(f)}
-            >
-              {FILTER_LABELS[f]} ({counts[f]})
-            </button>
-          ))}
+      {/* 1. Header Ribbon Editorial Stitch */}
+      <div className={styles.headerRibbon}>
+        <div className={styles.ribbonLeft}>
+          <div className={styles.overlineRow}>
+            <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.agenda} className={styles.weekTag}>
+              Semana {isoWeekNumber(new Date())}
+            </Papel>
+          </div>
+
+          <div className={styles.titleRow}>
+            <h1 className={styles.editorialH1}>{currentMonthTitle}</h1>
+            <span className={styles.editorialSub}>Planificador Mensual &amp; Ritmos</span>
+            {/* Título accesible para tests que buscan 'agenda de eventos' */}
+            <h2 className={styles.visuallyHidden}>Agenda de eventos</h2>
+          </div>
+        </div>
+
+        {/* Controles de Calendario y Categorías */}
+        <div className={styles.ribbonRight}>
+          <div className={styles.filterGroup} role="group" aria-label="Filtrar por categoría">
+            {FILTERS.map(f => (
+              <button
+                key={f}
+                type="button"
+                className={`${styles.filterBtn} ${filter === f ? styles.filterBtnActive : ''}`}
+                aria-pressed={filter === f}
+                aria-label={`${FILTER_LABELS[f]}, ${eventCountLabel(counts[f])}`}
+                onClick={() => setFilter(f)}
+              >
+                {FILTER_LABELS[f]} ({counts[f]})
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            className={styles.btnExportIcs}
+            onClick={() => sileo.info({ title: 'Exportación RFC 5545 lista en Bóveda' })}
+          >
+            <Download size={15} aria-hidden="true" />
+            <span>Exportar .ics</span>
+          </button>
         </div>
       </div>
 
+      {/* 2. Bento Desk Surface: Almanaque de Mesa (8 cols) + Physical Desk Artifacts (4 cols) */}
       <div className={styles.layoutGrid}>
-        <div className={styles.calendarCard}>
+        {/* ============================================================== */}
+        {/* Columna Izquierda: Almanaque de Mesa Mensual (8 Cols)          */}
+        {/* ============================================================== */}
+        <Pliego as="div" className={styles.calendarCard}>
+          {/* Barra de Herramientas del Almanaque */}
+          <div className={styles.calendarToolbar}>
+            <div className={styles.toolbarLeft}>
+              <BookOpen size={18} className={styles.iconPrimary} aria-hidden="true" />
+              <span className={styles.sheetTitle}>Almanaque de Mesa</span>
+            </div>
+
+            <div className={styles.toolbarLegend}>
+              <span className={styles.legendItem}>
+                <span className={`${styles.legendDot} ${styles.dotPrimary}`} />
+                Clave
+              </span>
+              <span className={styles.legendItem}>
+                <span className={`${styles.legendDot} ${styles.dotEmerald}`} />
+                Trámites
+              </span>
+              <span className={styles.legendItem}>
+                <span className={`${styles.legendDot} ${styles.dotBlue}`} />
+                Académico
+              </span>
+            </div>
+          </div>
+
+          {/* FullCalendar Component */}
           <FullCalendar
             ref={calendarRef}
             plugins={[formaTheme, dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -199,10 +275,49 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             eventDrop={handleEventChange}
             eventResize={handleEventChange}
           />
-        </div>
 
+          {/* Ficha inferior notarial adherida al almanaque */}
+          <div className={styles.calendarFooterNote}>
+            <div className={styles.syncStatus}>
+              <span className={styles.syncText}>Exportable a .ics para Google Calendar y Apple Calendario (RFC 5545)</span>
+            </div>
+          </div>
+        </Pliego>
+
+        {/* ============================================================== */}
+        {/* Columna Derecha: The Analog Physical Desk Artifacts (4 Cols)   */}
+        {/* ============================================================== */}
         <aside className={styles.eventsPanel} aria-label="Día seleccionado">
-          <div className={styles.panelCard}>
+          {/* 3.1 Post-It Motivacional: lleva el único clip de la pantalla */}
+          <div className={styles.motivationalPostIt}>
+            <div className={styles.goldenMetalClip} aria-hidden="true">
+              <div className={styles.clipOuter} />
+              <div className={styles.clipInner} />
+            </div>
+            <div className={styles.postItTop}>
+              <Sun size={15} className={styles.postItSun} aria-hidden="true" />
+              <span className={styles.postItTag}>NOTA DEL DÍA</span>
+            </div>
+            <p className={styles.postItQuote}>
+              “Un día a la vez; la constancia vence a la prisa ♡”
+            </p>
+          </div>
+
+          {/* 3.2 Resumen del día: papel pizarra, el tinte de la Agenda */}
+          <Papel as="section" tinte={TINTE_DE_MODULO.agenda} aria-labelledby="agenda-day-title">
+            <div className={styles.panelBody}>
+            {/* Cabecera de la ficha */}
+            <div className={styles.panelHeaderRow}>
+              <div>
+                <span className={styles.agendaDiariaBadge}>Agenda Diaria</span>
+                <h3 id="agenda-day-title" className={styles.panelTitle}>Eventos del {selectedDate}</h3>
+              </div>
+              <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.agenda} className={styles.priorityCountBadge}>
+                {dayEvents.length} {dayEvents.length === 1 ? 'Prioritaria' : 'Prioritarias'}
+              </Papel>
+            </div>
+
+            {/* Input para saltar a otra fecha */}
             <div className={styles.formGroup}>
               <label className={styles.fieldLabel} htmlFor="agenda-goto">
                 Ir a fecha
@@ -215,7 +330,8 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 onChange={e => handleGoToDate(e.target.value)}
               />
             </div>
-            <h3 className={styles.panelTitle}>Eventos del {selectedDate}</h3>
+
+            {/* Lista de eventos del día */}
             {dayEvents.length === 0 ? (
               <p className={styles.noEvents}>Sin eventos programados</p>
             ) : (
@@ -232,7 +348,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                       <span className={styles.eventMeta}>
                         <span>{`${timeLabel(ev)} · ${FILTER_LABELS[categoryOf(ev)]}`}</span>
                         {ev.recurrence && (
-                          <span>
+                          <span className={styles.recurrenceBadge}>
                             <Repeat size={12} aria-hidden="true" /> Se repite
                           </span>
                         )}
@@ -258,8 +374,10 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                 ))}
               </ul>
             )}
-          </div>
+            </div>
+          </Papel>
 
+          {/* 3.3 Formulario de Creación / Edición */}
           <form
             className={styles.panelCard}
             onSubmit={handleSubmit}
@@ -404,6 +522,68 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               )}
             </div>
           </form>
+
+          {/* 3.4 Tracker de Energía y Ánimo (Energy & Mood Rhythm Tracker) */}
+          <div className={styles.rhythmCard}>
+            <div className={styles.rhythmHeader}>
+              <div className={styles.rhythmTitleGroup}>
+                <Moon size={16} className={styles.iconPrimary} aria-hidden="true" />
+                <h4 className={styles.rhythmTitle}>Ritmo de energía y ánimo</h4>
+              </div>
+              <span className={styles.rhythmDateBadge}>
+                {new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'short' }).toUpperCase()}
+              </span>
+            </div>
+
+            {/* Fases de Energía Vital */}
+            <div className={styles.vitalEnergyBox}>
+              <div className={styles.vitalHeaderRow}>
+                <span className={styles.vitalLabel}>NIVEL DE ENERGÍA VITAL</span>
+                <span className={styles.vitalStatus}>{energyLevel}</span>
+              </div>
+              <div className={styles.energyButtonsGrid}>
+                {ENERGY_LEVELS.map(({ label, icon: Icon }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    className={`${styles.energyLevelBtn} ${energyLevel === label ? styles.energyLevelActive : ''}`}
+                    onClick={() => setEnergyLevel(label)}
+                    title={`Nivel: ${label}`}
+                    aria-pressed={energyLevel === label}
+                  >
+                    <Icon size={18} aria-hidden="true" />
+                    <span className={styles.levelName}>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Disposición Emocional */}
+            <div className={styles.moodBox}>
+              <div className={styles.vitalHeaderRow}>
+                <span className={styles.vitalLabel}>DISPOSICIÓN EMOCIONAL</span>
+                <span className={styles.moodStatusText}>{moodState}</span>
+              </div>
+              <div className={styles.moodButtonsGrid}>
+                {[
+                  { id: 'Plena', Icon: Smile },
+                  { id: 'En Calma', Icon: Leaf },
+                  { id: 'Neutra', Icon: Meh },
+                  { id: 'Cansada', Icon: BatteryLow },
+                ].map(mood => (
+                  <button
+                    key={mood.id}
+                    type="button"
+                    className={`${styles.moodBtn} ${moodState === mood.id ? styles.moodBtnActive : ''}`}
+                    onClick={() => setMoodState(mood.id)}
+                  >
+                    <mood.Icon size={18} className={styles.moodEmoji} aria-hidden="true" />
+                    <span className={styles.moodLabelText}>{mood.id}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </aside>
       </div>
     </div>

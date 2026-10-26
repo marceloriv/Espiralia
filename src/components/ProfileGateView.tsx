@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Lock, Plus, ArrowRight } from 'lucide-react';
+import { Plus, ArrowRight } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Profile } from '../types';
 import { StorageService } from '../services/storage';
 import { PIN_PATTERN, isPinProtected, migrateStoredPins, verifyPin } from '../services/pinHash';
 import { createNewProfile } from '../services/profileOperations';
+import { VaultService } from '../services/vaultService';
+import { Pliego } from './common/Pliego';
+import { Papel } from './common/Papel';
+import { downloadFile } from '../utils/downloadFile';
+import { useEscapeKey } from '../utils/useEscapeKey';
 import styles from './ProfileGateView.module.css';
 
 interface ProfileGateViewProps {
@@ -18,7 +23,10 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 }) => {
   const [profiles, setProfiles] = useState<Profile[]>(() => StorageService.getProfiles());
   const [isCreating, setIsCreating] = useState(false);
-  const [selectedProfileForPin, setSelectedProfileForPin] = useState<Profile | null>(null);
+  const [selectedProfileForPin, setSelectedProfileForPin] = useState<Profile | null>(() => {
+    const initialProfiles = StorageService.getProfiles();
+    return initialProfiles.find(isPinProtected) || null;
+  });
 
   // Form states
   const [name, setName] = useState('');
@@ -54,20 +62,39 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
     }
   };
 
-  const handleVerifyPin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedProfileForPin || busy) return;
+  const executeVerify = React.useCallback(async () => {
+    const target = selectedProfileForPin || profiles.find(isPinProtected) || profiles[0] || null;
+    if (!target || busy) return;
     setBusy(true);
-    const ok = await verifyPin(selectedProfileForPin, pinInput).catch(() => false);
+    const ok = await verifyPin(target, pinInput).catch(() => false);
     setBusy(false);
 
     if (ok) {
-      StorageService.setActiveProfileId(selectedProfileForPin.id);
-      onSelectProfile(selectedProfileForPin);
+      StorageService.setActiveProfileId(target.id);
+      onSelectProfile(target);
     } else {
       setPinError(true);
       sileo.error({ title: 'PIN incorrecto' });
     }
+  }, [selectedProfileForPin, profiles, busy, pinInput, onSelectProfile]);
+
+  useEscapeKey(() => setSelectedProfileForPin(null), !!selectedProfileForPin && !isCreating);
+
+  // Un archivo por perfil, en el mismo formato que importa la bóveda del cuaderno (VaultModal).
+  const handleExportBackups = () => {
+    if (profiles.length === 0) {
+      sileo.info({ title: 'No hay perfiles para respaldar' });
+      return;
+    }
+    profiles.forEach(p =>
+      downloadFile(JSON.stringify(VaultService.exportProfile(p.id), null, 2), VaultService.backupFilename(p.name, 'json'), 'application/json'),
+    );
+    sileo.success({ title: 'Respaldo exportado', description: 'Restáuralo desde dentro del cuaderno, en Bóveda Offline.' });
+  };
+
+  const handleVerifyPin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    await executeVerify();
   };
 
   const handleCreateProfile = async (e: React.FormEvent) => {
@@ -103,54 +130,128 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 
   return (
     <div className={styles.gateContainer}>
-      <div className={styles.brandHeader}>
-        <h1 className={styles.brandTitle}>Espiralia</h1>
-        <p className={styles.brandSubtitle}>Agenda, Planner y Tareas en un solo lugar</p>
-      </div>
+      <div className={styles.topStripe} />
 
-      <div className={styles.profilesCard}>
-        <h2 className={styles.cardHeading}>Selecciona tu perfil</h2>
+      <header className={styles.header}>
+        <div className={styles.brandRow}>
+          <span className={styles.brandIcon} aria-hidden="true">Es</span>
+          <span className={styles.brandName}>Espiralia</span>
+        </div>
+        <p className={styles.tagline}>TALLER DE ESCRITORIO • CUADERNO PERSONAL</p>
+        <div className={styles.secBadge}>
+          <span className={styles.secDot} aria-hidden="true" />
+          <span>Datos en este navegador • PIN con hash PBKDF2</span>
+        </div>
+      </header>
 
-        <div className={styles.profileList}>
-          {profiles.map(profile => (
+      <main className={styles.mainSheet}>
+        <Pliego as="div" className={styles.pliegoGate}>
+          {/* Columna Izquierda: Cuadernos Registrados */}
+          <section className={styles.leftCol}>
+            <span className={styles.overlineTag}>CUADERNOS REGISTRADOS</span>
+            <h1 className={styles.mainTitle}>Desbloquear Cuaderno.</h1>
+            <p className={styles.quote}>
+              «Un espacio íntimo donde tus pensamientos no salen jamás de tu dispositivo.»
+            </p>
+
+            <h2 className={styles.cardHeading}>Selecciona tu perfil</h2>
+
+            <div className={styles.profileList}>
+              {profiles.map(profile => (
+                <button
+                  type="button"
+                  key={profile.id}
+                  className={`${styles.profileItem} ${selectedProfileForPin?.id === profile.id ? styles.profileItemActive : ''}`}
+                  onClick={() => handleProfileClick(profile)}
+                >
+                  <div className={styles.avatarBadge} aria-hidden="true">{profile.avatar}</div>
+                  <div className={styles.profileInfo}>
+                    <div className={styles.profileNameRow}>
+                      <span className={styles.profileName}>{profile.name}</span>
+                      <span className={styles.activePill}>ACTIVO</span>
+                    </div>
+                    <div className={styles.profileMeta}>
+                      {isPinProtected(profile) ? 'Protegido por PIN' : 'Acceso libre'}
+                    </div>
+                  </div>
+                  {isPinProtected(profile) ? (
+                    <div className={styles.brassPadlock} aria-hidden="true">
+                      <div className={styles.padlockShackle} />
+                      <div className={styles.padlockBody}>
+                        <div className={styles.padlockKeyhole} />
+                      </div>
+                    </div>
+                  ) : (
+                    <ArrowRight size={18} className={styles.arrowIcon} aria-hidden="true" />
+                  )}
+                </button>
+              ))}
+            </div>
+
             <button
               type="button"
-              key={profile.id}
-              className={styles.profileItem}
-              onClick={() => handleProfileClick(profile)}
+              className={styles.btnPrimary}
+              onClick={() => {
+                setIsCreating(true);
+                setName('');
+                setPin('');
+                setCreatePinError(false);
+              }}
             >
-              <div className={styles.avatarBadge} aria-hidden="true">{profile.avatar}</div>
-              <div className={styles.profileInfo}>
-                <div className={styles.profileName}>{profile.name}</div>
-                <div className={styles.profileMeta}>
-                  {isPinProtected(profile) ? 'Protegido por PIN' : 'Acceso libre'}
-                </div>
-              </div>
-              {isPinProtected(profile) ? (
-                <Lock size={18} color="var(--color-muted)" aria-hidden="true" />
-              ) : (
-                <ArrowRight size={18} color="var(--color-primary)" aria-hidden="true" />
-              )}
+              <Plus size={18} aria-hidden="true" />
+              <span>Nuevo perfil</span>
             </button>
-          ))}
-        </div>
 
+            {profiles.length === 0 && <p className={styles.secNote}>Crea un perfil para empezar.</p>}
+          </section>
+
+          {/* Columna Derecha: lema y tres datos del cuaderno, cada uno en su papel (DESIGN.md §0.9) */}
+          <aside className={styles.rightCol} aria-label="Sobre tu cuaderno">
+            <div className={styles.postitNote}>
+              <div className={styles.brassClip} aria-hidden="true" />
+              <div className={styles.postitText}>Disciplina hoy, paz mañana ♡</div>
+              <div className={styles.postitSub}>Escribe sin censura.</div>
+            </div>
+
+            <Papel as="div" forma="pieza" tinte="pizarra" className={styles.datoA}>
+              <p className={styles.dato}>
+                <strong>Todo queda en este navegador</strong>
+                Tus perfiles, notas y tareas no salen de tu equipo.
+              </p>
+            </Papel>
+            <Papel as="div" forma="pieza" tinte="rosa" className={styles.datoB}>
+              <p className={styles.dato}>
+                <strong>PIN opcional por perfil</strong>
+                Se guarda como hash con sal, nunca en texto plano.
+              </p>
+            </Papel>
+            <Papel as="div" forma="pieza" tinte="salvia" className={styles.datoC}>
+              <p className={styles.dato}>
+                <strong>Respalda desde dentro del cuaderno</strong>
+                Con cifrado opcional, y restaura en otro equipo.
+              </p>
+            </Papel>
+
+            <div className={styles.redStamp}>LOCAL</div>
+          </aside>
+        </Pliego>
+      </main>
+
+      <footer className={styles.footerLinks}>
         <button
           type="button"
-          className={styles.btnPrimary}
-          onClick={() => {
-            setIsCreating(true);
-            setName('');
-            setPin('');
-            setCreatePinError(false);
-          }}
+          className={styles.footerTextBtn}
+          onClick={() => sileo.info({ title: 'Espiralia no puede restablecer un PIN: solo guarda su hash en este navegador.' })}
         >
-          <Plus size={18} aria-hidden="true" />
-          <span>Nuevo perfil</span>
+          ¿Olvidaste tu PIN?
         </button>
-      </div>
-
-      <div className={styles.gateFooterLink}>
+        <button
+          type="button"
+          className={styles.footerTextBtn}
+          onClick={handleExportBackups}
+        >
+          Exportar respaldo (.json)
+        </button>
         <button
           type="button"
           className={styles.btnBackToLanding}
@@ -164,7 +265,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
         >
           ← Conoce más sobre Espiralia
         </button>
-      </div>
+      </footer>
 
       {/* Modal crear perfil */}
       {isCreating && (
@@ -227,7 +328,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
                 >
                   Cancelar
                 </button>
-                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }} disabled={busy}>
+                <button type="submit" className={styles.btnSubmit} disabled={busy}>
                   Crear perfil
                 </button>
               </div>
@@ -249,6 +350,20 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
             <p className={styles.brandSubtitle} style={{ textAlign: 'center', marginBottom: 16 }}>
               Perfil: {selectedProfileForPin.name}
             </p>
+
+            {/* Indicador visual de la cerradura de combinación: refleja el input real, 4 casillas y hasta 6. */}
+            <div className={styles.combinationLockFrame} aria-hidden="true">
+              <div className={styles.tumblerNotchTop} />
+              <div className={styles.pinBoxes}>
+                {Array.from({ length: Math.min(6, Math.max(4, pinInput.length)) }, (_, i) => (
+                  <div key={i} className={styles.pinBox}>
+                    {pinInput[i] ? '●' : ''}
+                  </div>
+                ))}
+              </div>
+              <div className={styles.tumblerNotchBottom} />
+            </div>
+
             <form onSubmit={handleVerifyPin}>
               <div className={styles.formGroup}>
                 <label htmlFor="verify-pin-input" className={styles.formLabel}>
@@ -258,10 +373,11 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
                   id="verify-pin-input"
                   type="password"
                   inputMode="numeric"
+                  maxLength={6}
                   className={styles.formInput}
                   value={pinInput}
                   onChange={e => {
-                    setPinInput(e.target.value);
+                    setPinInput(e.target.value.replace(/\D/g, '').slice(0, 6));
                     setPinError(false);
                   }}
                   aria-invalid={pinError ? 'true' : 'false'}
@@ -284,7 +400,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
                 >
                   Cancelar
                 </button>
-                <button type="submit" className={styles.btnPrimary} style={{ flex: 1 }} disabled={busy}>
+                <button type="submit" className={styles.btnSubmit} disabled={busy}>
                   Desbloquear
                 </button>
               </div>

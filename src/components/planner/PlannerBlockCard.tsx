@@ -35,11 +35,11 @@ export const PlannerBlockCard: React.FC<PlannerBlockCardProps> = ({ block, onTog
   return (
     <div className={`${styles.blockCard} ${slotClasses[block.timeSlot] || ''}`}>
       <div className={styles.topRow}>
+        {block.time && <time className={styles.timeText} dateTime={block.time}>{block.time}</time>}
         <span className={styles.slotInfo}>
           {slotIcons[block.timeSlot]}
           <span>{block.timeSlot}</span>
         </span>
-        {block.time && <span className={styles.timeText}>{block.time}</span>}
       </div>
 
       <p className={`${styles.title} ${block.completed ? styles.completedTitle : ''}`}>

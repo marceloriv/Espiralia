@@ -74,7 +74,7 @@ const PlannerBlockModalContent: React.FC<PlannerBlockModalProps> = ({
               className={styles.input}
               value={title}
               onChange={e => setTitle(e.target.value)}
-              placeholder="Ej. Foco profundo: Conducción Clase B"
+              placeholder="Ej. Foco profundo: estudio"
               required
               autoFocus
             />

@@ -1,22 +1,37 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag, Check, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { TodoItem, Priority, Area, TaskStatus } from '../types';
+import { useEscapeKey } from '../utils/useEscapeKey';
+import { focusOnMount } from '../utils/useDialogFocus';
+import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE, energyLabel } from '../utils/energyLevels';
+import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
 import { StorageService } from '../services/storage';
-import { toLocalDateStr } from '../utils/localDate';
-import { dueLabel } from './dashboard/dashboardData';
+import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
+import { dueLabel, criticalTodos } from './dashboard/dashboardData';
 import { AreaIntegratedWorkspace } from './todo/AreaIntegratedWorkspace';
+import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import styles from './TodoView.module.css';
 
 interface TodoViewProps {
-  profileId: string;
+  profileId?: string;
+  profile?: Profile;
+  onNavigate?: (view: ViewType) => void;
 }
 
 type FilterStatus = 'todas' | 'pendientes' | 'en_progreso' | 'completadas';
 
-const COLOR_PALETTE = ['#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#6b7280'];
+const COLOR_PALETTE = ['#e8a55a', '#8e1ea2', '#5db8a6', '#7b8c9e', '#5a826d', '#9c4a3b'];
 
-export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
+const getEventDayParts = (dateStr?: string) => {
+  if (!dateStr) return { dayName: 'HOY', dayNum: '--' };
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dObj = new Date(y, m - 1, d);
+  const dayName = dObj.toLocaleDateString('es-CL', { weekday: 'short' }).toUpperCase().replace('.', '');
+  return { dayName, dayNum: String(d).padStart(2, '0') };
+};
+
+export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, profile, onNavigate }) => {
+  const profileId = profile?.id ?? propProfileId ?? '';
   const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profileId));
   const [todos, setTodos] = useState<TodoItem[]>(() => StorageService.getTodos(profileId));
   const [selectedAreaId, setSelectedAreaId] = useState<string>('todas');
@@ -30,18 +45,25 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
 
   // Modal de nueva área
   const [isAreaModalOpen, setIsAreaModalOpen] = useState(false);
+  useEscapeKey(() => setIsAreaModalOpen(false), isAreaModalOpen);
   const [newAreaName, setNewAreaName] = useState('');
   const [newAreaColor, setNewAreaColor] = useState(COLOR_PALETTE[0]);
 
   // Edición rápida de fecha en fila
   const [editingDueDateId, setEditingDueDateId] = useState<string | null>(null);
 
-  const isFirstMount = useRef(true);
   const todayStr = toLocalDateStr(new Date());
+
+  // Nivel de energía en tarjeta mini reminders
+  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
+  const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
+
+  const isFirstMount = useRef(true);
 
   const loadData = useCallback(() => {
     setAreas(StorageService.getAreas(profileId));
     setTodos(StorageService.getTodos(profileId));
+    setEvents(StorageService.getEvents(profileId));
   }, [profileId]);
 
   useEffect(() => {
@@ -111,6 +133,20 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
     setEditingDueDateId(null);
     loadData();
   };
+
+  const handleSelectEnergy = (icon: string) => {
+    setEnergyLevel(icon);
+    StorageService.setTodayMood(profileId, todayStr, icon);
+  };
+
+  const upcomingEvents = events
+    .filter(e => Boolean(e.date))
+    .sort((a, b) => {
+      const cmpDate = (a.date ?? '').localeCompare(b.date ?? '');
+      if (cmpDate !== 0) return cmpDate;
+      return (a.startTime ?? '').localeCompare(b.startTime ?? '');
+    })
+    .slice(0, 3);
 
   const handleCreateArea = (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,74 +228,156 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
 
   const emptyContent = getEmptyStateContent();
 
+  const criticalList = criticalTodos(todos, 3);
+
   return (
     <div className={styles.todoContainer}>
-      {/* Cabecera y Resumen de Avance */}
-      <div className={styles.headingRow}>
-        <div>
-          <h2 className={styles.pageTitle}>Mis tareas</h2>
-          <p className={styles.pageSubtitle}>
-            Gestión integral por flujo y áreas temáticas
-          </p>
-        </div>
-        <div className={styles.completionSummary}>
-          <span className={styles.completionBadge}>
-            {totalCompleted} de {areaFilteredTodos.length} completadas
-          </span>
-        </div>
-      </div>
+      {/* 1. Cabecera Editorial Papercraft Stitch */}
+      <section className={styles.stationeryBanner}>
+        <div className={styles.bannerGrid}>
+          {/* Columna Izquierda: Titular y Propósito */}
+          <div className={styles.bannerMain}>
+            <div className={styles.overlineRow}>
+              <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.todo} className={styles.weekTag}>
+                Semana {isoWeekNumber(new Date())}
+              </Papel>
+            </div>
 
-      {/* Barra de Áreas Temáticas (Diseño Stitch) */}
-      <section className={styles.areasSection} aria-label="Áreas temáticas">
-        <div className={styles.areasHeader}>
-          <span className={styles.areasLabel}>Áreas temáticas</span>
-          <button
-            type="button"
-            className={styles.btnAddArea}
-            aria-label="Crear área"
-            onClick={() => setIsAreaModalOpen(true)}
-          >
-            <FolderPlus size={16} aria-hidden="true" />
-            <span>+ Área</span>
-          </button>
-        </div>
+            <h1 className={styles.editorialH1}>
+              to-do &amp; áreas integradas<span className={styles.purpleDot}>.</span>
+            </h1>
 
-        <div className={styles.areasList}>
-          <button
-            type="button"
-            className={`${styles.areaCard} ${selectedAreaId === 'todas' ? styles.areaCardActive : ''}`}
-            onClick={() => setSelectedAreaId('todas')}
-            aria-label="Todas las áreas"
-            aria-pressed={selectedAreaId === 'todas'}
-          >
-            <span className={styles.areaDot} style={{ backgroundColor: 'var(--color-primary)' }} />
-            <span className={styles.areaCardName}>Todas</span>
-            <span className={styles.areaCardCount}>
-              {todos.filter(t => t.status !== 'completada').length}
-            </span>
-          </button>
+            <p className={styles.editorialLead}>
+              <span className={styles.leadItalic}>Ordena tu mente. Cuida tu energía.</span> Un espacio unificado donde convergen tus tareas diarias, tus sesiones agendadas y tus notas vivas organizadas por áreas de vida.
+            </p>
 
-          {areas.map(area => {
-            const openCount = todos.filter(t => t.areaId === area.id && t.status !== 'completada').length;
-            const isSelected = selectedAreaId === area.id;
-            return (
-              <button
-                key={area.id}
-                type="button"
-                className={`${styles.areaCard} ${isSelected ? styles.areaCardActive : ''}`}
-                onClick={() => setSelectedAreaId(area.id)}
-                aria-label={`Área ${area.name}`}
-                aria-pressed={isSelected}
-              >
-                <span className={styles.areaDot} style={{ backgroundColor: area.color }} />
-                <span className={styles.areaCardName}>{area.name}</span>
-                <span className={styles.areaCardCount}>{openCount}</span>
-              </button>
-            );
-          })}
+            <div className={styles.metaRow}>
+              <span className={styles.metaItem}>
+                <Flag size={15} className={styles.iconAmber} aria-hidden="true" />
+                <span>{criticalList.length} {criticalList.length === 1 ? 'prioridad capital' : 'prioridades capitales'}</span>
+              </span>
+              <span className={styles.bullet}>•</span>
+              <span className={styles.metaItem}>
+                <ShieldCheck size={15} className={styles.iconTeal} aria-hidden="true" />
+                <span>{countPending} pendientes para hoy</span>
+              </span>
+              <span className={styles.bullet}>•</span>
+              <span className={styles.metaItem}>
+                <span className={styles.enfoqueLabel}>
+                  Enfoque: {criticalList[0]?.title || (todos.length > 0 ? todos[0].title : 'Claridad y presencia')}
+                </span>
+              </span>
+              <span className={styles.bullet}>•</span>
+              <span className={styles.completionBadge}>
+                {totalCompleted} de {areaFilteredTodos.length} completadas
+              </span>
+            </div>
+          </div>
+
+          {/* Columna Derecha: Post-it Manila con Chincheta Dorada */}
+          <div className={styles.bannerPostItCol}>
+            <div className={styles.pinnedPostIt}>
+              {/* Golden pushpin */}
+              <div className={styles.goldenPushpin} aria-hidden="true">
+                <div className={styles.pushpinShine} />
+              </div>
+
+              <div className={styles.postItContent}>
+                <p className={styles.postItScript}>
+                  Disciplina hoy,<br />paz mañana.
+                </p>
+                <div className={styles.postItDivider} />
+                <p className={styles.postItSub}>♡ todo en un solo lugar</p>
+              </div>
+
+            </div>
+          </div>
         </div>
       </section>
 
+      {/* 2. Barra de Áreas Temáticas (Archivador Manila Cromático) & Filtros */}
+      <section className={styles.areasSection} aria-label="Áreas temáticas">
+        <div className={styles.areasHeader}>
+          <div className={styles.folderTabsRow}>
+            {/* Folder Tab 0: Todas las Áreas */}
+            <button
+              type="button"
+              className={`${styles.folderTab} ${selectedAreaId === 'todas' ? styles.folderTabActive : ''}`}
+              onClick={() => setSelectedAreaId('todas')}
+              aria-label="Todas las áreas"
+              aria-pressed={selectedAreaId === 'todas'}
+            >
+              <span className={styles.folderTabName}>Todas las Áreas</span>
+              <span className={styles.folderTabCount}>
+                {todos.filter(t => t.status !== 'completada').length}
+              </span>
+            </button>
+
+            {/* Folder Tabs 1..N por cada área */}
+            {areas.map((area, idx) => {
+              const openCount = todos.filter(t => t.areaId === area.id && t.status !== 'completada').length;
+              const isSelected = selectedAreaId === area.id;
+              const numStr = String(idx + 1).padStart(2, '0');
+
+              return (
+                <button
+                  key={area.id}
+                  type="button"
+                  className={`${styles.folderTab} ${isSelected ? styles.folderTabActive : ''}`}
+                  onClick={() => setSelectedAreaId(area.id)}
+                  aria-label={`Área ${area.name}`}
+                  aria-pressed={isSelected}
+                >
+                  <span className={styles.tabWatermark} aria-hidden="true">{numStr}</span>
+                  <span className={styles.areaDot} style={{ backgroundColor: area.color }} />
+                  <span className={styles.areaCardName}>
+                    <span className={styles.areaIndex}>{numStr}.</span> {area.name}
+                  </span>
+                  <span className={styles.folderTabCount}>{openCount}</span>
+                </button>
+              );
+            })}
+
+            {/* Botón Añadir Área */}
+            <button
+              type="button"
+              className={styles.btnAddAreaTab}
+              aria-label="Crear área"
+              title="Añadir nueva área de vida"
+              onClick={() => setIsAreaModalOpen(true)}
+            >
+              <FolderPlus size={16} aria-hidden="true" />
+              <span>+ Área</span>
+            </button>
+          </div>
+
+          {/* Filtros de Estado */}
+          <div className={styles.filterBar} role="region" aria-label="Filtro de estados">
+            <span className={styles.filterLabel}>Filtrar:</span>
+            {(
+              [
+                { id: 'todas', label: 'Todas', count: areaFilteredTodos.length },
+                { id: 'pendientes', label: 'Pendientes', count: countPending },
+                { id: 'en_progreso', label: 'En progreso', count: countInProgress },
+                { id: 'completadas', label: 'Completadas', count: countDone },
+              ] as const
+            ).map(({ id, label, count }) => (
+              <button
+                key={id}
+                type="button"
+                className={`${styles.filterBtn} ${filterStatus === id ? styles.filterBtnActive : ''}`}
+                onClick={() => setFilterStatus(id)}
+                aria-pressed={filterStatus === id}
+              >
+                <span>{label}</span>
+                <span className={styles.filterBadge}>{count}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Pliego de Contenido Integrado */}
       {activeArea && selectedAreaId !== 'todas' ? (
         <AreaIntegratedWorkspace
           area={activeArea}
@@ -267,192 +385,379 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId }) => {
           onDataChanged={loadData}
         />
       ) : (
-        <>
-          {/* Formulario de creación rápida */}
-          <div className={styles.createCard}>
-        <form onSubmit={handleAddTodo} className={styles.createForm}>
-          <input
-            type="text"
-            className={styles.inputTask}
-            placeholder="¿Qué tienes pendiente?"
-            aria-label="¿Qué tienes pendiente?"
-            value={inputTitle}
-            onChange={e => setInputTitle(e.target.value)}
-          />
+        <div className={styles.workspaceGrid}>
+          {/* Columna Principal / Izquierda (Tareas & Entrada Rápida) */}
+          <div className={styles.leftColumn}>
+            {/* 3.1 Entrada Rápida al Taller con Clip de Latón */}
+            <Papel as="section" tinte={TINTE_DE_MODULO.todo} aria-label="Entrada rápida">
 
-          <div className={styles.createControls}>
-            <select
-              className={styles.selectArea}
-              aria-label="Área de la tarea"
-              value={selectedAreaForNew}
-              onChange={e => setSelectedAreaForNew(e.target.value)}
-            >
-              {areas.map(area => (
-                <option key={area.id} value={area.id}>
-                  {area.name}
-                </option>
-              ))}
-            </select>
-
-            <select
-              className={styles.selectPriority}
-              aria-label="Prioridad de la tarea"
-              value={selectedPriority}
-              onChange={e => setSelectedPriority(e.target.value as Priority)}
-            >
-              <option value="alta">Alta</option>
-              <option value="media">Media</option>
-              <option value="baja">Baja</option>
-            </select>
-
-            <input
-              type="date"
-              className={styles.inputDate}
-              aria-label="Fecha de vencimiento"
-              value={inputDueDate}
-              onChange={e => setInputDueDate(e.target.value)}
-            />
-
-            <button type="submit" className={styles.btnAdd}>
-              <Plus size={18} aria-hidden="true" />
-              <span>Añadir</span>
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* Barra de filtros de estado */}
-      <div className={styles.filterBar} role="region" aria-label="Filtro de estados">
-        {(
-          [
-            { id: 'todas', label: 'Todas', count: areaFilteredTodos.length },
-            { id: 'pendientes', label: 'Pendientes', count: countPending },
-            { id: 'en_progreso', label: 'En progreso', count: countInProgress },
-            { id: 'completadas', label: 'Completadas', count: countDone },
-          ] as const
-        ).map(({ id, label, count }) => (
-          <button
-            key={id}
-            type="button"
-            className={`${styles.filterBtn} ${filterStatus === id ? styles.filterBtnActive : ''}`}
-            onClick={() => setFilterStatus(id)}
-            aria-pressed={filterStatus === id}
-          >
-            <span>{label}</span>
-            <span className={styles.filterBadge}>{count}</span>
-          </button>
-        ))}
-      </div>
-
-      {/* Lista de tareas */}
-      {filteredTodos.length === 0 ? (
-        <div className={styles.emptyState}>
-          <CheckCircle2 size={36} color="var(--color-primary-soft)" aria-hidden="true" style={{ marginBottom: 12 }} />
-          <h3 className={styles.emptyTitle}>{emptyContent.title}</h3>
-          <p className={styles.emptySubtitle}>{emptyContent.description}</p>
-        </div>
-      ) : (
-        <div className={styles.todoList}>
-          {filteredTodos.map(todo => {
-            const area = getAreaById(todo.areaId);
-            const isDone = todo.status === 'completada';
-            const inProgress = todo.status === 'en_progreso';
-            const dueText = dueLabel(todo.dueDate, todayStr);
-
-            return (
-              <div key={todo.id} className={`${styles.todoItem} ${isDone ? styles.todoItemDone : ''}`}>
-                {/* Touch target envolvente para checkbox */}
-                <label className={styles.checkboxTouchTarget} htmlFor={`todo-${todo.id}`}>
-                  <input
-                    type="checkbox"
-                    id={`todo-${todo.id}`}
-                    aria-label={`completar ${todo.title}`}
-                    className={styles.todoCheckbox}
-                    checked={isDone}
-                    onChange={() => handleToggleTodo(todo.id)}
-                  />
-                </label>
-
-                <div className={styles.todoContent}>
-                  <span className={`${styles.todoTitle} ${isDone ? styles.todoCompleted : ''}`}>
-                    {todo.title}
+              <div className={styles.quickAddBody}>
+                <div className={styles.quickAddHeader}>
+                  <span className={styles.quickAddTitle}>
+                    <Plus size={16} className={styles.iconPrimary} aria-hidden="true" />
+                    Entrada rápida
                   </span>
-
-                  <div className={styles.todoMeta}>
-                    {/* Badge de Área */}
-                    {area && (
-                      <span className={styles.badgeArea}>
-                        <span className={styles.badgeAreaDot} style={{ backgroundColor: area.color }} />
-                        <span>{area.name}</span>
-                      </span>
-                    )}
-
-                    {/* Chip de Estado interactivo */}
-                    <button
-                      type="button"
-                      className={`${styles.statusPill} ${
-                        inProgress ? styles.statusPillInProgress : isDone ? styles.statusPillDone : styles.statusPillPending
-                      }`}
-                      aria-label={`estado: ${todo.status === 'en_progreso' ? 'en progreso' : todo.status}`}
-                      onClick={() => handleToggleStatus(todo.id)}
-                    >
-                      <Clock size={12} aria-hidden="true" />
-                      <span>{todo.status === 'en_progreso' ? 'En progreso' : isDone ? 'Completada' : 'Pendiente'}</span>
-                    </button>
-
-                    {/* Chip de Vencimiento interactivo */}
-                    {editingDueDateId === todo.id ? (
-                      <div className={styles.inlineDateEditor}>
-                        <input
-                          type="date"
-                          defaultValue={todo.dueDate || ''}
-                          className={styles.inlineDateInput}
-                          aria-label={`editar fecha de ${todo.title}`}
-                          onChange={e => handleSaveDueDate(todo.id, e.target.value)}
-                        />
-                        <button
-                          type="button"
-                          className={styles.btnCancelDate}
-                          aria-label="cancelar fecha"
-                          onClick={() => setEditingDueDateId(null)}
-                        >
-                          <X size={14} />
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        className={`${styles.duePill} ${todo.dueDate ? styles.duePillActive : ''}`}
-                        aria-label={todo.dueDate ? `vencimiento: ${todo.dueDate}` : `asignar vencimiento a ${todo.title}`}
-                        onClick={() => setEditingDueDateId(todo.id)}
-                      >
-                        <Calendar size={12} aria-hidden="true" />
-                        <span>{dueText || '+ Vence'}</span>
-                      </button>
-                    )}
-
-                    {/* Badge de Prioridad */}
-                    <span className={getPriorityClass(todo.priority)}>
-                      {todo.priority.charAt(0).toUpperCase() + todo.priority.slice(1)}
-                    </span>
-                  </div>
+                  <span className={styles.quickAddAreaPill}>
+                    Área: {areas[0]?.name || 'General'}
+                  </span>
                 </div>
 
+                <form onSubmit={handleAddTodo} className={styles.createForm}>
+                  <input
+                    type="text"
+                    className={styles.inputTask}
+                    placeholder="¿Qué tienes pendiente? (Ej. Revisar informe, enviar correo, preparar reunión)..."
+                    aria-label="¿Qué tienes pendiente?"
+                    value={inputTitle}
+                    onChange={e => setInputTitle(e.target.value)}
+                  />
+
+                  <div className={styles.createControls}>
+                    <div className={styles.selectGroup}>
+                      <select
+                        className={styles.selectArea}
+                        aria-label="Área de la tarea"
+                        value={selectedAreaForNew}
+                        onChange={e => setSelectedAreaForNew(e.target.value)}
+                      >
+                        {areas.map(area => (
+                          <option key={area.id} value={area.id}>
+                            {area.name}
+                          </option>
+                        ))}
+                      </select>
+
+                      <select
+                        className={styles.selectPriority}
+                        aria-label="Prioridad de la tarea"
+                        value={selectedPriority}
+                        onChange={e => setSelectedPriority(e.target.value as Priority)}
+                      >
+                        <option value="alta">Prioridad: Alta</option>
+                        <option value="media">Prioridad: Media</option>
+                        <option value="baja">Prioridad: Baja</option>
+                      </select>
+
+                      <input
+                        type="date"
+                        className={styles.inputDate}
+                        aria-label="Fecha de vencimiento"
+                        value={inputDueDate}
+                        onChange={e => setInputDueDate(e.target.value)}
+                      />
+                    </div>
+
+                    <button type="submit" className={styles.btnAdd}>
+                      <Plus size={16} aria-hidden="true" />
+                      <span>Añadir</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </Papel>
+
+            {/* 3.2 TOP PRIORITIES Manila Card */}
+            <Papel as="section" tinte={TINTE_DE_MODULO.todo} aria-label="Prioridades clave">
+
+              <div className={styles.topPrioritiesBody}>
+                <div className={styles.topPrioritiesHeader}>
+                  <div className={styles.topPrioritiesTitleGroup}>
+                    <span className={styles.topPrioritiesBadge}>PRIORIDADES CLAVE</span>
+                    <span className={styles.topPrioritiesSub}>no negociables del día</span>
+                  </div>
+                  <Star size={18} className={styles.iconStar} aria-hidden="true" />
+                </div>
+
+                {criticalList.length === 0 ? (
+                  <div style={{ padding: '20px 0', textAlign: 'center', color: 'var(--color-ink-muted)' }}>
+                    <p style={{ margin: '0 0 6px 0', fontSize: '0.875rem', fontWeight: 500 }}>
+                      Todo al día • Ninguna prioridad crítica pendiente
+                    </p>
+                    <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-ink-muted)' }}>
+                      Tus tareas de alta prioridad no negociables aparecerán destacadas aquí.
+                    </p>
+                  </div>
+                ) : (
+                  <div className={styles.topPrioritiesList}>
+                    {criticalList.map((t, idx) => {
+                      const area = areas.find(a => a.id === t.areaId);
+                      const isDone = t.status === 'completada' || Boolean(t.completed);
+                      const due = dueLabel(t.dueDate, todayStr);
+                      return (
+                        <div key={t.id} className={styles.priorityItem}>
+                          <span className={styles.priorityIndex}>{String(idx + 1).padStart(2, '0')}.</span>
+                          <button
+                            type="button"
+                            className={`${styles.roundCheckbox} ${isDone ? styles.roundCheckboxChecked : ''}`}
+                            onClick={() => handleToggleTodo(t.id)}
+                            aria-label={`Completar prioridad ${t.title}`}
+                          >
+                            {isDone && <Check size={12} strokeWidth={3} />}
+                          </button>
+                          <div className={styles.priorityContent}>
+                            <div className={styles.priorityTitleRow}>
+                              <h4 className={`${styles.priorityTitle} ${isDone ? styles.titleDone : ''}`}>
+                                {t.title}
+                              </h4>
+                              <span className={`${styles.badgePriority} ${styles.badgePriorityAlta}`}>
+                                {t.priority.toUpperCase()}
+                              </span>
+                            </div>
+                            <div className={styles.priorityMeta}>
+                              <span className={styles.priorityAreaTag}>
+                                <span className={styles.tinyDot} style={{ backgroundColor: area?.color || '#e8a55a' }} />
+                                {area?.name || t.category || 'General'}
+                              </span>
+                              {due && (
+                                <>
+                                  <span>•</span>
+                                  <span>Plazo: {due}</span>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </Papel>
+
+            {/* 3.3 Libreta Escolar de Tareas (Cuaderno Rayado con Grapas y Margen) */}
+            <div className={styles.detailedTasksSection}>
+              <div className={styles.detailedHeader}>
+                <h3 className={styles.detailedTitle}>
+                  <span>Tareas que importan</span>
+                  <span className={styles.detailedSub}>· Ordenadas por impacto</span>
+                </h3>
+                <span className={styles.showingCount}>
+                  Mostrando {filteredTodos.length} tareas
+                </span>
+              </div>
+
+              {filteredTodos.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <CheckCircle2 size={36} color="var(--color-primary-soft)" aria-hidden="true" style={{ marginBottom: 12 }} />
+                  <h3 className={styles.emptyTitle}>{emptyContent.title}</h3>
+                  <p className={styles.emptySubtitle}>{emptyContent.description}</p>
+                </div>
+              ) : (
+                <div className={styles.todoList}>
+                  {filteredTodos.map(todo => {
+                    const area = getAreaById(todo.areaId);
+                    const isDone = todo.status === 'completada';
+                    const inProgress = todo.status === 'en_progreso';
+                    const dueText = dueLabel(todo.dueDate, todayStr);
+
+                    return (
+                      <div key={todo.id} className={`${styles.todoItem} ${isDone ? styles.todoItemDone : ''}`}>
+                        {/* Checkbox circular táctil */}
+                        <label className={styles.checkboxTouchTarget} htmlFor={`todo-${todo.id}`}>
+                          <input
+                            type="checkbox"
+                            id={`todo-${todo.id}`}
+                            aria-label={`completar ${todo.title}`}
+                            className={styles.todoCheckbox}
+                            checked={isDone}
+                            onChange={() => handleToggleTodo(todo.id)}
+                          />
+                          <span className={styles.customCheckbox} aria-hidden="true">
+                            {isDone && <Check size={12} strokeWidth={3} />}
+                          </span>
+                        </label>
+
+                        <div className={styles.todoContent}>
+                          <div className={styles.todoMainRow}>
+                            <span className={`${styles.todoTitle} ${isDone ? styles.titleDone : ''}`}>
+                              {todo.title}
+                            </span>
+                          </div>
+
+                          <div className={styles.todoMetaRow}>
+                            {/* Píldora de Área */}
+                            {area && (
+                              <span className={styles.badgeArea} style={{ borderColor: area.color }}>
+                                <span className={styles.badgeAreaDot} style={{ backgroundColor: area.color }} />
+                                {area.name}
+                              </span>
+                            )}
+
+                            {/* Píldora de Prioridad */}
+                            <span className={`${styles.badgePriority} ${getPriorityClass(todo.priority)}`}>
+                              {todo.priority}
+                            </span>
+
+                            {/* Píldora de Estado (alternable) */}
+                            <button
+                              type="button"
+                              className={`${styles.statusPill} ${inProgress ? styles.statusPillInProgress : styles.statusPillPending}`}
+                              onClick={() => handleToggleStatus(todo.id)}
+                              aria-label={`estado: ${todo.status.replace('_', ' ')}`}
+                            >
+                              <Clock size={12} aria-hidden="true" />
+                              <span>{todo.status.replace('_', ' ')}</span>
+                            </button>
+
+                            {/* Píldora de Fecha de Vencimiento editable */}
+                            {editingDueDateId === todo.id ? (
+                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                <input
+                                  type="date"
+                                  className={styles.editDateInput}
+                                  aria-label={`cambiar fecha ${todo.title}`}
+                                  defaultValue={todo.dueDate || ''}
+                                  onBlur={e => handleSaveDueDate(todo.id, e.target.value)}
+                                  ref={focusOnMount}
+                                />
+                                <button
+                                  type="button"
+                                  className={styles.btnCancelDate}
+                                  aria-label="cancelar fecha"
+                                  onClick={() => setEditingDueDateId(null)}
+                                >
+                                  <X size={14} aria-hidden="true" />
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                className={styles.badgeDue}
+                                onClick={() => setEditingDueDateId(todo.id)}
+                                aria-label={`vencimiento: ${todo.dueDate || 'sin fecha'}`}
+                              >
+                                <Calendar size={12} aria-hidden="true" />
+                                <span>{dueText}</span>
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Sello de tinta carmín cuando la tarea está completada */}
+                        {isDone && (
+                          <div className={styles.stampCompletedSeal} aria-hidden="true">
+                            <span className={styles.stampText}>HECHO</span>
+                          </div>
+                        )}
+
+                        {/* Botón Eliminar Tarea */}
+                        <button
+                          type="button"
+                          className={styles.btnDelete}
+                          aria-label={`eliminar ${todo.title}`}
+                          onClick={() => handleDeleteTodo(todo.id)}
+                        >
+                          <Trash2 size={16} aria-hidden="true" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* Columna Lateral / Derecha (Agenda, Bujo & Energía) */}
+          <div className={styles.rightColumn}>
+            {/* 3.5 Agenda Asociada */}
+            <Papel as="section" tinte={TINTE_DE_MODULO.agenda} aria-label="Agenda asociada">
+              <div className={styles.associatedAgendaCard}>
+              <div className={styles.agendaCardHeader}>
+                <div className={styles.agendaCardTitleGroup}>
+                  <Calendar size={18} className={styles.iconPrimary} aria-hidden="true" />
+                  <h3 className={styles.agendaCardTitle}>Agenda Asociada</h3>
+                </div>
+                <span className={styles.agendaCardSubtitle}>Próximos hitos</span>
+              </div>
+
+              <div className={styles.associatedEventsList}>
+                {upcomingEvents.length === 0 ? (
+                  <p style={{ padding: '0.75rem 0', fontStyle: 'italic', fontSize: '0.8125rem', color: 'var(--color-ink-muted)' }}>
+                    Sin eventos agendados próximamente.
+                  </p>
+                ) : (
+                  upcomingEvents.map(event => {
+                    const { dayName, dayNum } = getEventDayParts(event.date);
+                    const cat = event.category || 'personal';
+                    const categoryLabel = cat.charAt(0).toUpperCase() + cat.slice(1);
+                    const categoryColor = cat === 'urgente' ? 'var(--color-error)' : cat === 'trabajo' ? 'var(--color-accent-teal)' : '#e8a55a';
+                    const timeMeta = `${event.startTime ? `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''} hrs` : 'Todo el día'}${event.notes ? ` · ${event.notes}` : ''}`;
+
+                    return (
+                      <div key={event.id} className={styles.eventItem} style={{ borderLeftColor: categoryColor }}>
+                        <div className={styles.eventDateCol}>
+                          <span className={styles.eventDayName} style={{ color: categoryColor }}>{dayName}</span>
+                          <span className={styles.eventDayNum}>{dayNum}</span>
+                        </div>
+                        <div className={styles.eventInfo}>
+                          <h4 className={styles.eventTitle}>{event.title}</h4>
+                          <p className={styles.eventMeta}>{timeMeta}</p>
+                          <span className={styles.eventAreaTag}>{categoryLabel}</span>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              <div className={styles.agendaCardFooter}>
                 <button
                   type="button"
-                  className={styles.btnDelete}
-                  aria-label={`eliminar ${todo.title}`}
-                  onClick={() => handleDeleteTodo(todo.id)}
+                  className={styles.agendaFooterLink}
+                  onClick={() => onNavigate?.('agenda')}
                 >
-                  <Trash2 size={16} aria-hidden="true" />
+                  Ver vista semanal extendida en Agenda →
                 </button>
               </div>
-            );
-          })}
+              </div>
+            </Papel>
+
+            {/* 3.7 Mini Reminders & Energy Check */}
+            <div className={styles.miniRemindersCard}>
+              <div className={styles.miniRemindersHeader}>
+                <h3 className={styles.miniRemindersTitle}>Energía de hoy</h3>
+              </div>
+
+              <div className={styles.energyMeterBox}>
+                <div className={styles.energyMeterHeader}>
+                  <span className={styles.energyLabel}>Nivel de Energía / Presencia:</span>
+                  <span className={styles.energyStatus}>{energyLabel(energyLevel)}</span>
+                </div>
+                <div className={styles.energyButtonsRow}>
+                  {ENERGY_LEVELS.map(({ value, label, icon: Icon }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      className={`${styles.energyBtn} ${energyLevel === value ? styles.energyBtnActive : ''}`}
+                      onClick={() => handleSelectEnergy(value)}
+                      title={`Nivel ${label}`}
+                      aria-label={`Nivel ${label}`}
+                      aria-pressed={energyLevel === value}
+                    >
+                      <Icon size={18} aria-hidden="true" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
-        </>
-      )}
+
+      {/* 4. Footer Editorial de Privacidad */}
+      <footer className={styles.editorialFooter}>
+        <div className={styles.footerMeta}>
+          <span className={styles.footerPill}>
+            <span className={styles.footerGreenDot} />
+            100% en tu navegador
+          </span>
+          <span className={styles.bullet}>·</span>
+          <span>localStorage</span>
+          <span className={styles.bullet}>·</span>
+          <span>Datos particionados por perfil</span>
+        </div>
+      </footer>
 
       {/* Modal para Crear Nueva Área Temática */}
       {isAreaModalOpen && (

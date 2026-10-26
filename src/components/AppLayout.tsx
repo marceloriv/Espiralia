@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search, Share2 } from 'lucide-react';
+import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search, Share2, MoreHorizontal } from 'lucide-react';
+import { useEscapeKey } from '../utils/useEscapeKey';
 import { sileo } from 'sileo';
 import type { Profile, ViewType } from '../types';
 import { isPinProtected } from '../services/pinHash';
@@ -9,6 +10,7 @@ import { ProfileSettingsModal } from './profile/ProfileSettingsModal';
 import { NoteModal } from './notes/NoteModal';
 import { VaultModal } from './vault/VaultModal';
 import { GlobalSearchModal } from './search/GlobalSearchModal';
+import { OrigamiHoja } from './common/OrigamiHoja';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -37,15 +39,18 @@ const VIEW_TITLES: Record<ViewType, string> = {
   integrations: 'Integraciones',
 };
 
-const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode }[] = [
+// `secondary`: en la barra inferior móvil estos destinos van dentro del botón "Más" (siete no caben a 375px).
+const NAV_ITEMS: { view: ViewType; label: string; icon: React.ReactNode; secondary?: boolean }[] = [
   { view: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} aria-hidden="true" /> },
   { view: 'agenda', label: 'Agenda', icon: <Calendar size={20} aria-hidden="true" /> },
   { view: 'planner', label: 'Planner', icon: <Compass size={20} aria-hidden="true" /> },
   { view: 'todo', label: 'To-Do', icon: <CheckSquare size={20} aria-hidden="true" /> },
-  { view: 'notes', label: 'Notas', icon: <BookOpen size={20} aria-hidden="true" /> },
-  { view: 'folders', label: 'Carpetas', icon: <Folder size={20} aria-hidden="true" /> },
-  { view: 'integrations', label: 'Integraciones', icon: <Share2 size={20} aria-hidden="true" /> },
+  { view: 'notes', label: 'Notas', icon: <BookOpen size={20} aria-hidden="true" />, secondary: true },
+  { view: 'folders', label: 'Carpetas', icon: <Folder size={20} aria-hidden="true" />, secondary: true },
+  { view: 'integrations', label: 'Integraciones', icon: <Share2 size={20} aria-hidden="true" />, secondary: true },
 ];
+
+const SECONDARY_ITEMS = NAV_ITEMS.filter(item => item.secondary);
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
   profile,
@@ -57,6 +62,8 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 }) => {
   const [currentDate] = useState(() => layoutDateFormatter.format(new Date()));
   const [isQuickActionOpen, setIsQuickActionOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  useEscapeKey(() => setIsMoreOpen(false), isMoreOpen);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isNewNoteOpen, setIsNewNoteOpen] = useState(false);
   const [isVaultOpen, setIsVaultOpen] = useState(false);
@@ -126,8 +133,13 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
 
       <aside className={styles.sidebar} aria-label="Barra lateral">
         <div className={styles.brand}>
-          <h1 className={styles.brandLogo}>Espiralia</h1>
-          <p className={styles.brandCaption}>Cuaderno personal</p>
+          <div className={styles.brandHeader}>
+            <div className={styles.monogram}>Es</div>
+            <div className={styles.brandText}>
+              <h1 className={styles.brandLogo}>Espiralia</h1>
+              <p className={styles.brandCaption}>Taller de Escritorio</p>
+            </div>
+          </div>
         </div>
 
         <div className={styles.quickActionWrapper}>
@@ -135,6 +147,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             type="button"
             className={styles.quickActionButton}
             onClick={() => setIsQuickActionOpen(true)}
+            aria-label="+ Acción Rápida"
           >
             <Plus size={18} aria-hidden="true" />
             <span>+ Acción Rápida</span>
@@ -148,7 +161,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               <button
                 type="button"
                 key={item.view}
-                className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+                className={`${styles.navItem} ${isActive ? styles.navItemActive : ''} ${item.secondary ? styles.navItemSecondary : ''}`}
                 onClick={() => onViewChange(item.view)}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -157,9 +170,50 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               </button>
             );
           })}
+
+          <div className={styles.moreWrapper}>
+            <button
+              type="button"
+              className={`${styles.navItem} ${SECONDARY_ITEMS.some(i => i.view === currentView) ? styles.navItemActive : ''}`}
+              aria-haspopup="menu"
+              aria-expanded={isMoreOpen}
+              onClick={() => setIsMoreOpen(open => !open)}
+            >
+              <MoreHorizontal size={20} aria-hidden="true" />
+              <span className={styles.navLabel}>Más</span>
+            </button>
+            {isMoreOpen && (
+              <div role="menu" aria-label="Más secciones" className={styles.moreMenu}>
+                {SECONDARY_ITEMS.map(item => (
+                  <button
+                    type="button"
+                    role="menuitem"
+                    key={item.view}
+                    className={styles.moreMenuItem}
+                    onClick={() => {
+                      onViewChange(item.view);
+                      setIsMoreOpen(false);
+                    }}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <OrigamiHoja />
         </nav>
 
         <div className={styles.sidebarFooter}>
+          <div className={styles.localDbBadge}>
+            <span className={styles.localDbStatus}>
+              <span className={styles.localDbDot} aria-hidden="true" />
+              Guardado en este navegador
+            </span>
+          </div>
+
           <div className={styles.sidebarFooterActions}>
             <button
               type="button"
@@ -200,10 +254,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               type="button"
               className={styles.searchTrigger}
               onClick={() => setIsSearchOpen(true)}
-              aria-label="Buscar en Espiralia (Ctrl+K)"
             >
               <Search size={15} aria-hidden="true" />
-              <span className={styles.searchPlaceholder}>Buscar en Espiralia...</span>
+              <span className={styles.searchPlaceholder}>Buscar en Espiralia...</span>{' '}
               <kbd className={styles.searchShortcut}>Ctrl+K</kbd>
             </button>
             <span className={styles.headerDate}>{currentDate}</span>
@@ -214,7 +267,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               aria-label="+ Nueva Nota"
             >
               <Plus size={16} aria-hidden="true" />
-              <span>+ Nueva Nota</span>
+              <span className={styles.newNoteLabel}>Nueva Nota</span>
             </button>
             <button
               type="button"
@@ -249,6 +302,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         onProfileUpdated={(updated) => {
           onProfileUpdated?.(updated);
         }}
+        onProfileDeleted={() => onLockProfile()}
       />
 
       <NoteModal

@@ -1,5 +1,27 @@
 import { describe, it, expect } from 'vitest';
-import { addDaysToDateStr, defaultEndTime, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
+import { addDaysToDateStr, defaultEndTime, isoWeekNumber, semesterLabel, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
+
+describe('semesterLabel', () => {
+  it.each([
+    [new Date(2026, 5, 30), '2026-I'],
+    [new Date(2026, 6, 1), '2026-II'],
+    [new Date(2026, 9, 22), '2026-II'],
+  ])('%s es el semestre %s', (date, label) => {
+    expect(semesterLabel(date)).toBe(label);
+  });
+});
+
+// Técnica: valores límite en el borde de año (la semana ISO 1 puede empezar en diciembre y la 53 terminar en enero).
+describe('isoWeekNumber', () => {
+  it.each([
+    [new Date(2026, 9, 22), 43],
+    [new Date(2026, 11, 31), 53],
+    [new Date(2027, 0, 1), 53],
+    [new Date(2024, 11, 30), 1],
+  ])('%s es la semana ISO %i', (date, week) => {
+    expect(isoWeekNumber(date)).toBe(week);
+  });
+});
 
 // Técnica: valores límite (bordes de día, mes, año, bisiesto y fin del día para horas).
 describe('localDate', () => {

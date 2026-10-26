@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { HashRouter } from 'react-router-dom';
 import { Toaster, sileo } from 'sileo';
 import 'sileo/styles.css';
-import { StorageService } from './services/storage';
+import { StorageService, STORAGE_ERROR_EVENT } from './services/storage';
 import { migrateStoredPins } from './services/pinHash';
 import { AppRoutes } from './routes';
 import type { Profile } from './types';
@@ -19,6 +19,19 @@ export function App() {
     migrateStoredPins().catch(() => {
       // ponytail: sin Web Crypto el PIN legado queda intacto y se reintenta en la próxima carga.
     });
+  }, []);
+
+  // QuotaExceededError al guardar: avisa en lugar de perder datos en silencio (§10 A10).
+  useEffect(() => {
+    let lastShown = 0;
+    const onStorageError = () => {
+      // Una acción puede fallar en varias escrituras seguidas: un solo aviso cada 3 s.
+      if (Date.now() - lastShown < 3000) return;
+      lastShown = Date.now();
+      sileo.error({ title: 'No se pudo guardar: el almacenamiento del navegador está lleno. Exporta un respaldo desde Bóveda Offline.' });
+    };
+    window.addEventListener(STORAGE_ERROR_EVENT, onStorageError);
+    return () => window.removeEventListener(STORAGE_ERROR_EVENT, onStorageError);
   }, []);
 
   const handleSelectProfile = (profile: Profile) => {

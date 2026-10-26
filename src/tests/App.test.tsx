@@ -3,6 +3,7 @@ import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { App } from '../App';
+import { STORAGE_ERROR_EVENT } from '../services/storage';
 
 describe('App integración general', () => {
   beforeEach(() => {
@@ -29,7 +30,7 @@ describe('App integración general', () => {
 
   it('inicia en la portada editorial de bienvenida si no hay sesion activa', async () => {
     render(<App />);
-    expect(await screen.findByRole('heading', { name: /tu caos mental transformado en arte cotidiano/i }, { timeout: 4000 })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /organiza tu semana en un cuaderno que guarda todo en tu navegador/i }, { timeout: 4000 })).toBeInTheDocument();
   });
 
   it('permite crear perfil, ingresar al dashboard y cambiar de perfil', async () => {
@@ -37,8 +38,8 @@ describe('App integración general', () => {
 
     render(<App />);
 
-    const openLandingBtn = await screen.findByRole('button', { name: /abrir cuaderno personal/i });
-    await user.click(openLandingBtn);
+    const openLandingBtns = await screen.findAllByRole('button', { name: /crear mi cuaderno/i });
+    await user.click(openLandingBtns[0]);
 
     const openCreateBtn = await screen.findByRole('button', { name: /nuevo perfil/i });
     await user.click(openCreateBtn);
@@ -66,8 +67,8 @@ describe('App integración general', () => {
 
     render(<App />);
 
-    const openLandingBtn = await screen.findByRole('button', { name: /abrir cuaderno personal/i });
-    await user.click(openLandingBtn);
+    const openLandingBtns = await screen.findAllByRole('button', { name: /crear mi cuaderno/i });
+    await user.click(openLandingBtns[0]);
 
     const openCreateBtn = await screen.findByRole('button', { name: /nuevo perfil/i });
     await user.click(openCreateBtn);
@@ -81,6 +82,31 @@ describe('App integración general', () => {
     expect(successSpy).toHaveBeenCalledWith(expect.objectContaining({
       title: expect.stringContaining('Valentina'),
     }));
+  });
+
+  it('muestra un aviso al recibir espiralia:storage-error', () => {
+    const errorSpy = vi.spyOn(sileo, 'error');
+    render(<App />);
+
+    act(() => {
+      window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key: 'espiralia_p_todos' } }));
+    });
+
+    expect(errorSpy).toHaveBeenCalledWith(expect.objectContaining({
+      title: expect.stringMatching(/almacenamiento del navegador está lleno/i),
+    }));
+  });
+
+  it('no repite el aviso de almacenamiento lleno dentro de 3 segundos', () => {
+    const errorSpy = vi.spyOn(sileo, 'error');
+    render(<App />);
+
+    act(() => {
+      window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key: 'a' } }));
+      window.dispatchEvent(new CustomEvent(STORAGE_ERROR_EVENT, { detail: { key: 'b' } }));
+    });
+
+    expect(errorSpy).toHaveBeenCalledTimes(1);
   });
 
   it('configura el contenedor de notificaciones Sileo en posicion top-center', async () => {

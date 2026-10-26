@@ -111,7 +111,7 @@ export const IcsService = {
         if (trimmed === 'BEGIN:VEVENT') {
           inEvent = true;
           currentEvent = {
-            id: `ev-ics-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+            id: `ev-ics-${Date.now()}-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36).slice(0, 5)}`,
             profileId,
           };
           continue;

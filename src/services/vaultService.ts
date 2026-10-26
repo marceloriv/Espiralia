@@ -3,6 +3,13 @@ import { StorageService } from './storage';
 import type { ProfileBackup } from './vaultCrypto';
 
 export class VaultService {
+  /** Nombre del archivo de respaldo: `espiralia-<nombre>-<fecha>.<ext>`; la bóveda del cuaderno importa el mismo formato. */
+  public static backupFilename(profileName: string, ext: 'json' | 'vault'): string {
+    const dateStr = new Date().toISOString().split('T')[0];
+    const safeName = profileName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    return `espiralia-${safeName}-${dateStr}.${ext}`;
+  }
+
   /**
    * Exporta todos los datos asociados al profileId en un ProfileBackup estandarizado.
    */
@@ -78,10 +85,6 @@ export class VaultService {
     const restoredProfile: Profile = {
       ...backup.profile,
       id: destProfileId,
-      name:
-        mode === 'new_profile' && backup.profile.name === 'Perfil Origen'
-          ? backup.profile.name
-          : backup.profile.name,
       createdAt: mode === 'new_profile' ? new Date().toISOString() : backup.profile.createdAt,
     };
 

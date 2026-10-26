@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { focusOnMount } from '../../utils/useDialogFocus';
 import {
   Calendar,
   CheckSquare,
@@ -171,13 +172,15 @@ export const AreaIntegratedWorkspace: React.FC<AreaIntegratedWorkspaceProps> = (
             <ul className={styles.todosList} aria-label={`Lista de tareas de ${area.name}`}>
               {todos.map(t => (
                 <li key={t.id} className={styles.todoItemRow}>
-                  <input
-                    type="checkbox"
-                    className={styles.todoCheckbox}
-                    checked={t.status === 'completada' || t.completed}
-                    onChange={() => handleToggleTodo(t.id)}
-                    aria-label={`Completar ${t.title}`}
-                  />
+                  <label className={styles.checkboxHit}>
+                    <input
+                      type="checkbox"
+                      className={styles.todoCheckbox}
+                      checked={t.status === 'completada' || t.completed}
+                      onChange={() => handleToggleTodo(t.id)}
+                      aria-label={`Completar ${t.title}`}
+                    />
+                  </label>
                   <span className={`${styles.todoTitle} ${t.status === 'completada' || t.completed ? styles.todoTitleDone : ''}`}>
                     {t.title}
                   </span>
@@ -215,7 +218,7 @@ export const AreaIntegratedWorkspace: React.FC<AreaIntegratedWorkspaceProps> = (
                 placeholder="Título del evento..."
                 value={quickEventTitle}
                 onChange={e => setQuickEventTitle(e.target.value)}
-                autoFocus
+                ref={focusOnMount}
               />
               <button type="submit" className={styles.btnAddTodo}>Guardar</button>
               <button type="button" className={styles.btnDeleteTask} onClick={() => setIsAddingEvent(false)}>✕</button>
