@@ -22,7 +22,7 @@
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.4",
-    "sileo": "^0.1.5",
+    "sileo": "^0.1.6",
     "temporal-polyfill": "1.0.5"
   },
   "devDependencies": {

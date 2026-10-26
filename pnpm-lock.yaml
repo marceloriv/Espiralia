@@ -27,8 +27,8 @@ importers:
         specifier: ^7.18.4
         version: 7.18.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       sileo:
-        specifier: ^0.1.5
-        version: 0.1.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^0.1.6
+        version: 0.1.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       temporal-polyfill:
         specifier: 1.0.5
         version: 1.0.5
@@ -1686,8 +1686,8 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
-  sileo@0.1.5:
-    resolution: {integrity: sha512-Fc/3VNFWgQlZttkyvAdnPlzWrLTaii6FIas7nMivlx3uGuKpuNNRZGtSgNRFqTHFn70ZxEjKYxsBIO0nQlDGAg==}
+  sileo@0.1.6:
+    resolution: {integrity: sha512-a1IIJ72BMskiXfbWlO+eTWu1yxz7wQtFIW7SvyaAax0WHqPi/WUsQH9yKvbWo2dDSxel4LdGRLYLzJCIIE6eHA==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -3308,7 +3308,7 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
-  sileo@0.1.5(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
+  sileo@0.1.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
     dependencies:
       motion: 12.43.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       react: 19.3.0
