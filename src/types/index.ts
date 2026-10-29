@@ -112,6 +112,16 @@ export interface Note {
   updatedAt: string;
 }
 
+/** PDF subido a una carpeta. El contenido (Blob) vive en IndexedDB, no en localStorage (src/services/fileStore.ts). */
+export interface StoredFile {
+  id: string;
+  profileId: string;
+  folderId?: string;
+  name: string;
+  size: number; // bytes
+  createdAt: string; // ISO 8601
+}
+
 export interface LinkItem {
   id: string;
   profileId: string;
