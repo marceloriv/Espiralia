@@ -381,6 +381,39 @@
   background: var(--color-primary-hover);
 }
 
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Secundario: limpiar borra datos, no compite en peso con agregar. */
+.clearWeekBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.clearWeekBtn:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.clearWeekBtn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
 .topPrioritiesCard {
   background: var(--color-surface-card);
   border: 1px solid var(--color-hairline);

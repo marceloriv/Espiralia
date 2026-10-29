@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { StorageService } from '../services/storage';
-import type { Goal } from '../types';
+import type { Goal, PlannerBlock } from '../types';
 
 describe('StorageService - Goals & Planner persistence', () => {
   const profileA = 'p-alpha';
@@ -63,5 +63,20 @@ describe('StorageService - Goals & Planner persistence', () => {
 
     expect(StorageService.getGoals(profileA)).toHaveLength(0);
     expect(StorageService.getPlanner(profileA)).toHaveLength(0);
+  });
+
+  it('clearWeeklyPlanner borra solo los bloques semanales del perfil indicado', () => {
+    // Técnica: partición de equivalencia (semanal propio, mensual propio, semanal de otro perfil).
+    const block = (id: string, profileId: string, period: PlannerBlock['period']): PlannerBlock => ({
+      id, profileId, period, timeSlot: 'mañana', title: id, priority: 'media', completed: false, dayOfWeek: 1,
+    });
+    StorageService.savePlanner(block('a-sem-1', profileA, 'semanal'));
+    StorageService.savePlanner(block('a-sem-2', profileA, 'semanal'));
+    StorageService.savePlanner(block('a-mes', profileA, 'mensual'));
+    StorageService.savePlanner(block('b-sem', profileB, 'semanal'));
+
+    expect(StorageService.clearWeeklyPlanner(profileA)).toBe(2);
+    expect(StorageService.getPlanner(profileA).map(b => b.id)).toEqual(['a-mes']);
+    expect(StorageService.getPlanner(profileB).map(b => b.id)).toEqual(['b-sem']);
   });
 });

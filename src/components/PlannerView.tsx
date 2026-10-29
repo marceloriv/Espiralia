@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useHoy } from '../utils/useHoy';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Eraser, Plus } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { PlannerBlock, DayOfWeek, TimeSlot, Priority, Profile, ViewType, HabitTrackerItem } from '../types';
 import { StorageService } from '../services/storage';
@@ -180,6 +180,18 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
     loadBlocks();
   };
 
+  const handleClearWeek = () => {
+    const weeklyCount = blocks.filter(b => b.period === 'semanal').length;
+    if (weeklyCount === 0) {
+      sileo.info({ title: 'No hay bloques que limpiar' });
+      return;
+    }
+    if (!window.confirm(`Se borrarán los ${weeklyCount} bloques de la semana. ¿Continuar?`)) return;
+    StorageService.clearWeeklyPlanner(profileId);
+    sileo.success({ title: 'Semana limpia' });
+    loadBlocks();
+  };
+
   const filteredBlocks = priorityFilter === 'todas'
     ? blocks
     : blocks.filter(b => b.priority === priorityFilter);
@@ -213,14 +225,20 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
           <span className={styles.areaPillViolet}>03. Universidad</span>
         </div>
 
-        <button
-          type="button"
-          className={styles.addBlockHeroBtn}
-          onClick={() => handleOpenModal(1)}
-        >
-          <Plus size={16} aria-hidden="true" />
-          <span>+ Agregar Bloque de Enfoque</span>
-        </button>
+        <div className={styles.heroActions}>
+          <button type="button" className={styles.clearWeekBtn} onClick={handleClearWeek}>
+            <Eraser size={16} aria-hidden="true" />
+            <span>Limpiar semana</span>
+          </button>
+          <button
+            type="button"
+            className={styles.addBlockHeroBtn}
+            onClick={() => handleOpenModal(1)}
+          >
+            <Plus size={16} aria-hidden="true" />
+            <span>+ Agregar Bloque de Enfoque</span>
+          </button>
+        </div>
       </div>
 
       {/* Subheader con Navegación, Cinta Marcapáginas y Filtros */}
