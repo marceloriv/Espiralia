@@ -704,6 +704,6 @@
 
 /* Degradado por tinte (mock aprobado el 2026-10-25): el aviso de privacidad lleva el turquesa de Integraciones. */
 .privacyBanner {
-  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 45%, var(--bg-card)), var(--bg-card) 62%);
+  background-image: var(--superficie-turquesa);
 }
 

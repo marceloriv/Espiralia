@@ -1057,7 +1057,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                   <div className={styles.areaFolderBody}>
                     <div className={styles.areaFolderTopRow}>
-                      <span className={styles.areaCategoryBadge} style={{ backgroundColor: `${s.area.color}25`, color: s.area.color }}>
+                      <span className={styles.areaCategoryBadge} style={{
+                        backgroundColor: `${s.area.color}25`,
+                        // El color del área como texto baja de 4.5:1 (ámbar: 1.8:1); mezclado al 55 % con la tinta pasa con toda la paleta.
+                        color: `color-mix(in srgb, ${s.area.color} 55%, var(--color-ink))`,
+                      }}>
                         {s.area.name}
                       </span>
                       <span className={styles.areaPercent}>{s.completionPercentage}%</span>

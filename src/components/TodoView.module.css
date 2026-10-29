@@ -794,7 +794,8 @@
   border: 2px dashed rgba(190, 40, 50, 0.7);
   border-radius: 4px;
   padding: 2px 8px;
-  color: rgba(190, 40, 50, 0.85);
+  /* Token opaco: el carmín translúcido quedaba en 4.49:1 sobre la superficie terracota. */
+  color: var(--color-text-error);
   font-family: var(--font-family-3, monospace);
   font-size: var(--text-micro);
   font-weight: 800;
@@ -1448,16 +1449,17 @@
 }
 
 /* Degradados por tinte (mock aprobado el 2026-10-25): el encabezado y la lista llevan terracota,
-   el tinte de To-Do; la energía es el cierre del día (salvia). */
+   el tinte de To-Do; la energía es el cierre del día (salvia). Usan la misma superficie que el resto
+   de la app: To-Do era la referencia de color del cliente y no puede quedar más pálido que las demás vistas. */
 .stationeryBanner {
-  background-image: linear-gradient(115deg, color-mix(in srgb, var(--papel-terracota) 62%, var(--bg-card)) 0%, var(--bg-card) 58%);
+  background-image: var(--superficie-terracota);
   border-color: var(--papel-terracota-fuerte);
 }
 
 .detailedTasksSection {
-  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-terracota) 40%, var(--bg-card)), var(--bg-card) 60%);
+  background-image: var(--superficie-terracota);
 }
 
 .miniRemindersCard {
-  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 60%, var(--bg-card)), var(--bg-card) 72%);
+  background-image: var(--superficie-salvia);
 }
