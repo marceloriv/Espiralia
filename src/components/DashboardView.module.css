@@ -1483,11 +1483,6 @@
   cursor: pointer;
 }
 
-.distractionAddBtn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
 /* Focus Schedule (08:00 - 20:00) Routine Timeline */
 .routineTimeline {
   display: flex;

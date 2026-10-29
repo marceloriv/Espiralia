@@ -102,6 +102,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   }, [isFocusModalOpen]);
   const [distractions, setDistractions] = useState<string[]>(() => StorageService.getDistractions(profile.id));
   const [newDistractionText, setNewDistractionText] = useState('');
+  const distractionInputRef = useRef<HTMLInputElement>(null);
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profile.id));
   const [now] = useState(() => new Date());
   const [energyState, setEnergyState] = useState<'calma' | 'plena' | 'neutra' | 'cansada'>('calma');
@@ -211,7 +212,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const handleAddDistraction = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = newDistractionText.trim();
-    if (!trimmed) return;
+    // Con el campo vacío, el "+" lleva a escribir en vez de verse bloqueado.
+    if (!trimmed) {
+      distractionInputRef.current?.focus();
+      return;
+    }
     const updated = [...distractions, trimmed];
     StorageService.saveDistractions(profile.id, updated);
     setDistractions(updated);
@@ -821,6 +826,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </ul>
             <form onSubmit={handleAddDistraction} className={styles.distractionForm}>
               <input
+                ref={distractionInputRef}
                 type="text"
                 className={styles.distractionInput}
                 placeholder="Nuevo compromiso (ej. Sin redes hasta las 18h)"
@@ -831,7 +837,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 type="submit"
                 className={styles.distractionAddBtn}
                 aria-label="Agregar compromiso"
-                disabled={!newDistractionText.trim()}
               >
                 +
               </button>
