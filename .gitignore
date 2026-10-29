@@ -47,6 +47,8 @@ scratchpad/
 .scannerwork/
 coverage/
 
-# Memoria de projectmem y auditorías de antislop: material de trabajo local, no del producto
+# Memoria de projectmem, auditorías de antislop y skills de los agentes: material de trabajo local, no del producto.
+# Las skills se reinstalan desde skills-lock.json.
 .projectmem/
 anti-slop/
+.agents/

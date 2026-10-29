@@ -62,6 +62,10 @@ jobs:
       - name: Ejecutar ESLint
         run: pnpm exec eslint .
 
+      # Con las reglas de React: pureza del render y setState dentro de efectos, que ESLint no revisa.
+      - name: Ejecutar oxlint
+        run: pnpm exec oxlint
+
   tipos:
     name: Tipos
     if: github.event_name != 'schedule'

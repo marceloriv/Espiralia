@@ -36,10 +36,19 @@ export const HabitModal: React.FC<HabitModalProps> = ({
     onCloseRef.current = onClose;
   });
 
+  // Al abrir el modal o cambiar de hábito se vuelven a cargar los campos. Se ajusta durante el render (patrón de React)
+  // y no en un efecto.
+  const [origen, setOrigen] = useState<{ isOpen: boolean; habit?: HabitTrackerItem | null }>({ isOpen: false });
+  if (origen.isOpen !== isOpen || origen.habit !== habit) {
+    setOrigen({ isOpen, habit });
+    if (isOpen) {
+      setName(habit?.name ?? '');
+      setCategory(habit?.category ?? 'General');
+    }
+  }
+
   useEffect(() => {
     if (!isOpen) return;
-    setName(habit?.name ?? '');
-    setCategory(habit?.category ?? 'General');
     // Foco accesible al abrir; se cancela si el modal se cierra antes de los 50 ms
     const focusTimer = setTimeout(() => {
       nameInputRef.current?.focus();
