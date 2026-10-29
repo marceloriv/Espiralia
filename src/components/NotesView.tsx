@@ -10,6 +10,7 @@ import { Pliego } from './common/Pliego';
 import { parseBujoContent, countWords, getCategoryRibbonColor } from '../utils/bujoFormatter';
 import { toLocalDateStr } from '../utils/localDate';
 import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE } from '../utils/energyLevels';
+import { occurrenceKeys } from '../utils/occurrenceKeys';
 import styles from './NotesView.module.css';
 
 interface NotesViewProps {
@@ -463,10 +464,11 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                 </div>
               ) : (
                 <div className={styles.bujoTextContent}>
-                  {bujoBlocks.map((block, idx) => {
+                  {occurrenceKeys(bujoBlocks.map((b) => JSON.stringify(b))).map((blockKey, idx) => {
+                    const block = bujoBlocks[idx];
                     if (block.type === 'heading') {
                       return (
-                        <div key={`h-${idx}`} className={styles.journalSection}>
+                        <div key={blockKey} className={styles.journalSection}>
                           <h3 className={styles.sectionHeading}>
                             <span className={styles.sectionSymbol}>{block.symbol}</span>
                             <span>{block.title}</span>
@@ -476,7 +478,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                     }
                     if (block.type === 'callout') {
                       return (
-                        <div key={`c-${idx}`} className={styles.conasetEmbeddedBox}>
+                        <div key={blockKey} className={styles.conasetEmbeddedBox}>
                           <div className={styles.conasetHeader}>
                             <span className={styles.conasetTitle}>
                               {block.icon && <span className={styles.conasetIcon}>{block.icon}</span>}
@@ -489,7 +491,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                       );
                     }
                     return (
-                      <p key={`p-${idx}`} className={styles.journalParagraph}>
+                      <p key={blockKey} className={styles.journalParagraph}>
                         {block.text}
                       </p>
                     );
