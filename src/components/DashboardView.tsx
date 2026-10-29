@@ -15,7 +15,6 @@ import {
   BatteryLow,
   CheckCircle,
   Coffee,
-  Star,
   Check,
   Clock,
   Bell,
@@ -25,8 +24,7 @@ import {
   X,
 } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem, Note, DayOfWeek } from '../types';
-import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
-import { formatBytes } from '../utils/formatBytes';
+import { StorageService } from '../services/storage';
 import { sileo } from 'sileo';
 import { isoWeekNumber, semesterLabel, toLocalDateStr } from '../utils/localDate';
 import { categoryOf } from './agenda/eventMapping';
@@ -40,12 +38,16 @@ import {
   computeHabitStreak,
   computeNetFocusHours,
   computeTaskPerformance,
+  computeHabitsCompliance,
+  deriveFocus,
 } from './dashboard/dashboardData';
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
 import { HabitModal } from './habits/HabitModal';
 import { Pliego } from './common/Pliego';
-import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Papel } from './common/Papel';
+import { TINTE_DE_MODULO } from './common/tintes';
+import { FocusBanner, MetricsStrip } from './dashboard/DashboardParts';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import { focusOnMount } from '../utils/useDialogFocus';
 import { occurrenceKeys } from '../utils/occurrenceKeys';
@@ -81,6 +83,9 @@ const formatHeroDate = (date: Date): string => {
   const formatted = longDateFormatter.format(date);
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
+
+/** Clase de un botón de energía; el elegido lleva además el resaltado. */
+const energyBtnClass = (isActive: boolean) => (isActive ? `${styles.energyBtn} ${styles.energyBtnActive}` : styles.energyBtn);
 
 export const DashboardView: React.FC<DashboardViewProps> = ({
   profile,
@@ -139,19 +144,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const criticalCount = todos.filter(isCritical).length;
   const critical = criticalTodos(todos);
   const pendingTodosList = todos.filter(t => (t.status ? t.status !== 'completada' : !t.completed));
-  const activeFocusTodo = (pinnedFocusTodoId ? todos.find(t => t.id === pinnedFocusTodoId) : null)
-    ?? critical[0]
-    ?? pendingTodosList[0]
-    ?? null;
-  const isFocusDone = activeFocusTodo ? (activeFocusTodo.status === 'completada' || Boolean(activeFocusTodo.completed)) : false;
-  const focusAreaName = activeFocusTodo
-    ? (areas.find(a => a.id === activeFocusTodo.areaId)?.name || activeFocusTodo.category || 'General')
-    : 'General';
-  const focusPriorityLabel = activeFocusTodo?.priority === 'alta'
-    ? 'Alta Prioridad'
-    : activeFocusTodo?.priority === 'media'
-    ? 'Media Prioridad'
-    : 'Baja Prioridad';
+  const { todo: activeFocusTodo, isDone: isFocusDone, areaName: focusAreaName, priorityLabel: focusPriorityLabel } =
+    deriveFocus(todos, areas, pinnedFocusTodoId);
   const allWeekBlocks = planner.filter(b => b.period === 'semanal');
   // Lunes primero y domingo al final: antes se tomaban los 4 primeros por orden de creación y los del domingo quedaban fuera.
   const weekDayRank = (d?: DayOfWeek) => (d === undefined ? 8 : d === 0 ? 7 : d);
@@ -287,9 +281,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     sileo.success({ title: 'Pliego reflexivo guardado en tu cuaderno de notas' });
   };
 
-  const totalHabitSlots = habits.length * 7;
-  const completedHabitSlots = habits.reduce((acc, h) => acc + (h.daysCompleted ? h.daysCompleted.filter(Boolean).length : 0), 0);
-  const habitsComplianceRate = totalHabitSlots > 0 ? Math.round((completedHabitSlots / totalHabitSlots) * 100) : 0;
+  const habitsComplianceRate = computeHabitsCompliance(habits);
 
   const handleToggleHabitDay = (habitId: string, dayIndex: number) => {
     StorageService.toggleHabitDay(profile.id, habitId, dayIndex);
@@ -461,59 +453,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* =====================================================================
           1b. FRANJA DE MÉTRICAS DE SERENIDAD (cuatro indicadores en una fila)
           ===================================================================== */}
-      <section className={styles.kpiStrip} aria-label="Métricas de serenidad">
-        <div className={styles.metricQuadTile}>
-          <span className={styles.metricTileLabel}>Racha Serena</span>
-          <div className={styles.metricTileValueBox}>
-            <span className={styles.metricTileValAccent}>{habitStreak}</span>
-            <span className={styles.metricTileUnit}>días</span>
-          </div>
-          <span className={styles.metricTileSub}>{habitStreak > 0 ? 'Hábitos al día' : 'Marca un hábito para empezarla'}</span>
-        </div>
-
-        <div className={styles.metricQuadTile}>
-          <span className={styles.metricTileLabel}>Foco Neto Hoy</span>
-          <div className={styles.metricTileValueBox}>
-            <span className={styles.metricTileVal}>{netFocus.hours}</span>
-            <span className={styles.metricTileUnit}>horas</span>
-          </div>
-          <span className={styles.metricTileSub}>
-            {netFocus.count > 0 ? `${netFocus.count} actividades hoy` : 'Día libre de foco'}
-          </span>
-        </div>
-
-        <div className={styles.metricQuadTile}>
-          <span className={styles.metricTileLabel}>Almacenamiento</span>
-          <div className={styles.metricTileValueBox}>
-            <span className={styles.metricTileValTeal}>{formatBytes(storageBytes)}</span>
-          </div>
-          <span className={styles.metricTileSub}>de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)} en este navegador</span>
-        </div>
-
-        <div className={styles.metricQuadTile}>
-          <span className={styles.metricTileLabel}>Rendimiento</span>
-          <div className={styles.metricTileValueBox}>
-            <span className={styles.metricTileValPurple}>
-              {taskPerf.percentage === null ? 'Sin datos' : `${taskPerf.percentage}%`}
-            </span>
-          </div>
-          {taskPerf.percentage !== null && (
-            <div
-              className={styles.metricTileBar}
-              role="progressbar"
-              aria-label="Rendimiento de tareas"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={taskPerf.percentage}
-            >
-              <div className={styles.metricTileBarFill} style={{ width: `${taskPerf.percentage}%` }} />
-            </div>
-          )}
-          <span className={styles.metricTileSub}>
-            {taskPerf.total > 0 ? `${taskPerf.completed} de ${taskPerf.total} tareas logradas` : 'Sin tareas registradas'}
-          </span>
-        </div>
-      </section>
+      <MetricsStrip habitStreak={habitStreak} netFocus={netFocus} storageBytes={storageBytes} taskPerf={taskPerf} />
 
       {/* =====================================================================
           2. BENTO TRILOGÍA DE SERENIDAD & ENERGY PHASES
@@ -562,7 +502,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className={styles.energySelector}>
             <button
               type="button"
-              className={`${styles.energyBtn} ${energyState === 'plena' ? styles.energyBtnActive : ''}`}
+              className={energyBtnClass(energyState === 'plena')}
               onClick={() => setEnergyState('plena')}
             >
               <Leaf size={18} className={styles.energyEmoji} aria-hidden="true" />
@@ -570,7 +510,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
             <button
               type="button"
-              className={`${styles.energyBtn} ${energyState === 'calma' ? styles.energyBtnActive : ''}`}
+              className={energyBtnClass(energyState === 'calma')}
               onClick={() => setEnergyState('calma')}
             >
               <Coffee size={18} className={styles.energyEmoji} aria-hidden="true" />
@@ -578,7 +518,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
             <button
               type="button"
-              className={`${styles.energyBtn} ${energyState === 'neutra' ? styles.energyBtnActive : ''}`}
+              className={energyBtnClass(energyState === 'neutra')}
               onClick={() => setEnergyState('neutra')}
             >
               <Cloud size={18} className={styles.energyEmoji} aria-hidden="true" />
@@ -586,7 +526,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </button>
             <button
               type="button"
-              className={`${styles.energyBtn} ${energyState === 'cansada' ? styles.energyBtnActive : ''}`}
+              className={energyBtnClass(energyState === 'cansada')}
               onClick={() => setEnergyState('cansada')}
             >
               <BatteryLow size={18} className={styles.energyEmoji} aria-hidden="true" />
@@ -688,72 +628,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Columna Izquierda: Foco, Prioridades, Distracciones (7 cols) */}
         <div className={styles.mainLeftCol}>
           {/* Banner Today's Main Focus */}
-          <div className={styles.focusBanner}>
-            <div className={styles.focusHeaderRow}>
-              <div className={styles.washiTapeBadge} aria-hidden="true">
-                <Star size={14} />
-                <span>FOCO PRINCIPAL DE HOY</span>
-              </div>
-              {pendingTodosList.length > 0 && (
-                <button
-                  type="button"
-                  className={styles.changeFocusBtn}
-                  onClick={() => setIsFocusModalOpen(true)}
-                  aria-label="Cambiar foco del día"
-                >
-                  Cambiar Foco
-                </button>
-              )}
-            </div>
-
-            {activeFocusTodo ? (
-              <div className={styles.focusInnerCard}>
-                <label className={styles.focusCheckboxHit} htmlFor="main-focus-checkbox">
-                  <input
-                    type="checkbox"
-                    id="main-focus-checkbox"
-                    className={styles.focusCheckbox}
-                    checked={isFocusDone}
-                    onChange={() => handleToggleTodo(activeFocusTodo.id)}
-                    aria-label="Marcar foco principal completado"
-                  />
-                </label>
-                <div className={styles.focusDetails}>
-                  <h3 className={`${styles.focusTitle} ${isFocusDone ? styles.rowTitleDone : ''}`}>
-                    {activeFocusTodo.title}
-                  </h3>
-                  <div className={styles.focusChipsRow}>
-                    <span className={styles.focusChipArea}>
-                      <span className={styles.focusChipDot} />
-                      <span>Área: {focusAreaName}</span>
-                    </span>
-                    <span className={styles.metaDot}>•</span>
-                    <span className={styles.priorityHighBadge}>{focusPriorityLabel}</span>
-                    {activeFocusTodo.dueDate && (
-                      <>
-                        <span className={styles.metaDot}>•</span>
-                        <span>Plazo: {dueLabel(activeFocusTodo.dueDate, todayStr) || activeFocusTodo.dueDate}</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className={styles.focusInnerCard} style={{ justifyContent: 'center', textAlign: 'center', padding: '24px' }}>
-                <div>
-                  <p style={{ margin: '0 0 10px 0', color: 'var(--color-muted)' }}>Sin tareas pendientes en el cuaderno</p>
-                  <button
-                    type="button"
-                    className={styles.addHabitBtn}
-                    onClick={() => onNavigate('todo')}
-                    aria-label="Fijar foco del día"
-                  >
-                    + Fijar foco del día
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <FocusBanner
+            focus={{ todo: activeFocusTodo, isDone: isFocusDone, areaName: focusAreaName, priorityLabel: focusPriorityLabel }}
+            canChangeFocus={pendingTodosList.length > 0}
+            todayStr={todayStr}
+            onChangeFocus={() => setIsFocusModalOpen(true)}
+            onToggleTodo={handleToggleTodo}
+            onPlanFocus={() => onNavigate('todo')}
+          />
 
           {/* Top Priorities no negociables */}
           <Pliego aria-labelledby="dash-critical">

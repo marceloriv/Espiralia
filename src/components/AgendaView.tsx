@@ -13,17 +13,15 @@ import './agenda/fullcalendar-palette.css';
 import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Smile, Leaf, Meh, BatteryLow } from 'lucide-react';
 import { ENERGY_LEVELS } from '../utils/energyLevels';
 import { sileo } from 'sileo';
-import type { AgendaEvent, EventCategory, Profile, ViewType } from '../types';
+import type { AgendaEvent, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { defaultEndTime, isoWeekNumber, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
-import { MAX_TITLE_LENGTH, emptyEventForm, eventFormFromEvent, validateEventForm } from './agenda/eventForm';
+import { emptyEventForm, eventFormFromEvent, validateEventForm } from './agenda/eventForm';
 import type { EventFormState } from './agenda/eventForm';
 import {
-  CATEGORIES,
   CATEGORY_COLORS,
   FILTERS,
   FILTER_LABELS,
-  WEEK_DAYS,
   categoryOf,
   countByCategory,
   occursOn,
@@ -31,8 +29,10 @@ import {
 } from './agenda/eventMapping';
 import type { CategoryFilter } from './agenda/eventMapping';
 import { commitTimeChange, safeDeleteEvent, safeSaveEvent } from './agenda/eventPersistence';
-import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Papel } from './common/Papel';
+import { TINTE_DE_MODULO } from './common/tintes';
 import { Pliego } from './common/Pliego';
+import { EventFormPanel } from './agenda/EventFormPanel';
 import styles from './AgendaView.module.css';
 
 interface AgendaViewProps {
@@ -173,11 +173,6 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     selectDay(value);
     calendarRef.current?.getApi().gotoDate(value);
   };
-
-  const toggleDay = (day: number) =>
-    update({
-      daysOfWeek: form.daysOfWeek.includes(day) ? form.daysOfWeek.filter(d => d !== day) : [...form.daysOfWeek, day],
-    });
 
   return (
     <div className={styles.agendaContainer}>
@@ -380,150 +375,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
           </Papel>
 
           {/* 3.3 Formulario de Creación / Edición */}
-          <form
-            className={styles.panelCard}
-            onSubmit={handleSubmit}
-            aria-label={form.editingId ? 'Editar evento' : 'Nuevo evento'}
-          >
-            <h3 className={styles.panelTitle}>
-              {form.editingId ? 'Editar evento' : `Nuevo evento para ${form.date}`}
-            </h3>
-            {form.editingId && form.repeatWeekly && (
-              <p className={styles.hint}>Los cambios se aplican a todas las repeticiones.</p>
-            )}
-
-            <div className={styles.formGroup}>
-              <label className={styles.fieldLabel} htmlFor="agenda-title">
-                Título
-              </label>
-              <input
-                id="agenda-title"
-                type="text"
-                className={styles.inputField}
-                placeholder="Título del evento"
-                maxLength={MAX_TITLE_LENGTH}
-                value={form.title}
-                onChange={e => update({ title: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.fieldLabel} htmlFor="agenda-date">
-                Fecha
-              </label>
-              <input
-                id="agenda-date"
-                type="date"
-                className={styles.inputField}
-                value={form.date}
-                onChange={e => update({ date: e.target.value })}
-                required
-              />
-            </div>
-
-            <label className={styles.checkRow}>
-              <input type="checkbox" checked={form.allDay} onChange={e => update({ allDay: e.target.checked })} />
-              Todo el día
-            </label>
-
-            {!form.allDay && (
-              <div className={styles.timeRow}>
-                <div className={styles.formGroup}>
-                  <label className={styles.fieldLabel} htmlFor="agenda-start">
-                    Hora de inicio
-                  </label>
-                  <input
-                    id="agenda-start"
-                    type="time"
-                    className={styles.inputField}
-                    value={form.startTime}
-                    onChange={e => update({ startTime: e.target.value })}
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.fieldLabel} htmlFor="agenda-end">
-                    Hora de término
-                  </label>
-                  <input
-                    id="agenda-end"
-                    type="time"
-                    className={styles.inputField}
-                    value={form.endTime}
-                    onChange={e => update({ endTime: e.target.value })}
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className={styles.formGroup}>
-              <label className={styles.fieldLabel} htmlFor="agenda-category">
-                Categoría
-              </label>
-              <select
-                id="agenda-category"
-                className={styles.inputField}
-                value={form.category}
-                onChange={e => update({ category: e.target.value as EventCategory })}
-              >
-                {CATEGORIES.map(c => (
-                  <option key={c} value={c}>
-                    {FILTER_LABELS[c]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <label className={styles.checkRow}>
-              <input
-                type="checkbox"
-                checked={form.repeatWeekly}
-                onChange={e => update({ repeatWeekly: e.target.checked })}
-              />
-              Repetir semanalmente
-            </label>
-
-            {form.repeatWeekly && (
-              <fieldset className={styles.repeatFieldset}>
-                <legend className={styles.fieldLabel}>Días de repetición</legend>
-                <div className={styles.daysRow}>
-                  {WEEK_DAYS.map(d => (
-                    <label key={d.value} className={styles.dayChip}>
-                      <input
-                        type="checkbox"
-                        aria-label={d.long}
-                        checked={form.daysOfWeek.includes(d.value)}
-                        onChange={() => toggleDay(d.value)}
-                      />
-                      <span aria-hidden="true">{d.short}</span>
-                    </label>
-                  ))}
-                </div>
-                <label className={styles.fieldLabel} htmlFor="agenda-until">
-                  Repetir hasta (opcional)
-                </label>
-                <input
-                  id="agenda-until"
-                  type="date"
-                  className={styles.inputField}
-                  min={form.date}
-                  value={form.until}
-                  onChange={e => update({ until: e.target.value })}
-                />
-              </fieldset>
-            )}
-
-            <div className={styles.formActions}>
-              <button type="submit" className={styles.btnPrimary}>
-                {form.editingId ? 'Guardar cambios' : 'Agregar evento'}
-              </button>
-              {form.editingId && (
-                <button type="button" className={styles.btnSecondary} onClick={() => resetForm(selectedDate)}>
-                  Cancelar edición
-                </button>
-              )}
-            </div>
-          </form>
+          <EventFormPanel form={form} update={update} onSubmit={handleSubmit} onCancel={() => resetForm(selectedDate)} />
 
           {/* 3.4 Tracker de Energía y Ánimo (Energy & Mood Rhythm Tracker) */}
           <div className={styles.rhythmCard}>

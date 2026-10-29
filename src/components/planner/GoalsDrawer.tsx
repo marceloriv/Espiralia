@@ -5,7 +5,8 @@ import { useEscapeKey } from '../../utils/useEscapeKey';
 import type { Goal, GoalSubItem } from '../../types';
 import { StorageService } from '../../services/storage';
 import { GoalCard } from './GoalCard';
-import { Papel, TINTE_DE_MODULO } from '../common/Papel';
+import { Papel } from '../common/Papel';
+import { TINTE_DE_MODULO } from '../common/tintes';
 import styles from './GoalsDrawer.module.css';
 
 interface GoalsDrawerProps {

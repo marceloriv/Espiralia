@@ -6,6 +6,8 @@ import {
   isCritical,
   todayEventsSorted,
   upcomingOccurrences,
+  deriveFocus,
+  computeHabitsCompliance,
   computeAreaSummaries,
   computeHabitStreak,
   computeNetFocusHours,
@@ -269,5 +271,47 @@ describe('upcomingOccurrences', () => {
   it('descarta una serie que ya terminó', () => {
     const series = ev({ id: 's', title: 'Serie', date: '2026-10-02', recurrence: { daysOfWeek: [5], until: '2026-10-23' } });
     expect(upcomingOccurrences([series], hoy)).toEqual([]);
+  });
+});
+
+describe('deriveFocus', () => {
+  // Técnica: tabla de decisión sobre la prioridad de elección (fijada > crítica > pendiente > ninguna).
+  const todo = (patch: Partial<TodoItem> & Pick<TodoItem, 'id'>): TodoItem => ({
+    profileId: 'p', title: patch.id, areaId: 'a1', priority: 'baja', status: 'pendiente', createdAt: '2026-10-01', ...patch,
+  } as TodoItem);
+  const areas = [{ id: 'a1', profileId: 'p', name: 'Estudios', color: '#000', createdAt: '2026-10-01' }];
+
+  it('elige la fijada antes que la crítica', () => {
+    const f = deriveFocus([todo({ id: 'critica', priority: 'alta' }), todo({ id: 'fijada' })], areas, 'fijada');
+    expect(f.todo?.id).toBe('fijada');
+  });
+
+  it('sin fijada elige la crítica, con su área y etiqueta de prioridad', () => {
+    const f = deriveFocus([todo({ id: 'normal' }), todo({ id: 'critica', priority: 'alta' })], areas, null);
+    expect(f).toMatchObject({ isDone: false, areaName: 'Estudios', priorityLabel: 'Alta Prioridad' });
+    expect(f.todo?.id).toBe('critica');
+  });
+
+  it('sin crítica elige la primera pendiente y salta las completadas', () => {
+    const f = deriveFocus([todo({ id: 'hecha', status: 'completada' }), todo({ id: 'pendiente', priority: 'media' })], areas, null);
+    expect(f.todo?.id).toBe('pendiente');
+    expect(f.priorityLabel).toBe('Media Prioridad');
+  });
+
+  it('sin tareas devuelve el estado vacío', () => {
+    expect(deriveFocus([], areas, null)).toEqual({ todo: null, isDone: false, areaName: 'General', priorityLabel: 'Baja Prioridad' });
+  });
+});
+
+describe('computeHabitsCompliance', () => {
+  // Técnica: valores límite (sin hábitos, 0 %, 100 %) y redondeo.
+  const habit = (days: boolean[]) => ({ id: 'h', profileId: 'p', name: 'h', daysCompleted: days });
+  it.each([
+    [[], 0],
+    [[habit(Array(7).fill(false))], 0],
+    [[habit(Array(7).fill(true))], 100],
+    [[habit([true, true, false, false, false, false, false])], 29],
+  ])('%#', (habits, esperado) => {
+    expect(computeHabitsCompliance(habits as never)).toBe(esperado);
   });
 });

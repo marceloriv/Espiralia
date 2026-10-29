@@ -10,7 +10,8 @@ import { StorageService } from '../services/storage';
 import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
 import { dueLabel, criticalTodos, upcomingOccurrences } from './dashboard/dashboardData';
 import { AreaIntegratedWorkspace } from './todo/AreaIntegratedWorkspace';
-import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Papel } from './common/Papel';
+import { TINTE_DE_MODULO } from './common/tintes';
 import styles from './TodoView.module.css';
 
 interface TodoViewProps {

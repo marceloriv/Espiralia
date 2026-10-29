@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { Pencil, Trash2, Folder as FolderIcon } from 'lucide-react';
 import type { Note, Folder } from '../../types';
 import { parseBujoContent, countWords, getCategoryRibbonColor } from '../../utils/bujoFormatter';
-import { Papel, TINTE_DE_MODULO } from '../common/Papel';
+import { Papel } from '../common/Papel';
+import { TINTE_DE_MODULO } from '../common/tintes';
 import styles from './BujoCard.module.css';
 
 export interface BujoCardProps {
