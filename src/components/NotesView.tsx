@@ -22,7 +22,7 @@ type TabType = 'all' | 'reflections' | 'quick';
 
 const DEFAULT_THERAPEUTIC_TITLE = 'Descompresión mental & Autoobservación';
 
-const DEFAULT_THERAPEUTIC_CONTENT = `§ 1. Tu primera entrada
+const EMPTY_TOMO_CONTENT = `§ 1. Tu primera entrada
 Este tomo aún no tiene notas. Pulsa "Nueva Nota" para escribir la primera: lo que escribas se guarda solo en este navegador.`;
 
 export interface TomoConfig {
@@ -45,7 +45,7 @@ export const TOMOS_CONFIG: TomoConfig[] = [
     iconName: 'book',
     tag: 'terapia',
     defaultTitle: DEFAULT_THERAPEUTIC_TITLE,
-    defaultContent: DEFAULT_THERAPEUTIC_CONTENT,
+    defaultContent: EMPTY_TOMO_CONTENT,
   },
   {
     id: '02',
@@ -54,7 +54,7 @@ export const TOMOS_CONFIG: TomoConfig[] = [
     iconName: 'sparkles',
     tag: 'ideas',
     defaultTitle: 'Bocetos, Ideas de Taller & Proyectos',
-    defaultContent: `§ 1. Lluvia de Ideas y Arquitectura de Información\nEspacio de prototipado rápido y diseño divergente. Captura conceptos antes de que se evaporen.\n\n[caja: Hito de Proyecto | En desarrollo | Definir flujo de interacción y estética de libreta analógica.]`,
+    defaultContent: EMPTY_TOMO_CONTENT,
   },
   {
     id: '03',
@@ -63,7 +63,7 @@ export const TOMOS_CONFIG: TomoConfig[] = [
     iconName: 'file',
     tag: 'estudio',
     defaultTitle: 'Bitácora de Estudio & Ensayos',
-    defaultContent: `§ 1. Objetivos de Aprendizaje & Notas de Lectura\nSíntesis de conceptos clave, referencias bibliográficas y reflexiones de estudio activo.\n\n[caja: Sesión de Estudio | Meta: Comprensión profunda | Tomar apuntes en tus propias palabras y sintetizar las ideas principales.]`,
+    defaultContent: EMPTY_TOMO_CONTENT,
   },
 ];
 
