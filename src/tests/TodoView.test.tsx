@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { TodoView } from '../components/TodoView';
 import { StorageService } from '../services/storage';
+import { toLocalDateStr } from '../utils/localDate';
 
 describe('TodoView', () => {
   const profileId = 'p-test';
@@ -270,7 +271,7 @@ describe('TodoView', () => {
         id: 'ev-real-1',
         profileId,
         title: 'Revisión Técnica de Vehículo',
-        date: '2026-10-20',
+        date: toLocalDateStr(new Date()),
         startTime: '10:00',
         endTime: '11:00',
         category: 'personal',
@@ -281,6 +282,25 @@ describe('TodoView', () => {
       expect(screen.getByText('Revisión Técnica de Vehículo')).toBeInTheDocument();
       expect(screen.queryByText(/Simulacro Conaset & Práctica en Calle/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/Sesión Terapia Clínica Presencial/i)).not.toBeInTheDocument();
+    });
+
+    it('no muestra en Próximos hitos los eventos que ya pasaron', () => {
+      StorageService.saveEvent({ id: 'ev-pasado', profileId, title: 'Evento de la semana pasada', date: '2000-01-05' });
+
+      render(<TodoView profileId={profileId} />);
+
+      expect(screen.queryByText('Evento de la semana pasada')).not.toBeInTheDocument();
+      expect(screen.getByText(/sin eventos agendados próximamente/i)).toBeInTheDocument();
+    });
+
+    it('el enlace a la vista semanal navega a Agenda', async () => {
+      const user = userEvent.setup();
+      const onNavigate = vi.fn();
+      render(<TodoView profileId={profileId} onNavigate={onNavigate} />);
+
+      await user.click(screen.getByRole('button', { name: /ver vista semanal extendida en agenda/i }));
+
+      expect(onNavigate).toHaveBeenCalledWith('agenda');
     });
 
     it('persiste el nivel de energía diario seleccionado en StorageService', async () => {

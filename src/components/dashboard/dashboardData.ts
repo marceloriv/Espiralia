@@ -18,7 +18,21 @@ export const todayEventsSorted = (events: AgendaEvent[], todayStr: string, limit
     .sort((a, b) => (a.startTime ?? '').localeCompare(b.startTime ?? ''))
     .slice(0, limit);
 
-export const isCritical = (todo: TodoItem): boolean =>
+/** Próxima ocurrencia de cada evento desde hoy (las series, dentro de 7 días), con `date` = esa ocurrencia. */
+export const upcomingOccurrences = (events: AgendaEvent[], todayStr: string, limit = 3): AgendaEvent[] =>
+  events
+    .flatMap(e => {
+      if (!e.recurrence) return e.date >= todayStr ? [e] : [];
+      for (let i = 0; i < 7; i++) {
+        const date = addDaysToDateStr(todayStr, i);
+        if (occursOn(e, date)) return [{ ...e, date }];
+      }
+      return [];
+    })
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.startTime ?? '').localeCompare(b.startTime ?? ''))
+    .slice(0, limit);
+
+export const isCritical =(todo: TodoItem): boolean =>
   !todo.completed && (todo.status !== undefined ? todo.status !== 'completada' : true) && todo.priority === 'alta';
 
 /** Críticos por vencimiento ascendente; sin fecha al final, en orden de inserción (sort estable). */

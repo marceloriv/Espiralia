@@ -11,6 +11,17 @@ describe('NotesView - Tomos y Carpetas', () => {
     localStorage.clear();
   });
 
+  it('un tomo vacío invita a escribir en vez de mostrar notas internas de desarrollo', async () => {
+    const user = userEvent.setup();
+    render(<NotesView profileId={profileId} />);
+
+    for (const tomo of [/ideas & taller/i, /estudio & ensayos/i]) {
+      await user.click(screen.getByRole('button', { name: tomo }));
+      expect(screen.getAllByText(/este tomo aún no tiene notas/i).length).toBeGreaterThan(0);
+      expect(screen.queryByText(/prototipado|objetivos de aprendizaje/i)).not.toBeInTheDocument();
+    }
+  });
+
   it('renderiza las 3 carpetas de Tomos y filtra notas sin pérdida de datos', async () => {
     const user = userEvent.setup();
 

@@ -182,6 +182,23 @@ describe('DashboardView critical CSS & Hero Content', () => {
       expect(StorageService.getDistractions(mockProfile.id)).not.toContain('No revisar WhatsApp hasta el almuerzo');
     });
 
+    it('el "+" de compromisos con el campo vacío lleva el foco al campo en vez de quedar bloqueado', async () => {
+      const { userEvent } = await import('@testing-library/user-event');
+      const { StorageService } = await import('../../src/services/storage');
+      const user = userEvent.setup();
+      localStorage.clear();
+      StorageService.saveProfile(mockProfile);
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+      const addBtn = screen.getByRole('button', { name: /agregar compromiso/i });
+      expect(addBtn).toBeEnabled();
+
+      await user.click(addBtn);
+
+      expect(screen.getByPlaceholderText(/nuevo compromiso/i)).toHaveFocus();
+      expect(StorageService.getDistractions(mockProfile.id)).toEqual([]);
+    });
+
     it('Focus Schedule muestra eventos reales y no renderiza los 7 slots estáticos de mock', () => {
       localStorage.clear();
 

@@ -8,7 +8,7 @@ import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE, energyLabel } from '../utils/energ
 import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
 import { StorageService } from '../services/storage';
 import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
-import { dueLabel, criticalTodos } from './dashboard/dashboardData';
+import { dueLabel, criticalTodos, upcomingOccurrences } from './dashboard/dashboardData';
 import { AreaIntegratedWorkspace } from './todo/AreaIntegratedWorkspace';
 import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import styles from './TodoView.module.css';
@@ -141,14 +141,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
     StorageService.setTodayMood(profileId, todayStr, icon);
   };
 
-  const upcomingEvents = events
-    .filter(e => Boolean(e.date))
-    .sort((a, b) => {
-      const cmpDate = (a.date ?? '').localeCompare(b.date ?? '');
-      if (cmpDate !== 0) return cmpDate;
-      return (a.startTime ?? '').localeCompare(b.startTime ?? '');
-    })
-    .slice(0, 3);
+  const upcomingEvents = upcomingOccurrences(events, todayStr);
 
   const handleCreateArea = (e: React.FormEvent) => {
     e.preventDefault();
