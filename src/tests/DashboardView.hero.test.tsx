@@ -182,6 +182,33 @@ describe('DashboardView critical CSS & Hero Content', () => {
       expect(StorageService.getDistractions(mockProfile.id)).not.toContain('No revisar WhatsApp hasta el almuerzo');
     });
 
+    it('permite editar un compromiso: Enter guarda, Escape cancela y vaciarlo no lo borra', async () => {
+      // Técnica: tabla de decisión sobre la tecla de cierre (Enter/Escape) y el texto (con contenido/vacío).
+      const { userEvent } = await import('@testing-library/user-event');
+      const { StorageService } = await import('../../src/services/storage');
+      const user = userEvent.setup();
+      localStorage.clear();
+      StorageService.saveProfile(mockProfile);
+      StorageService.saveDistractions(mockProfile.id, ['Sin redes hasta las 18h']);
+
+      render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+
+      await user.click(screen.getByRole('button', { name: 'Sin redes hasta las 18h' }));
+      const editInput = screen.getByRole('textbox', { name: /editar compromiso/i });
+      await user.clear(editInput);
+      await user.type(editInput, 'Sin redes hasta las 20h{enter}');
+      expect(StorageService.getDistractions(mockProfile.id)).toEqual(['Sin redes hasta las 20h']);
+
+      await user.click(screen.getByRole('button', { name: 'Sin redes hasta las 20h' }));
+      await user.type(screen.getByRole('textbox', { name: /editar compromiso/i }), ' y más{escape}');
+      expect(screen.getByRole('button', { name: 'Sin redes hasta las 20h' })).toBeInTheDocument();
+
+      await user.click(screen.getByRole('button', { name: 'Sin redes hasta las 20h' }));
+      await user.clear(screen.getByRole('textbox', { name: /editar compromiso/i }));
+      await user.keyboard('{enter}');
+      expect(StorageService.getDistractions(mockProfile.id)).toEqual(['Sin redes hasta las 20h']);
+    });
+
     it('el "+" de compromisos con el campo vacío lleva el foco al campo en vez de quedar bloqueado', async () => {
       const { userEvent } = await import('@testing-library/user-event');
       const { StorageService } = await import('../../src/services/storage');
