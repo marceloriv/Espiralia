@@ -239,6 +239,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   };
 
   const handleRemoveDistraction = (index: number) => {
+    // La edición se ubica por índice (los compromisos son strings sin id): borrar desplaza los índices, así que se cierra.
+    setEditingDistractionIdx(null);
     const updated = distractions.filter((_, idx) => idx !== index);
     StorageService.saveDistractions(profile.id, updated);
     setDistractions(updated);
@@ -874,6 +876,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 type="text"
                 className={styles.distractionInput}
                 placeholder="Nuevo compromiso (ej. Sin redes hasta las 18h)"
+                aria-label="Nuevo compromiso"
                 value={newDistractionText}
                 onChange={(e) => setNewDistractionText(e.target.value)}
               />
@@ -915,9 +918,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </button>
               </div>
             ) : (
-              <div className={styles.routineTimeline} role="list" aria-label="Eventos de hoy">
+              <ul className={styles.routineTimeline} aria-label="Eventos de hoy">
                 {todayScheduleItems.map((item) => (
-                  <div key={item.id} role="listitem" className={item.completed ? styles.routineSlotDone : styles.routineSlotPending}>
+                  <li key={item.id} className={item.completed ? styles.routineSlotDone : styles.routineSlotPending}>
                     <span className={styles.routineTime}>{item.time}</span>
                     <span className={item.completed ? styles.routineDotDone : styles.routineDotTeal} />
                     <span className={item.completed ? styles.routineTitleDone : styles.routineTitle}>
@@ -926,9 +929,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <span className={item.source === 'event' ? styles.routineStatusTag : styles.routineMutedTag}>
                       {item.category ? item.category.charAt(0).toUpperCase() + item.category.slice(1) : (item.source === 'event' ? 'Evento' : 'Bloque')}
                     </span>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
             <button type="button" className={styles.cardLink} onClick={() => onNavigate('agenda')}>
               Ver agenda completa →
@@ -1003,7 +1006,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {areas.length > 0 && (
         <section
           className={styles.areasSection}
-          role="region"
           aria-label="Áreas temáticas clave"
         >
           <div className={styles.areasHeader}>

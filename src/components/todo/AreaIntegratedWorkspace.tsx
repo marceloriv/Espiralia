@@ -221,12 +221,13 @@ export const AreaIntegratedWorkspace: React.FC<AreaIntegratedWorkspaceProps> = (
                 type="text"
                 className={styles.todoInput}
                 placeholder="Título del evento..."
+                aria-label={`Título del evento para ${area.name}`}
                 value={quickEventTitle}
                 onChange={e => setQuickEventTitle(e.target.value)}
                 ref={focusOnMount}
               />
               <button type="submit" className={styles.btnAddTodo}>Guardar</button>
-              <button type="button" className={styles.btnDeleteTask} onClick={() => setIsAddingEvent(false)}>✕</button>
+              <button type="button" className={styles.btnDeleteTask} onClick={() => setIsAddingEvent(false)} aria-label="Cancelar evento nuevo">✕</button>
             </form>
           ) : (
             <button
