@@ -34,6 +34,7 @@ describe('StorageService.getProfileStorageBytes', () => {
 describe('formatBytes', () => {
   it.each([
     [0, '0 KB'],
+    [393, '1 KB'],
     [43008, '42 KB'],
     [1468006, '1.4 MB'],
   ])('formatBytes(%i) devuelve %s', (bytes, expected) => {
