@@ -147,3 +147,21 @@ describe('Tokens de texto con contraste AA', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+describe('Superficies planas por módulo (--superficie-*)', () => {
+  // Técnica: valores límite. Se miden los dos extremos del degradado (72 % y 40 %) y la grilla de Agenda (35 %);
+  // el extremo más oscuro es el peor caso para el texto oscuro.
+  const SUPERFICIES = ['pizarra', 'salvia', 'terracota', 'ambar', 'rosa', 'turquesa'];
+  const TEXTOS = ['color-ink', 'color-body', 'color-muted', 'color-text-success', 'color-text-teal', 'color-text-amber', 'color-text-primary-active', 'color-text-error'];
+
+  it.each(SUPERFICIES)('el texto global pasa 4.5:1 sobre la superficie %s', tinte => {
+    expect(tokensCss).toContain(`--superficie-${tinte}: linear-gradient(145deg, color-mix(in srgb, var(--papel-${tinte}) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-${tinte}) 40%, var(--bg-card)));`);
+    const base = papelTint(`papel-${tinte}`);
+    for (const pct of [72, 40, 35]) {
+      const bg = mixHex(base, pct, token('bg-card'));
+      for (const name of TEXTOS) {
+        expect(ratio(token(name), bg), `--${name} sobre ${tinte} al ${pct}% (${bg})`).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+  });
+});

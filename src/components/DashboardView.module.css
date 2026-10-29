@@ -2400,7 +2400,7 @@
 /* Energía y hábitos son áreas de decisión: una cartulina salvia y otra neutra. */
 .bentoTrio > :first-child {
   background-color: var(--bg-card);
-  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 60%, var(--bg-card)), var(--bg-card) 72%);
+  background-image: var(--superficie-salvia);
 }
 
 /* El foco pertenece a To-Do: terracota en el marco, cartulina clara al escribir. */
@@ -2412,12 +2412,12 @@
 
 /* El compromiso comparte el tono cálido de To-Do con el foco. */
 .distractionBox {
-  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-terracota) 56%, var(--bg-card)), var(--bg-card) 78%);
+  background-image: var(--superficie-terracota);
 }
 
 /* Las áreas son carpetas: el contenedor cede el rosa a sus fichas sin teñir los datos. */
 .areasSection {
-  background-image: linear-gradient(150deg, color-mix(in srgb, var(--papel-rosa) 58%, var(--bg-card)), var(--bg-card) 56%);
+  background-image: var(--superficie-rosa);
 }
 .areaFolderCard {
   background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 50%, var(--bg-card)), var(--bg-card));
@@ -2425,18 +2425,18 @@
 
 /* Ámbar para escribir, salvia para cerrar el día y turquesa para leer métricas. */
 .notesSection {
-  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 62%, var(--bg-card)), var(--bg-card) 68%);
+  background-image: var(--superficie-ambar);
 }
 .paperGridContainer {
   background-image:
     linear-gradient(to right, var(--color-grid-bujo) 1px, transparent 1px),
     linear-gradient(to bottom, var(--color-grid-bujo) 1px, transparent 1px),
-    linear-gradient(140deg, color-mix(in srgb, var(--papel-ambar) 55%, var(--bg-card)), var(--bg-card));
+    var(--superficie-ambar);
   background-size: 16px 16px, 16px 16px, auto;
 }
 .reflectionSection {
-  background-image: linear-gradient(140deg, color-mix(in srgb, var(--papel-salvia) 58%, var(--bg-card)), var(--bg-card) 66%);
+  background-image: var(--superficie-salvia);
 }
 .metricsSection {
-  background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 55%, var(--bg-card)), var(--bg-card) 56%);
+  background-image: var(--superficie-turquesa);
 }
