@@ -127,7 +127,10 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
           element={
             activeProfile ? (
               <Suspense fallback={<RouteLoadingFallback />}>
-                <TodoView profileId={activeProfile.id} />
+                <TodoView
+                  profileId={activeProfile.id}
+                  onNavigate={view => turnPage(() => navigate(`/${view}`))}
+                />
               </Suspense>
             ) : null
           }
