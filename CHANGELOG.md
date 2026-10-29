@@ -4,6 +4,20 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.6.1] - 2026-10-29
+
+### Fixed
+
+- **Claves estables en listas sin id**: los compromisos del Dashboard y los bloques del cuaderno de Notas usaban el índice como clave de React. Ahora la clave es el contenido más su número de aparición, así que borrar un compromiso no cambia la clave de los demás.
+
+### Changed
+
+- **Subida de PDF y exportación de respaldos en paralelo**: al subir varios PDF, o al exportar los respaldos de todos los perfiles desde el acceso, cada archivo ya no espera al anterior. La subida conserva el aviso por archivo y las descargas mantienen el orden de la lista.
+
+### Operations
+
+- **React Doctor limitado al código del proyecto**: el escaneo local excluye `.agents/` y `scratchpad/`, carpetas ignoradas por git que no forman parte de la app. Los avisos de seguridad venían de ahí, no de `src/`. El puntaje local pasa de 58 a 91.
+
 ## [0.6.0] - 2026-10-29
 
 ### Added
