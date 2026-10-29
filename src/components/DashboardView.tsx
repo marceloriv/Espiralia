@@ -48,6 +48,7 @@ import { Pliego } from './common/Pliego';
 import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import { focusOnMount } from '../utils/useDialogFocus';
+import { occurrenceKeys } from '../utils/occurrenceKeys';
 import styles from './DashboardView.module.css';
 
 interface DashboardViewProps {
@@ -825,8 +826,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   Sin compromisos registrados. Agrega uno abajo.
                 </li>
               ) : (
-                distractions.map((item, idx) => (
-                  <li key={idx} className={styles.distractionListItem}>
+                occurrenceKeys(distractions).map((itemKey, idx) => {
+                  const item = distractions[idx];
+                  return (
+                  <li key={itemKey} className={styles.distractionListItem}>
                     <span className={styles.distractionDot} />
                     {editingDistractionIdx === idx ? (
                       <input
@@ -867,7 +870,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <X size={14} aria-hidden="true" />
                     </button>
                   </li>
-                ))
+                  );
+                })
               )}
             </ul>
             <form onSubmit={handleAddDistraction} className={styles.distractionForm}>
