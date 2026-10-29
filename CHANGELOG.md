@@ -4,6 +4,71 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.6.0] - 2026-10-29
+
+### Added
+
+- **Subir PDF a las carpetas**: ahora se pueden subir archivos del computador a Carpetas. Por ahora solo se admiten PDF.
+  - El tamaño máximo es 10 MB.
+  - La subida revisa el contenido, no solo la extensión: el archivo debe empezar por `%PDF-`.
+  - Cada PDF aparece en la tabla de su carpeta con Abrir (en el visor del navegador), Descargar y Eliminar con confirmación.
+  - Los PDF se guardan en IndexedDB, porque `localStorage` admite unos 5 MB y un solo PDF lo llenaría.
+  - Borrar una carpeta borra sus PDF, y la confirmación lo avisa. Borrar un perfil también borra sus PDF.
+  - El módulo de archivos se carga solo cuando hace falta, así que no suma peso a la carga inicial.
+- **PDF en el respaldo**: los tres puntos de exportación (Bóveda Offline, acceso e Integraciones) incluyen los PDF.
+  - Los PDF viajan en base64 en un campo opcional `files`. Los respaldos anteriores siguen siendo válidos.
+  - Si IndexedDB falla, el respaldo sale igual sin los PDF y la app lo avisa.
+  - Al restaurar, cada PDF se valida igual que una subida y se guarda con un id nuevo. Así no pisa archivos de otro perfil.
+- **Limpiar semana** en el Planner: borra todos los bloques semanales del perfil tras confirmar. Los bloques mensuales se conservan. Antes había que borrarlos uno por uno.
+- **Editar compromisos** en el Dashboard: pulsar el texto de un compromiso lo vuelve editable.
+  - Enter o salir del campo guarda el cambio. Escape cancela.
+  - Dejar el texto vacío no borra el compromiso. Para borrarlo sigue la X.
+
+### Changed
+
+- **Superficies con el color de su módulo**: Agenda, el cuaderno de Notas, "Notas y vaciado mental", "Reflexión del día" y "Ritmo & Estado de Ánimo" se veían casi blancos. Ahora conservan su tinte.
+  - El degradado por tinte (`--superficie-<tinte>`) va del 72 % al 40 % del tinte y ya no llega a blanco.
+  - El almanaque de Agenda lleva pizarra en el marco y en la grilla de días. El cuaderno de Notas lleva ámbar.
+  - El texto sigue en 4.5:1 de contraste o más en ambos extremos.
+- **To-Do igual que las demás vistas**: conservaba un degradado hasta blanco y se veía más pálido. Ahora usa la misma superficie que el resto.
+- **Contenedores más suaves** en Áreas y Métricas, que solo agrupan tarjetas: pasan del 45 % al 20 % del tinte (`--contenedor-<tinte>`). Así sus tarjetas resaltan y la superficie grande del Dashboard no le quita el foco al saludo.
+- **Favicon propio**: la pestaña ya no muestra el logo de Vite. El ícono nuevo es una hoja rosa con la esquina doblada y una espiral en el morado de marca, en línea con las fichas de papel de la app.
+
+### Fixed
+
+- **Próximos hitos**: mostraba los 3 eventos más antiguos, incluidos los ya pasados. Ahora muestra la próxima ocurrencia de cada evento desde hoy. Las series aparecen en su siguiente fecha dentro de 7 días.
+- **Enlace a Agenda**: "Ver vista semanal extendida en Agenda" no hacía nada. Ahora lleva a Agenda.
+- **Botón + de compromisos**: aparecía bloqueado con el campo vacío y parecía imposible escribir. Ahora siempre está activo y, si no hay texto, lleva el foco al campo.
+- **Tomos vacíos de Notas**: los tomos 02 y 03 mostraban texto de ejemplo con jerga de desarrollo, y parecía que la función no estaba lista. Ahora muestran el mismo aviso de tomo vacío que el tomo 01.
+- **Tamaño de archivos pequeños**: un PDF de pocos bytes se mostraba como 0 KB y parecía vacío. Todo archivo que no esté vacío muestra al menos 1 KB.
+- **Contraste AA en las etiquetas de área**: el texto usaba el color del área y quedaba entre 1.8:1 (ámbar) y 3.9:1, bajo el mínimo de 4.5:1. Ahora mezcla el color del área al 55 % con la tinta y cumple 4.5:1 con toda la paleta de áreas.
+- **Contraste del sello HECHO**: usaba un carmín translúcido que quedaba en 4.49:1 sobre la superficie terracota. Ahora usa `--color-text-error`.
+- **Accesibilidad**: se corrigen los avisos de react-doctor.
+  - Los campos Nuevo compromiso y Título del evento tenían solo placeholder. Ahora tienen `aria-label`.
+  - El botón ✕ del evento rápido se anunciaba como multiplicación. Ahora se llama "Cancelar evento nuevo".
+  - La línea de tiempo de Horario de hoy y los pilares de la landing usan `ul` y `li` en lugar de `div` y `article` con rol de lista.
+  - Se quitan roles redundantes en la sección de áreas y en el pie de la landing.
+- **Borrar un compromiso mientras se edita otro**: ahora cierra la edición en curso, porque la edición se ubica por índice.
+- **Fecha del día**: la fecha se fija al montar la vista y se renueva cuando la pestaña vuelve a verse en otro día. Una sesión abierta de un día a otro ya no muestra la fecha vieja. Lo usan Agenda, To-Do, Notas, Planner e Integraciones.
+
+### Operations
+
+- **oxlint en CI**: el job Lint ahora ejecuta oxlint, que revisa con las reglas de React la pureza del render y el `setState` dentro de efectos. ESLint no cubre esos casos.
+- **15 errores de oxlint corregidos** en las vistas.
+  - 12 eran llamadas a `Date` durante el render. Ahora pasan por el hook nuevo `useHoy`, que entra a las dependencias del `useMemo` en Planner y Notas.
+  - 3 eran `setState` dentro de un efecto, en HabitModal, IntegrationsView y AreaIntegratedWorkspace. Se reemplazan por el ajuste de estado durante el render que documenta React.
+  - Se agregaron pruebas de caracterización de los tres casos y pruebas de `useHoy`.
+  - Sin cambios en las claves ni en la forma de los datos guardados.
+- **Cambios de vista con `startTransition`**: `turnPage` ejecuta el cambio de vista dentro de `startTransition` en sus tres caminos (View Transitions, `prefers-reduced-motion` y navegador sin soporte).
+  - Una medición con Chrome sin interfaz no muestra diferencia con el código anterior, porque React Router ya actualiza su estado dentro de una transición.
+  - El cambio fija el contrato con una prueba nueva, que falla con el `pageTurn.ts` anterior.
+- **Herramientas de trabajo local**: `.agents/` queda en `.gitignore` y se sacan del índice 133 archivos que seguían versionados. En disco siguen. Se quita `Feedback.txt` del repositorio, aunque sigue en el historial de Git.
+  - Al integrar este cambio, Git borra del disco los archivos de `.agents/` sin cambios locales. Conviene respaldar la carpeta antes.
+- **Dependencias** (Dependabot):
+  - `actions/deploy-pages` pasa de 4 a 5.
+  - `temporal-polyfill` pasa de 1.0.5 a 1.0.6.
+  - `@types/node` pasa de 24.19.1 a 26.6.5.
+
 ## [0.5.0] - 2026-10-26
 
 ### Added
