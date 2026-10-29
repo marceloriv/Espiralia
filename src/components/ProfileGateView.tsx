@@ -86,11 +86,14 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
       sileo.info({ title: 'No hay perfiles para respaldar' });
       return;
     }
-    for (const p of profiles) {
-      // Con los PDF de Carpetas si IndexedDB responde; si no, el respaldo sale igual sin ellos.
-      const backup = await VaultService.exportProfileWithFiles(p.id).catch(() => VaultService.exportProfile(p.id));
-      downloadFile(JSON.stringify(backup, null, 2), VaultService.backupFilename(p.name, 'json'), 'application/json');
-    }
+    // Los respaldos se leen en paralelo (cada perfil es independiente) y se descargan después, en el orden de la lista.
+    // Con los PDF de Carpetas si IndexedDB responde; si no, el respaldo de ese perfil sale igual sin ellos.
+    const backups = await Promise.all(
+      profiles.map(p => VaultService.exportProfileWithFiles(p.id).catch(() => VaultService.exportProfile(p.id))),
+    );
+    profiles.forEach((p, i) =>
+      downloadFile(JSON.stringify(backups[i], null, 2), VaultService.backupFilename(p.name, 'json'), 'application/json'),
+    );
     sileo.success({ title: 'Respaldo exportado', description: 'Restáuralo desde dentro del cuaderno, en Bóveda Offline.' });
   };
 

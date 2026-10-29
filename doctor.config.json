@@ -1,5 +1,10 @@
 {
   "$schema": "https://react.doctor/config.json",
+  "ignore": {
+    // Carpetas locales ignoradas por git: skills de terceros (.agents) y mocks compilados (scratchpad).
+    // No forman parte de la app ni llegan a la CI; escanearlas mezclaba su código con el del proyecto.
+    "files": [".agents/**", "scratchpad/**"]
+  },
   "rules": {
     "react-doctor/prefer-html-dialog": "off",
     "react-doctor/no-giant-component": "off"

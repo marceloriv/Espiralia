@@ -202,16 +202,17 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
       return;
     }
     setIsUploading(true);
-    let saved = 0;
-    for (const file of selected) {
-      try {
-        await addFile(profileId, activeFolder.id, file);
-        saved++;
-      } catch (err) {
-        sileo.error({ title: `No se subió "${file.name}"`, description: (err as Error).message });
+    // Cada PDF se valida y se guarda en su propia transacción: no dependen entre sí, así que van en paralelo.
+    // allSettled conserva el aviso por archivo: uno que falla no frena ni oculta a los demás.
+    const results = await Promise.allSettled(selected.map((file) => addFile(profileId, activeFolder.id, file))).finally(() =>
+      setIsUploading(false),
+    );
+    results.forEach((result, i) => {
+      if (result.status === 'rejected') {
+        sileo.error({ title: `No se subió "${selected[i].name}"`, description: (result.reason as Error).message });
       }
-    }
-    setIsUploading(false);
+    });
+    const saved = results.filter((r) => r.status === 'fulfilled').length;
     if (saved > 0) sileo.success({ title: saved === 1 ? 'PDF subido' : `${saved} PDF subidos`, description: `En la carpeta ${activeFolder.name}.` });
     await loadFiles();
   };
