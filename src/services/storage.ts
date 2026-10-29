@@ -135,6 +135,14 @@ export const StorageService = {
   deletePlanner(profileId: string, blockId: string): void {
     deleteScopedItem<PlannerBlock>(getScopedKey(profileId, 'planner'), blockId);
   },
+  /** Borra los bloques semanales del perfil y devuelve cuántos borró; los de otros periodos se conservan. */
+  clearWeeklyPlanner(profileId: string): number {
+    const key = getScopedKey(profileId, 'planner');
+    const list = getScopedList<PlannerBlock>(key);
+    const kept = list.filter(b => b.period !== 'semanal');
+    writeItem(key, JSON.stringify(kept));
+    return list.length - kept.length;
+  },
 
   // Goals
   getGoals(profileId: string): Goal[] {
