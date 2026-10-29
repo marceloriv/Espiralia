@@ -19,7 +19,8 @@ import { formatBytes } from '../utils/formatBytes';
 import { toLocalDateStr } from '../utils/localDate';
 import { IcsService } from '../services/icsService';
 import { VaultService } from '../services/vaultService';
-import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Papel } from './common/Papel';
+import { TINTE_DE_MODULO } from './common/tintes';
 import styles from './IntegrationsView.module.css';
 
 export interface IntegrationsViewProps {

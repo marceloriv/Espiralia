@@ -19,7 +19,8 @@ import { formatBytes } from '../utils/formatBytes';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
 import { NoteModal } from './notes/NoteModal';
-import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Papel } from './common/Papel';
+import { TINTE_DE_MODULO } from './common/tintes';
 import styles from './FoldersView.module.css';
 
 interface FoldersViewProps {

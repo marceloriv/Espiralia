@@ -2,7 +2,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Papel, TINTE_DE_MODULO } from '../components/common/Papel';
+import { Papel } from '../components/common/Papel';
+import { TINTE_DE_MODULO } from '../components/common/tintes';
 
 // DESIGN.md §0.3 y §0.4: el Papel es la superficie rasgada de lectura; su tinte codifica el módulo.
 describe('Papel', () => {

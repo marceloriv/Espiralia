@@ -221,3 +221,6 @@ export function parseBujoContent(content: string, defaultTitle?: string): BujoBl
 
   return blocks;
 }
+
+/** "1 palabra escrita" / "N palabras escritas", para la barra de estado del pliego. */
+export const wordsWrittenLabel = (count: number): string => `${count} ${count === 1 ? 'palabra escrita' : 'palabras escritas'}`;
