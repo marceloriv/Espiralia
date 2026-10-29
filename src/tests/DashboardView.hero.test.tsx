@@ -217,6 +217,8 @@ describe('DashboardView critical CSS & Hero Content', () => {
       StorageService.saveProfile(mockProfile);
 
       render(<DashboardView profile={mockProfile} onNavigate={() => {}} />);
+      // El campo tiene nombre accesible propio, no solo el placeholder.
+      expect(screen.getByRole('textbox', { name: 'Nuevo compromiso' })).toBeInTheDocument();
       const addBtn = screen.getByRole('button', { name: /agregar compromiso/i });
       expect(addBtn).toBeEnabled();
 

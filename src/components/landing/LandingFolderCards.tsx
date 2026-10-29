@@ -56,7 +56,7 @@ const PILLARS: PillarFolder[] = [
 
 export const LandingFolderCards: React.FC = () => {
   return (
-    <div className={styles.folderCardsGrid} role="list" aria-label="Tres pilares esenciales de enfoque">
+    <ul className={styles.folderCardsGrid} aria-label="Tres pilares esenciales de enfoque">
       {PILLARS.map(pilar => {
         const tabPosClass =
           pilar.tabPosition === 'left'
@@ -66,10 +66,9 @@ export const LandingFolderCards: React.FC = () => {
             : styles.tabRight;
 
         return (
-          <article
+          <li
             key={pilar.id}
             className={`${styles.folderCard} ${pilar.accentClass}`}
-            role="listitem"
             aria-labelledby={`${pilar.id}-title`}
           >
             {/* Solapa Superior de Archivador */}
@@ -122,9 +121,9 @@ export const LandingFolderCards: React.FC = () => {
               {pilar.metricIcon}
               <span>{pilar.metricText}</span>
             </div>
-          </article>
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 };

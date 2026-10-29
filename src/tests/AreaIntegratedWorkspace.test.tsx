@@ -26,6 +26,17 @@ describe('AreaIntegratedWorkspace', () => {
     expect(screen.getByRole('heading', { name: /notas & recursos/i })).toBeInTheDocument();
   });
 
+  it('el formulario rápido de evento tiene nombre accesible en el campo y en el botón de cancelar', async () => {
+    const user = userEvent.setup();
+    render(<AreaIntegratedWorkspace area={area} profileId={profileId} onNavigateAgenda={vi.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: /agendar compromiso para estudios/i }));
+
+    expect(screen.getByRole('textbox', { name: 'Título del evento para Estudios' })).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Cancelar evento nuevo' }));
+    expect(screen.queryByRole('textbox', { name: /título del evento/i })).not.toBeInTheDocument();
+  });
+
   it('permite agregar una tarea directamente al área activa', async () => {
     const user = userEvent.setup();
     render(<AreaIntegratedWorkspace area={area} profileId={profileId} onNavigateAgenda={vi.fn()} />);
