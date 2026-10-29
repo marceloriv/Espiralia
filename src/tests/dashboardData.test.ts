@@ -5,6 +5,7 @@ import {
   greetingFor,
   isCritical,
   todayEventsSorted,
+  upcomingOccurrences,
   computeAreaSummaries,
   computeHabitStreak,
   computeNetFocusHours,
@@ -239,5 +240,34 @@ describe('Métricas de Serenidad — funciones de cálculo', () => {
     expect(empty.percentage).toBeNull();
     expect(empty.completed).toBe(0);
     expect(empty.total).toBe(0);
+  });
+});
+
+describe('upcomingOccurrences', () => {
+  // Técnica: partición de equivalencia (pasado, hoy, futuro, serie vigente, serie terminada) + límite de 3.
+  const hoy = '2026-10-28'; // miércoles
+
+  it('omite eventos pasados, ordena por fecha y hora y corta en 3', () => {
+    const result = upcomingOccurrences(
+      [
+        ev({ id: 'pasado', title: 'Pasado', date: '2026-10-14' }),
+        ev({ id: 'lejano', title: 'Lejano', date: '2026-11-20' }),
+        ev({ id: 'futuro', title: 'Futuro', date: '2026-11-02' }),
+        ev({ id: 'tarde', title: 'Hoy tarde', date: hoy, startTime: '18:00' }),
+        ev({ id: 'manana', title: 'Hoy mañana', date: hoy, startTime: '09:00' }),
+      ],
+      hoy,
+    );
+    expect(result.map(e => e.id)).toEqual(['manana', 'tarde', 'futuro']);
+  });
+
+  it('lleva una serie iniciada en el pasado a su próxima ocurrencia', () => {
+    const [next] = upcomingOccurrences([ev({ id: 's', title: 'Serie', date: '2026-10-02', recurrence: { daysOfWeek: [5] } })], hoy);
+    expect(next.date).toBe('2026-10-30');
+  });
+
+  it('descarta una serie que ya terminó', () => {
+    const series = ev({ id: 's', title: 'Serie', date: '2026-10-02', recurrence: { daysOfWeek: [5], until: '2026-10-23' } });
+    expect(upcomingOccurrences([series], hoy)).toEqual([]);
   });
 });

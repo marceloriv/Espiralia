@@ -159,7 +159,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       </main>
 
       {/* Footer */}
-      <footer className={styles.footer} role="contentinfo">
+      <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div>
             <div className={styles.footerBrand}>Espiralia</div>

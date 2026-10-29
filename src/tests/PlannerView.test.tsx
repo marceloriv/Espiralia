@@ -299,4 +299,35 @@ describe('PlannerView integración semanal y metas', () => {
       expect(screen.queryAllByRole('region').filter(el => el.getAttribute('aria-current') === 'date')).toHaveLength(0);
     });
   });
+
+  describe('Limpiar semana', () => {
+    const seed = () =>
+      StorageService.savePlanner({
+        id: 'blk-1', profileId, period: 'semanal', timeSlot: 'mañana', title: 'Leer capítulo 3',
+        priority: 'media', completed: false, dayOfWeek: 1,
+      });
+
+    it('borra los bloques de la semana tras confirmar', async () => {
+      const user = userEvent.setup();
+      seed();
+      vi.spyOn(window, 'confirm').mockReturnValue(true);
+      render(<PlannerView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /limpiar semana/i }));
+
+      expect(StorageService.getPlanner(profileId)).toEqual([]);
+      expect(screen.queryByText('Leer capítulo 3')).not.toBeInTheDocument();
+    });
+
+    it('no borra nada si se cancela la confirmación', async () => {
+      const user = userEvent.setup();
+      seed();
+      vi.spyOn(window, 'confirm').mockReturnValue(false);
+      render(<PlannerView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /limpiar semana/i }));
+
+      expect(StorageService.getPlanner(profileId)).toHaveLength(1);
+    });
+  });
 });

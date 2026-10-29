@@ -81,6 +81,8 @@ export const StorageService = {
     for (const d of domains) {
       localStorage.removeItem(getScopedKey(id, d));
     }
+    // Los PDF de Carpetas viven en IndexedDB; import() para no cargar fileStore en el arranque.
+    void import('./fileStore').then(m => m.deleteProfileFiles(id)).catch(() => {});
 
     if (this.getActiveProfileId() === id) {
       this.clearActiveProfileId();
@@ -134,6 +136,14 @@ export const StorageService = {
 
   deletePlanner(profileId: string, blockId: string): void {
     deleteScopedItem<PlannerBlock>(getScopedKey(profileId, 'planner'), blockId);
+  },
+  /** Borra los bloques semanales del perfil y devuelve cuántos borró; los de otros periodos se conservan. */
+  clearWeeklyPlanner(profileId: string): number {
+    const key = getScopedKey(profileId, 'planner');
+    const list = getScopedList<PlannerBlock>(key);
+    const kept = list.filter(b => b.period !== 'semanal');
+    writeItem(key, JSON.stringify(kept));
+    return list.length - kept.length;
   },
 
   // Goals

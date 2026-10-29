@@ -197,6 +197,19 @@
   --papel-rosa-fuerte: #f6b6df;
   --papel-turquesa: #c7efe7;
   --papel-turquesa-fuerte: #adebde;
+  /* Superficie plana por módulo (DESIGN.md §0.12): del tinte al 72 % al tinte al 40 %, nunca hasta blanco,
+     porque el degradado que terminaba en --bg-card dejaba casi toda la superficie blanca (feedback del 2026-10-26).
+     En los dos extremos el texto global queda en 4.5:1 o más (textTokensContrast.test.ts). */
+  --superficie-pizarra: linear-gradient(145deg, color-mix(in srgb, var(--papel-pizarra) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-pizarra) 40%, var(--bg-card)));
+  --superficie-salvia: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-salvia) 40%, var(--bg-card)));
+  --superficie-terracota: linear-gradient(145deg, color-mix(in srgb, var(--papel-terracota) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-terracota) 40%, var(--bg-card)));
+  --superficie-ambar: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-ambar) 40%, var(--bg-card)));
+  --superficie-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 40%, var(--bg-card)));
+  --superficie-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 40%, var(--bg-card)));
+  /* Contenedor que solo agrupa tarjetas (Áreas, Métricas): un nivel más suave, para que las tarjetas
+     resalten sobre él y la superficie más grande del Dashboard no le quite el foco al saludo. */
+  --contenedor-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 45%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 20%, var(--bg-card)));
+  --contenedor-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 45%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 20%, var(--bg-card)));
   /* Sobre esos tintes los textos globales bajan de 4.5:1; dentro del Papel se usan estas variantes más oscuras.
      El degradado de esquina de la tarjeta (Papel.module.css) llega al 58% del tinte fuerte: su peor caso, 4.55:1, fija estos valores. */
   --papel-texto-suave: #585651;

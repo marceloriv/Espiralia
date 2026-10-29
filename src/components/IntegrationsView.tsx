@@ -142,8 +142,10 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
   };
 
   // Mismo respaldo que el del Acceso y el de Bóveda Offline, así que se puede restaurar.
-  const handleExportFullVault = () => {
-    const blob = new Blob([JSON.stringify(VaultService.exportProfile(profile.id), null, 2)], { type: 'application/json' });
+  const handleExportFullVault = async () => {
+    // Con los PDF de Carpetas si IndexedDB responde; si no, la copia sale igual sin ellos.
+    const backup = await VaultService.exportProfileWithFiles(profile.id).catch(() => VaultService.exportProfile(profile.id));
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;

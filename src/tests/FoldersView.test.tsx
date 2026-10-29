@@ -159,7 +159,8 @@ describe('FoldersView', () => {
 
       render(<FoldersView profileId={profileId} />);
 
-      expect(screen.getByText(/esta carpeta no contiene notas ni enlaces vinculados todavía/i)).toBeInTheDocument();
+      expect(await screen.findByText(/esta carpeta no contiene notas, enlaces ni pdf todavía/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /\+ subir pdf$/i })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /\+ nueva nota/i })).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /\+ nuevo enlace/i })).toBeInTheDocument();
     });

@@ -37,6 +37,18 @@ export class VaultService {
     };
   }
 
+  /** exportProfile más los PDF de Carpetas, que viven en IndexedDB y se leen de forma asíncrona. */
+  public static async exportProfileWithFiles(profileId: string): Promise<ProfileBackup> {
+    const { exportFiles } = await import('./fileStore');
+    return { ...this.exportProfile(profileId), files: await exportFiles(profileId) };
+  }
+
+  /** Restaura los PDF del respaldo en el perfil ya restaurado; en sobrescritura reemplaza los que tenía. Devuelve cuántos guardó. */
+  public static async restoreFiles(backup: ProfileBackup, profileId: string, mode: 'overwrite' | 'new_profile'): Promise<number> {
+    const { importFiles } = await import('./fileStore');
+    return importFiles(profileId, backup.files, mode === 'overwrite');
+  }
+
   /**
    * Valida estrictamente que el objeto recibido cumpla con el esquema ProfileBackup.
    */
@@ -59,6 +71,7 @@ export class VaultService {
     if (!Array.isArray(candidate.notes)) return false;
     if (!Array.isArray(candidate.folders)) return false;
     if (!Array.isArray(candidate.links)) return false;
+    if (candidate.files !== undefined && !Array.isArray(candidate.files)) return false;
 
     return true;
   }

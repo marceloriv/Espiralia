@@ -47,6 +47,7 @@ import { HabitModal } from './habits/HabitModal';
 import { Pliego } from './common/Pliego';
 import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import { useEscapeKey } from '../utils/useEscapeKey';
+import { focusOnMount } from '../utils/useDialogFocus';
 import styles from './DashboardView.module.css';
 
 interface DashboardViewProps {
@@ -102,6 +103,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   }, [isFocusModalOpen]);
   const [distractions, setDistractions] = useState<string[]>(() => StorageService.getDistractions(profile.id));
   const [newDistractionText, setNewDistractionText] = useState('');
+  const distractionInputRef = useRef<HTMLInputElement>(null);
+  const [editingDistractionIdx, setEditingDistractionIdx] = useState<number | null>(null);
+  const [editingDistractionText, setEditingDistractionText] = useState('');
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profile.id));
   const [now] = useState(() => new Date());
   const [energyState, setEnergyState] = useState<'calma' | 'plena' | 'neutra' | 'cansada'>('calma');
@@ -211,14 +215,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const handleAddDistraction = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = newDistractionText.trim();
-    if (!trimmed) return;
+    // Con el campo vacío, el "+" lleva a escribir en vez de verse bloqueado.
+    if (!trimmed) {
+      distractionInputRef.current?.focus();
+      return;
+    }
     const updated = [...distractions, trimmed];
     StorageService.saveDistractions(profile.id, updated);
     setDistractions(updated);
     setNewDistractionText('');
   };
 
+  const handleSaveDistractionEdit = () => {
+    if (editingDistractionIdx === null) return;
+    const trimmed = editingDistractionText.trim();
+    // Vaciar el texto no borra el compromiso: para eso está la X.
+    if (trimmed) {
+      const updated = distractions.map((item, idx) => (idx === editingDistractionIdx ? trimmed : item));
+      StorageService.saveDistractions(profile.id, updated);
+      setDistractions(updated);
+    }
+    setEditingDistractionIdx(null);
+  };
+
   const handleRemoveDistraction = (index: number) => {
+    // La edición se ubica por índice (los compromisos son strings sin id): borrar desplaza los índices, así que se cierra.
+    setEditingDistractionIdx(null);
     const updated = distractions.filter((_, idx) => idx !== index);
     StorageService.saveDistractions(profile.id, updated);
     setDistractions(updated);
@@ -806,7 +828,36 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 distractions.map((item, idx) => (
                   <li key={idx} className={styles.distractionListItem}>
                     <span className={styles.distractionDot} />
-                    <span style={{ flex: 1 }}>{item}</span>
+                    {editingDistractionIdx === idx ? (
+                      <input
+                        ref={focusOnMount}
+                        type="text"
+                        className={styles.distractionInput}
+                        value={editingDistractionText}
+                        onChange={(e) => setEditingDistractionText(e.target.value)}
+                        onBlur={handleSaveDistractionEdit}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSaveDistractionEdit();
+                          if (e.key === 'Escape') {
+                            e.stopPropagation();
+                            setEditingDistractionIdx(null);
+                          }
+                        }}
+                        aria-label={`Editar compromiso: ${item.toLowerCase()}`}
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        className={styles.distractionText}
+                        onClick={() => {
+                          setEditingDistractionIdx(idx);
+                          setEditingDistractionText(item);
+                        }}
+                        title="Pulsa para editar"
+                      >
+                        {item}
+                      </button>
+                    )}
                     <button
                       type="button"
                       className={styles.distractionDelBtn}
@@ -821,9 +872,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </ul>
             <form onSubmit={handleAddDistraction} className={styles.distractionForm}>
               <input
+                ref={distractionInputRef}
                 type="text"
                 className={styles.distractionInput}
                 placeholder="Nuevo compromiso (ej. Sin redes hasta las 18h)"
+                aria-label="Nuevo compromiso"
                 value={newDistractionText}
                 onChange={(e) => setNewDistractionText(e.target.value)}
               />
@@ -831,7 +884,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 type="submit"
                 className={styles.distractionAddBtn}
                 aria-label="Agregar compromiso"
-                disabled={!newDistractionText.trim()}
               >
                 +
               </button>
@@ -866,9 +918,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </button>
               </div>
             ) : (
-              <div className={styles.routineTimeline} role="list" aria-label="Eventos de hoy">
+              <ul className={styles.routineTimeline} aria-label="Eventos de hoy">
                 {todayScheduleItems.map((item) => (
-                  <div key={item.id} role="listitem" className={item.completed ? styles.routineSlotDone : styles.routineSlotPending}>
+                  <li key={item.id} className={item.completed ? styles.routineSlotDone : styles.routineSlotPending}>
                     <span className={styles.routineTime}>{item.time}</span>
                     <span className={item.completed ? styles.routineDotDone : styles.routineDotTeal} />
                     <span className={item.completed ? styles.routineTitleDone : styles.routineTitle}>
@@ -877,9 +929,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <span className={item.source === 'event' ? styles.routineStatusTag : styles.routineMutedTag}>
                       {item.category ? item.category.charAt(0).toUpperCase() + item.category.slice(1) : (item.source === 'event' ? 'Evento' : 'Bloque')}
                     </span>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
             <button type="button" className={styles.cardLink} onClick={() => onNavigate('agenda')}>
               Ver agenda completa →
@@ -954,7 +1006,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {areas.length > 0 && (
         <section
           className={styles.areasSection}
-          role="region"
           aria-label="Áreas temáticas clave"
         >
           <div className={styles.areasHeader}>
@@ -1008,7 +1059,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                   <div className={styles.areaFolderBody}>
                     <div className={styles.areaFolderTopRow}>
-                      <span className={styles.areaCategoryBadge} style={{ backgroundColor: `${s.area.color}25`, color: s.area.color }}>
+                      <span className={styles.areaCategoryBadge} style={{
+                        backgroundColor: `${s.area.color}25`,
+                        // El color del área como texto baja de 4.5:1 (ámbar: 1.8:1); mezclado al 55 % con la tinta pasa con toda la paleta.
+                        color: `color-mix(in srgb, ${s.area.color} 55%, var(--color-ink))`,
+                      }}>
                         {s.area.name}
                       </span>
                       <span className={styles.areaPercent}>{s.completionPercentage}%</span>

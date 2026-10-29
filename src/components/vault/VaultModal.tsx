@@ -63,6 +63,14 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
     e.preventDefault();
     if (!exportStats) return;
 
+    // Los PDF de Carpetas se leen al exportar (IndexedDB es asíncrono); si fallan, el respaldo sale sin ellos y se avisa.
+    let backup: ProfileBackup = exportStats;
+    try {
+      backup = await VaultService.exportProfileWithFiles(profile.id);
+    } catch {
+      sileo.error({ title: 'No se pudieron incluir los PDF en el respaldo', description: 'El resto de tus datos sí se exporta.' });
+    }
+
     if (isEncrypted) {
       if (passphrase.length < 6) {
         alert('La contraseña debe tener al menos 6 caracteres');
@@ -74,7 +82,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
       }
 
       try {
-        const envelope = await encryptBackup(exportStats, passphrase);
+        const envelope = await encryptBackup(backup, passphrase);
         const filename = VaultService.backupFilename(profile.name, 'vault');
         downloadFile(JSON.stringify(envelope, null, 2), filename, 'application/json');
         sileo.success({ title: 'Respaldo cifrado descargado', description: filename });
@@ -84,7 +92,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
       }
     } else {
       const filename = VaultService.backupFilename(profile.name, 'json');
-      downloadFile(JSON.stringify(exportStats, null, 2), filename, 'application/json');
+      downloadFile(JSON.stringify(backup, null, 2), filename, 'application/json');
       sileo.success({ title: 'Respaldo plano descargado', description: filename });
       onClose();
     }
@@ -132,14 +140,23 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
     }
   };
 
-  const handleRestore = () => {
+  const handleRestore = async () => {
     if (!loadedBackup) return;
 
     try {
       const result = VaultService.restoreProfile(loadedBackup, restoreMode, profile.id);
+      let pdfNote = '';
+      if (loadedBackup.files?.length) {
+        try {
+          const restored = await VaultService.restoreFiles(loadedBackup, result.profile.id, restoreMode);
+          pdfNote = ` ${restored} de ${loadedBackup.files.length} PDF restaurados.`;
+        } catch (err) {
+          pdfNote = ` Los PDF no se pudieron restaurar: ${(err as Error).message}`;
+        }
+      }
       sileo.success({
         title: 'Restauración completada',
-        description: `Se importaron datos para ${result.profile.name}.`,
+        description: `Se importaron datos para ${result.profile.name}.${pdfNote}`,
       });
       onProfileRestored?.(result.profile);
       onClose();
