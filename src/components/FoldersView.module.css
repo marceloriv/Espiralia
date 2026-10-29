@@ -621,8 +621,32 @@
 
 .ledgerSubActions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* Tres acciones por PDF: cada una con su área táctil de 44px (R-03), y se apilan si la fila no alcanza. */
+.fileActions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+
+.fileActions .btnActionTable {
+  min-height: 44px;
+}
+
+.filesError {
+  margin: 0 0 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-error);
+}
+
+.btnSubAction:disabled {
+  opacity: 0.6;
+  cursor: progress;
 }
 
 .btnSubAction {

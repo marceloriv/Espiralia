@@ -81,6 +81,8 @@ export const StorageService = {
     for (const d of domains) {
       localStorage.removeItem(getScopedKey(id, d));
     }
+    // Los PDF de Carpetas viven en IndexedDB; import() para no cargar fileStore en el arranque.
+    void import('./fileStore').then(m => m.deleteProfileFiles(id)).catch(() => {});
 
     if (this.getActiveProfileId() === id) {
       this.clearActiveProfileId();

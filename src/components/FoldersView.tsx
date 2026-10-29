@@ -9,10 +9,12 @@ import {
   Shield,
   FileText,
   Pin,
+  FileUp,
 } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { Folder, LinkItem, Note, Profile, ViewType } from '../types';
+import type { Folder, LinkItem, Note, Profile, StoredFile, ViewType } from '../types';
 import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
+import { addFile, deleteFile, deleteFolderFiles, getFileBlob, listFiles } from '../services/fileStore';
 import { formatBytes } from '../utils/formatBytes';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
@@ -46,6 +48,39 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
 
+  // PDFs: viven en IndexedDB, así que se cargan de forma asíncrona y pueden fallar o tardar.
+  const [files, setFiles] = useState<StoredFile[]>([]);
+  const [filesStatus, setFilesStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const loadFiles = useCallback(async () => {
+    try {
+      setFiles(await listFiles(profileId));
+      setFilesStatus('ready');
+    } catch {
+      setFilesStatus('error');
+    }
+  }, [profileId]);
+
+  // IndexedDB es un sistema externo: se sincroniza al montar y al cambiar de perfil, ignorando respuestas de un perfil anterior.
+  useEffect(() => {
+    let current = true;
+    listFiles(profileId).then(
+      (list) => {
+        if (!current) return;
+        setFiles(list);
+        setFilesStatus('ready');
+      },
+      () => {
+        if (current) setFilesStatus('error');
+      },
+    );
+    return () => {
+      current = false;
+    };
+  }, [profileId]);
+
   const loadData = useCallback(() => {
     setFolders(StorageService.getFolders(profileId));
     setLinks(StorageService.getLinks(profileId));
@@ -68,12 +103,12 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         name: f.name,
         color: f.color || '#7b8c9e',
         desc: 'Carpeta temática archivada en tu navegador local.',
-        specs: `${links.filter((l) => l.folderId === f.id).length + notes.filter((n) => n.folderId === f.id).length} Elementos`,
+        specs: `${links.filter((l) => l.folderId === f.id).length + notes.filter((n) => n.folderId === f.id).length + files.filter((d) => d.folderId === f.id).length} Elementos`,
         icon: <FolderIcon size={26} aria-hidden="true" />,
         tag: `${String(idx + 1).padStart(2, '0')} / ARCHIVO`,
         isCustom: true,
       })),
-    [folders, links, notes],
+    [folders, links, notes, files],
   );
 
   const selectedFolderId = useMemo(() => {
@@ -101,11 +136,18 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     return links.filter((l) => l.folderId === activeFolder.id);
   }, [links, activeFolder]);
 
+  // PDFs de la carpeta activa
+  const folderFiles = useMemo(() => {
+    if (!activeFolder) return [];
+    return files.filter((f) => f.folderId === activeFolder.id);
+  }, [files, activeFolder]);
+
   // Elementos unificados para la tabla de fichas
   const folderItems = useMemo(() => {
     const items: Array<
       | { type: 'note'; id: string; code: string; title: string; format: string; date: string; note: Note }
       | { type: 'link'; id: string; code: string; title: string; format: string; date: string; link: LinkItem }
+      | { type: 'file'; id: string; code: string; title: string; format: string; date: string; file: StoredFile }
     > = [];
 
     folderNotes.forEach((n, idx) => {
@@ -136,8 +178,83 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
       });
     });
 
+    folderFiles.forEach((f, idx) => {
+      items.push({
+        type: 'file',
+        id: f.id,
+        code: `PDF-${idx + 1}`,
+        title: f.name,
+        format: `PDF · ${formatBytes(f.size)}`,
+        date: f.createdAt.slice(0, 10),
+        file: f,
+      });
+    });
+
     return items;
-  }, [folderNotes, folderLinks]);
+  }, [folderNotes, folderLinks, folderFiles]);
+
+  const handleUploadFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+    e.target.value = '';
+    if (selected.length === 0) return;
+    if (!activeFolder) {
+      sileo.error({ title: 'Crea una carpeta antes de subir un PDF' });
+      return;
+    }
+    setIsUploading(true);
+    let saved = 0;
+    for (const file of selected) {
+      try {
+        await addFile(profileId, activeFolder.id, file);
+        saved++;
+      } catch (err) {
+        sileo.error({ title: `No se subió "${file.name}"`, description: (err as Error).message });
+      }
+    }
+    setIsUploading(false);
+    if (saved > 0) sileo.success({ title: saved === 1 ? 'PDF subido' : `${saved} PDF subidos`, description: `En la carpeta ${activeFolder.name}.` });
+    await loadFiles();
+  };
+
+  const withFileBlob = async (file: StoredFile, onUrl: (url: string) => void) => {
+    const blob = await getFileBlob(profileId, file.id).catch(() => null);
+    if (!blob) {
+      sileo.error({ title: 'No se encontró el PDF', description: 'Puede que se haya borrado. Recarga la página.' });
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    onUrl(url);
+    // El visor de la pestaña nueva necesita la URL viva un momento; después se libera la memoria.
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  };
+
+  const handleOpenFile = (file: StoredFile) =>
+    withFileBlob(file, (url) => {
+      if (!window.open(url, '_blank')) {
+        sileo.error({ title: 'El navegador bloqueó la pestaña nueva', description: 'Usa Descargar o permite ventanas emergentes.' });
+      }
+    });
+
+  const handleDownloadFile = (file: StoredFile) =>
+    withFileBlob(file, (url) => {
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = file.name;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    });
+
+  const handleDeleteFile = async (file: StoredFile) => {
+    if (!window.confirm(`¿Eliminar el PDF "${file.name}"? No se puede deshacer.`)) return;
+    try {
+      await deleteFile(profileId, file.id);
+      sileo.success({ title: 'PDF eliminado' });
+    } catch (err) {
+      sileo.error({ title: 'No se pudo eliminar el PDF', description: (err as Error).message });
+    }
+    await loadFiles();
+  };
 
   const handleOpenNewNote = () => {
     setEditingNote(null);
@@ -236,8 +353,12 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
 
   const handleDeleteFolder = (folder: Folder, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (window.confirm(`¿Seguro que deseas eliminar la carpeta "${folder.name}"? Los vínculos y notas no se borrarán pero quedarán sin carpeta.`)) {
+    // Los vínculos y notas siguen visibles en sus propias vistas; un PDF sin carpeta no tendría dónde verse, así que se borra con ella.
+    const pdfCount = files.filter((f) => f.folderId === folder.id).length;
+    const pdfWarning = pdfCount > 0 ? ` ${pdfCount === 1 ? 'Su PDF sí se borrará.' : `Sus ${pdfCount} PDF sí se borrarán.`}` : '';
+    if (window.confirm(`¿Seguro que deseas eliminar la carpeta "${folder.name}"? Los vínculos y notas no se borrarán pero quedarán sin carpeta.${pdfWarning}`)) {
       StorageService.deleteFolder(profileId, folder.id);
+      if (pdfCount > 0) void deleteFolderFiles(profileId, folder.id).catch(() => {}).then(loadFiles);
       try {
         sileo.info({ title: 'Carpeta eliminada', description: `Se eliminó la carpeta ${folder.name}.` });
       } catch {
@@ -524,9 +645,19 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                           <td colSpan={5} className={styles.emptyTableTd}>
                             <div className={styles.emptyTableBox}>
                               <p className={styles.emptyTableText}>
-                                Esta carpeta no contiene notas ni enlaces vinculados todavía.
+                                {filesStatus === 'loading'
+                                  ? 'Cargando los PDF de esta carpeta…'
+                                  : 'Esta carpeta no contiene notas, enlaces ni PDF todavía.'}
                               </p>
                               <div className={styles.emptyTableActions}>
+                                <button
+                                  type="button"
+                                  className={styles.emptyTableBtn}
+                                  onClick={() => fileInputRef.current?.click()}
+                                  disabled={isUploading}
+                                >
+                                  + Subir PDF
+                                </button>
                                 <button
                                   type="button"
                                   className={styles.emptyTableBtn}
@@ -556,6 +687,8 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                               <div className={styles.docTitleBox}>
                                 {item.type === 'note' ? (
                                   <FileText size={18} color="var(--color-primary)" aria-hidden="true" />
+                                ) : item.type === 'file' ? (
+                                  <FileUp size={18} color="var(--color-text-error)" aria-hidden="true" />
                                 ) : (
                                   <ExternalLink size={18} color="var(--color-accent-teal, #5db8a6)" aria-hidden="true" />
                                 )}
@@ -567,20 +700,34 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                             </td>
                             <td className={`${styles.ledgerTd} ${styles.docDate}`}>{item.date}</td>
                             <td className={styles.ledgerTd} style={{ textAlign: 'right' }}>
-                              <button
-                                type="button"
-                                className={styles.btnActionTable}
-                                onClick={() => {
-                                  if (item.type === 'note') {
-                                    handleOpenViewNote(item.note);
-                                  } else {
-                                    handleOpenViewLink(item.link);
-                                  }
-                                }}
-                                aria-label={`Ver ficha ${item.title}`}
-                              >
-                                Ver Ficha
-                              </button>
+                              {item.type === 'file' ? (
+                                <div className={styles.fileActions}>
+                                  <button type="button" className={styles.btnActionTable} onClick={() => void handleOpenFile(item.file)} aria-label={`Abrir ${item.title}`}>
+                                    Abrir
+                                  </button>
+                                  <button type="button" className={styles.btnActionTable} onClick={() => void handleDownloadFile(item.file)} aria-label={`Descargar ${item.title}`}>
+                                    Descargar
+                                  </button>
+                                  <button type="button" className={styles.btnActionTable} onClick={() => void handleDeleteFile(item.file)} aria-label={`Eliminar ${item.title}`}>
+                                    Eliminar
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  type="button"
+                                  className={styles.btnActionTable}
+                                  onClick={() => {
+                                    if (item.type === 'note') {
+                                      handleOpenViewNote(item.note);
+                                    } else {
+                                      handleOpenViewLink(item.link);
+                                    }
+                                  }}
+                                  aria-label={`Ver ficha ${item.title}`}
+                                >
+                                  Ver Ficha
+                                </button>
+                              )}
                             </td>
                           </tr>
                         ))
@@ -591,7 +738,29 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
 
                 {/* Index Footnote & Quick Sub-Actions */}
                 <div className={styles.ledgerFootnote}>
+                  {filesStatus === 'error' && (
+                    <p className={styles.filesError} role="alert">
+                      No se pudieron cargar los PDF de este navegador. Recarga la página; si sigue, revisa que no estés en modo privado.
+                    </p>
+                  )}
                   <div className={styles.ledgerSubActions}>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="application/pdf,.pdf"
+                      multiple
+                      hidden
+                      onChange={(e) => void handleUploadFiles(e)}
+                      aria-label="Elegir PDF para subir"
+                    />
+                    <button
+                      type="button"
+                      className={styles.btnSubAction}
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading || filesStatus === 'error'}
+                    >
+                      {isUploading ? 'Subiendo PDF…' : '+ Subir PDF (máx. 10 MB)'}
+                    </button>
                     <button
                       type="button"
                       className={styles.btnSubAction}
