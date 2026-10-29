@@ -1,5 +1,6 @@
 import type { Profile, AgendaEvent, PlannerBlock, Goal, TodoItem, Area, Note, Folder, LinkItem } from '../types';
 import { toHex, fromHex } from '../utils/hex';
+import type { FileBackup } from './fileStore';
 
 export interface ProfileBackup {
   version: 1;
@@ -13,6 +14,8 @@ export interface ProfileBackup {
   notes: Note[];
   folders: Folder[];
   links: LinkItem[];
+  /** PDFs de Carpetas en base64. Opcional: los respaldos anteriores a la subida de archivos no lo traen. */
+  files?: FileBackup[];
 }
 
 export interface EncryptedVaultEnvelope {

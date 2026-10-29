@@ -25,6 +25,9 @@ describe('VaultService', () => {
     expect(VaultService.validateBackup(valid)).toBe(true);
 
     expect(VaultService.validateBackup(null)).toBe(false);
+    // files es opcional (respaldos anteriores a los PDF), pero si viene debe ser lista.
+    expect(VaultService.validateBackup({ ...valid, files: [] })).toBe(true);
+    expect(VaultService.validateBackup({ ...valid, files: 'no-es-lista' })).toBe(false);
     expect(VaultService.validateBackup({ version: 2 })).toBe(false);
     expect(VaultService.validateBackup({ version: 1, profile: null })).toBe(false);
     expect(VaultService.validateBackup({ version: 1, profile: {}, todos: 'no-es-array' })).toBe(false);

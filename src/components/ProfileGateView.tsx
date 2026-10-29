@@ -81,14 +81,16 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
   useEscapeKey(() => setSelectedProfileForPin(null), !!selectedProfileForPin && !isCreating);
 
   // Un archivo por perfil, en el mismo formato que importa la bóveda del cuaderno (VaultModal).
-  const handleExportBackups = () => {
+  const handleExportBackups = async () => {
     if (profiles.length === 0) {
       sileo.info({ title: 'No hay perfiles para respaldar' });
       return;
     }
-    profiles.forEach(p =>
-      downloadFile(JSON.stringify(VaultService.exportProfile(p.id), null, 2), VaultService.backupFilename(p.name, 'json'), 'application/json'),
-    );
+    for (const p of profiles) {
+      // Con los PDF de Carpetas si IndexedDB responde; si no, el respaldo sale igual sin ellos.
+      const backup = await VaultService.exportProfileWithFiles(p.id).catch(() => VaultService.exportProfile(p.id));
+      downloadFile(JSON.stringify(backup, null, 2), VaultService.backupFilename(p.name, 'json'), 'application/json');
+    }
     sileo.success({ title: 'Respaldo exportado', description: 'Restáuralo desde dentro del cuaderno, en Bóveda Offline.' });
   };
 

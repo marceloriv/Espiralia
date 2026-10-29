@@ -92,6 +92,8 @@ describe('ProfileGateView', () => {
 
       await user.click(screen.getByRole('button', { name: /exportar respaldo/i }));
 
+      // La exportación es asíncrona: espera a leer los PDF de cada perfil antes de descargar.
+      await vi.waitFor(() => expect(files).toHaveLength(2));
       expect(files.map(f => f.name)).toEqual([
         expect.stringMatching(/^espiralia-ana-p-rez-\d{4}-\d{2}-\d{2}\.json$/),
         expect.stringMatching(/^espiralia-beto-\d{4}-\d{2}-\d{2}\.json$/),
@@ -108,6 +110,7 @@ describe('ProfileGateView', () => {
       render(<ProfileGateView onSelectProfile={vi.fn()} />);
 
       await user.click(screen.getByRole('button', { name: /exportar respaldo/i }));
+      await vi.waitFor(() => expect(files).toHaveLength(1));
 
       const backup: unknown = JSON.parse(await files[0].blob.text());
       expect(VaultService.validateBackup(backup)).toBe(true);
