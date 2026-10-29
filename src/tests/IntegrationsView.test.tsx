@@ -108,6 +108,8 @@ describe('IntegrationsView (Stitch screen)', () => {
 
     render(<IntegrationsView profile={profile} />);
     await user.click(screen.getByRole('button', { name: /descargar copia completa \(\.json\)/i }));
+    // La exportación es asíncrona (lee los PDF de IndexedDB): leer blobs[0] sin esperar dependía del orden de ejecución.
+    await vi.waitFor(() => expect(blobs).toHaveLength(1));
 
     const backup = JSON.parse(await blobs[0].text());
     expect(backup.version).toBe(1);
