@@ -2417,7 +2417,7 @@
 
 /* Las áreas son carpetas: el contenedor cede el rosa a sus fichas sin teñir los datos. */
 .areasSection {
-  background-image: var(--superficie-rosa);
+  background-image: var(--contenedor-rosa);
 }
 .areaFolderCard {
   background-image: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 50%, var(--bg-card)), var(--bg-card));
@@ -2438,5 +2438,5 @@
   background-image: var(--superficie-salvia);
 }
 .metricsSection {
-  background-image: var(--superficie-turquesa);
+  background-image: var(--contenedor-turquesa);
 }

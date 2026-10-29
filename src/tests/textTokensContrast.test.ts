@@ -164,4 +164,10 @@ describe('Superficies planas por módulo (--superficie-*)', () => {
       }
     }
   });
+
+  it.each(['rosa', 'turquesa'])('el contenedor %s es un nivel más suave (45 % a 20 %) y el texto global pasa 4.5:1', tinte => {
+    expect(tokensCss).toContain(`--contenedor-${tinte}: linear-gradient(145deg, color-mix(in srgb, var(--papel-${tinte}) 45%, var(--bg-card)), color-mix(in srgb, var(--papel-${tinte}) 20%, var(--bg-card)));`);
+    const bg = mixHex(papelTint(`papel-${tinte}`), 45, token('bg-card'));
+    for (const name of TEXTOS) expect(ratio(token(name), bg), `--${name} sobre contenedor ${tinte}`).toBeGreaterThanOrEqual(4.5);
+  });
 });

@@ -206,6 +206,10 @@
   --superficie-ambar: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-ambar) 40%, var(--bg-card)));
   --superficie-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 40%, var(--bg-card)));
   --superficie-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 40%, var(--bg-card)));
+  /* Contenedor que solo agrupa tarjetas (Áreas, Métricas): un nivel más suave, para que las tarjetas
+     resalten sobre él y la superficie más grande del Dashboard no le quite el foco al saludo. */
+  --contenedor-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 45%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 20%, var(--bg-card)));
+  --contenedor-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 45%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 20%, var(--bg-card)));
   /* Sobre esos tintes los textos globales bajan de 4.5:1; dentro del Papel se usan estas variantes más oscuras.
      El degradado de esquina de la tarjeta (Papel.module.css) llega al 58% del tinte fuerte: su peor caso, 4.55:1, fija estos valores. */
   --papel-texto-suave: #585651;
