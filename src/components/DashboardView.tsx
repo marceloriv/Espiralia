@@ -47,6 +47,7 @@ import { HabitModal } from './habits/HabitModal';
 import { Pliego } from './common/Pliego';
 import { Papel, TINTE_DE_MODULO } from './common/Papel';
 import { useEscapeKey } from '../utils/useEscapeKey';
+import { focusOnMount } from '../utils/useDialogFocus';
 import styles from './DashboardView.module.css';
 
 interface DashboardViewProps {
@@ -103,6 +104,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [distractions, setDistractions] = useState<string[]>(() => StorageService.getDistractions(profile.id));
   const [newDistractionText, setNewDistractionText] = useState('');
   const distractionInputRef = useRef<HTMLInputElement>(null);
+  const [editingDistractionIdx, setEditingDistractionIdx] = useState<number | null>(null);
+  const [editingDistractionText, setEditingDistractionText] = useState('');
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profile.id));
   const [now] = useState(() => new Date());
   const [energyState, setEnergyState] = useState<'calma' | 'plena' | 'neutra' | 'cansada'>('calma');
@@ -221,6 +224,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     StorageService.saveDistractions(profile.id, updated);
     setDistractions(updated);
     setNewDistractionText('');
+  };
+
+  const handleSaveDistractionEdit = () => {
+    if (editingDistractionIdx === null) return;
+    const trimmed = editingDistractionText.trim();
+    // Vaciar el texto no borra el compromiso: para eso está la X.
+    if (trimmed) {
+      const updated = distractions.map((item, idx) => (idx === editingDistractionIdx ? trimmed : item));
+      StorageService.saveDistractions(profile.id, updated);
+      setDistractions(updated);
+    }
+    setEditingDistractionIdx(null);
   };
 
   const handleRemoveDistraction = (index: number) => {
@@ -811,7 +826,36 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 distractions.map((item, idx) => (
                   <li key={idx} className={styles.distractionListItem}>
                     <span className={styles.distractionDot} />
-                    <span style={{ flex: 1 }}>{item}</span>
+                    {editingDistractionIdx === idx ? (
+                      <input
+                        ref={focusOnMount}
+                        type="text"
+                        className={styles.distractionInput}
+                        value={editingDistractionText}
+                        onChange={(e) => setEditingDistractionText(e.target.value)}
+                        onBlur={handleSaveDistractionEdit}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleSaveDistractionEdit();
+                          if (e.key === 'Escape') {
+                            e.stopPropagation();
+                            setEditingDistractionIdx(null);
+                          }
+                        }}
+                        aria-label={`Editar compromiso: ${item.toLowerCase()}`}
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        className={styles.distractionText}
+                        onClick={() => {
+                          setEditingDistractionIdx(idx);
+                          setEditingDistractionText(item);
+                        }}
+                        title="Pulsa para editar"
+                      >
+                        {item}
+                      </button>
+                    )}
                     <button
                       type="button"
                       className={styles.distractionDelBtn}
