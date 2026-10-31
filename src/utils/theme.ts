@@ -63,7 +63,7 @@ export function switchTheme(next: Theme, origin: { x: number; y: number }, onApp
           maskSize: ['0px 0px', `${final}px ${final}px`],
           maskPosition: [at(0), at(final)],
         },
-        { duration: 1600, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' },
+        { duration: 2200, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' },
       ),
     )
     .catch(() => {
