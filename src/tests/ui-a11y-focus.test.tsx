@@ -11,6 +11,7 @@ describe('Focus ring visible — reemplazo de outline:none (WCAG 2.4.7)', () => 
     '../components/notes/NoteModal.module.css',
     '../components/search/GlobalSearchModal.module.css',
     '../components/vault/VaultModal.module.css',
+    '../components/common/Dialogo.module.css',
   ];
 
   it('ninguno de los archivos CSS de componentes contiene "outline: none" sin reemplazo', () => {
@@ -25,7 +26,9 @@ describe('Focus ring visible — reemplazo de outline:none (WCAG 2.4.7)', () => 
     for (const relPath of filesToCheck) {
       const fullPath = path.resolve(__dirname, relPath);
       const content = fs.readFileSync(fullPath, 'utf-8');
-      expect(content, `Archivo ${relPath} debe contener :focus-visible`).toContain(':focus-visible');
+      // Los modales migrados toman su anillo de foco de los primitivos de common/Dialogo.module.css (DESIGN.md §7.3).
+      const focoCompartido = content.includes('Dialogo.module.css');
+      expect(focoCompartido || content.includes(':focus-visible'), `Archivo ${relPath} debe contener :focus-visible`).toBe(true);
     }
   });
 });
