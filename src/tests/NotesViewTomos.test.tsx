@@ -82,7 +82,7 @@ describe('NotesView - Tomos y Carpetas', () => {
     await user.click(tomo3Btn);
 
     // Crear nueva nota
-    const addBtn = screen.getByRole('button', { name: /\+ nueva nota/i });
+    const addBtn = screen.getByRole('button', { name: /^nueva nota$/i });
     await user.click(addBtn);
 
     const titleInput = screen.getByLabelText(/título/i);
