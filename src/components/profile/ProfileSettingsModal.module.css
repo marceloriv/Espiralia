@@ -240,7 +240,7 @@
 
 .input {
   padding: 10px 12px;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-lg);
   background-color: var(--color-canvas);
   color: var(--color-ink);

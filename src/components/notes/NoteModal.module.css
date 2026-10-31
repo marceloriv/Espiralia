@@ -104,7 +104,7 @@
   min-height: var(--tap-min);
   padding: 0.25rem 0.6rem;
   background-color: var(--color-canvas, #faf9f5);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm, 0.25rem);
   font-size: 0.75rem;
   font-family: inherit;
@@ -126,7 +126,7 @@
 .input,
 .select,
 .textarea {
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm, 0.25rem);
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
@@ -197,7 +197,7 @@
 .btnCancel {
   min-height: 44px;
   padding: 0.5rem 1rem;
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-border-control);
   background: transparent;
   color: var(--color-ink-muted, #666);
   border-radius: var(--radius-sm, 0.25rem);

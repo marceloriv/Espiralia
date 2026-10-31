@@ -99,7 +99,7 @@
 .filterBtn {
   min-height: var(--tap-min);
   padding: 0 14px;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-pill);
   background-color: var(--color-surface-soft);
   color: var(--color-body);
@@ -128,7 +128,7 @@
   min-height: var(--tap-min);
   padding: 0 14px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   background-color: var(--color-background);
   color: var(--color-ink);
   font-family: var(--font-family-2);
@@ -410,7 +410,7 @@
 
 .inputField {
   padding: 8px 12px;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: 8px;
   background-color: var(--color-background);
   font-family: var(--font-family-2);
@@ -599,7 +599,7 @@
 .btnSecondary {
   padding: 8px 16px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   background: transparent;
   color: var(--color-body);
   font-family: var(--font-family-2);
@@ -694,7 +694,7 @@
   padding: 6px 2px;
   border-radius: 6px;
   background-color: var(--color-background);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   cursor: pointer;
   transition: all 0.15s ease;
   font-size: 0.85rem;
@@ -729,7 +729,7 @@
   padding: 8px 4px;
   border-radius: 8px;
   background-color: var(--color-background);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   cursor: pointer;
   transition: all 0.15s ease;
 }
