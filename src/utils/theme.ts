@@ -49,11 +49,21 @@ export function switchTheme(next: Theme, origin: { x: number; y: number }, onApp
   const transition = document.startViewTransition(() => flushSync(apply));
   const radio = Math.hypot(Math.max(origin.x, window.innerWidth - origin.x), Math.max(origin.y, window.innerHeight - origin.y));
 
+  // Máscara radial con borde difuso (sólido hasta el 55 % del radio, transparente al 75 %) en vez de un recorte duro: el tema nuevo
+  // aparece como una mancha que se expande y no como un corte. El tamaño final cubre `radio` con todo el borde difuso fuera de pantalla.
+  const final = (2 * radio) / 0.55;
+  const at = (size: number) => `${origin.x - size / 2}px ${origin.y - size / 2}px`;
+
   transition.ready
     .then(() =>
       root.animate(
-        { clipPath: [`circle(0px at ${origin.x}px ${origin.y}px)`, `circle(${radio}px at ${origin.x}px ${origin.y}px)`] },
-        { duration: 450, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' },
+        {
+          maskImage: 'radial-gradient(circle, #000 55%, transparent 75%)',
+          maskRepeat: 'no-repeat',
+          maskSize: ['0px 0px', `${final}px ${final}px`],
+          maskPosition: [at(0), at(final)],
+        },
+        { duration: 800, easing: 'cubic-bezier(0.22, 0.61, 0.36, 1)', pseudoElement: '::view-transition-new(root)' },
       ),
     )
     .catch(() => {
