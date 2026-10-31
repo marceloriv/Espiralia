@@ -49,7 +49,7 @@
 }
 
 .metaDot {
-  color: var(--color-hairline);
+  color: var(--color-muted);
 }
 
 .hero {
@@ -174,7 +174,7 @@
 }
 
 .aphorismQuoteIcon {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   flex-shrink: 0;
 }
 
@@ -209,7 +209,7 @@
 .chipCritical {
   border-color: var(--color-error);
   background-color: var(--color-canvas);
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 /* Right Post-it with Brass Paperclip */
@@ -279,7 +279,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: var(--papel-texto-ambar);
+  color: var(--on-papel-ambar);
 }
 
 .postItHandwriting {
@@ -295,12 +295,12 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  color: var(--color-primary);
+  color: var(--on-papel-magenta);
   margin-top: 6px;
 }
 
 .postItHeart {
-  color: var(--color-primary);
+  color: var(--on-papel-magenta);
 }
 
 .postItState {
@@ -342,7 +342,7 @@
 }
 
 .quickHeaderIcon {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .quickSubtext {
@@ -445,7 +445,7 @@
 
 .quickIconTask {
   background-color: rgba(142, 30, 162, 0.12);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .quickIconEvent {
@@ -606,7 +606,7 @@
   font-family: var(--font-family-3);
   font-size: 11px;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   background-color: var(--color-surface-soft);
   padding: 2px 8px;
   border-radius: var(--radius-xs);
@@ -633,7 +633,7 @@
 .moonVectorActive {
   width: 26px;
   height: 26px;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   filter: drop-shadow(0 0 6px rgba(110, 0, 129, 0.25));
 }
 
@@ -675,7 +675,7 @@
 }
 
 .energyBtnActive .energyLabel {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
@@ -745,7 +745,7 @@
   font-family: var(--font-primary);
   font-size: 24px;
   font-weight: bold;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   line-height: 1;
 }
 
@@ -857,7 +857,7 @@
 }
 
 .habitPillChecked {
-  color: #ffffff;
+  color: var(--color-on-primary);
   font-size: var(--text-micro);
   font-weight: bold;
 }
@@ -882,7 +882,7 @@
 
 .habitPillChecked:focus-visible,
 .habitPillEmpty:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -890,7 +890,7 @@
   font-family: var(--font-family-3, sans-serif);
   font-size: 11px;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   background: transparent;
   border: 1px solid var(--color-border-control);
   border-radius: 4px;
@@ -908,7 +908,7 @@
 }
 
 .addHabitBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -924,7 +924,7 @@
 }
 
 .habitEditBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -961,7 +961,7 @@
 /* Today's Main Focus Slate Card */
 .focusBanner {
   position: relative;
-  background-color: #eceef1;
+  background-color: var(--color-surface-slate);
   border: 1px solid #d6dbe0;
   border-radius: var(--radius-xl);
   padding: 20px;
@@ -980,7 +980,7 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #1e293b;
+  color: var(--color-ink);
   text-transform: uppercase;
   transform: rotate(-1deg);
   margin-bottom: 12px;
@@ -994,7 +994,7 @@
   font-weight: bold;
   letter-spacing: 0.08em;
   background-color: rgba(142, 30, 162, 0.15);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   border-radius: var(--radius-xs);
   margin-bottom: 6px;
 }
@@ -1005,7 +1005,7 @@
   gap: 14px;
   padding: 16px;
   border-radius: var(--radius-lg);
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: color-mix(in srgb, var(--color-surface-bright) 90%, transparent);
   border: 1px solid #d6dbe0;
   box-shadow: var(--shadow-sm);
 }
@@ -1056,7 +1056,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
@@ -1078,8 +1078,8 @@
   font-family: var(--font-family-3, sans-serif);
   font-size: 11px;
   font-weight: 600;
-  color: var(--color-primary);
-  background: rgba(255, 255, 255, 0.85);
+  color: var(--color-text-primary);
+  background: color-mix(in srgb, var(--color-surface-bright) 85%, transparent);
   border: 1px solid var(--color-border-control);
   border-radius: var(--radius-xs);
   padding: 3px 8px;
@@ -1091,12 +1091,12 @@
 }
 
 .changeFocusBtn:hover {
-  background-color: #ffffff;
+  background-color: var(--color-surface-bright);
   border-color: var(--color-primary);
 }
 
 .changeFocusBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -1236,8 +1236,8 @@
 .priorityHighBadge {
   padding: 2px 8px;
   border-radius: var(--radius-xs);
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: var(--papel-ambar);
+  color: var(--papel-texto-ambar);
   font-weight: 600;
   font-size: 11px;
 }
@@ -1382,7 +1382,7 @@
   font-family: var(--font-family-2);
   font-size: var(--text-caption);
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   cursor: pointer;
   text-align: left;
 }
@@ -1422,7 +1422,7 @@
 .distractionCommitment {
   font-family: var(--font-family-3);
   font-size: 11px;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
@@ -1476,7 +1476,7 @@
 }
 
 .distractionText:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -1496,7 +1496,7 @@
 
 .distractionDelBtn:hover {
   opacity: 1;
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 .distractionDelBtn:focus-visible {
@@ -1539,7 +1539,7 @@
   font-weight: 600;
   font-size: 16px;
   background-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-primary);
   border: none;
   border-radius: var(--radius-xs);
   cursor: pointer;
@@ -1682,7 +1682,7 @@
   font-family: var(--font-family-3);
   font-size: 11px;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .reminderDatePillMuted {
@@ -1713,7 +1713,7 @@
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .plannerRow .rowTitle {
@@ -1788,7 +1788,7 @@
   font-family: var(--font-family-2);
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   background-color: var(--color-surface-soft);
   border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
@@ -1839,7 +1839,7 @@
   left: 18px;
   padding: 2px 14px;
   border-radius: 6px 6px 0 0;
-  background-color: #e5dfd4;
+  background-color: var(--color-surface-cream-strong);
   border-top: 1px solid var(--color-hairline);
   border-left: 1px solid var(--color-hairline);
   border-right: 1px solid var(--color-hairline);
@@ -1979,7 +1979,7 @@
   font-family: var(--font-family-2);
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -2055,8 +2055,8 @@
   border-radius: var(--radius-lg);
   background-color: var(--color-surface-soft);
   border: 1px solid var(--color-hairline);
-  background-image: linear-gradient(to right, #ece4d8 1px, transparent 1px),
-                    linear-gradient(to bottom, #ece4d8 1px, transparent 1px);
+  background-image: linear-gradient(to right, var(--color-grid-bujo) 1px, transparent 1px),
+                    linear-gradient(to bottom, var(--color-grid-bujo) 1px, transparent 1px);
   background-size: 16px 16px;
   min-height: 140px;
   position: relative;
@@ -2067,7 +2067,7 @@
   font-family: var(--font-script);
   font-size: 24px;
   line-height: 1.6;
-  color: #1e293b;
+  color: var(--color-ink);
   max-width: 680px;
 }
 
@@ -2092,7 +2092,7 @@
   background: none;
   font-family: var(--font-family-3);
   font-size: 12px;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -2140,7 +2140,7 @@
 }
 
 .reflectionHeart {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .reflectionSubtext {
@@ -2238,7 +2238,7 @@
   padding: 8px 18px;
   border-radius: var(--radius-md);
   background-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-on-primary);
   border: none;
   font-family: var(--font-family-2);
   font-size: var(--text-body-sm);
@@ -2248,7 +2248,7 @@
 }
 
 .saveReflectionBtn:hover {
-  background-color: var(--color-primary-active);
+  background-color: var(--color-primary-hover);
 }
 
 /* =========================================================================

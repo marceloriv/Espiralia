@@ -210,7 +210,8 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 | Nombre de Token | Valor Hex / RGBA | Variable CSS | Rol y Aplicación |
 | :--- | :--- | :--- | :--- |
 | **`primary`** | `#8E1EA2` | `--color-primary` | Magenta editorial representativo; botones primarios, marca y acentos tipográficos clave. |
-| **`primary-active`** | `#C654C3` | `--color-primary-active` | Estado *hover*, foco y elementos interactivos activos. |
+| **`primary-active`** | `#C654C3` | `--color-primary-active` | Acento claro: rellenos de progreso, estados activos y foco. No es fondo de botón con texto blanco (3,85:1). |
+| **`primary-hover`** | `#741787` | `--color-primary-hover` | Fondo de un botón relleno en *hover*: más oscuro que `primary`, 9,5:1 con texto blanco en ambos temas. |
 | **`primary-soft`** | `#ED96D7` | `--color-primary-soft` | Fondos de insignias suaves, píldoras y barras de avance sutiles. |
 | **`primary-light`** | `#FDF4FA` | `--color-primary-light` | Tinte sutil para fondos de selección activa o tarjetas destacadas. |
 | **`primary-disabled`** | `#FFC0DE` | `--color-primary-disabled` | Estados deshabilitados o tintes de fondo ultra suaves. |
@@ -331,7 +332,7 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 ### A. Botones & Acciones Interactivas
 
 1. **Button Primary (`--btn-primary`)**:
-   - `bg: var(--color-primary)` (`#8E1EA2`), `color: #FFFFFF`, `border-radius: var(--radius-md)` (8px), `padding: 12px 20px`, `min-height: 44px`, `font: var(--text-button)`. Hover: `bg: var(--color-primary-active)` (`#C654C3`), escala sutil `active:scale-[0.98]`.
+   - `bg: var(--color-primary)` (`#8E1EA2`), `color: #FFFFFF`, `border-radius: var(--radius-md)` (8px), `padding: 12px 20px`, `min-height: 44px`, `font: var(--text-button)`. Hover: `bg: var(--color-primary-hover)` (`#741787`), escala sutil `active:scale-[0.98]`.
 2. **Button Secondary (`--btn-secondary`)**:
    - `bg: var(--color-canvas)`, `border: 1px solid var(--color-hairline)`, `color: var(--color-ink)`, `border-radius: var(--radius-md)`, `padding: 12px 20px`.
 3. **Button Secondary on Dark (`--btn-secondary-dark`)**:
@@ -418,7 +419,7 @@ Valores objetivo. Todos son tokens existentes salvo los marcados como nuevos en 
 
 | Familia | Forma y medida | Color y borde | Sombra | Primitivo |
 | :--- | :--- | :--- | :--- | :--- |
-| **Botón primario** | `--radius-md`, `min-height: var(--tap-min)`, relleno `12px 20px`, `--text-button`, peso 600 | `bg: --color-primary`, `color: --color-on-primary`, sin borde; hover `--color-primary-active` | ninguna | `common/Button.tsx` |
+| **Botón primario** | `--radius-md`, `min-height: var(--tap-min)`, relleno `12px 20px`, `--text-button`, peso 600 | `bg: --color-primary`, `color: --color-on-primary`, sin borde; hover `--color-primary-hover` | ninguna | `common/Button.tsx` |
 | **Botón secundario** | igual medida que el primario | `bg: transparent`, `1px solid --color-border-control`, `color: --color-ink` | ninguna | `common/Button.tsx` |
 | **Botón destructivo** | igual medida; solo para borrar | `color: --color-error` sobre fondo claro; confirmación obligatoria | ninguna | `common/Button.tsx` |
 | **Botón ícono** | 44x44px, `--radius-pill`, un solo `aria-label` | `bg: --color-canvas`, `1px solid --color-border-control` | ninguna | `common/Button.tsx` |
@@ -438,18 +439,30 @@ Valores objetivo. Todos son tokens existentes salvo los marcados como nuevos en 
 | Estado | Regla |
 | :--- | :--- |
 | **Foco visible** | `outline: 2px solid var(--color-focus)` con `outline-offset: 2px`; contraste mínimo 3:1 contra el fondo del control y el de la superficie. Nunca `outline: none` sin reemplazo. |
-| **Hover** | solo en dispositivos con puntero (`@media (hover: hover)`). Primario: `--color-primary-active`. Secundario: fondo `--color-surface-warm`. Sin `transform` que desplace la maquetación. |
+| **Hover** | solo en dispositivos con puntero (`@media (hover: hover)`). Primario: `--color-primary-hover`. Secundario: fondo `--color-surface-warm`. Sin `transform` que desplace la maquetación. |
 | **Activo / pulsado** | escala `0.98` como máximo; sin cambio de color distinto del hover. |
 | **Deshabilitado** | opacidad `0.5`, `cursor: not-allowed`, `aria-disabled` o `disabled`; el texto deshabilitado no está obligado a cumplir contraste, pero la etiqueta sí debe seguir legible. |
 | **Error** | borde `--color-error`, texto de error en `--color-text-error` **y** un ícono o mensaje (el color no es el único canal), enlazado con `aria-describedby`. |
-| **Carga** | texto que dice qué carga ("Guardando…"), sin spinner solitario; el botón se bloquea para evitar doble envío. |
+| **Carga** | esqueleto con la silueta del contenido (§7.7), con un texto que dice qué carga ("Cargando los PDF…") para el lector de pantalla; nunca un spinner ni un vacío. Un botón que envía se bloquea para evitar doble envío. |
 | **Transición** | `--duration-fast` (150ms) en color, borde y sombra. `transition: all` queda prohibido. Con `prefers-reduced-motion: reduce` se anulan las transiciones de transformación. |
 
 ### 7.4 Modo oscuro
 
-**Estado vigente: no existe un modo oscuro.** La app es de tema claro (marfil). Las superficies `--color-surface-dark*` del manifiesto, el pie de página y el "bloque nocturno" son **superficies oscuras fijas**, presentes en cualquier tema; no son un modo oscuro y no se reutilizan como tal. No hay `prefers-color-scheme`, `color-scheme` ni `data-theme` en `src/`.
+**Estado vigente (2026-10-30): el modo oscuro existe** y se activa con el conmutador de la cabecera (`ThemeToggle`) o, sin elección guardada, con la preferencia del sistema. Las superficies `--color-surface-dark*` del manifiesto, el pie de página y el "bloque nocturno" siguen siendo **superficies oscuras fijas**, presentes en cualquier tema; no son el modo oscuro.
 
-Si se añade, debe definirse así, sin excepciones locales:
+Cómo está hecho (todo en `src/index.css`, `src/utils/theme.ts`, `src/components/common/ThemeToggle.tsx` y `public/theme-init.js`):
+- **Dos bloques idénticos**: `:root[data-theme="dark"]:not([data-force-light])` (elección manual) y `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]):not([data-force-light]) }` (sistema). `textTokensContrast.test.ts` comprueba que declaran exactamente lo mismo.
+- **`color-scheme: light`** en `:root` y `dark` en los bloques oscuros: controles nativos y barras de scroll siguen el tema.
+- **Elección guardada** en `localStorage.espiralia_theme` (`light` o `dark`; sin valor manda el sistema), fuera de los datos de los perfiles. `public/theme-init.js` la aplica antes del primer pintado (va como archivo porque el CSP de `index.html` no admite scripts en línea).
+- **Efecto del conmutador**: el de https://theme-toggle.rdsx.dev (View Transitions API, variante `circle-with-blur`: máscara SVG con un círculo y `feGaussianBlur stdDeviation=2`, no un recorte duro, que crece desde el botón; el viewBox de la máscara es de 60 y no de 40 como en la referencia, porque con 40 la caja corta la cola del blur y deja una línea recta), sin dependencia nueva. Con `prefers-reduced-motion` no hay círculo (es movimiento) pero sí un fundido de 600ms del tema nuevo sobre el viejo, porque un cambio instantáneo de todo el color de la pantalla se siente como un golpe; sin la API el cambio es inmediato. Es la cuarta excepción a MOTION 1: responde a una acción, dura 2000ms con arranque y llegada suaves y casi simétricos (`cubic-bezier(0.37, 0, 0.63, 1)`: una curva más asimétrica concentra el avance en la primera mitad y el círculo parece más rápido de lo que dura) y no se repite. Mientras dura, `data-theme-switching` anula el nombre `pagina` y la mezcla `plus-lighter` del navegador (`mix-blend-mode: normal`, el único valor permitido).
+- **La landing no se tematiza**: es una pieza de papelería con colores propios, así que `LandingView` pone `data-force-light` en `<html>` y siempre se ve en claro. Tampoco cambian los papeles fijos (post-its amarillos, latón, etiqueta del lomo, 404): llevan sus textos en `--on-papel-*`.
+- **Divisores y puntos de papel sin hex**: los bordes y divisores de superficies usan `--color-hairline` y la trama punteada de los papeles `--color-grid-bujo`; un hex claro fijo en oscuro se ve como una línea o un punto casi blanco que cruza el texto (pasó en el modal de nota). Las superficies que sí son papel fijo (post-its, latón) conservan sus colores.
+- **Texto sobre un color que no controlamos**: cuando la persona elige el color (solapa de carpeta), el texto no puede ser siempre blanco. `utils/folderTabColors.ts` elige la tinta (blanca u oscura) con más contraste y, si ninguna llega a 4,5:1, oscurece el relleno hasta que llegue; la misma función tiene un test por partición de colores. Un acento como color de texto (día de un evento, categoría) usa su token `--color-text-*` y el acento queda para el borde o el relleno.
+- **Texto sobre papeles fijos** usa `--on-papel-ink`, `--on-papel-ambar` y `--on-papel-magenta` (no cambian con el tema); el magenta como texto o icono usa `--color-text-primary`, y el anillo de foco `--color-focus`.
+
+La definición que sigue se escribió antes de implementarlo; los valores finales están en la tabla de abajo (se ajustaron al medir contra los tintes oscuros).
+
+Reglas del mecanismo, sin excepciones locales:
 
 1. **Mecanismo.** Un solo conjunto de tokens redefinidos, en `src/index.css`:
    - `:root:not([data-theme="light"])` dentro de `@media (prefers-color-scheme: dark)`, y `:root[data-theme="dark"]` para la elección manual.
@@ -458,22 +471,22 @@ Si se añade, debe definirse así, sin excepciones locales:
 2. **Ningún componente conoce el tema.** Un `.module.css` no contiene `@media (prefers-color-scheme)` ni `[data-theme]`: solo consume tokens. Si un componente "necesita" una regla de oscuro, falta un token.
 3. **Tokens semánticos, no de tinte.** Se redefinen los semánticos; los tintes de módulo (`--papel-*`) tienen su propia versión oscura y siguen codificando el mismo módulo.
 
-Valores propuestos (contraste medido con la fórmula WCAG el 2026-10-30; antes de adoptarlos, `textTokensContrast.test.ts` debe cubrir ambos temas):
+Valores vigentes (contraste medido con la fórmula WCAG; `textTokensContrast.test.ts` los recorre sobre las superficies oscuras, sus tintes y la esquina de la tarjeta de Papel). Lo que cambió respecto de la propuesta inicial, tras medir: `--color-muted` pasa de `#A09D96` a **`#BCB8B0`** (sobre los tintes oscuros daba 3.5:1 a 4.3:1), `--color-border-control` de `#8A857A` a **`#9C978C`** y `--color-text-error` de `#F08A8A` a **`#F6A0A0`** (la esquina del tinte pizarra daba 2.9:1 y 4.4:1); los tintes `terracota`, `ambar`, `pizarra` y `turquesa` se separaron para mantener los 15 de distancia entre tintes, y los textos del Papel (`--papel-texto-*`) se aclararon.
 
-| Token | Claro (vigente) | Oscuro (propuesto) | Contraste oscuro |
+| Token | Claro (vigente) | Oscuro (vigente) | Contraste oscuro |
 | :--- | :--- | :--- | :--- |
 | `--color-canvas` | `#FCF9F6` | `#1A1817` | base |
 | `--color-surface-card` | `#FFFFFF` | `#252320` | 1.13:1 con el canvas (separa por borde y sombra, no por contraste) |
 | `--color-ink` | `#1A1917` | `#F2EEE8` | 15.3:1 sobre canvas |
 | `--color-body` | `#3D3D3A` | `#D4D0C8` | 11.5:1 sobre canvas |
-| `--color-muted` | `#57554F` | `#A09D96` | 6.5:1 sobre canvas, 5.8:1 sobre tarjeta |
+| `--color-muted` | `#57554F` | `#BCB8B0` | 7.8:1 sobre canvas; 4.7:1 o más sobre los tintes oscuros |
 | `--color-hairline` | `#E8E2D8` | `#3A3732` | 1.5:1; solo para divisores decorativos |
-| `--color-border-control` (claro vigente desde 2026-10-30) | `#76716A` | `#8A857A` | 4.3:1 sobre tarjeta, 4.8:1 sobre canvas |
+| `--color-border-control` (claro vigente desde 2026-10-30) | `#76716A` | `#9C978C` | 3.5:1 o más sobre toda superficie, esquina oscura de los tintes incluida |
 | `--color-primary` (relleno de botón) | `#8E1EA2` | `#8E1EA2` | texto blanco 7.4:1 |
 | **`--color-text-primary`** (nuevo: enlaces y texto magenta) | `#8E1EA2` | `#E3A6F0` | 9.3:1 sobre canvas, 8.2:1 sobre tarjeta |
 | **`--color-focus`** (nuevo) | `#8E1EA2` | `#E3A6F0` | 8.2:1 sobre tarjeta |
 | `--color-text-success` | `#316F3F` | `#7FD08F` | 8.5:1 sobre tarjeta |
-| `--color-text-error` | `#B13636` | `#F08A8A` | 6.5:1 sobre tarjeta |
+| `--color-text-error` | `#B13636` | `#F6A0A0` | 5.1:1 o más sobre toda superficie y tinte oscuro |
 | `--color-text-teal` | `#2F6B60` | `#7FD3C2` | 9.0:1 sobre tarjeta |
 | `--color-text-amber` | `#8E5414` | `#F0BE7A` | 9.2:1 sobre tarjeta |
 | **`--color-scrim`** (nuevo) | `rgba(20, 20, 19, 0.45)` | `rgba(0, 0, 0, 0.6)` | n/a |
@@ -504,7 +517,8 @@ Inventario: hay **101 definiciones de clases de botón, campo, modal y tarjeta r
 - **Paso 1, hecho:** `--color-scrim`, `--color-focus`, `--color-text-primary` y `--duration-fast` existen en `src/index.css` con su valor claro (`--color-border-control` y `--color-text-error` ya estaban).
 - **Pasos 2 y 3, hechos en CSS:** los primitivos viven en `src/components/common/Dialogo.module.css` (`velo`, `caja`, `titulo`, `campo`, `etiqueta`, `control`, `acciones`, `btnPrimario`, `btnSecundario`, `btnPeligro`) y cada modal los toma con `composes`. Migrados: carpetas, bloque del Planner, metas, nota, ajustes de perfil, acción rápida, hábitos y bóveda (72 reglas, 34 reglas de hover y foco repetidas eliminadas). Todos miden igual: controles de 44px con radio `--radius-md` y borde `--color-border-control`, botones con radio `--radius-md` y relleno `12px 20px`, un solo velo. `HabitModal`, `VaultModal`, `NoteModal` y `ProfileSettingsModal` conservan su caja de ritual (papel y recorte); `QuickActionModal` conserva su caja con encabezado. Fuera de esta pasada: la búsqueda global (solo toma el velo) y el modal de foco del Dashboard (solo el velo).
 - **Paso 4, hecho (2026-10-30):** se quitaron 354 respaldos de color de `var(--token, #hex)` en 27 `.module.css` (el token siempre existía en `src/index.css`, así que el respaldo no se usaba y congelaría el color claro) y se unificaron los alias que valían lo mismo: `--color-ink-muted` pasa a `--color-muted` y `--font-headline` a `--font-primary`. **No se unificaron** `--color-surface`, `--color-surface-card` ni `--bg-card`, porque son tres colores distintos (`#EFE9DE` es la cartulina y `#FCF9F6` el papel); decidir cuál va en cada caja es una decisión de diseño, no una limpieza.
-- **Pendiente:** los componentes React `Button`, `Field` y `Modal` (hoy el estilo común es CSS compartido, no un componente), unificar los tres fondos de caja y el paso 5 (modo oscuro).
+- **Paso 5, hecho (2026-10-30):** modo oscuro con conmutador (§7.4). Medido en el navegador con una auditoría de contraste de cada texto contra su fondo (incluidos los degradados): Dashboard, Agenda, Planner, Notas y Carpetas quedan sin fallos; Integraciones y To-Do solo conservan la marca de agua decorativa de las solapas (`.tabWatermark`, 8 % de opacidad a propósito). Para llegar ahí se pasaron a token 35 colores que valían exactamente lo mismo que un token, 6 blancos translúcidos, 26 fondos neutros cálidos y 12 translúcidos cremas, 95 textos magenta (`--color-primary` pasa a `--color-text-primary`) y 32 anillos de foco (`--color-focus`), más una decena de textos con color fijo (verdes, ámbares y azules grisáceos); en claro cada reemplazo vale lo mismo que antes, salvo los neutros cálidos y esos textos, que convergen al token más cercano.
+- **Pendiente:** los componentes React `Button`, `Field` y `Modal` (hoy el estilo común es CSS compartido, no un componente); unificar los tres fondos de caja; revisar en oscuro la pantalla de Acceso, los modales de hábitos y carpetas y los 404 (no se auditaron); y los 274 colores literales que quedan fuera de la landing, el origami, el ornamento y el 404 (sobre todo sombras, adornos y papeles fijos) que la auditoría de contraste no marca pero siguen sin tokenizar.
 
 Orden de migración propuesto (cada paso se entrega y revierte por separado, con la suite en verde):
 
@@ -528,3 +542,27 @@ La regla no es solo texto: se vuelve test, igual que el presupuesto de Papel (§
 - **Modo oscuro (si existe):** cada token semántico redefinido cumple su umbral de §7.4 en ambos temas, y ningún `.module.css` contiene `prefers-color-scheme` ni `data-theme`.
 
 Mientras el test no exista, la revisión de PR aplica esta lista a mano: un cambio que agrega un botón, tarjeta, campo o modal con estilo propio se devuelve.
+
+### 7.7 Estados de carga: esqueleto, no spinner ni vacío (regla de diseño, 2026-10-31)
+
+> Decisión de la persona dueña: **todo estado de carga se resuelve con un esqueleto**. Un espacio en blanco o un spinner solitario no dicen qué viene ni cuánto falta, y el contenido salta cuando llega; un esqueleto muestra la forma de lo que se está cargando y la maquetación no se mueve al terminar.
+
+- **Qué es:** piezas grises con la silueta del contenido real (línea de texto, bloque de tarjeta, círculo de avatar), compuestas con `common/Esqueleto.tsx`. El color sale de `--color-surface-card` y `--color-hairline`, así que sirve en ambos temas sin código propio.
+- **Misma silueta, misma medida:** el esqueleto reserva el alto y el ancho de lo que sustituye (tarjetas de 9rem, filas de 2.25rem). Si el contenido cambia de forma, el esqueleto cambia con él.
+- **Se anuncia una vez:** el conjunto va dentro de un `role="status"` con `aria-busy="true"` y un texto en `.visually-hidden` que dice qué carga ("Cargando espacio…"). Las piezas son `aria-hidden`, para que el lector no las lea una por una.
+- **Movimiento:** un pulso de opacidad (`respirar`, 1,8s, hasta 0,55) mientras algo carga; no se desplaza nada ni hay brillo que cruce. Con `prefers-reduced-motion: reduce` el esqueleto queda quieto. Es la quinta excepción a MOTION 1 y la única animación infinita de carga: el spinner giratorio **queda prohibido** (`esqueleto.test.tsx` lo vigila).
+- **Dónde rige hoy:** la carga de cada vista (`RouteLoadingFallback`, silueta de encabezado, bajada y tarjetas) y los PDF de una carpeta mientras se leen de IndexedDB. Los datos de `localStorage` se leen de forma síncrona y no necesitan esqueleto.
+- **Cuándo se agrega uno nuevo:** cualquier espera visible que no sea instantánea (red, IndexedDB, un `lazy`). Un estado vacío real ("no hay notas todavía") **no** es una carga y sigue siendo un vacío con su acción (§7.3).
+
+### 7.8 Ventana de carga: el momento de alto impacto (regla de diseño, 2026-10-31)
+
+> Decisión de la persona dueña: además del esqueleto, la app tiene **una ventana de carga a pantalla completa con un efecto de alto impacto visual**, funcional y no decorativa. Cubre dos momentos: el arranque y el cambio de perfil. Dentro de la app, una espera normal sigue siendo un esqueleto (§7.7).
+
+- **Efecto: origami que se pliega.** Una hoja cuadrada de papel (`--papel-arena`) se pliega dos veces, primero por la diagonal y luego por la mitad, y se disuelve en el Nautilus de la marca (`OrigamiNautilus`, §0.12). Es CSS puro (`clip-path` y `rotate3d`), sin imagen ni dependencia, y se reproduce **una sola vez**: termina con el Nautilus completo y queda quieto, sin bucle (R-19).
+- **Es funcional:** quien la monta decide cuándo hay una carga real y la desmonta al terminar; no hay temporizador falso ni porcentaje inventado. Hoy la monta `RouteLoadingFallback` en la primera espera del `Suspense` tras abrir la app o cambiar de perfil ("Abriendo Espiralia…"), y `ProfileGateView` mientras `busy` (verificación de PIN con PBKDF2: "Verificando tu PIN…"; creación de perfil: "Creando tu cuaderno…"). `utils/arranqueCarga.ts` guarda si falta la primera espera; `reiniciarArranque()` se llama al elegir un perfil.
+- **Sin destello:** no se ve hasta pasados **300ms** (retraso de la animación de entrada). Una carga rápida no la muestra nunca; una lenta la muestra con el efecto ya en marcha.
+- **Etiqueta:** siempre dice qué se hace, en palabras de quien usa la app, y es lo único que se anuncia (`role="status"`, `aria-busy="true"`). El efecto va en `aria-hidden`.
+- **Movimiento reducido:** sin pliegue; tras los 300ms se ve el Nautilus ya formado.
+- **Tokens, no hex:** fondo `--color-canvas`, papel `--papel-arena` y `--papel-arena-fuerte`, texto `--color-muted`; funciona en ambos temas sin código propio. Capa `z-index: 60`, por encima del velo de los modales (50).
+- **Es la sexta excepción a MOTION 1** y no suma bucles: `ventanaCarga.test.tsx` vigila el retraso de 300ms, que no haya `infinite`, el modo sin movimiento y que no haya colores sueltos.
+- **Peso (medido el 2026-10-31):** el Nautilus se carga diferido dentro de la ventana, pero la ventana y el esqueleto suman 1,2 KB a la carga inicial: 183,9 KB sin ellos y **185,1 KB con ellos**, contra un tope de 184 KB. **Pendiente de la persona dueña:** subir `PRESUPUESTO_KB` en `.github/workflows/ci.yml` (y el tope de `AGENTS.md` §17.1) o recortar peso en otro lado; el Build del PR falla mientras no se decida.

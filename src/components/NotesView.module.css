@@ -50,7 +50,7 @@
 }
 
 .overlineSub {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
@@ -140,7 +140,7 @@
 
 .binderSpineBtn:focus-visible,
 .flatFolderTab:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -185,7 +185,7 @@
   font-size: var(--text-micro);
   font-weight: 700;
   background: rgba(0, 0, 0, 0.25);
-  color: #f5f0e8;
+  color: var(--color-on-dark);
   padding: 1px 6px;
   border-radius: 9999px;
   flex-shrink: 0;
@@ -284,7 +284,7 @@
 }
 
 .btnAddNoteHeader:hover {
-  background-color: var(--color-primary-active);
+  background-color: var(--color-primary-hover);
 }
 
 .folioContainer {
@@ -329,7 +329,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-bottom: 1px solid #e5dcd0;
+  border-bottom: 1px solid var(--color-hairline);
   padding-bottom: 14px;
 }
 
@@ -378,7 +378,7 @@
 }
 
 .iconPrimary {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .activePliegoBadge {
@@ -390,7 +390,7 @@
   padding: 3px 10px;
   border-radius: var(--radius-pill);
   background-color: rgba(142, 30, 162, 0.12);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   border: 1px solid rgba(142, 30, 162, 0.3);
   display: inline-flex;
   align-items: center;
@@ -398,15 +398,15 @@
 
 .bujoCanvas {
   position: relative;
-  background-color: #FAF7F0;
-  border: 1px solid #e4dacb;
+  background-color: var(--bg-card);
+  border: 1px solid var(--color-hairline);
   border-radius: 14px;
   padding: 32px 36px 28px;
   min-height: 460px;
   /* Papel verjurado: finas líneas horizontales a 28px combinadas con dot grid tenue, sobre el ámbar de Notas */
   background-image:
     repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(142, 30, 162, 0.032) 27px, rgba(142, 30, 162, 0.032) 28px),
-    radial-gradient(#d6cdc3 1.15px, transparent 1.15px),
+    radial-gradient(var(--color-grid-bujo) 1.15px, transparent 1.15px),
     var(--superficie-ambar);
   background-size: 100% 28px, 20px 20px, auto;
   box-shadow: 
@@ -446,7 +446,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-ink);
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: color-mix(in srgb, var(--color-surface-bright) 85%, transparent);
   border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md, 8px);
   padding: 10px 14px;
@@ -457,7 +457,7 @@
 .pliegoTitleInput:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(142, 30, 162, 0.15);
-  background-color: #ffffff;
+  background-color: var(--color-surface-bright);
 }
 
 .pliegoContentTextarea {
@@ -467,7 +467,7 @@
   font-size: 0.95rem;
   line-height: 1.7;
   color: var(--color-body-strong);
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: color-mix(in srgb, var(--color-surface-bright) 85%, transparent);
   border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md, 8px);
   padding: 14px 16px;
@@ -479,12 +479,12 @@
 .pliegoContentTextarea:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(142, 30, 162, 0.15);
-  background-color: #ffffff;
+  background-color: var(--color-surface-bright);
 }
 
 .pliegoTitleInput:focus-visible,
 .pliegoContentTextarea:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -508,7 +508,7 @@
 .sectionSymbol {
   font-family: var(--font-family-3);
   font-size: 0.85rem;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .journalParagraph {
@@ -523,7 +523,7 @@
 .conasetEmbeddedBox {
   padding: 16px 20px;
   border-radius: 10px;
-  background-color: rgba(239, 233, 222, 0.7);
+  background-color: color-mix(in srgb, var(--color-surface-card) 70%, transparent);
   border: 1px solid var(--color-hairline);
   display: flex;
   flex-direction: column;
@@ -557,7 +557,7 @@
   padding: 2px 8px;
   border-radius: 4px;
   background-color: rgba(93, 184, 114, 0.18);
-  color: #047857;
+  color: var(--color-text-success);
   font-weight: 600;
 }
 
@@ -572,7 +572,7 @@
 .writingStatusBar {
   margin-top: 10px;
   padding-top: 12px;
-  border-top: 1px solid #ece3d7;
+  border-top: 1px solid var(--color-hairline);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -640,7 +640,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--color-text-amber);
+  color: var(--on-papel-ambar);
   margin-bottom: 6px;
 }
 
@@ -670,7 +670,7 @@
 
 /* Ritmo & Estado de Ánimo */
 .moodTrackerCard {
-  background-color: rgba(239, 233, 222, 0.7);
+  background-color: color-mix(in srgb, var(--color-surface-card) 70%, transparent);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-xl);
   padding: 20px;
@@ -745,7 +745,7 @@
 .scaleBtnActive {
   background-color: rgba(142, 30, 162, 0.12);
   border-color: var(--color-primary);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
@@ -760,7 +760,7 @@
   padding: 16px;
   border-radius: 12px;
   border: 1px dashed var(--color-hairline);
-  background-color: rgba(250, 249, 245, 0.7);
+  background-color: color-mix(in srgb, var(--color-canvas) 70%, transparent);
   display: flex;
   align-items: center;
   gap: 14px;
@@ -786,7 +786,7 @@
 .folioBottomToolbar {
   margin-top: 28px;
   padding-top: 16px;
-  border-top: 1px solid #e8ded2;
+  border-top: 1px solid var(--color-hairline);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -816,7 +816,7 @@
 .btnEditPliego:hover {
   background-color: var(--color-surface-soft);
   border-color: var(--color-primary);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .btnSavePliego {
@@ -833,7 +833,7 @@
 }
 
 .btnSavePliego:hover {
-  background-color: var(--color-primary-active);
+  background-color: var(--color-primary-hover);
 }
 
 /* ========================================================================= */
@@ -907,7 +907,7 @@
 .searchInput:focus-visible,
 .btnAdd:focus-visible,
 .card:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -1008,7 +1008,7 @@
 
 .reflectionBadge {
   background-color: rgba(142, 30, 162, 0.12);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   border: 1px solid rgba(142, 30, 162, 0.2);
 }
 
@@ -1077,7 +1077,7 @@
 }
 
 .iconBtn:hover {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   background-color: var(--color-surface-soft);
 }
 

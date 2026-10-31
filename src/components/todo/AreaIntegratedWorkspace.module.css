@@ -192,7 +192,7 @@
 }
 
 .btnDeleteTask:hover {
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 /* ---------- Columna 2: Agenda Contextual ---------- */
@@ -225,7 +225,7 @@
 .eventTimeTag {
   font-family: var(--font-family-3);
   font-size: var(--text-caption);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
 }
 
@@ -260,7 +260,7 @@
 
 .quickAddEventBtn:hover {
   border-color: var(--color-primary);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 /* ---------- Columna 3: Notas & Recursos ---------- */
@@ -309,7 +309,7 @@
 }
 
 .resourceLink {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   display: inline-flex;
   align-items: center;
   gap: 4px;

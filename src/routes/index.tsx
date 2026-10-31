@@ -4,6 +4,7 @@ import { turnPage } from '../utils/pageTurn';
 import { ProtectedRoute } from './ProtectedRoute';
 import { ProfileGateView } from '../components/ProfileGateView';
 import { RouteLoadingFallback } from '../components/RouteLoadingFallback';
+import { reiniciarArranque } from '../utils/arranqueCarga';
 import type { Profile } from '../types';
 
 const DashboardView = lazy(() => import('../components/DashboardView').then(m => ({ default: m.DashboardView })));
@@ -32,6 +33,7 @@ export const AppRoutes: React.FC<AppRoutesProps> = ({
   const navigate = useNavigate();
 
   const handleProfileSelected = (profile: Profile) => {
+    reiniciarArranque();
     onSelectProfile(profile);
     navigate('/dashboard');
   };

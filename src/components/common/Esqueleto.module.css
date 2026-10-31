@@ -1,0 +1,37 @@
+/* Esqueleto de carga (DESIGN.md §7.6): placeholder con la silueta del contenido que viene, no un spinner ni un vacío. */
+.esqueleto {
+  display: block;
+  max-width: 100%;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  animation: respirar 1.8s ease-in-out infinite;
+}
+
+.linea {
+  height: 0.9rem;
+  border-radius: var(--radius-sm, 0.25rem);
+}
+
+.bloque {
+  height: 6rem;
+  border-radius: var(--radius-md, 0.5rem);
+}
+
+.circulo {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+}
+
+/* El pulso es de opacidad (no se mueve nada) y se apaga con prefers-reduced-motion: el esqueleto queda quieto pero visible. */
+@keyframes respirar {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esqueleto {
+    animation: none;
+  }
+}

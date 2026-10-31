@@ -87,17 +87,17 @@
 
 .priorityAlta {
   background: rgba(198, 69, 69, 0.15);
-  color: var(--color-danger);
+  color: var(--color-text-error);
 }
 
 .priorityMedia {
   background: rgba(232, 165, 90, 0.2);
-  color: #8f5800;
+  color: var(--color-text-amber);
 }
 
 .priorityBaja {
   background: rgba(93, 184, 166, 0.2);
-  color: #006050;
+  color: var(--color-text-teal);
 }
 
 .actionsGroup {
@@ -136,5 +136,5 @@
 }
 
 .deleteBtn:hover {
-  color: var(--color-danger);
+  color: var(--color-text-error);
 }

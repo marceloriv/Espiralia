@@ -8,6 +8,7 @@ import { createNewProfile } from '../services/profileOperations';
 import { VaultService } from '../services/vaultService';
 import { Pliego } from './common/Pliego';
 import { Papel } from './common/Papel';
+import { VentanaCarga } from './common/VentanaCarga';
 import { downloadFile } from '../utils/downloadFile';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import styles from './ProfileGateView.module.css';
@@ -135,6 +136,8 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 
   return (
     <div className={styles.gateContainer}>
+      {/* PBKDF2 tarda lo suficiente como para notarse: mientras `busy`, la ventana de carga (§7.8) dice qué se está haciendo. */}
+      {busy && <VentanaCarga etiqueta={isCreating ? 'Creando tu cuaderno…' : 'Verificando tu PIN…'} />}
       <div className={styles.topStripe} />
 
       <header className={styles.header}>

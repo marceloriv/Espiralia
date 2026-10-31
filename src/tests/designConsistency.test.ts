@@ -91,6 +91,26 @@ describe('Primitivos de diálogo (DESIGN.md §7.2)', () => {
     expect(offenders).toEqual([]);
   });
 
+  // `--color-primary-active` (#C654C3) es un acento claro: con texto blanco da 3,85:1. El relleno de un botón en :hover usa
+  // `--color-primary-hover`, más oscuro que el reposo, y el texto blanco conserva AA en ambos temas (el primario no cambia con el tema).
+  it('un botón relleno no aclara su fondo en :hover con --color-primary-active', () => {
+    const offenders = allModules.filter(f =>
+      /:hover[^{]*\{[^}]*background(-color)?:\s*var\(--color-primary-active\)/.test(readFileSync(f, 'utf8')),
+    );
+    expect(offenders.map(f => path.relative(componentsDir, f))).toEqual([]);
+  });
+
+  it('--color-primary-hover con texto blanco cumple AA (4,5:1)', () => {
+    const hex = tokensCss.match(/--color-primary-hover:\s*(#[0-9a-fA-F]{6})/)?.[1] ?? '';
+    const lum = (h: string) =>
+      [1, 3, 5]
+        .map(i => parseInt(h.slice(i, i + 2), 16) / 255)
+        .map(v => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+        .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i], 0);
+    expect(hex).not.toBe('');
+    expect(1.05 / (lum(hex) + 0.05)).toBeGreaterThanOrEqual(4.5);
+  });
+
   it('los tokens nuevos de §7.4 existen en src/index.css', () => {
     for (const name of ['color-scrim', 'color-focus', 'color-text-primary', 'duration-fast', 'color-border-control']) {
       expect(tokensCss, name).toMatch(new RegExp(String.raw`--${name}\s*:`));

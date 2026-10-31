@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   /* Espiralia primary colors */
   --color-primary: #8E1EA2;
   --color-primary-active: #C654C3;
@@ -228,6 +229,10 @@
   --papel-texto-ambar: #7d4a12;
   --papel-texto-magenta: #8c2f89;
   --papel-texto-error: #9c3030;
+  /* Texto sobre papeles que no cambian con el tema (post-its amarillos): el papel es claro en los dos temas, así que el texto también. */
+  --on-papel-ink: #2a2520;
+  --on-papel-ambar: #7d4a12;
+  --on-papel-magenta: #8c2f89;
 
   /* Tokens de compatibilidad y alias historicos */
   --color-surface: var(--color-surface-soft);
@@ -237,7 +242,7 @@
   --color-tertiary: var(--color-accent-teal);
   --color-danger: var(--color-error);
   --color-bg-postit: var(--bg-postit);
-  --color-primary-hover: var(--color-primary-active);
+  --color-primary-hover: #741787;
   --color-error-container: rgba(198, 69, 69, 0.12);
   --color-accent-red: var(--color-error);
   --font-mono: var(--font-family-3);
@@ -256,6 +261,179 @@
   color: var(--color-body);
   background-color: var(--color-canvas);
   box-sizing: border-box;
+}
+
+/*
+ * Modo oscuro (DESIGN.md §7.4). Se activa con data-theme="dark" (elección de la persona) o, sin elección, con la preferencia del
+ * sistema. data-force-light lo desactiva en las pantallas que no se tematizan (la landing). Los dos bloques declaran lo mismo:
+ * designConsistency.test.ts lo comprueba.
+ */
+:root[data-theme="dark"]:not([data-force-light]) {
+  color-scheme: dark;
+
+  /* Superficies: canvas casi negro cálido; la cartulina y el papel suben un escalón de luminosidad. */
+  --color-canvas: #1a1817;
+  --color-canvas-paper: #1a1817;
+  --bg-canvas: #1a1817;
+  --bg-card: #252320;
+  --bg-manila: #3a3228;
+  --bg-slate-paper: #232a31;
+  --bg-surface-soft: #211f1c;
+  --color-surface-soft: #211f1c;
+  --color-surface-card: #2c2a26;
+  --color-surface-warm: #2a2824;
+  --color-surface-cream-strong: #33302b;
+  --color-surface-slate: #232a31;
+  --color-surface-bright: #2c2a26;
+
+  /* Texto y bordes (contrastes medidos en DESIGN.md §7.4). */
+  --color-ink: #f2eee8;
+  --color-body: #d4d0c8;
+  --color-body-strong: #e6e2da;
+  --color-muted: #bcb8b0;
+  --color-muted-soft: #8a877f;
+  --color-hairline: #3a3732;
+  --color-hairline-soft: #2f2d29;
+  --color-border-control: #9c978c;
+  --border-hairline: #3a3732;
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --color-grid-bujo: #3a362f;
+
+  /* Magenta: el relleno de botón se queda en #8E1EA2 (texto blanco 7.4:1); el texto y el foco necesitan una variante clara. */
+  --color-primary-soft: #6d2f78;
+  --color-primary-light: #2c1f30;
+  --color-primary-disabled: #4a2c52;
+  --color-text-primary: #e3a6f0;
+  --color-text-primary-active: #e3a6f0;
+  --color-focus: #e3a6f0;
+  --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-focus);
+
+  /* Textos de estado. */
+  --color-text-success: #7fd08f;
+  --color-text-teal: #7fd3c2;
+  --color-text-amber: #f0be7a;
+  --color-text-error: #f6a0a0;
+  --color-error-container: rgba(240, 138, 138, 0.16);
+
+  /* Velo y sombras: sobre fondo oscuro una sombra clara no se ve, la elevación la marcan la superficie y el borde. */
+  --color-scrim: rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-paper: 0 1px 3px rgba(0, 0, 0, 0.45), 0 6px 18px -2px rgba(0, 0, 0, 0.4);
+  --shadow-folder-tab: 0 4px 14px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.35);
+  --shadow-postit: 0 6px 16px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-sheet: 0 1px 2px rgba(0, 0, 0, 0.5), 0 10px 24px -4px rgba(0, 0, 0, 0.45);
+  --shadow-card-stack: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 0 -1px #2e2b27, 0 5px 2px -1px rgba(0, 0, 0, 0.4), 0 14px 28px -6px rgba(0, 0, 0, 0.5);
+  --shadow-recessed: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.06);
+  --elevation-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+
+  /* Tintes de Papel: mismo matiz que en claro, luminosidad baja; siguen codificando el mismo módulo. */
+  --papel-arena: #3a3228;
+  --papel-arena-fuerte: #4a3f30;
+  --papel-pizarra: #2b3a52;
+  --papel-pizarra-fuerte: #384c6a;
+  --papel-salvia: #2c3b2e;
+  --papel-salvia-fuerte: #384c3a;
+  --papel-terracota: #4a2b24;
+  --papel-terracota-fuerte: #5c372f;
+  --papel-ambar: #4a3d1c;
+  --papel-ambar-fuerte: #5c4a22;
+  --papel-rosa: #402c3b;
+  --papel-rosa-fuerte: #523a4c;
+  --papel-turquesa: #1f3b40;
+  --papel-turquesa-fuerte: #2a4c52;
+  --papel-texto-suave: #c4bfb5;
+  --papel-texto-exito: #8fd69c;
+  --papel-texto-turquesa: #86d9c8;
+  --papel-texto-ambar: #f0c283;
+  --papel-texto-magenta: #e6a9e1;
+  --papel-texto-error: #f8aaab;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-force-light]) {
+    color-scheme: dark;
+
+    /* Superficies: canvas casi negro cálido; la cartulina y el papel suben un escalón de luminosidad. */
+    --color-canvas: #1a1817;
+    --color-canvas-paper: #1a1817;
+    --bg-canvas: #1a1817;
+    --bg-card: #252320;
+    --bg-manila: #3a3228;
+    --bg-slate-paper: #232a31;
+    --bg-surface-soft: #211f1c;
+    --color-surface-soft: #211f1c;
+    --color-surface-card: #2c2a26;
+    --color-surface-warm: #2a2824;
+    --color-surface-cream-strong: #33302b;
+    --color-surface-slate: #232a31;
+    --color-surface-bright: #2c2a26;
+
+    /* Texto y bordes (contrastes medidos en DESIGN.md §7.4). */
+    --color-ink: #f2eee8;
+    --color-body: #d4d0c8;
+    --color-body-strong: #e6e2da;
+    --color-muted: #bcb8b0;
+    --color-muted-soft: #8a877f;
+    --color-hairline: #3a3732;
+    --color-hairline-soft: #2f2d29;
+    --color-border-control: #9c978c;
+    --border-hairline: #3a3732;
+    --border-subtle: rgba(255, 255, 255, 0.12);
+    --color-grid-bujo: #3a362f;
+
+    /* Magenta: el relleno de botón se queda en #8E1EA2 (texto blanco 7.4:1); el texto y el foco necesitan una variante clara. */
+    --color-primary-soft: #6d2f78;
+    --color-primary-light: #2c1f30;
+    --color-primary-disabled: #4a2c52;
+    --color-text-primary: #e3a6f0;
+    --color-text-primary-active: #e3a6f0;
+    --color-focus: #e3a6f0;
+    --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-focus);
+
+    /* Textos de estado. */
+    --color-text-success: #7fd08f;
+    --color-text-teal: #7fd3c2;
+    --color-text-amber: #f0be7a;
+    --color-text-error: #f6a0a0;
+    --color-error-container: rgba(240, 138, 138, 0.16);
+
+    /* Velo y sombras: sobre fondo oscuro una sombra clara no se ve, la elevación la marcan la superficie y el borde. */
+    --color-scrim: rgba(0, 0, 0, 0.6);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+    --shadow-paper: 0 1px 3px rgba(0, 0, 0, 0.45), 0 6px 18px -2px rgba(0, 0, 0, 0.4);
+    --shadow-folder-tab: 0 4px 14px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.35);
+    --shadow-postit: 0 6px 16px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-sheet: 0 1px 2px rgba(0, 0, 0, 0.5), 0 10px 24px -4px rgba(0, 0, 0, 0.45);
+    --shadow-card-stack: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 0 -1px #2e2b27, 0 5px 2px -1px rgba(0, 0, 0, 0.4), 0 14px 28px -6px rgba(0, 0, 0, 0.5);
+    --shadow-recessed: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.06);
+    --elevation-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+
+    /* Tintes de Papel: mismo matiz que en claro, luminosidad baja; siguen codificando el mismo módulo. */
+    --papel-arena: #3a3228;
+    --papel-arena-fuerte: #4a3f30;
+    --papel-pizarra: #2b3a52;
+    --papel-pizarra-fuerte: #384c6a;
+    --papel-salvia: #2c3b2e;
+    --papel-salvia-fuerte: #384c3a;
+    --papel-terracota: #4a2b24;
+    --papel-terracota-fuerte: #5c372f;
+    --papel-ambar: #4a3d1c;
+    --papel-ambar-fuerte: #5c4a22;
+    --papel-rosa: #402c3b;
+    --papel-rosa-fuerte: #523a4c;
+    --papel-turquesa: #1f3b40;
+    --papel-turquesa-fuerte: #2a4c52;
+    --papel-texto-suave: #c4bfb5;
+    --papel-texto-exito: #8fd69c;
+    --papel-texto-turquesa: #86d9c8;
+    --papel-texto-ambar: #f0c283;
+    --papel-texto-magenta: #e6a9e1;
+    --papel-texto-error: #f8aaab;
+  }
 }
 
 *, *::before, *::after {
@@ -323,6 +501,26 @@ h1[class] {
     opacity: 0;
     transform: translateX(8px);
   }
+}
+
+/* Cambio de tema (src/utils/theme.ts, efecto de theme-toggle.rdsx.dev): el tema nuevo se revela con un círculo sobre el viejo.
+   Hace falta anular la mezcla plus-lighter del navegador y el nombre `pagina`, para que el contenido se revele con el resto. */
+html[data-theme-switching] ::view-transition-old(root),
+html[data-theme-switching] ::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html[data-theme-switching] ::view-transition-old(root) {
+  z-index: 1;
+}
+
+html[data-theme-switching] ::view-transition-new(root) {
+  z-index: 2;
+}
+
+html[data-theme-switching] :not(html) {
+  view-transition-name: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -102,8 +102,8 @@
 
 @media (hover: hover) {
   .btnPrimario:hover:not(:disabled) {
-    background: var(--color-primary-active);
-    border-color: var(--color-primary-active);
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
   }
 }
 

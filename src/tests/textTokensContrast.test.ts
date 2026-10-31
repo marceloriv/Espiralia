@@ -231,3 +231,82 @@ describe('Borde de controles y margen del texto secundario', () => {
     expect(offenders).toEqual([]);
   });
 });
+
+describe('Tema oscuro (DESIGN.md §7.4)', () => {
+  // El tema oscuro vive en dos bloques de src/index.css: la elección manual (data-theme) y la preferencia del sistema.
+  const inicioManual = tokensCss.indexOf(':root[data-theme="dark"]');
+  const inicioSistema = tokensCss.indexOf('@media (prefers-color-scheme: dark)');
+  const manual = tokensCss.slice(inicioManual, inicioSistema);
+  const sistema = tokensCss.slice(inicioSistema, tokensCss.indexOf('*, *::before, *::after {'));
+  const declaraciones = (bloque: string) => [...bloque.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)].map(m => `${m[1]}: ${m[2].trim()}`).sort();
+  const oscuro = (name: string): string => {
+    const m = manual.match(new RegExp(String.raw`--${name}:\s*(#[0-9a-fA-F]{6})`));
+    if (!m) throw new Error(`token oscuro --${name} no encontrado`);
+    return m[1];
+  };
+
+  const superficies = (): Record<string, string> => {
+    const out: Record<string, string> = {};
+    for (const n of ['color-canvas', 'bg-card', 'color-surface-soft', 'color-surface-card', 'color-surface-warm', 'color-surface-cream-strong']) out[n] = oscuro(n);
+    for (const t of TINTES) {
+      const tinte = oscuro(`papel-${t}`);
+      out[`papel-${t}`] = tinte;
+      out[`papel-${t} al 72 %`] = mixHex(tinte, 72, oscuro('bg-card'));
+      out[`esquina de papel-${t}`] = mixHex(oscuro(`papel-${t}-fuerte`), 58, tinte);
+    }
+    return out;
+  };
+
+  it('los dos bloques (elección manual y preferencia del sistema) declaran exactamente lo mismo', () => {
+    expect(declaraciones(sistema)).toEqual(declaraciones(manual));
+  });
+
+  it('se activa con data-theme="dark" o con el sistema, y data-force-light lo desactiva', () => {
+    expect(manual).toMatch(/^:root\[data-theme="dark"\]:not\(\[data-force-light\]\)/);
+    expect(sistema).toContain(':root:not([data-theme="light"]):not([data-force-light])');
+  });
+
+  it.each(['color-ink', 'color-body', 'color-muted', 'color-text-success', 'color-text-teal', 'color-text-amber', 'color-text-error', 'color-text-primary'])(
+    '--%s oscuro alcanza 4.5:1 sobre las superficies y los tintes oscuros',
+    name => {
+      for (const [superficie, bg] of Object.entries(superficies())) {
+        expect(ratio(oscuro(name), bg), `--${name} (${oscuro(name)}) sobre ${superficie} (${bg})`).toBeGreaterThanOrEqual(4.5);
+      }
+    },
+  );
+
+  it.each(['papel-texto-suave', 'papel-texto-exito', 'papel-texto-turquesa', 'papel-texto-ambar', 'papel-texto-magenta', 'papel-texto-error'])(
+    '--%s oscuro alcanza 4.5:1 sobre los tintes del Papel y su esquina',
+    name => {
+      for (const t of TINTES) {
+        const tinte = oscuro(`papel-${t}`);
+        for (const bg of [tinte, mixHex(oscuro(`papel-${t}-fuerte`), 58, tinte)]) {
+          expect(ratio(oscuro(name), bg), `--${name} (${oscuro(name)}) sobre papel-${t} (${bg})`).toBeGreaterThanOrEqual(4.5);
+        }
+      }
+    },
+  );
+
+  it('el borde de control y el anillo de foco oscuros alcanzan 3:1 sobre toda superficie', () => {
+    for (const [superficie, bg] of Object.entries(superficies())) {
+      expect(ratio(oscuro('color-border-control'), bg), `borde sobre ${superficie}`).toBeGreaterThanOrEqual(3);
+      expect(ratio(oscuro('color-focus'), bg), `foco sobre ${superficie}`).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it('el relleno magenta de los botones no cambia y su texto blanco sigue en 4.5:1 o más', () => {
+    expect(manual).not.toMatch(/--color-primary:/);
+    expect(ratio(token('color-on-primary'), token('color-primary'))).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('los siete tintes oscuros siguen distinguiéndose entre sí (distancia RGB de 15 o más)', () => {
+    const rgb = (hex: string) => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
+    const tintes = TINTES.map(t => ({ t, rgb: rgb(oscuro(`papel-${t}`)) }));
+    for (let i = 0; i < tintes.length; i++) {
+      for (const b of tintes.slice(i + 1)) {
+        const d = Math.hypot(...tintes[i].rgb.map((c, k) => c - b.rgb[k]));
+        expect(d, `${tintes[i].t} contra ${b.t}`).toBeGreaterThanOrEqual(15);
+      }
+    }
+  });
+});
