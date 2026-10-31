@@ -74,6 +74,7 @@ describe('CSS de pasar la página y del grano', () => {
     expect(body).toMatch(/background-image:\s*url\("data:image\/svg\+xml/);
     expect(body).toContain("opacity='.03'");
     expect(body).not.toMatch(/position:\s*fixed/);
-    expect(indexCss).not.toMatch(/mix-blend-mode/);
+    // `mix-blend-mode: normal` no mezcla nada: solo anula el plus-lighter del navegador durante el cambio de tema (src/utils/theme.ts).
+    expect(indexCss.replace(/mix-blend-mode:\s*normal;/g, '')).not.toMatch(/mix-blend-mode/);
   });
 });

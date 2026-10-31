@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Feather,
   Lock,
@@ -29,6 +29,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
   onNavigateDashboard,
   hasActiveProfile = false,
 }) => {
+  // La landing es una pieza de papelería con colores propios (DESIGN.md §7.4): siempre se ve en claro, sin importar el tema de la app.
+  useEffect(() => {
+    document.documentElement.setAttribute('data-force-light', '');
+    return () => document.documentElement.removeAttribute('data-force-light');
+  }, []);
+
   const handlePrimaryCta = () => {
     if (hasActiveProfile && onNavigateDashboard) {
       onNavigateDashboard();
