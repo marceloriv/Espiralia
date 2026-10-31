@@ -76,7 +76,7 @@
 
 .todayBtn {
   background: transparent;
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm, 0.25rem);
   font-family: var(--font-family-2, sans-serif);
   font-size: 0.75rem;
@@ -395,7 +395,7 @@
   min-height: 44px;
   background: transparent;
   color: var(--color-ink);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
   padding: 8px 14px;
   font-size: 12px;
@@ -488,7 +488,7 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm);
   color: var(--color-primary);
   cursor: pointer;
@@ -576,7 +576,7 @@
 
 .moodBtn {
   background: transparent;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: 6px;
   width: 32px;
   height: 32px;

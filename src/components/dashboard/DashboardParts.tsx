@@ -11,16 +11,47 @@ interface MetricsStripProps {
   netFocus: NetFocusResult;
   storageBytes: number;
   taskPerf: TaskPerformanceResult;
+  /** Lunes a domingo: hubo al menos un hábito cumplido ese día. */
+  weekHabitDays: boolean[];
+  /** Índice del día de hoy (0 = lunes). */
+  todayHabitIdx: number;
 }
 
+const WEEK_INITIALS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+const WEEK_NAMES = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+
 /** Franja de cuatro indicadores del Dashboard: racha, foco neto, almacenamiento y rendimiento. */
-export const MetricsStrip: React.FC<MetricsStripProps> = ({ habitStreak, netFocus, storageBytes, taskPerf }) => (
+export const MetricsStrip: React.FC<MetricsStripProps> = ({
+  habitStreak,
+  netFocus,
+  storageBytes,
+  taskPerf,
+  weekHabitDays,
+  todayHabitIdx,
+}) => {
+  const storagePct = Math.min(100, (storageBytes / LOCALSTORAGE_QUOTA_BYTES) * 100);
+  const doneNames = WEEK_NAMES.filter((_, i) => weekHabitDays[i]);
+  return (
   <section className={styles.kpiStrip} aria-label="Métricas de serenidad">
         <div className={styles.metricQuadTile}>
           <span className={styles.metricTileLabel}>Racha Serena</span>
           <div className={styles.metricTileValueBox}>
             <span className={styles.metricTileValAccent}>{habitStreak}</span>
             <span className={styles.metricTileUnit}>días</span>
+          </div>
+          <div
+            className={styles.weekDots}
+            role="img"
+            aria-label={doneNames.length > 0 ? `Hábitos cumplidos esta semana: ${doneNames.join(', ')}` : 'Sin hábitos cumplidos esta semana'}
+          >
+            {WEEK_INITIALS.map((initial, i) => (
+              <span
+                key={WEEK_NAMES[i]}
+                className={`${styles.weekDot} ${weekHabitDays[i] ? styles.weekDotDone : ''} ${i === todayHabitIdx ? styles.weekDotToday : ''}`}
+              >
+                {initial}
+              </span>
+            ))}
           </div>
           <span className={styles.metricTileSub}>{habitStreak > 0 ? 'Hábitos al día' : 'Marca un hábito para empezarla'}</span>
         </div>
@@ -40,6 +71,16 @@ export const MetricsStrip: React.FC<MetricsStripProps> = ({ habitStreak, netFocu
           <span className={styles.metricTileLabel}>Almacenamiento</span>
           <div className={styles.metricTileValueBox}>
             <span className={styles.metricTileValTeal}>{formatBytes(storageBytes)}</span>
+          </div>
+          <div
+            className={styles.metricTileBar}
+            role="meter"
+            aria-label="Almacenamiento usado"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(storagePct)}
+          >
+            <div className={styles.metricTileBarFillTeal} style={{ width: `${storagePct}%` }} />
           </div>
           <span className={styles.metricTileSub}>de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)} en este navegador</span>
         </div>
@@ -68,7 +109,8 @@ export const MetricsStrip: React.FC<MetricsStripProps> = ({ habitStreak, netFocu
           </span>
         </div>
       </section>
-);
+  );
+};
 
 interface FocusBannerProps {
   focus: FocusSummary;

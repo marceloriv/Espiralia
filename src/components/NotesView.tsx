@@ -353,10 +353,15 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
 
           {/* Título accesible para tests que buscan 'notas & reflexiones' */}
           <h2 className={styles.visuallyHidden}>Notas &amp; Reflexiones</h2>
+          {/* Fuera de la fila de lomos: dentro, el scroll horizontal lo sacaba de pantalla en móvil. */}
+          <button type="button" className={styles.btnAddNoteHeader} onClick={handleOpenNew}>
+            <Plus size={16} aria-hidden="true" />
+            <span>Nueva Nota</span>
+          </button>
         </div>
 
         {/* Archival Binder Spines / Lomos de Archivador de Oficina */}
-        <div className={styles.binderCabinetRow} role="tablist" aria-label="Archivadores de Tomos">
+        <div className={styles.binderCabinetRow} role="group" aria-label="Archivadores de Tomos">
           {TOMOS_CONFIG.map((tomo) => {
             const isActive = activeTomo === tomo.id;
             const binderTomoClassMap: Record<string, string> = {
@@ -371,6 +376,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               <button
                 key={tomo.id}
                 type="button"
+                title={tomo.title}
                 aria-current={isActive ? 'page' : 'false'}
                 className={`${styles.binderSpineBtn} ${tomoStyleClass} ${isActive ? styles.binderActive : ''}`}
                 onClick={() => setActiveTomo(tomo.id)}
@@ -389,16 +395,6 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               </button>
             );
           })}
-
-          <button
-            type="button"
-            className={styles.btnAddNoteHeader}
-            onClick={handleOpenNew}
-            aria-label="+ Nueva Nota"
-          >
-            <Plus size={16} aria-hidden="true" />
-            <span>+ Nueva Nota</span>
-          </button>
         </div>
       </div>
 

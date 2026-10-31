@@ -10,9 +10,11 @@
   --color-ink: #141413;
   --color-body: #3d3d3a;
   --color-body-strong: #252523;
-  --color-muted: #64625c;
+  --color-muted: #57554f;
   --color-muted-soft: #8e8b82;
   --color-hairline: #e6dfd8;
+  /* Borde de botones, campos y selectores: 3:1 como mínimo (WCAG 1.4.11) sobre toda superficie, esquinas oscuras del Papel incluidas. El hairline queda para divisores. */
+  --color-border-control: #76716a;
   --color-hairline-soft: #ebe6df;
   --color-canvas: #faf9f5;
   --color-canvas-paper: #faf9f5;
@@ -212,7 +214,7 @@
   --contenedor-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 45%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 20%, var(--bg-card)));
   /* Sobre esos tintes los textos globales bajan de 4.5:1; dentro del Papel se usan estas variantes más oscuras.
      El degradado de esquina de la tarjeta (Papel.module.css) llega al 58% del tinte fuerte: su peor caso, 4.55:1, fija estos valores. */
-  --papel-texto-suave: #585651;
+  --papel-texto-suave: #4d4b46;
   --papel-texto-exito: #2b6137;
   --papel-texto-turquesa: #295f55;
   --papel-texto-ambar: #7d4a12;
