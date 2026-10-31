@@ -60,14 +60,36 @@ describe('Tema claro y oscuro (DESIGN.md §7.4)', () => {
     expect(onApplied).toHaveBeenCalledTimes(1);
   });
 
-  it('con movimiento reducido aplica de inmediato aunque exista startViewTransition', () => {
-    mockMatchMedia({ '(prefers-reduced-motion: reduce)': true });
-    const start = vi.fn();
-    (document as unknown as { startViewTransition: unknown }).startViewTransition = start;
-    switchTheme('dark', { x: 0, y: 0 });
-    expect(start).not.toHaveBeenCalled();
-    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
-    delete (document as unknown as { startViewTransition?: unknown }).startViewTransition;
+  // Técnica: tabla de decisión (preferencia de movimiento) sobre qué animación recibe el tema nuevo.
+  describe.each([
+    { reducido: true, clave: 'opacity', ausente: 'maskImage' },
+    { reducido: false, clave: 'maskImage', ausente: 'opacity' },
+  ])('con View Transitions y movimiento reducido = $reducido', ({ reducido, clave, ausente }) => {
+    afterEach(() => {
+      delete (document as unknown as { startViewTransition?: unknown }).startViewTransition;
+      delete (document.documentElement as unknown as { animate?: unknown }).animate;
+    });
+
+    it(`el cambio no es instantáneo: anima ${clave} sobre el tema nuevo`, async () => {
+      mockMatchMedia({ '(prefers-reduced-motion: reduce)': reducido });
+      const animate = vi.fn();
+      (document.documentElement as unknown as { animate: unknown }).animate = animate;
+      const start = vi.fn((cb: () => void) => {
+        cb();
+        return { ready: Promise.resolve(), finished: Promise.resolve() };
+      });
+      (document as unknown as { startViewTransition: unknown }).startViewTransition = start;
+
+      switchTheme('dark', { x: 10, y: 10 });
+      await Promise.resolve();
+
+      expect(start).toHaveBeenCalledTimes(1);
+      expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+      const [keyframes, options] = animate.mock.calls[0];
+      expect(keyframes).toHaveProperty(clave);
+      expect(keyframes).not.toHaveProperty(ausente);
+      expect(options.pseudoElement).toBe('::view-transition-new(root)');
+    });
   });
 
   it('ThemeToggle ofrece el cambio contrario y lo hace al pulsar', () => {

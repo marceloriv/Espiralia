@@ -30,7 +30,8 @@ export const applyTheme = (theme: Theme): void => {
 
 /**
  * Cambia de tema con el efecto de https://theme-toggle.rdsx.dev: la View Transitions API revela el tema nuevo con un círculo que
- * crece desde `origin` (donde se pulsó). Sin soporte o con `prefers-reduced-motion` el cambio es inmediato.
+ * crece desde `origin` (donde se pulsó). Con `prefers-reduced-motion` no hay círculo (es movimiento) pero sí un fundido corto: un
+ * cambio instantáneo de todo el color de la pantalla se siente como un golpe. Sin soporte de la API el cambio es inmediato.
  * `onApplied` corre dentro de la transición, para que el estado de React cambie junto con el tema.
  */
 export function switchTheme(next: Theme, origin: { x: number; y: number }, onApplied?: () => void): void {
@@ -39,7 +40,7 @@ export function switchTheme(next: Theme, origin: { x: number; y: number }, onApp
     onApplied?.();
   };
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  if (!('startViewTransition' in document) || reduceMotion) {
+  if (!('startViewTransition' in document)) {
     apply();
     return;
   }
@@ -54,20 +55,24 @@ export function switchTheme(next: Theme, origin: { x: number; y: number }, onApp
   const final = (2 * radio) / 0.55;
   const at = (size: number) => `${origin.x - size / 2}px ${origin.y - size / 2}px`;
   // Un gradiente no se interpola con `none`: la máscara va como par desde-hasta para estar activa durante toda la animación.
-  const mask = 'radial-gradient(circle, #000 55%, transparent 75%)';
+  // `closest-side`: el radio del gradiente es la mitad del cuadrado, no su semidiagonal; así el círculo termina de cubrir la pantalla
+  // justo al final de la animación y no a los dos tercios.
+  const mask = 'radial-gradient(circle closest-side, #000 55%, transparent 75%)';
+
+  const circle = {
+    keyframes: {
+      maskImage: [mask, mask],
+      maskRepeat: ['no-repeat', 'no-repeat'],
+      maskSize: ['0px 0px', `${final}px ${final}px`],
+      maskPosition: [at(0), at(final)],
+    },
+    options: { duration: 2000, easing: 'cubic-bezier(0.37, 0, 0.63, 1)' },
+  };
+  const fade = { keyframes: { opacity: [0, 1] }, options: { duration: 600, easing: 'ease-in-out' } };
+  const { keyframes, options } = reduceMotion ? fade : circle;
 
   transition.ready
-    .then(() =>
-      root.animate(
-        {
-          maskImage: [mask, mask],
-          maskRepeat: ['no-repeat', 'no-repeat'],
-          maskSize: ['0px 0px', `${final}px ${final}px`],
-          maskPosition: [at(0), at(final)],
-        },
-        { duration: 2200, easing: 'cubic-bezier(0.37, 0, 0.63, 1)', pseudoElement: '::view-transition-new(root)' },
-      ),
-    )
+    .then(() => root.animate(keyframes, { ...options, pseudoElement: '::view-transition-new(root)' }))
     .catch(() => {
       // La transición se canceló (otra vista empezó antes): el tema ya se aplicó.
     });
