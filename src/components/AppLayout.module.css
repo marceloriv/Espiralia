@@ -67,7 +67,7 @@
   border-radius: 8px;
   background-color: var(--color-canvas);
   border: 1px solid var(--color-hairline);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-family: var(--font-primary);
   font-size: 16px;
   font-weight: 700;
@@ -86,7 +86,7 @@
   font-size: var(--text-script-min);
   font-weight: 700;
   line-height: 1.15;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .brandCaption {
@@ -114,7 +114,7 @@
   border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
   background-color: var(--color-surface-card);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-family: var(--font-primary);
   font-size: 14px;
   font-weight: 600;
@@ -130,7 +130,7 @@
 }
 
 .quickActionButton:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -161,12 +161,12 @@
 
 .navItem:hover {
   background-color: var(--color-surface-card);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .navItemActive {
   background-color: var(--color-surface-card);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
   box-shadow: inset 3px 0 0 var(--color-primary);
 }
@@ -185,7 +185,7 @@
   justify-content: space-between;
   padding: 6px 10px;
   margin: 0 4px 12px;
-  background-color: rgba(237, 227, 208, 0.45);
+  background-color: color-mix(in srgb, var(--bg-manila) 45%, transparent);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-sm);
   font-size: 11px;
@@ -244,7 +244,7 @@
 }
 
 .settingsButton:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -272,7 +272,7 @@
 }
 
 .vaultButton:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -382,7 +382,7 @@
 }
 
 .searchTrigger:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -440,7 +440,7 @@
   border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
   background-color: var(--color-surface-card);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-size: var(--text-body-sm);
   font-weight: 600;
   cursor: pointer;
@@ -453,7 +453,7 @@
 }
 
 .newNoteButton:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -475,7 +475,7 @@
 
 .lockButton:hover {
   border-color: var(--color-primary-soft);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 /* Avatar del perfil activo: solo en móvil, donde la tarjeta del sidebar está oculta. */
@@ -485,7 +485,7 @@
 
 .navItem:focus-visible,
 .lockButton:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -595,7 +595,7 @@
 }
 
 .moreMenuItem:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: -2px;
 }
 
@@ -628,7 +628,7 @@
     padding: 0 8px env(safe-area-inset-bottom, 0px);
     border-top: 1px solid var(--border-hairline);
     border-right: none;
-    background-color: rgba(245, 240, 232, 0.95);
+    background-color: color-mix(in srgb, var(--color-surface-soft) 95%, transparent);
     background-image: none;
     backdrop-filter: blur(8px);
   }

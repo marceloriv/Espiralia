@@ -511,7 +511,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         <section className={styles.ficheroSection}>
           <div className={styles.ficheroTopBar}>
             <div className={styles.ficheroBrand}>
-              <FolderIcon size={20} color="var(--color-primary)" aria-hidden="true" />
+              <FolderIcon size={20} color="var(--color-text-primary)" aria-hidden="true" />
               <span className={styles.ficheroTitle}>Fichero de Índice Manuscrito</span>
               <span className={styles.countBadge}>{displayFolders.length} Carpetas Activas</span>
             </div>
@@ -688,7 +688,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                             <td className={styles.ledgerTd}>
                               <div className={styles.docTitleBox}>
                                 {item.type === 'note' ? (
-                                  <FileText size={18} color="var(--color-primary)" aria-hidden="true" />
+                                  <FileText size={18} color="var(--color-text-primary)" aria-hidden="true" />
                                 ) : item.type === 'file' ? (
                                   <FileUp size={18} color="var(--color-text-error)" aria-hidden="true" />
                                 ) : (
@@ -834,7 +834,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             <div className={styles.quickCaptureCard}>
               <div className={styles.quickCaptureHeader}>
                 <div className={styles.quickCaptureLead}>
-                  <BookmarkPlus size={20} color="var(--color-primary)" aria-hidden="true" />
+                  <BookmarkPlus size={20} color="var(--color-text-primary)" aria-hidden="true" />
                   <h4 className={styles.quickCaptureTitle}>Captura Veloz de Enlace</h4>
                 </div>
               </div>

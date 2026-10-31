@@ -306,7 +306,7 @@ const VaultModalContent: React.FC<VaultModalProps> = ({
             {pendingEnvelope && (
               <div className={styles.infoCard}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <Lock size={16} color="var(--color-primary)" />
+                  <Lock size={16} color="var(--color-text-primary)" />
                   <strong>Archivo cifrado detectado</strong>
                 </div>
                 <p style={{ margin: '0 0 10px', fontSize: '0.8125rem' }}>

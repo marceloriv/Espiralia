@@ -127,7 +127,7 @@
 
 .priorityPillActive {
   background: var(--color-primary);
-  color: #ffffff !important;
+  color: var(--color-on-primary) !important;
   border-color: var(--color-primary);
 }
 
@@ -176,7 +176,7 @@
   font-family: var(--font-family-3, monospace);
   font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .mainContent {
@@ -354,7 +354,7 @@
 
 .areaPillViolet {
   background: rgba(94, 23, 85, 0.08);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   border: 1px solid rgba(94, 23, 85, 0.2);
   font-size: 11px;
   font-weight: 600;
@@ -406,11 +406,11 @@
 
 .clearWeekBtn:hover {
   border-color: var(--color-error);
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 .clearWeekBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -490,7 +490,7 @@
   background: transparent;
   border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   cursor: pointer;
 }
 
@@ -589,7 +589,7 @@
 
 .moodBtnActive {
   background: rgba(94, 23, 85, 0.1);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   border-color: var(--color-primary);
 }
 
