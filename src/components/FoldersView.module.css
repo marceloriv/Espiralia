@@ -1203,6 +1203,14 @@
   gap: 1rem;
 }
 
+.cargaPdf {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .emptyTableText {
   margin: 0;
   font-family: var(--font-family-2);

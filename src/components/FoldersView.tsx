@@ -17,6 +17,7 @@ import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { addFile, deleteFile, deleteFolderFiles, getFileBlob, listFiles } from '../services/fileStore';
 import { formatBytes } from '../utils/formatBytes';
 import { folderTabColors } from '../utils/folderTabColors';
+import { Esqueleto } from './common/Esqueleto';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
 import { NoteModal } from './notes/NoteModal';
@@ -647,11 +648,16 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                         <tr>
                           <td colSpan={5} className={styles.emptyTableTd}>
                             <div className={styles.emptyTableBox}>
-                              <p className={styles.emptyTableText}>
-                                {filesStatus === 'loading'
-                                  ? 'Cargando los PDF de esta carpeta…'
-                                  : 'Esta carpeta no contiene notas, enlaces ni PDF todavía.'}
-                              </p>
+                              {filesStatus === 'loading' ? (
+                                <div className={styles.cargaPdf} role="status" aria-busy="true">
+                                  <span className="visually-hidden">Cargando los PDF de esta carpeta…</span>
+                                  <Esqueleto ancho="100%" alto="2.25rem" />
+                                  <Esqueleto ancho="100%" alto="2.25rem" />
+                                  <Esqueleto ancho="70%" alto="2.25rem" />
+                                </div>
+                              ) : (
+                                <p className={styles.emptyTableText}>Esta carpeta no contiene notas, enlaces ni PDF todavía.</p>
+                              )}
                               <div className={styles.emptyTableActions}>
                                 <button
                                   type="button"

@@ -443,7 +443,7 @@ Valores objetivo. Todos son tokens existentes salvo los marcados como nuevos en 
 | **Activo / pulsado** | escala `0.98` como máximo; sin cambio de color distinto del hover. |
 | **Deshabilitado** | opacidad `0.5`, `cursor: not-allowed`, `aria-disabled` o `disabled`; el texto deshabilitado no está obligado a cumplir contraste, pero la etiqueta sí debe seguir legible. |
 | **Error** | borde `--color-error`, texto de error en `--color-text-error` **y** un ícono o mensaje (el color no es el único canal), enlazado con `aria-describedby`. |
-| **Carga** | texto que dice qué carga ("Guardando…"), sin spinner solitario; el botón se bloquea para evitar doble envío. |
+| **Carga** | esqueleto con la silueta del contenido (§7.7), con un texto que dice qué carga ("Cargando los PDF…") para el lector de pantalla; nunca un spinner ni un vacío. Un botón que envía se bloquea para evitar doble envío. |
 | **Transición** | `--duration-fast` (150ms) en color, borde y sombra. `transition: all` queda prohibido. Con `prefers-reduced-motion: reduce` se anulan las transiciones de transformación. |
 
 ### 7.4 Modo oscuro
@@ -542,3 +542,14 @@ La regla no es solo texto: se vuelve test, igual que el presupuesto de Papel (§
 - **Modo oscuro (si existe):** cada token semántico redefinido cumple su umbral de §7.4 en ambos temas, y ningún `.module.css` contiene `prefers-color-scheme` ni `data-theme`.
 
 Mientras el test no exista, la revisión de PR aplica esta lista a mano: un cambio que agrega un botón, tarjeta, campo o modal con estilo propio se devuelve.
+
+### 7.7 Estados de carga: esqueleto, no spinner ni vacío (regla de diseño, 2026-10-31)
+
+> Decisión de la persona dueña: **todo estado de carga se resuelve con un esqueleto**. Un espacio en blanco o un spinner solitario no dicen qué viene ni cuánto falta, y el contenido salta cuando llega; un esqueleto muestra la forma de lo que se está cargando y la maquetación no se mueve al terminar.
+
+- **Qué es:** piezas grises con la silueta del contenido real (línea de texto, bloque de tarjeta, círculo de avatar), compuestas con `common/Esqueleto.tsx`. El color sale de `--color-surface-card` y `--color-hairline`, así que sirve en ambos temas sin código propio.
+- **Misma silueta, misma medida:** el esqueleto reserva el alto y el ancho de lo que sustituye (tarjetas de 9rem, filas de 2.25rem). Si el contenido cambia de forma, el esqueleto cambia con él.
+- **Se anuncia una vez:** el conjunto va dentro de un `role="status"` con `aria-busy="true"` y un texto en `.visually-hidden` que dice qué carga ("Cargando espacio…"). Las piezas son `aria-hidden`, para que el lector no las lea una por una.
+- **Movimiento:** un pulso de opacidad (`respirar`, 1,8s, hasta 0,55) mientras algo carga; no se desplaza nada ni hay brillo que cruce. Con `prefers-reduced-motion: reduce` el esqueleto queda quieto. Es la quinta excepción a MOTION 1 y la única animación infinita de carga: el spinner giratorio **queda prohibido** (`esqueleto.test.tsx` lo vigila).
+- **Dónde rige hoy:** la carga de cada vista (`RouteLoadingFallback`, silueta de encabezado, bajada y tarjetas) y los PDF de una carpeta mientras se leen de IndexedDB. Los datos de `localStorage` se leen de forma síncrona y no necesitan esqueleto.
+- **Cuándo se agrega uno nuevo:** cualquier espera visible que no sea instantánea (red, IndexedDB, un `lazy`). Un estado vacío real ("no hay notas todavía") **no** es una carga y sigue siendo un vacío con su acción (§7.3).
