@@ -6,6 +6,6 @@ try {
   if (guardado === 'dark' || guardado === 'light') {
     document.documentElement.setAttribute('data-theme', guardado);
   }
-} catch (e) {
+} catch {
   // localStorage bloqueado: se queda con la preferencia del sistema.
 }
