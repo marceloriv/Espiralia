@@ -32,7 +32,7 @@
   flex-direction: column;
   gap: 1.25rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 @media (min-width: 768px) {
@@ -50,19 +50,19 @@
 }
 
 .title {
-  font-family: var(--font-headline, 'Newsreader', serif);
+  font-family: var(--font-primary, 'Newsreader', serif);
   font-size: var(--text-display-md);
   line-height: 1.2;
   font-weight: 600;
   letter-spacing: -0.015em;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0;
 }
 
 .subtitle {
   font-size: 0.95rem;
   line-height: 1.5;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   margin: 0;
 }
 
@@ -91,7 +91,7 @@
 }
 
 .btnAdd:hover {
-  background: var(--color-primary-active, #c654c3);
+  background: var(--color-primary-active);
   transform: translateY(-1px);
 }
 
@@ -101,9 +101,9 @@
   gap: 0.5rem;
   min-height: var(--tap-min);
   padding: 0.5rem 1.15rem;
-  background: var(--bg-card, var(--color-surface-card, #efe9de));
+  background: var(--bg-card);
   border: 1px solid var(--color-border-control);
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -113,7 +113,7 @@
 }
 
 .btnSecondary:hover {
-  background: var(--color-surface-cream-strong, #e8e0d2);
+  background: var(--color-surface-cream-strong);
 }
 
 /* Desk Stage Grid */
@@ -157,7 +157,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
 }
 
 .countBadge {
@@ -165,9 +165,9 @@
   font-size: 0.75rem;
   padding: 0.15rem 0.6rem;
   border-radius: 9999px;
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  color: var(--color-ink-muted, #6c6a64);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-muted);
 }
 
 /* Staggered Tabs Container */
@@ -269,7 +269,7 @@
   height: 100%;
   border-radius: 8px 12px 0 0;
   clip-path: polygon(0% 0%, 45% 0%, 54% 22%, 100% 22%, 100% 100%, 0% 100%);
-  background: var(--folder-color, #e5b23e);
+  background: var(--folder-color);
   filter: brightness(0.92);
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-bottom: none;
@@ -317,7 +317,7 @@
 }
 
 .sheetFlatAccent {
-  background: var(--color-primary, #8e1ea2);
+  background: var(--color-primary);
   width: 60%;
 }
 
@@ -414,8 +414,8 @@
   width: 48px;
   height: 48px;
   border-radius: 0.75rem;
-  background: var(--color-surface-cream-strong, #e8e0d2);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-cream-strong);
+  border: 1px solid var(--color-hairline);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -437,16 +437,16 @@
 }
 
 .folderTitle {
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0;
 }
 
 .folderDesc {
   font-size: 0.875rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   margin: 0;
 }
 
@@ -490,14 +490,14 @@
   margin-bottom: 0.75rem;
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .ledgerTableWrapper {
   background: #ffffff;
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-hairline);
   border-radius: 0.75rem;
   /* La tabla hace scroll horizontal en vez de cortar la columna de acción cuando no cabe. */
   overflow-x: auto;
@@ -513,10 +513,10 @@
 
 .ledgerThead {
   background: rgba(245, 240, 232, 0.8);
-  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  border-bottom: 1px solid var(--color-hairline);
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 .ledgerTh {
@@ -542,7 +542,7 @@
 .docCode {
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -567,7 +567,7 @@
 
 .docTitle {
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
 }
 
 .docFormatPill {
@@ -576,15 +576,15 @@
   border-radius: 0.25rem;
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  color: var(--color-ink, #141413);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-ink);
 }
 
 .docDate {
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 .btnActionTable {
@@ -608,7 +608,7 @@
   flex-direction: column;
   gap: 0.75rem;
   font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 @media (min-width: 640px) {
@@ -652,11 +652,11 @@
 .btnSubAction {
   padding: 0.35rem 0.75rem;
   border-radius: 0.25rem;
-  background: var(--color-surface-cream-strong, #e8e0d2);
+  background: var(--color-surface-cream-strong);
   border: 1px solid var(--color-border-control);
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   cursor: pointer;
   transition: all 0.12s ease;
 }
@@ -681,8 +681,8 @@
 }
 
 .miniFolderCard {
-  background: var(--color-surface-soft, #f5f0e8);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
   border-radius: 0.75rem;
   padding: 1rem;
   position: relative;
@@ -695,14 +695,14 @@
 .miniFolderCard:hover {
   border-color: var(--color-primary);
   transform: translateY(-2px);
-  background: var(--color-surface-card, #efe9de);
+  background: var(--color-surface-card);
 }
 
 .miniWatermark {
   position: absolute;
   right: 0.5rem;
   bottom: -0.5rem;
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 3.5rem;
   font-weight: 700;
   color: rgba(20, 20, 19, 0.04);
@@ -721,20 +721,20 @@
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
   font-weight: 700;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 .miniTitle {
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 1.05rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0;
 }
 
 .miniDesc {
   font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   margin: 0.35rem 0 0.75rem;
   line-height: 1.4;
 }
@@ -747,7 +747,7 @@
   justify-content: space-between;
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 /* Right Column (Paper Ephemera & Fast Capture) */
@@ -847,16 +847,16 @@
 }
 
 .quickCaptureTitle {
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 1.05rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0;
 }
 
 .quickCaptureDesc {
   font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   margin: 0 0 0.85rem;
 }
 
@@ -874,7 +874,7 @@
   padding: 0.5rem 0.75rem;
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   box-sizing: border-box;
 }
 
@@ -896,7 +896,7 @@
   border-radius: 0.5rem;
   padding: 0.4rem 0.6rem;
   font-size: 0.75rem;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
 }
 
 .btnArchivar {
@@ -912,13 +912,13 @@
 }
 
 .btnArchivar:hover {
-  background: var(--color-primary-active, #c654c3);
+  background: var(--color-primary-active);
 }
 
 /* Storage Widget */
 .storageWidget {
-  background: var(--color-surface-soft, #f5f0e8);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
   border-radius: 0.75rem;
   padding: 1.25rem;
 }
@@ -933,7 +933,7 @@
 .storageTitle {
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   text-transform: uppercase;
 }
 
@@ -947,8 +947,8 @@
 .storageProgressBar {
   width: 100%;
   height: 8px;
-  background: var(--color-surface-cream-strong, #e8e0d2);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-cream-strong);
+  border: 1px solid var(--color-hairline);
   border-radius: 9999px;
   overflow: hidden;
   padding: 1px;
@@ -967,7 +967,7 @@
   justify-content: space-between;
   margin-top: 0.75rem;
   font-size: 0.6875rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 .shieldText {
@@ -1000,7 +1000,7 @@
   flex-direction: column;
   gap: 0.75rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 @media (min-width: 640px) {
@@ -1030,10 +1030,10 @@
 }
 
 .catalogTitle {
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 1.35rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0;
 }
 
@@ -1043,8 +1043,8 @@
   padding: 0.25rem 0.65rem;
   border-radius: 0.375rem;
   border: 1px solid var(--color-border-control);
-  background: var(--color-surface-soft, #f5f0e8);
-  color: var(--color-ink-muted, #6c6a64);
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
   cursor: pointer;
   transition: all 0.12s ease;
 }
@@ -1123,18 +1123,18 @@
 }
 
 .bookmarkCardTitle {
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 1.15rem;
   font-weight: 600;
   line-height: 1.35;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0;
 }
 
 .bookmarkCardSnippet {
   font-size: 0.75rem;
   line-height: 1.5;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   margin: 0.5rem 0 1rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1144,13 +1144,13 @@
 
 .bookmarkCardFooter {
   padding-top: 0.75rem;
-  border-top: 1px solid var(--color-hairline, #e6dfd8);
+  border-top: 1px solid var(--color-hairline);
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
 }
 
 .bookmarkDomain {
@@ -1179,15 +1179,15 @@
   justify-content: center;
   border: none;
   background: transparent;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   cursor: pointer;
   border-radius: 0.25rem;
   transition: all 0.12s ease;
 }
 
 .iconBtn:hover {
-  background: var(--color-hairline, #e6dfd8);
-  color: var(--color-ink, #141413);
+  background: var(--color-hairline);
+  color: var(--color-ink);
 }
 
 .emptyTableTd {
@@ -1206,7 +1206,7 @@
   margin: 0;
   font-family: var(--font-family-2);
   font-size: 0.875rem;
-  color: var(--color-ink-muted, #6c6a64);
+  color: var(--color-muted);
   font-style: italic;
 }
 
@@ -1217,14 +1217,14 @@
 }
 
 .emptyTableBtn {
-  background: var(--color-surface-card, #efe9de);
+  background: var(--color-surface-card);
   border: 1px solid var(--color-border-control);
   border-radius: 0.375rem;
   padding: 0.4rem 0.85rem;
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -1250,7 +1250,7 @@
 
 .emptyFoldersTitle {
   margin: 0.25rem 0 0;
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 1.15rem;
   font-weight: 600;
   color: var(--color-ink);

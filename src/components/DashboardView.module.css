@@ -13,11 +13,11 @@
 
 .heroCard {
   position: relative;
-  background-color: var(--bg-card, var(--color-canvas));
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 32px;
-  box-shadow: var(--shadow-card-stack, var(--shadow-paper));
+  box-shadow: var(--shadow-card-stack);
   overflow: hidden;
 }
 
@@ -497,7 +497,7 @@
 .kpiStrip .metricQuadTile {
   padding: 16px;
   gap: 4px;
-  background-color: var(--bg-card, #FCF9F6);
+  background-color: var(--bg-card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-paper);
 }
@@ -571,8 +571,8 @@
 
 .bentoCard {
   position: relative;
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 22px;
   box-shadow: var(--shadow-paper);
@@ -1145,7 +1145,7 @@
 .focusModalCard {
   width: 100%;
   max-width: 480px;
-  background-color: var(--bg-card, #fcf9f6);
+  background-color: var(--bg-card);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
   box-shadow: 0 14px 28px rgba(26, 25, 23, 0.16);
@@ -1738,8 +1738,8 @@
 
 .areasSection {
   position: relative;
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 26px 28px;
   box-shadow: var(--shadow-paper);
@@ -1995,8 +1995,8 @@
 
 .notesSection {
   position: relative;
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 26px 28px;
   box-shadow: var(--shadow-paper);
@@ -2109,8 +2109,8 @@
 
 .reflectionSection {
   position: relative;
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 28px;
   box-shadow: var(--shadow-paper);
@@ -2256,8 +2256,8 @@
    ========================================================================= */
 
 .metricsSection {
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 24px;
   box-shadow: var(--shadow-paper);

@@ -14,14 +14,14 @@
   align-items: center;
   gap: var(--spacing-xs, 0.5rem);
   padding: 4px 12px;
-  background-color: var(--color-surface-soft, #f5f0e8);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-pill, 9999px);
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: var(--color-primary, #8E1EA2);
+  color: var(--color-primary);
   font-weight: 600;
   margin-bottom: var(--spacing-sm, 0.75rem);
 }
@@ -30,7 +30,7 @@
   font-family: var(--font-primary, serif);
   font-size: 2rem;
   line-height: 1.2;
-  color: var(--color-body-strong, #252523);
+  color: var(--color-body-strong);
   margin-bottom: var(--spacing-xs, 0.5rem);
 }
 
@@ -68,16 +68,16 @@
   background-color: var(--color-surface-card);
   /* Cada boleto toma el color de su cinta: rosa, terracota y turquesa (DESIGN.md §0.12). */
   background-image:
-    radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.5px, transparent 0.5px),
+    radial-gradient(var(--color-grid-bujo) 0.5px, transparent 0.5px),
     linear-gradient(145deg, color-mix(in srgb, var(--tinte-boleto) 55%, var(--color-surface-card)), var(--color-surface-card) 66%);
   background-size: 14px 14px, auto;
   padding: 2.25rem 1.5rem 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-left: 1px solid var(--color-hairline, #e6dfd8);
-  border-right: 1px solid var(--color-hairline, #e6dfd8);
-  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  border-left: 1px solid var(--color-hairline);
+  border-right: 1px solid var(--color-hairline);
+  border-bottom: 1px solid var(--color-hairline);
   filter: drop-shadow(0 4px 12px rgba(26, 25, 23, 0.05));
   transition: transform 0.25s ease-out, filter 0.25s ease-out;
   min-height: 270px;
@@ -144,7 +144,7 @@
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-primary, #8E1EA2);
+  color: var(--color-primary);
   background-color: rgba(142, 30, 162, 0.08);
   padding: 3px 8px;
   border-radius: var(--radius-pill, 9999px);
@@ -158,16 +158,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-surface-soft, #f5f0e8);
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  color: var(--color-body-strong, #252523);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
+  color: var(--color-body-strong);
 }
 
 .cardTitle {
   font-family: var(--font-primary, serif);
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-body-strong, #252523);
+  color: var(--color-body-strong);
   margin: 0 0 0.75rem 0;
   line-height: 1.3;
 }
@@ -176,7 +176,7 @@
   font-family: var(--font-body, sans-serif);
   font-size: 0.875rem;
   line-height: 1.6;
-  color: var(--color-body, #3d3d3a);
+  color: var(--color-body);
   margin: 0 0 1.25rem 0;
 }
 
@@ -195,7 +195,7 @@
   position: relative;
   width: 100%;
   height: 1px;
-  border-top: 1.5px dashed var(--color-hairline, #e6dfd8);
+  border-top: 1.5px dashed var(--color-hairline);
   margin: 0.75rem 0;
 }
 
@@ -207,8 +207,8 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background-color: var(--color-canvas, #faf9f5);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
 }
 
 .perforatedLine::before {

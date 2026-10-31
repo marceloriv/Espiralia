@@ -56,6 +56,41 @@ describe('Primitivos de diálogo (DESIGN.md §7.2)', () => {
     expect(faltan).toEqual([]);
   });
 
+  // Paso 4 de §7.5: un respaldo en hex congela el color claro y no cambiaría con un tema oscuro.
+  it('ningún módulo CSS usa var(--token, color) con un token definido en src/index.css', () => {
+    const raiz = new Set([...tokensCss.matchAll(/(--[\w-]+)\s*:/g)].map(m => m[1]));
+    const offenders: string[] = [];
+    for (const file of allModules) {
+      for (const m of readFileSync(file, 'utf8').matchAll(/var\((--[\w-]+),\s*(#[0-9a-fA-F]{3,8}|rgba?\()/g)) {
+        if (raiz.has(m[1])) offenders.push(`${path.relative(componentsDir, file)} ${m[0]}`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('cada var(--token) de un módulo CSS está definido en src/index.css, en un módulo o en un estilo en línea', () => {
+    const definidos = new Set([...tokensCss.matchAll(/(--[\w-]+)\s*:/g)].map(m => m[1]));
+    for (const file of allModules) for (const m of readFileSync(file, 'utf8').matchAll(/(--[\w-]+)\s*:/g)) definidos.add(m[1]);
+    const tsx = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap(e => (e.isDirectory() ? tsx(path.join(dir, e.name)) : /\.tsx?$/.test(e.name) ? [path.join(dir, e.name)] : []));
+    for (const file of tsx(componentsDir)) for (const m of readFileSync(file, 'utf8').matchAll(/['"`](--[\w-]+)['"`]\s*:/g)) definidos.add(m[1]);
+
+    const indefinidos: string[] = [];
+    for (const file of allModules) {
+      for (const m of readFileSync(file, 'utf8').matchAll(/var\((--[\w-]+)/g)) {
+        if (!definidos.has(m[1])) indefinidos.push(`${path.relative(componentsDir, file)} ${m[1]}`);
+      }
+    }
+    expect([...new Set(indefinidos)]).toEqual([]);
+  });
+
+  it('un rol, un token: ningún módulo usa los alias --color-ink-muted ni --font-headline', () => {
+    const offenders = allModules
+      .filter(f => /var\(--(color-ink-muted|font-headline)\b/.test(readFileSync(f, 'utf8')))
+      .map(f => path.relative(componentsDir, f));
+    expect(offenders).toEqual([]);
+  });
+
   it('los tokens nuevos de §7.4 existen en src/index.css', () => {
     for (const name of ['color-scrim', 'color-focus', 'color-text-primary', 'duration-fast', 'color-border-control']) {
       expect(tokensCss, name).toMatch(new RegExp(String.raw`--${name}\s*:`));

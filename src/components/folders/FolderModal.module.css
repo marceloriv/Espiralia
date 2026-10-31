@@ -45,7 +45,7 @@
 }
 
 .colorOptionSelected {
-  border-color: var(--color-ink, #141413);
+  border-color: var(--color-ink);
 }
 
 .modalActions {

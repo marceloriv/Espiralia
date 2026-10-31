@@ -38,8 +38,8 @@
   height: 2px;
   background: repeating-linear-gradient(
     90deg,
-    var(--color-primary, #8E1EA2) 0px,
-    var(--color-primary, #8E1EA2) 6px,
+    var(--color-primary) 0px,
+    var(--color-primary) 6px,
     transparent 6px,
     transparent 12px
   );
@@ -82,7 +82,7 @@
   font-family: var(--font-primary, serif);
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-body-strong, #252523);
+  color: var(--color-body-strong);
   letter-spacing: -0.5px;
   text-decoration: none;
   margin: 0;
@@ -93,8 +93,8 @@
   font-size: 0.6875rem;
   font-weight: 500;
   color: var(--color-muted);
-  background-color: var(--color-surface-soft, #f5f0e8);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-pill, 9999px);
   padding: 2px 8px;
 }
@@ -115,7 +115,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--color-body, #3d3d3a);
+  color: var(--color-body);
   font-family: var(--font-body, sans-serif);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -128,11 +128,11 @@
 }
 
 .navLink:hover {
-  color: var(--color-primary, #8E1EA2);
+  color: var(--color-primary);
 }
 
 .navLinkActive {
-  color: var(--color-primary, #8E1EA2);
+  color: var(--color-primary);
   font-weight: 600;
   display: inline-flex;
   align-items: center;
@@ -144,7 +144,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: var(--color-primary, #8E1EA2);
+  background-color: var(--color-primary);
 }
 
 .actionButtons {
@@ -157,9 +157,9 @@
   min-height: var(--tap-min);
   padding: 6px 14px;
   background: var(--color-surface-bright);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md, 8px);
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   font-family: var(--font-body, sans-serif);
   font-size: 0.875rem;
   font-weight: 500;
@@ -172,7 +172,7 @@
 }
 
 .loginBtn:hover {
-  background-color: var(--color-surface-soft, #f5f0e8);
+  background-color: var(--color-surface-soft);
 }
 
 .primaryCtaBtn {
@@ -241,13 +241,13 @@
   align-items: center;
   gap: 8px;
   padding: 5px 14px;
-  background-color: var(--color-surface-soft, #f5f0e8);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-pill, 9999px);
   font-family: var(--font-code, monospace);
   font-size: 0.75rem;
   letter-spacing: 0.04em;
-  color: var(--color-body-strong, #252523);
+  color: var(--color-body-strong);
   font-weight: 500;
   margin-bottom: var(--spacing-lg);
   box-shadow: 1px 1px 3px rgba(26, 25, 23, 0.04);
@@ -257,7 +257,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--color-accent-teal, #5db8a6);
+  background-color: var(--color-accent-teal);
 }
 
 .heroGrid {
@@ -286,7 +286,7 @@
   font-size: 2.5rem;
   line-height: 1.15;
   letter-spacing: -0.02em;
-  color: var(--color-body-strong, #252523);
+  color: var(--color-body-strong);
   margin-bottom: var(--spacing-md);
 }
 
@@ -299,7 +299,7 @@
 .heroHeadingItalic {
   font-style: italic;
   font-weight: 400;
-  color: var(--color-body-strong, #252523);
+  color: var(--color-body-strong);
   border-bottom: 2px solid rgba(142, 30, 162, 0.35);
   padding-bottom: 2px;
 }
@@ -308,7 +308,7 @@
   font-family: var(--font-body, sans-serif);
   font-size: 1.125rem;
   line-height: 1.65;
-  color: var(--color-body, #3d3d3a);
+  color: var(--color-body);
   max-width: 580px;
   margin: 0 0 var(--spacing-lg) 0;
 }
@@ -325,10 +325,10 @@
   cursor: pointer;
   min-height: var(--tap-min);
   padding: 8px 18px;
-  background-color: var(--color-surface-soft, #f5f0e8);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background-color: var(--color-surface-soft);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md, 8px);
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   font-family: var(--font-body, sans-serif);
   font-size: 0.875rem;
   font-weight: 500;
@@ -340,8 +340,8 @@
 }
 
 .heroSecondaryLink:hover {
-  background-color: var(--color-surface-card, #efe9de);
-  color: var(--color-ink, #141413);
+  background-color: var(--color-surface-card);
+  color: var(--color-ink);
 }
 
 .heroMicroSpecs {

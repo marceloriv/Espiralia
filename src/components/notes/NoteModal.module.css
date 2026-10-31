@@ -4,11 +4,11 @@
 
 .modalBox {
   position: relative;
-  background-color: var(--color-surface, #fcf9f6);
+  background-color: var(--color-surface);
   background-image: radial-gradient(#e8dfd3 1px, transparent 1px);
   background-size: 14px 14px;
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  border-left: 4px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-hairline);
+  border-left: 4px solid var(--color-hairline);
   border-radius: var(--radius-lg, 0.5rem);
   padding: 1.5rem;
   width: 100%;
@@ -52,7 +52,7 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
-  accent-color: var(--color-accent, #c96442);
+  accent-color: var(--color-accent);
 }
 
 .checkbox:focus-visible {
@@ -62,7 +62,7 @@
 
 .checkboxLabel {
   font-size: 0.875rem;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   cursor: pointer;
 }
 
@@ -89,19 +89,19 @@
   gap: 0.25rem;
   min-height: var(--tap-min);
   padding: 0.25rem 0.6rem;
-  background-color: var(--color-canvas, #faf9f5);
+  background-color: var(--color-canvas);
   border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm, 0.25rem);
   font-size: 0.75rem;
   font-family: inherit;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .helperBtn:hover {
-  background-color: var(--color-hairline-soft, #ebe6df);
-  border-color: var(--color-accent, #c96442);
+  background-color: var(--color-hairline-soft);
+  border-color: var(--color-accent);
 }
 
 .helperBtn:focus-visible {
@@ -144,7 +144,7 @@
   gap: 0.75rem;
   margin-top: 1.5rem;
   padding-top: 1rem;
-  border-top: 1px dashed var(--color-hairline, #e6dfd8);
+  border-top: 1px dashed var(--color-hairline);
 }
 
 .modalStatusBar {
@@ -152,14 +152,14 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8125rem;
-  color: var(--color-ink-muted, #736f69);
+  color: var(--color-muted);
 }
 
 .wordCounter {
   background: rgba(0, 0, 0, 0.04);
   padding: 0.25rem 0.55rem;
   border-radius: var(--radius-sm, 0.25rem);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-hairline);
   font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
 }

@@ -447,7 +447,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background-color: var(--color-background, #FAF7F0);
+  background-color: var(--color-background);
   border: 1px solid var(--color-hairline);
   border-radius: 6px;
   box-shadow: 1px 1px 0 rgba(220, 210, 195, 0.6), 0 2px 4px rgba(20, 20, 19, 0.03);
