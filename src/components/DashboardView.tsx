@@ -39,6 +39,7 @@ import {
   computeNetFocusHours,
   computeTaskPerformance,
   computeHabitsCompliance,
+  computeWeekHabitDays,
   deriveFocus,
 } from './dashboard/dashboardData';
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
@@ -453,7 +454,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* =====================================================================
           1b. FRANJA DE MÉTRICAS DE SERENIDAD (cuatro indicadores en una fila)
           ===================================================================== */}
-      <MetricsStrip habitStreak={habitStreak} netFocus={netFocus} storageBytes={storageBytes} taskPerf={taskPerf} />
+      <MetricsStrip
+        habitStreak={habitStreak}
+        netFocus={netFocus}
+        storageBytes={storageBytes}
+        taskPerf={taskPerf}
+        weekHabitDays={computeWeekHabitDays(habits)}
+        todayHabitIdx={todayHabitIdx}
+      />
 
       {/* =====================================================================
           2. BENTO TRILOGÍA DE SERENIDAD & ENERGY PHASES
@@ -1148,7 +1156,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <span>Métricas y Rendimiento</span>
         </h3>
         <div className={styles.metricsGrid}>
-          <TaskCompletionChart todos={todos} />
+          <TaskCompletionChart todos={todos} areas={areas} />
           <CategoryDistributionChart todos={todos} planner={planner} />
         </div>
       </section>

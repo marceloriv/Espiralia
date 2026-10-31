@@ -23,6 +23,7 @@ describe('CategoryDistributionChart', () => {
     expect(screen.getByLabelText(/distribución de actividades por categoría/i)).toBeInTheDocument();
     expect(screen.getByText(/3 actividades/i)).toBeInTheDocument();
     expect(document.querySelector('svg.ts-chart')).toBeInTheDocument();
+    expect(screen.getByText(/concentra más actividades/i)).toBeInTheDocument();
   });
 
   it('muestra desglose cuando solo hay tareas', () => {

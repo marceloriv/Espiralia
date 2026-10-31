@@ -1,8 +1,10 @@
 import React from 'react';
-import { Chart } from '@tanstack/charts/react';
-import { defineChart, barY } from '@tanstack/charts';
-import { scaleBand } from '@tanstack/charts/scales/band';
-import { scaleLinear } from '@tanstack/charts/scales/linear';
+import { Chart } from '@tanstack/charts/react/tooltip';
+import { defineChart } from '@tanstack/charts';
+import type { ChartPoint } from '@tanstack/charts';
+import { pie, polar, radialArc } from '@tanstack/charts/polar';
+import type { PieDatum } from '@tanstack/charts/polar';
+import { tooltip } from '@tanstack/charts/tooltip';
 import { BarChart3 } from 'lucide-react';
 import type { TodoItem, PlannerBlock } from '../../types';
 import { StorageService } from '../../services/storage';
@@ -13,50 +15,75 @@ interface CategoryDistributionChartProps {
   planner: PlannerBlock[];
 }
 
+interface CategoryRow {
+  category: string;
+  count: number;
+  color: string;
+}
+
+type CategorySlice = PieDatum<CategoryRow>;
+
+const PALETTE = [
+  'var(--color-primary)',
+  'var(--color-accent-teal)',
+  'var(--color-accent-amber)',
+  'var(--color-accent-sage)',
+  'var(--color-accent-terracotta)',
+  'var(--color-accent-slate)',
+];
+const CHART_SIZE = 200;
+const share = new Intl.NumberFormat('es-CL', { style: 'percent', maximumFractionDigits: 0 });
+
 export const CategoryDistributionChart: React.FC<CategoryDistributionChartProps> = ({
   todos,
   planner,
 }) => {
   const totalActivities = todos.length + planner.length;
 
-  const chart = React.useMemo(() => {
-    if (totalActivities === 0) return null;
-
-    const categoryMap: Record<string, { category: string; todos: number; planner: number }> = {};
-
+  const rows = React.useMemo<CategoryRow[]>(() => {
+    const counts: Record<string, number> = {};
     todos.forEach(t => {
       let cat = t.category?.trim();
       if (!cat && t.areaId && t.profileId) {
-        const area = StorageService.getAreas(t.profileId).find(a => a.id === t.areaId);
-        cat = area?.name;
+        cat = StorageService.getAreas(t.profileId).find(a => a.id === t.areaId)?.name;
       }
-      cat = cat || 'General';
-      if (!categoryMap[cat]) {
-        categoryMap[cat] = { category: cat, todos: 0, planner: 0 };
-      }
-      categoryMap[cat].todos += 1;
+      const name = cat || 'General';
+      counts[name] = (counts[name] ?? 0) + 1;
     });
+    if (planner.length > 0) counts['Planner'] = (counts['Planner'] ?? 0) + planner.length;
 
-    if (planner.length > 0) {
-      if (!categoryMap['Planner']) {
-        categoryMap['Planner'] = { category: 'Planner', todos: 0, planner: 0 };
-      }
-      categoryMap['Planner'].planner += planner.length;
-    }
+    return Object.entries(counts)
+      .sort(([, a], [, b]) => b - a)
+      .map(([category, count], i) => ({ category, count, color: PALETTE[i % PALETTE.length] }));
+  }, [todos, planner]);
 
-    const data = Object.values(categoryMap);
-
-    return defineChart({
-      marks: [
-        barY(data, { x: 'category', y: 'todos', fill: '#8E1EA2' }),
-        barY(data, { x: 'category', y: 'planner', fill: '#5db8a6' }),
-      ],
-      scales: {
-        x: { scale: scaleBand },
-        y: { scale: scaleLinear },
+  const chart = React.useMemo(() => {
+    if (rows.length === 0) return null;
+    const arcs = pie(rows, { value: 'count' });
+    return defineChart(
+      {
+        marks: [
+          polar({
+            inset: 0,
+            radiusRatio: 0.8,
+            marks: [radialArc(arcs, { id: 'category-slices', key: 'category', color: 'category' })],
+            scales: { angle: null, radius: null },
+          }),
+        ],
+        scales: { x: null, y: null },
+        color: { domain: rows.map(r => r.category), range: rows.map(r => r.color) },
+        margin: 0,
       },
-    });
-  }, [totalActivities, todos, planner]);
+      {
+        keyboard: true,
+        tooltip: {
+          use: tooltip,
+          format: (point: ChartPoint<CategorySlice, number, number>) =>
+            `${point.datum.category} · ${point.datum.count} (${share.format(point.datum.count / totalActivities)})`,
+        },
+      },
+    );
+  }, [rows, totalActivities]);
 
   if (totalActivities === 0 || !chart) {
     return (
@@ -91,12 +118,30 @@ export const CategoryDistributionChart: React.FC<CategoryDistributionChartProps>
         </span>
       </div>
 
-      <div className={styles.chartWrapper}>
-        <Chart
-          definition={chart}
-          ariaLabel="Gráfico de barras de actividades"
-          aspectRatio={1.6}
-        />
+      <p className={styles.headline}>
+        <span className={styles.headlineName}>{rows[0].category}</span>
+        <span className={styles.headlineLabel}>concentra más actividades</span>
+      </p>
+
+      <div className={styles.pieLayout}>
+        <div className={styles.chartWrapper}>
+          <Chart<CategorySlice, number, number>
+            definition={chart}
+            width={CHART_SIZE}
+            height={CHART_SIZE}
+            ariaLabel="Actividades por categoría"
+          />
+        </div>
+
+        <ul className={styles.legend}>
+          {rows.map(row => (
+            <li key={row.category} className={styles.legendItem}>
+              <span className={styles.swatch} aria-hidden="true" style={{ background: row.color }} />
+              <span className={styles.legendName}>{row.category}</span>
+              <span className={styles.legendCount}>{row.count}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

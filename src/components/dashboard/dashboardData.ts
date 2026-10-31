@@ -110,6 +110,10 @@ export const computeHabitStreak = (habits: HabitTrackerItem[], todayHabitIdx: nu
   return streak;
 };
 
+/** Por día de la semana (0 = lunes), si se marcó al menos un hábito: la misma regla que usa la racha. */
+export const computeWeekHabitDays = (habits: HabitTrackerItem[]): boolean[] =>
+  Array.from({ length: 7 }, (_, i) => habits.some(h => Boolean(h.daysCompleted?.[i])));
+
 export interface NetFocusResult {
   hours: number;
   count: number;

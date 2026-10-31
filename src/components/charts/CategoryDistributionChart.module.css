@@ -31,14 +31,79 @@
   color: var(--color-muted);
 }
 
-.chartWrapper {
-  position: relative;
-  flex: 1;
+.headline {
   display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin: 0 0 8px;
+}
+
+.headlineName {
+  font-family: var(--font-primary);
+  font-size: clamp(1.4rem, 3.4vw, 1.9rem);
+  font-weight: 700;
+  color: var(--color-ink);
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.headlineLabel {
+  font-family: var(--font-family-3);
+  font-size: var(--text-micro);
+  color: var(--color-muted);
+}
+
+/* Pastel a la izquierda y leyenda a la derecha; en estrecho, una debajo de la otra. */
+.pieLayout {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  min-height: 150px;
-  width: 100%;
+  gap: 12px 20px;
+}
+
+.chartWrapper {
+  position: relative;
+  flex: 0 0 auto;
+  color: var(--color-ink);
+}
+
+.legend {
+  display: grid;
+  flex: 1 1 160px;
+  min-width: 0;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendItem {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--text-caption, 12px);
+  color: var(--color-ink);
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legendName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.legendCount {
+  font-family: var(--font-family-3);
+  color: var(--color-muted);
 }
 
 .emptyStateContainer {
