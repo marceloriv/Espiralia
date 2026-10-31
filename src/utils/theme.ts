@@ -53,17 +53,19 @@ export function switchTheme(next: Theme, origin: { x: number; y: number }, onApp
   // aparece como una mancha que se expande y no como un corte. El tamaño final cubre `radio` con todo el borde difuso fuera de pantalla.
   const final = (2 * radio) / 0.55;
   const at = (size: number) => `${origin.x - size / 2}px ${origin.y - size / 2}px`;
+  // Un gradiente no se interpola con `none`: la máscara va como par desde-hasta para estar activa durante toda la animación.
+  const mask = 'radial-gradient(circle, #000 55%, transparent 75%)';
 
   transition.ready
     .then(() =>
       root.animate(
         {
-          maskImage: 'radial-gradient(circle, #000 55%, transparent 75%)',
-          maskRepeat: 'no-repeat',
+          maskImage: [mask, mask],
+          maskRepeat: ['no-repeat', 'no-repeat'],
           maskSize: ['0px 0px', `${final}px ${final}px`],
           maskPosition: [at(0), at(final)],
         },
-        { duration: 2200, easing: 'cubic-bezier(0.4, 0, 0.2, 1)', pseudoElement: '::view-transition-new(root)' },
+        { duration: 2200, easing: 'cubic-bezier(0.37, 0, 0.63, 1)', pseudoElement: '::view-transition-new(root)' },
       ),
     )
     .catch(() => {
