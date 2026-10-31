@@ -5,7 +5,7 @@
 .modalBox {
   position: relative;
   background-color: var(--color-surface);
-  background-image: radial-gradient(#e8dfd3 1px, transparent 1px);
+  background-image: radial-gradient(var(--color-grid-bujo) 1px, transparent 1px);
   background-size: 14px 14px;
   border: 1px solid var(--color-hairline);
   border-left: 4px solid var(--color-hairline);

@@ -284,7 +284,7 @@
 }
 
 .btnAddNoteHeader:hover {
-  background-color: var(--color-primary-active);
+  background-color: var(--color-primary-hover);
 }
 
 .folioContainer {
@@ -329,7 +329,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-bottom: 1px solid #e5dcd0;
+  border-bottom: 1px solid var(--color-hairline);
   padding-bottom: 14px;
 }
 
@@ -399,7 +399,7 @@
 .bujoCanvas {
   position: relative;
   background-color: var(--bg-card);
-  border: 1px solid #e4dacb;
+  border: 1px solid var(--color-hairline);
   border-radius: 14px;
   padding: 32px 36px 28px;
   min-height: 460px;
@@ -572,7 +572,7 @@
 .writingStatusBar {
   margin-top: 10px;
   padding-top: 12px;
-  border-top: 1px solid #ece3d7;
+  border-top: 1px solid var(--color-hairline);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -786,7 +786,7 @@
 .folioBottomToolbar {
   margin-top: 28px;
   padding-top: 16px;
-  border-top: 1px solid #e8ded2;
+  border-top: 1px solid var(--color-hairline);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -833,7 +833,7 @@
 }
 
 .btnSavePliego:hover {
-  background-color: var(--color-primary-active);
+  background-color: var(--color-primary-hover);
 }
 
 /* ========================================================================= */

@@ -546,7 +546,7 @@
 }
 
 .btnAdd:hover {
-  background-color: var(--color-primary-active);
+  background-color: var(--color-primary-hover);
 }
 
 .topPrioritiesBody {
@@ -1124,7 +1124,7 @@
 .miniRemindersCard {
   position: relative;
   background-color: var(--bg-card);
-  border: 1px solid #ebe4d6;
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-xl);
   padding: 22px 20px;
   box-shadow: var(--shadow-sm);
