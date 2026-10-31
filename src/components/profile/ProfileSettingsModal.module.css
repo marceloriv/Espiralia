@@ -1,12 +1,6 @@
 .backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(20, 20, 19, 0.5);
-  backdrop-filter: blur(2px);
-  display: flex;
+  composes: velo from '../common/Dialogo.module.css';
   overflow-y: auto;
-  z-index: 100;
-  padding: 16px;
 }
 
 .modalWrap {
@@ -110,10 +104,8 @@
 }
 
 .title {
+  composes: titulo from '../common/Dialogo.module.css';
   margin: 0;
-  font-family: var(--font-primary);
-  font-size: var(--text-title-sm);
-  color: var(--color-ink);
 }
 
 .closeBtn {
@@ -226,64 +218,20 @@
 }
 
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  composes: campo from '../common/Dialogo.module.css';
 }
 
 .label {
-  font-family: var(--font-family-3);
-  font-size: var(--text-caption);
-  color: var(--color-body);
-  font-weight: 500;
+  composes: etiqueta from '../common/Dialogo.module.css';
 }
 
 .input {
-  padding: 10px 12px;
-  border: 1px solid var(--color-border-control);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-canvas);
-  color: var(--color-ink);
-  font-family: var(--font-family-3);
-  font-size: var(--text-body-md);
-  min-height: 44px;
-  box-sizing: border-box;
+  composes: control from '../common/Dialogo.module.css';
   letter-spacing: 0.1em;
-  transition: border-color 0.15s;
-}
-
-.input:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-  border-color: var(--color-primary);
 }
 
 .submitBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--radius-lg);
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  font-family: var(--font-family-2);
-  font-size: var(--text-body-sm);
-  font-weight: 600;
-  cursor: pointer;
-  min-height: 44px;
-  transition: background-color 0.15s;
-  margin-top: 4px;
-}
-
-.submitBtn:hover {
-  background-color: var(--color-primary-active);
-}
-
-.submitBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  composes: btnPrimario from '../common/Dialogo.module.css';
 }
 
 .dangerSection {
@@ -296,28 +244,5 @@
 }
 
 .dangerBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 16px;
-  border: 1px solid var(--color-error);
-  border-radius: var(--radius-lg);
-  background-color: transparent;
-  color: var(--color-error);
-  font-family: var(--font-family-2);
-  font-size: var(--text-body-sm);
-  font-weight: 500;
-  cursor: pointer;
-  min-height: 44px;
-  transition: background-color 0.15s;
-}
-
-.dangerBtn:hover {
-  background-color: var(--color-error-container);
-}
-
-.dangerBtn:focus-visible {
-  outline: 2px solid var(--color-error);
-  outline-offset: 2px;
+  composes: btnPeligro from '../common/Dialogo.module.css';
 }

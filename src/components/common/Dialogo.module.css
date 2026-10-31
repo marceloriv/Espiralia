@@ -1,0 +1,135 @@
+/*
+ * Primitivos de diálogo (DESIGN.md §7.2): un solo velo, caja, título, campo, etiqueta, control y botones para
+ * todos los modales. Cada modal los toma con `composes` y solo declara lo propio (ancho, forma de ritual).
+ * Todo valor sale de un token de src/index.css.
+ */
+
+.velo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  background: var(--color-scrim);
+  backdrop-filter: blur(2px);
+}
+
+.caja {
+  width: 100%;
+  padding: var(--spacing-lg);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Sin margen propio: cada modal fija el suyo (un margen en el primitivo se emite después y pisaría al del modal). */
+.titulo {
+  font-family: var(--font-primary);
+  font-size: var(--text-title-md);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxs);
+}
+
+.etiqueta {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+/* Campo de texto, área y selector comparten medida, borde y foco. */
+.control {
+  box-sizing: border-box;
+  min-height: var(--tap-min);
+  padding: 10px 14px;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-md);
+  font-size: var(--text-body-md);
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-color: var(--color-focus);
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  min-height: var(--tap-min);
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: var(--text-button);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnPrimario {
+  composes: btn;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border: 1px solid var(--color-primary);
+}
+
+@media (hover: hover) {
+  .btnPrimario:hover:not(:disabled) {
+    background: var(--color-primary-active);
+    border-color: var(--color-primary-active);
+  }
+}
+
+.btnSecundario {
+  composes: btn;
+  background: transparent;
+  color: var(--color-ink);
+  border: 1px solid var(--color-border-control);
+}
+
+@media (hover: hover) {
+  .btnSecundario:hover:not(:disabled) {
+    background: var(--color-surface-warm);
+  }
+}
+
+/* Solo para borrar; el borrado siempre pide confirmación. */
+.btnPeligro {
+  composes: btn;
+  background: transparent;
+  color: var(--color-text-error);
+  border: 1px solid var(--color-error);
+}
+
+@media (hover: hover) {
+  .btnPeligro:hover:not(:disabled) {
+    background: var(--color-surface-warm);
+  }
+}

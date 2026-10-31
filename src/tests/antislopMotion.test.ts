@@ -37,7 +37,7 @@ describe('Movimiento, desenfoque y franjas decorativas', () => {
   });
 
   it('backdrop-filter solo en velos de modal y en barras fijas (superior y lateral/inferior móvil)', () => {
-    const allowed = /overlay|backdrop|scrim|modal|topBar|sidebar/i;
+    const allowed = /overlay|backdrop|scrim|velo|modal|topBar|sidebar/i;
     const offenders = rules
       .filter(r => /backdrop-filter:/.test(r.body) && !allowed.test(r.selector))
       .map(r => `${r.file} ${r.selector}`);

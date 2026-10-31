@@ -26,7 +26,7 @@ const ratio = (a: string, b: string): number => {
 };
 
 const SURFACES = ['color-canvas', 'color-surface-card', 'color-surface-warm', 'color-surface-cream-strong'].map(token).concat('#ffffff');
-const TEXT_TOKENS = ['color-muted', 'color-text-success', 'color-text-teal', 'color-text-amber', 'color-text-primary-active'];
+const TEXT_TOKENS = ['color-muted', 'color-text-success', 'color-text-teal', 'color-text-amber', 'color-text-primary-active', 'color-text-primary'];
 
 // DESIGN.md §0.4: color-mix(in srgb, <base> N%, <canvas>) interpola los canales sRGB; se resuelve aquí sin navegador.
 const mixHex = (base: string, pct: number, over: string): string =>
