@@ -13,11 +13,11 @@
 
 .stationeryBanner {
   position: relative;
-  background-color: var(--bg-card, var(--color-background));
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 28px 32px;
-  box-shadow: var(--shadow-card-stack, var(--shadow-sm));
+  box-shadow: var(--shadow-card-stack);
   overflow: visible;
 }
 
@@ -702,7 +702,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  background-color: var(--color-background, #FAF7F0);
+  background-color: var(--color-background);
   /* Papel pautado de libreta escolar rayada con líneas tenues a 32px */
   background-image: repeating-linear-gradient(
     0deg,
@@ -776,7 +776,7 @@
 
 .todoItem:hover {
   transform: translateX(2px);
-  border-color: var(--color-primary-soft, #ed96d7);
+  border-color: var(--color-primary-soft);
   box-shadow: 1px 2px 0 rgba(142, 30, 162, 0.15), 1px 3px 6px rgba(20, 20, 19, 0.04);
 }
 
@@ -1435,7 +1435,7 @@
 
 .emptyTitle {
   margin: 0;
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--color-ink);

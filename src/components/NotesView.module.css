@@ -117,8 +117,8 @@
   flex: 0 1 200px;
   min-width: 132px;
   height: 54px;
-  background: var(--binder-spine-bg, #2e2620);
-  border: 1px solid var(--binder-border, #1c1714);
+  background: var(--binder-spine-bg);
+  border: 1px solid var(--binder-border);
   border-bottom: none;
   border-radius: 8px 8px 0 0;
   padding: 0 10px;
@@ -151,7 +151,7 @@
   z-index: 20;
   transform: translateY(-2px);
   box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.18), inset 0 2px 0 rgba(255, 255, 255, 0.25);
-  border-color: var(--binder-border-active, #c29d59);
+  border-color: var(--binder-border-active);
 }
 
 /* Etiqueta de cartulina blanca/crema insertada en el porta-etiquetas */

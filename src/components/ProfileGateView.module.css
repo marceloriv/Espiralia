@@ -6,7 +6,7 @@
   justify-content: center;
   padding: 32px 16px;
   /* Marfil liso, como el resto de la app: el color vive en los papeles (DESIGN.md §0.12). */
-  background-color: var(--bg-canvas, var(--color-canvas));
+  background-color: var(--bg-canvas);
   position: relative;
 }
 
@@ -354,7 +354,7 @@
   align-self: flex-end;
   width: 100%;
   max-width: 220px;
-  background-color: var(--color-bg-postit, #fef8d6);
+  background-color: var(--color-bg-postit);
   padding: 12px 14px;
   transform: rotate(2deg);
   box-shadow: var(--shadow-postit);
@@ -603,7 +603,7 @@
 .errorMessage {
   margin-top: 6px;
   font-size: 12px;
-  color: var(--color-accent-red, var(--color-error));
+  color: var(--color-accent-red);
 }
 
 .modalActions {

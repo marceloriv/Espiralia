@@ -3,14 +3,14 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--bg-canvas, var(--color-canvas, #faf9f5));
+  background: var(--bg-canvas);
   overflow: hidden;
 }
 
 .subHeader {
   position: relative;
-  background: var(--bg-card, var(--color-surface, #fcf9f6));
-  border-bottom: 1px solid var(--border-hairline, var(--color-hairline, #e6dfd8));
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-hairline);
   padding: 0.85rem 1.5rem 0.85rem 3.25rem;
   display: flex;
   flex-wrap: wrap;
@@ -26,10 +26,10 @@
 }
 
 .pageTitle {
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0;
   line-height: 1.2;
 }
@@ -40,8 +40,8 @@
   max-width: 100%;
   align-items: center;
   gap: 0.5rem;
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md, 0.375rem);
   padding: 0.25rem 0.5rem;
 }
@@ -61,7 +61,7 @@
 }
 
 .navBtn:hover {
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   background: rgba(20, 20, 19, 0.05);
 }
 
@@ -69,7 +69,7 @@
   font-family: var(--font-family-3, monospace);
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   padding: 0 0.5rem;
   white-space: nowrap;
 }
@@ -81,7 +81,7 @@
   font-family: var(--font-family-2, sans-serif);
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   padding: 0.35rem 0.65rem;
   cursor: pointer;
   min-height: 44px;
@@ -92,8 +92,8 @@
 }
 
 .todayBtn:hover {
-  background: var(--color-canvas, #faf9f5);
-  border-color: var(--color-primary-soft, #ed96d7);
+  background: var(--color-canvas);
+  border-color: var(--color-primary-soft);
 }
 
 .priorityGroup {
@@ -104,8 +104,8 @@
 }
 
 .priorityPill {
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-sm, 0.25rem);
   font-family: var(--font-family-3, monospace);
   font-size: 0.6875rem;
@@ -121,8 +121,8 @@
 }
 
 .priorityPill:hover {
-  color: var(--color-ink, #141413);
-  border-color: var(--color-primary-soft, #ed96d7);
+  color: var(--color-ink);
+  border-color: var(--color-primary-soft);
 }
 
 .priorityPillActive {
@@ -142,8 +142,8 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md, 0.375rem);
   padding: 0.35rem 0.75rem;
 }
@@ -159,15 +159,15 @@
 .fulfillmentBarBg {
   width: 80px;
   height: 6px;
-  background: var(--color-canvas, #faf9f5);
+  background: var(--color-canvas);
   border-radius: 9999px;
   overflow: hidden;
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-hairline);
 }
 
 .fulfillmentBarFill {
   height: 100%;
-  background: var(--color-primary-active, #c654c3);
+  background: var(--color-primary-active);
   border-radius: 9999px;
   transition: width 0.25s ease;
 }
@@ -238,7 +238,7 @@
   .drawerArea {
     width: 100%;
     border-left: none;
-    border-top: 1px solid var(--color-hairline, #e6dfd8);
+    border-top: 1px solid var(--color-hairline);
   }
 
   /* El cajón ya ocupa todo el ancho: sin margen lateral caben los siete días de 44px de los hábitos. */
@@ -259,7 +259,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 24px 10px;
-  background: var(--color-surface, #fcf9f6);
+  background: var(--color-surface);
   flex-wrap: wrap;
   gap: 16px;
 }
@@ -281,13 +281,13 @@
   font-family: var(--font-primary, serif);
   font-size: var(--text-display-md);
   font-weight: 700;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0 0 2px;
   line-height: 1.2;
 }
 
 .stickyAphorism {
-  background: var(--color-bg-postit, #fef8d6);
+  background: var(--color-bg-postit);
   padding: 10px 14px;
   border-radius: 2px;
   box-shadow: var(--shadow-postit);
@@ -320,8 +320,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px 24px 14px;
-  background: var(--color-surface, #fcf9f6);
-  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-hairline);
   flex-wrap: wrap;
   gap: 12px;
 }

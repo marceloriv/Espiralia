@@ -311,7 +311,7 @@
   transform: translateX(-50%);
   width: 120px;
   height: 16px;
-  background-color: var(--color-primary, #8E1EA2);
+  background-color: var(--color-primary);
   opacity: 0.8;
   border-radius: 2px;
 }
@@ -350,8 +350,8 @@
 .primaryCtaBtn {
   min-height: 44px;
   padding: 10px 24px;
-  background-color: var(--color-primary, #8E1EA2);
-  border: 1px solid var(--color-primary, #8E1EA2);
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
   border-radius: var(--radius-md, 8px);
   color: #ffffff;
   font-family: var(--font-body, sans-serif);
@@ -366,8 +366,8 @@
 }
 
 .primaryCtaBtn:hover {
-  background-color: var(--color-primary-active, #C654C3);
-  border-color: var(--color-primary-active, #C654C3);
+  background-color: var(--color-primary-active);
+  border-color: var(--color-primary-active);
 }
 
 .secondaryOutlineBtn {
