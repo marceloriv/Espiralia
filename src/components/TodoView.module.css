@@ -329,7 +329,7 @@
   gap: 6px;
   padding: 8px 12px;
   border-radius: 10px 10px 0 0;
-  border: 1px dashed var(--color-hairline);
+  border: 1px dashed var(--color-border-control);
   border-bottom: none;
   background: transparent;
   color: var(--color-muted);
@@ -930,7 +930,7 @@
   gap: 4px;
   padding: 3px 9px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   background: transparent;
   font-family: var(--font-family-3);
   font-size: 0.6875rem;
@@ -955,7 +955,7 @@
   gap: 5px;
   padding: 3px 8px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   background-color: var(--color-surface-soft);
   font-family: var(--font-family-3);
   font-size: 0.6875rem;

@@ -73,7 +73,7 @@
   justify-content: center;
   gap: 0.35rem;
   background: transparent;
-  border: 1px dashed var(--color-hairline);
+  border: 1px dashed var(--color-border-control);
   border-radius: var(--radius-sm, 0.25rem);
   padding: 0.45rem;
   font-size: 0.75rem;
