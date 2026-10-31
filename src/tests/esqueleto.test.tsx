@@ -5,6 +5,7 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { Esqueleto } from '../components/common/Esqueleto';
 import { RouteLoadingFallback } from '../components/RouteLoadingFallback';
+import { terminarArranque } from '../utils/arranqueCarga';
 
 // DESIGN.md §7.6: un estado de carga es un esqueleto con la silueta del contenido, nunca un spinner ni un vacío.
 const walk = (dir: string): string[] =>
@@ -24,7 +25,8 @@ describe('Esqueleto de carga (DESIGN.md §7.6)', () => {
     expect(pieza.style.width).toBe('3rem');
   });
 
-  it('la carga de una vista anuncia qué carga una sola vez y dibuja piezas, no un spinner', () => {
+  it('la carga de una vista tras el arranque anuncia qué carga una sola vez y dibuja piezas, no un spinner', () => {
+    terminarArranque();
     const { container } = render(<RouteLoadingFallback />);
     const estado = screen.getByRole('status');
     expect(estado).toHaveTextContent(/cargando espacio/i);
