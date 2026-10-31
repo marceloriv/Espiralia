@@ -29,6 +29,16 @@ export const applyTheme = (theme: Theme): void => {
 };
 
 /**
+ * Máscara de la variante `circle-with-blur` de https://theme-toggle.rdsx.dev: círculo blanco (r=18) con `feGaussianBlur stdDeviation=2`.
+ * El borde difuso es parte de la imagen y escala con ella, no un recorte duro. El viewBox es de 60 (la referencia usa 40) para que
+ * la cola del blur se apague dentro de la caja: con 40 la caja cortaba el borde y dejaba una línea recta visible.
+ */
+const CIRCLE_BLUR_MASK = `url("data:image/svg+xml,${encodeURIComponent(
+  "<svg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 60 60'><defs><filter id='b' x='-50%' y='-50%' width='200%' height='200%'><feGaussianBlur stdDeviation='2'/></filter></defs>" +
+    "<circle cx='20' cy='20' r='18' fill='white' filter='url(#b)'/></svg>",
+)}")`;
+
+/**
  * Cambia de tema con el efecto de https://theme-toggle.rdsx.dev: la View Transitions API revela el tema nuevo con un círculo que
  * crece desde `origin` (donde se pulsó). Con `prefers-reduced-motion` no hay círculo (es movimiento) pero sí un fundido corto: un
  * cambio instantáneo de todo el color de la pantalla se siente como un golpe. Sin soporte de la API el cambio es inmediato.
@@ -50,14 +60,12 @@ export function switchTheme(next: Theme, origin: { x: number; y: number }, onApp
   const transition = document.startViewTransition(() => flushSync(apply));
   const radio = Math.hypot(Math.max(origin.x, window.innerWidth - origin.x), Math.max(origin.y, window.innerHeight - origin.y));
 
-  // Máscara radial con borde difuso (sólido hasta el 55 % del radio, transparente al 75 %) en vez de un recorte duro: el tema nuevo
-  // aparece como una mancha que se expande y no como un corte. El tamaño final cubre `radio` con todo el borde difuso fuera de pantalla.
-  const final = (2 * radio) / 0.55;
+  // El tamaño final deja la parte opaca del círculo (radio 14 de 60 unidades de caja, ver CIRCLE_BLUR_MASK) cubriendo `radio`,
+  // así el borde difuso termina fuera de pantalla justo al final de la animación.
+  const final = radio / 0.22;
   const at = (size: number) => `${origin.x - size / 2}px ${origin.y - size / 2}px`;
-  // Un gradiente no se interpola con `none`: la máscara va como par desde-hasta para estar activa durante toda la animación.
-  // `closest-side`: el radio del gradiente es la mitad del cuadrado, no su semidiagonal; así el círculo termina de cubrir la pantalla
-  // justo al final de la animación y no a los dos tercios.
-  const mask = 'radial-gradient(circle closest-side, #000 55%, transparent 75%)';
+  // Una imagen no se interpola con `none`: la máscara va como par desde-hasta para estar activa durante toda la animación.
+  const mask = CIRCLE_BLUR_MASK;
 
   const circle = {
     keyframes: {
