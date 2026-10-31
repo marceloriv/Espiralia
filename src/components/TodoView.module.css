@@ -781,7 +781,7 @@
 }
 
 .todoItemDone {
-  opacity: 0.75;
+  opacity: 0.85;
   background-color: color-mix(in srgb, var(--color-surface-soft) 55%, transparent);
 }
 

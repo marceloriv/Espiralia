@@ -16,6 +16,7 @@ import type { Folder, LinkItem, Note, Profile, StoredFile, ViewType } from '../t
 import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { addFile, deleteFile, deleteFolderFiles, getFileBlob, listFiles } from '../services/fileStore';
 import { formatBytes } from '../utils/formatBytes';
+import { folderTabColors } from '../utils/folderTabColors';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
 import { NoteModal } from './notes/NoteModal';
@@ -537,7 +538,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             <div className={styles.flatFoldersRow} role="tablist" aria-label="Solapas de carpetas">
               {displayFolders.map((df) => {
                 const isActive = df.id === selectedFolderId;
-                const folderColor = df.color || '#E5B23E';
+                const { fill, ink } = folderTabColors(df.color || '#E5B23E');
 
                 return (
                   <button
@@ -547,7 +548,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                     aria-selected={isActive}
                     className={`${styles.flatFolderTab} ${isActive ? styles.flatFolderActive : ''}`}
                     onClick={() => setUserSelectedFolderId(df.id)}
-                    style={{ '--folder-color': folderColor } as React.CSSProperties}
+                    style={{ '--folder-color': fill, '--folder-ink': ink } as React.CSSProperties}
                   >
                     <div className={styles.flatBackFlap} aria-hidden="true" />
                     <div className={styles.flatSheets} data-testid="folder-flat-sheets" aria-hidden="true">

@@ -190,6 +190,8 @@
 
 /* Contenedor plano de la carpeta en FoldersView */
 .flatFolderTab {
+  /* Tinta de la solapa: FoldersView la fija en línea según el color de la carpeta (utils/folderTabColors). */
+  --folder-ink: var(--color-on-primary);
   position: relative;
   flex: 0 1 195px;
   min-width: 140px;
@@ -354,8 +356,7 @@
   font-family: inherit;
   font-size: 0.8rem;
   font-weight: 700;
-  color: var(--color-on-primary);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  color: var(--folder-ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -365,15 +366,15 @@
   font-family: var(--font-code, monospace);
   font-size: 0.72rem;
   font-weight: 700;
-  opacity: 0.9;
 }
 
 .flatCountPill {
   font-family: var(--font-code, monospace);
   font-size: var(--text-micro);
   font-weight: 700;
-  background: rgba(0, 0, 0, 0.2);
-  color: var(--color-on-primary);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--folder-ink) 60%, transparent);
+  color: var(--folder-ink);
   padding: 1px 6px;
   border-radius: 9999px;
   flex-shrink: 0;
