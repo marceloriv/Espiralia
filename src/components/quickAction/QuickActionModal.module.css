@@ -1,13 +1,5 @@
 .backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(20, 20, 19, 0.5);
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: 16px;
+  composes: velo from '../common/Dialogo.module.css';
 }
 
 .modal {
@@ -61,10 +53,8 @@
 }
 
 .title {
+  composes: titulo from '../common/Dialogo.module.css';
   margin: 0;
-  font-family: var(--font-primary);
-  font-size: var(--text-title-sm);
-  color: var(--color-ink);
 }
 
 .closeBtn {
@@ -144,39 +134,19 @@
 }
 
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  composes: campo from '../common/Dialogo.module.css';
 }
 
 .label {
-  font-family: var(--font-family-3);
-  font-size: var(--text-caption);
-  font-weight: 600;
-  color: var(--color-muted);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  composes: etiqueta from '../common/Dialogo.module.css';
 }
 
-.input,
+.input {
+  composes: control from '../common/Dialogo.module.css';
+}
+
 .select {
-  padding: 10px 12px;
-  border: 1px solid var(--color-border-control);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-canvas);
-  color: var(--color-ink);
-  font-family: var(--font-family-2);
-  font-size: var(--text-body-md);
-  min-height: 44px;
-  box-sizing: border-box;
-  transition: border-color 0.15s;
-}
-
-.input:focus,
-.select:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-  border-color: var(--color-primary);
+  composes: control from '../common/Dialogo.module.css';
 }
 
 .row {
@@ -196,53 +166,11 @@
 }
 
 .cancelBtn {
-  padding: 10px 16px;
-  border: 1px solid var(--color-border-control);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-surface-soft);
-  color: var(--color-body);
-  font-family: var(--font-family-2);
-  font-size: var(--text-body-sm);
-  font-weight: 500;
-  cursor: pointer;
-  min-height: 44px;
-  transition: background-color 0.15s;
-}
-
-.cancelBtn:hover {
-  background-color: var(--color-surface-soft);
-}
-
-.cancelBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  composes: btnSecundario from '../common/Dialogo.module.css';
 }
 
 .submitBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: var(--radius-lg);
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  font-family: var(--font-family-2);
-  font-size: var(--text-body-sm);
-  font-weight: 600;
-  cursor: pointer;
-  min-height: 44px;
-  transition: background-color 0.15s;
-}
-
-.submitBtn:hover {
-  background-color: var(--color-primary-active);
-}
-
-.submitBtn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  composes: btnPrimario from '../common/Dialogo.module.css';
 }
 
 @media (max-width: 600px) {

@@ -15,6 +15,14 @@
   --color-hairline: #e6dfd8;
   /* Borde de botones, campos y selectores: 3:1 como mínimo (WCAG 1.4.11) sobre toda superficie, esquinas oscuras del Papel incluidas. El hairline queda para divisores. */
   --color-border-control: #76716a;
+  /* Velo detrás de todo modal y cajón (DESIGN.md §7.2): uno solo, no un rgba() por archivo. */
+  --color-scrim: rgba(20, 20, 19, 0.45);
+  /* Anillo de foco de controles (DESIGN.md §7.3): 3:1 o más contra el control y la superficie. */
+  --color-focus: #8e1ea2;
+  /* Texto y enlaces en magenta: igual que el relleno de --color-primary en claro; en oscuro necesita una variante más clara (DESIGN.md §7.4). */
+  --color-text-primary: #8e1ea2;
+  /* Duración de las transiciones de color, borde y sombra de los controles (DESIGN.md §7.3). */
+  --duration-fast: 150ms;
   --color-hairline-soft: #ebe6df;
   --color-canvas: #faf9f5;
   --color-canvas-paper: #faf9f5;

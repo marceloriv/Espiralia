@@ -1,13 +1,5 @@
 .backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(20, 20, 19, 0.5);
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: 16px;
+  composes: velo from '../common/Dialogo.module.css';
 }
 
 .modalWrap {
@@ -107,11 +99,8 @@
 }
 
 .title {
+  composes: titulo from '../common/Dialogo.module.css';
   margin: 0;
-  font-family: var(--font-family-2, serif);
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--color-ink);
 }
 
 .closeBtn {
@@ -153,38 +142,19 @@
 }
 
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  composes: campo from '../common/Dialogo.module.css';
 }
 
 .label {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--color-ink);
-  font-family: var(--font-family-3, sans-serif);
+  composes: etiqueta from '../common/Dialogo.module.css';
 }
 
-.input,
+.input {
+  composes: control from '../common/Dialogo.module.css';
+}
+
 .select {
-  width: 100%;
-  height: 42px;
-  padding: 0 14px;
-  font-family: var(--font-family-2, sans-serif);
-  font-size: 0.92rem;
-  background-color: var(--bg-card);
-  border: 1px solid var(--color-border-control);
-  border-radius: 6px;
-  color: var(--color-ink);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
-  box-sizing: border-box;
-}
-
-.input:focus,
-.select:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(50, 75, 62, 0.12);
+  composes: control from '../common/Dialogo.module.css';
 }
 
 .actions {
@@ -205,76 +175,13 @@
 }
 
 .btnPrimary {
-  min-height: 44px;
-  padding: 0 18px;
-  background-color: var(--color-primary);
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  font-family: var(--font-family-3, sans-serif);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 4px rgba(26, 25, 23, 0.12);
-  transition: opacity 0.15s ease, transform 0.1s ease;
-}
-
-.btnPrimary:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
-
-.btnPrimary:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  composes: btnPrimario from '../common/Dialogo.module.css';
 }
 
 .btnSecondary {
-  min-height: 44px;
-  padding: 0 16px;
-  background-color: transparent;
-  color: var(--color-ink);
-  border: 1px solid var(--color-border-control);
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-}
-
-.btnSecondary:hover {
-  background-color: var(--color-surface-soft);
-}
-
-.btnSecondary:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  composes: btnSecundario from '../common/Dialogo.module.css';
 }
 
 .btnDanger {
-  min-height: 44px;
-  padding: 0 14px;
-  background-color: transparent;
-  color: var(--color-error);
-  border: 1px solid rgba(185, 28, 28, 0.3);
-  border-radius: 6px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: background-color 0.15s ease;
-}
-
-.btnDanger:hover {
-  background-color: rgba(185, 28, 28, 0.08);
-}
-
-.btnDanger:focus-visible {
-  outline: 2px solid var(--color-error);
-  outline-offset: 2px;
+  composes: btnPeligro from '../common/Dialogo.module.css';
 }
