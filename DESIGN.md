@@ -210,7 +210,8 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 | Nombre de Token | Valor Hex / RGBA | Variable CSS | Rol y Aplicación |
 | :--- | :--- | :--- | :--- |
 | **`primary`** | `#8E1EA2` | `--color-primary` | Magenta editorial representativo; botones primarios, marca y acentos tipográficos clave. |
-| **`primary-active`** | `#C654C3` | `--color-primary-active` | Estado *hover*, foco y elementos interactivos activos. |
+| **`primary-active`** | `#C654C3` | `--color-primary-active` | Acento claro: rellenos de progreso, estados activos y foco. No es fondo de botón con texto blanco (3,85:1). |
+| **`primary-hover`** | `#741787` | `--color-primary-hover` | Fondo de un botón relleno en *hover*: más oscuro que `primary`, 9,5:1 con texto blanco en ambos temas. |
 | **`primary-soft`** | `#ED96D7` | `--color-primary-soft` | Fondos de insignias suaves, píldoras y barras de avance sutiles. |
 | **`primary-light`** | `#FDF4FA` | `--color-primary-light` | Tinte sutil para fondos de selección activa o tarjetas destacadas. |
 | **`primary-disabled`** | `#FFC0DE` | `--color-primary-disabled` | Estados deshabilitados o tintes de fondo ultra suaves. |
@@ -331,7 +332,7 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 ### A. Botones & Acciones Interactivas
 
 1. **Button Primary (`--btn-primary`)**:
-   - `bg: var(--color-primary)` (`#8E1EA2`), `color: #FFFFFF`, `border-radius: var(--radius-md)` (8px), `padding: 12px 20px`, `min-height: 44px`, `font: var(--text-button)`. Hover: `bg: var(--color-primary-active)` (`#C654C3`), escala sutil `active:scale-[0.98]`.
+   - `bg: var(--color-primary)` (`#8E1EA2`), `color: #FFFFFF`, `border-radius: var(--radius-md)` (8px), `padding: 12px 20px`, `min-height: 44px`, `font: var(--text-button)`. Hover: `bg: var(--color-primary-hover)` (`#741787`), escala sutil `active:scale-[0.98]`.
 2. **Button Secondary (`--btn-secondary`)**:
    - `bg: var(--color-canvas)`, `border: 1px solid var(--color-hairline)`, `color: var(--color-ink)`, `border-radius: var(--radius-md)`, `padding: 12px 20px`.
 3. **Button Secondary on Dark (`--btn-secondary-dark`)**:
@@ -418,7 +419,7 @@ Valores objetivo. Todos son tokens existentes salvo los marcados como nuevos en 
 
 | Familia | Forma y medida | Color y borde | Sombra | Primitivo |
 | :--- | :--- | :--- | :--- | :--- |
-| **Botón primario** | `--radius-md`, `min-height: var(--tap-min)`, relleno `12px 20px`, `--text-button`, peso 600 | `bg: --color-primary`, `color: --color-on-primary`, sin borde; hover `--color-primary-active` | ninguna | `common/Button.tsx` |
+| **Botón primario** | `--radius-md`, `min-height: var(--tap-min)`, relleno `12px 20px`, `--text-button`, peso 600 | `bg: --color-primary`, `color: --color-on-primary`, sin borde; hover `--color-primary-hover` | ninguna | `common/Button.tsx` |
 | **Botón secundario** | igual medida que el primario | `bg: transparent`, `1px solid --color-border-control`, `color: --color-ink` | ninguna | `common/Button.tsx` |
 | **Botón destructivo** | igual medida; solo para borrar | `color: --color-error` sobre fondo claro; confirmación obligatoria | ninguna | `common/Button.tsx` |
 | **Botón ícono** | 44x44px, `--radius-pill`, un solo `aria-label` | `bg: --color-canvas`, `1px solid --color-border-control` | ninguna | `common/Button.tsx` |
@@ -438,7 +439,7 @@ Valores objetivo. Todos son tokens existentes salvo los marcados como nuevos en 
 | Estado | Regla |
 | :--- | :--- |
 | **Foco visible** | `outline: 2px solid var(--color-focus)` con `outline-offset: 2px`; contraste mínimo 3:1 contra el fondo del control y el de la superficie. Nunca `outline: none` sin reemplazo. |
-| **Hover** | solo en dispositivos con puntero (`@media (hover: hover)`). Primario: `--color-primary-active`. Secundario: fondo `--color-surface-warm`. Sin `transform` que desplace la maquetación. |
+| **Hover** | solo en dispositivos con puntero (`@media (hover: hover)`). Primario: `--color-primary-hover`. Secundario: fondo `--color-surface-warm`. Sin `transform` que desplace la maquetación. |
 | **Activo / pulsado** | escala `0.98` como máximo; sin cambio de color distinto del hover. |
 | **Deshabilitado** | opacidad `0.5`, `cursor: not-allowed`, `aria-disabled` o `disabled`; el texto deshabilitado no está obligado a cumplir contraste, pero la etiqueta sí debe seguir legible. |
 | **Error** | borde `--color-error`, texto de error en `--color-text-error` **y** un ícono o mensaje (el color no es el único canal), enlazado con `aria-describedby`. |
@@ -455,6 +456,7 @@ Cómo está hecho (todo en `src/index.css`, `src/utils/theme.ts`, `src/component
 - **Elección guardada** en `localStorage.espiralia_theme` (`light` o `dark`; sin valor manda el sistema), fuera de los datos de los perfiles. `public/theme-init.js` la aplica antes del primer pintado (va como archivo porque el CSP de `index.html` no admite scripts en línea).
 - **Efecto del conmutador**: el de https://theme-toggle.rdsx.dev (View Transitions API, variante `circle-with-blur`: máscara SVG con un círculo y `feGaussianBlur stdDeviation=2`, no un recorte duro, que crece desde el botón; el viewBox de la máscara es de 60 y no de 40 como en la referencia, porque con 40 la caja corta la cola del blur y deja una línea recta), sin dependencia nueva. Con `prefers-reduced-motion` no hay círculo (es movimiento) pero sí un fundido de 600ms del tema nuevo sobre el viejo, porque un cambio instantáneo de todo el color de la pantalla se siente como un golpe; sin la API el cambio es inmediato. Es la cuarta excepción a MOTION 1: responde a una acción, dura 2000ms con arranque y llegada suaves y casi simétricos (`cubic-bezier(0.37, 0, 0.63, 1)`: una curva más asimétrica concentra el avance en la primera mitad y el círculo parece más rápido de lo que dura) y no se repite. Mientras dura, `data-theme-switching` anula el nombre `pagina` y la mezcla `plus-lighter` del navegador (`mix-blend-mode: normal`, el único valor permitido).
 - **La landing no se tematiza**: es una pieza de papelería con colores propios, así que `LandingView` pone `data-force-light` en `<html>` y siempre se ve en claro. Tampoco cambian los papeles fijos (post-its amarillos, latón, etiqueta del lomo, 404): llevan sus textos en `--on-papel-*`.
+- **Divisores y puntos de papel sin hex**: los bordes y divisores de superficies usan `--color-hairline` y la trama punteada de los papeles `--color-grid-bujo`; un hex claro fijo en oscuro se ve como una línea o un punto casi blanco que cruza el texto (pasó en el modal de nota). Las superficies que sí son papel fijo (post-its, latón) conservan sus colores.
 - **Texto sobre papeles fijos** usa `--on-papel-ink`, `--on-papel-ambar` y `--on-papel-magenta` (no cambian con el tema); el magenta como texto o icono usa `--color-text-primary`, y el anillo de foco `--color-focus`.
 
 La definición que sigue se escribió antes de implementarlo; los valores finales están en la tabla de abajo (se ajustaron al medir contra los tintes oscuros).

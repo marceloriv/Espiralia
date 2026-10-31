@@ -242,7 +242,7 @@
   --color-tertiary: var(--color-accent-teal);
   --color-danger: var(--color-error);
   --color-bg-postit: var(--bg-postit);
-  --color-primary-hover: var(--color-primary-active);
+  --color-primary-hover: #741787;
   --color-error-container: rgba(198, 69, 69, 0.12);
   --color-accent-red: var(--color-error);
   --font-mono: var(--font-family-3);

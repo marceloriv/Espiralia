@@ -55,7 +55,7 @@
 }
 
 .addGoalBtn:hover {
-  background: var(--color-primary-active);
+  background: var(--color-primary-hover);
 }
 
 .modalOverlay {
