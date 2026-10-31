@@ -447,9 +447,19 @@ Valores objetivo. Todos son tokens existentes salvo los marcados como nuevos en 
 
 ### 7.4 Modo oscuro
 
-**Estado vigente: no existe un modo oscuro.** La app es de tema claro (marfil). Las superficies `--color-surface-dark*` del manifiesto, el pie de página y el "bloque nocturno" son **superficies oscuras fijas**, presentes en cualquier tema; no son un modo oscuro y no se reutilizan como tal. No hay `prefers-color-scheme`, `color-scheme` ni `data-theme` en `src/`.
+**Estado vigente (2026-10-30): el modo oscuro existe** y se activa con el conmutador de la cabecera (`ThemeToggle`) o, sin elección guardada, con la preferencia del sistema. Las superficies `--color-surface-dark*` del manifiesto, el pie de página y el "bloque nocturno" siguen siendo **superficies oscuras fijas**, presentes en cualquier tema; no son el modo oscuro.
 
-Si se añade, debe definirse así, sin excepciones locales:
+Cómo está hecho (todo en `src/index.css`, `src/utils/theme.ts`, `src/components/common/ThemeToggle.tsx` y `public/theme-init.js`):
+- **Dos bloques idénticos**: `:root[data-theme="dark"]:not([data-force-light])` (elección manual) y `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]):not([data-force-light]) }` (sistema). `textTokensContrast.test.ts` comprueba que declaran exactamente lo mismo.
+- **`color-scheme: light`** en `:root` y `dark` en los bloques oscuros: controles nativos y barras de scroll siguen el tema.
+- **Elección guardada** en `localStorage.espiralia_theme` (`light` o `dark`; sin valor manda el sistema), fuera de los datos de los perfiles. `public/theme-init.js` la aplica antes del primer pintado (va como archivo porque el CSP de `index.html` no admite scripts en línea).
+- **Efecto del conmutador**: el de https://theme-toggle.rdsx.dev (View Transitions API, círculo que crece desde el botón), sin dependencia nueva. Con `prefers-reduced-motion` o sin la API el cambio es inmediato. Es la cuarta excepción a MOTION 1: responde a una acción, dura 450ms y no se repite. Mientras dura, `data-theme-switching` anula el nombre `pagina` y la mezcla `plus-lighter` del navegador (`mix-blend-mode: normal`, el único valor permitido).
+- **La landing no se tematiza**: es una pieza de papelería con colores propios, así que `LandingView` pone `data-force-light` en `<html>` y siempre se ve en claro. Tampoco cambian los papeles fijos (post-its amarillos, latón, etiqueta del lomo, 404): llevan sus textos en `--on-papel-*`.
+- **Texto sobre papeles fijos** usa `--on-papel-ink`, `--on-papel-ambar` y `--on-papel-magenta` (no cambian con el tema); el magenta como texto o icono usa `--color-text-primary`, y el anillo de foco `--color-focus`.
+
+La definición que sigue se escribió antes de implementarlo; los valores finales están en la tabla de abajo (se ajustaron al medir contra los tintes oscuros).
+
+Reglas del mecanismo, sin excepciones locales:
 
 1. **Mecanismo.** Un solo conjunto de tokens redefinidos, en `src/index.css`:
    - `:root:not([data-theme="light"])` dentro de `@media (prefers-color-scheme: dark)`, y `:root[data-theme="dark"]` para la elección manual.
@@ -458,22 +468,22 @@ Si se añade, debe definirse así, sin excepciones locales:
 2. **Ningún componente conoce el tema.** Un `.module.css` no contiene `@media (prefers-color-scheme)` ni `[data-theme]`: solo consume tokens. Si un componente "necesita" una regla de oscuro, falta un token.
 3. **Tokens semánticos, no de tinte.** Se redefinen los semánticos; los tintes de módulo (`--papel-*`) tienen su propia versión oscura y siguen codificando el mismo módulo.
 
-Valores propuestos (contraste medido con la fórmula WCAG el 2026-10-30; antes de adoptarlos, `textTokensContrast.test.ts` debe cubrir ambos temas):
+Valores vigentes (contraste medido con la fórmula WCAG; `textTokensContrast.test.ts` los recorre sobre las superficies oscuras, sus tintes y la esquina de la tarjeta de Papel). Lo que cambió respecto de la propuesta inicial, tras medir: `--color-muted` pasa de `#A09D96` a **`#BCB8B0`** (sobre los tintes oscuros daba 3.5:1 a 4.3:1), `--color-border-control` de `#8A857A` a **`#9C978C`** y `--color-text-error` de `#F08A8A` a **`#F6A0A0`** (la esquina del tinte pizarra daba 2.9:1 y 4.4:1); los tintes `terracota`, `ambar`, `pizarra` y `turquesa` se separaron para mantener los 15 de distancia entre tintes, y los textos del Papel (`--papel-texto-*`) se aclararon.
 
-| Token | Claro (vigente) | Oscuro (propuesto) | Contraste oscuro |
+| Token | Claro (vigente) | Oscuro (vigente) | Contraste oscuro |
 | :--- | :--- | :--- | :--- |
 | `--color-canvas` | `#FCF9F6` | `#1A1817` | base |
 | `--color-surface-card` | `#FFFFFF` | `#252320` | 1.13:1 con el canvas (separa por borde y sombra, no por contraste) |
 | `--color-ink` | `#1A1917` | `#F2EEE8` | 15.3:1 sobre canvas |
 | `--color-body` | `#3D3D3A` | `#D4D0C8` | 11.5:1 sobre canvas |
-| `--color-muted` | `#57554F` | `#A09D96` | 6.5:1 sobre canvas, 5.8:1 sobre tarjeta |
+| `--color-muted` | `#57554F` | `#BCB8B0` | 7.8:1 sobre canvas; 4.7:1 o más sobre los tintes oscuros |
 | `--color-hairline` | `#E8E2D8` | `#3A3732` | 1.5:1; solo para divisores decorativos |
-| `--color-border-control` (claro vigente desde 2026-10-30) | `#76716A` | `#8A857A` | 4.3:1 sobre tarjeta, 4.8:1 sobre canvas |
+| `--color-border-control` (claro vigente desde 2026-10-30) | `#76716A` | `#9C978C` | 3.5:1 o más sobre toda superficie, esquina oscura de los tintes incluida |
 | `--color-primary` (relleno de botón) | `#8E1EA2` | `#8E1EA2` | texto blanco 7.4:1 |
 | **`--color-text-primary`** (nuevo: enlaces y texto magenta) | `#8E1EA2` | `#E3A6F0` | 9.3:1 sobre canvas, 8.2:1 sobre tarjeta |
 | **`--color-focus`** (nuevo) | `#8E1EA2` | `#E3A6F0` | 8.2:1 sobre tarjeta |
 | `--color-text-success` | `#316F3F` | `#7FD08F` | 8.5:1 sobre tarjeta |
-| `--color-text-error` | `#B13636` | `#F08A8A` | 6.5:1 sobre tarjeta |
+| `--color-text-error` | `#B13636` | `#F6A0A0` | 5.1:1 o más sobre toda superficie y tinte oscuro |
 | `--color-text-teal` | `#2F6B60` | `#7FD3C2` | 9.0:1 sobre tarjeta |
 | `--color-text-amber` | `#8E5414` | `#F0BE7A` | 9.2:1 sobre tarjeta |
 | **`--color-scrim`** (nuevo) | `rgba(20, 20, 19, 0.45)` | `rgba(0, 0, 0, 0.6)` | n/a |
@@ -504,7 +514,8 @@ Inventario: hay **101 definiciones de clases de botón, campo, modal y tarjeta r
 - **Paso 1, hecho:** `--color-scrim`, `--color-focus`, `--color-text-primary` y `--duration-fast` existen en `src/index.css` con su valor claro (`--color-border-control` y `--color-text-error` ya estaban).
 - **Pasos 2 y 3, hechos en CSS:** los primitivos viven en `src/components/common/Dialogo.module.css` (`velo`, `caja`, `titulo`, `campo`, `etiqueta`, `control`, `acciones`, `btnPrimario`, `btnSecundario`, `btnPeligro`) y cada modal los toma con `composes`. Migrados: carpetas, bloque del Planner, metas, nota, ajustes de perfil, acción rápida, hábitos y bóveda (72 reglas, 34 reglas de hover y foco repetidas eliminadas). Todos miden igual: controles de 44px con radio `--radius-md` y borde `--color-border-control`, botones con radio `--radius-md` y relleno `12px 20px`, un solo velo. `HabitModal`, `VaultModal`, `NoteModal` y `ProfileSettingsModal` conservan su caja de ritual (papel y recorte); `QuickActionModal` conserva su caja con encabezado. Fuera de esta pasada: la búsqueda global (solo toma el velo) y el modal de foco del Dashboard (solo el velo).
 - **Paso 4, hecho (2026-10-30):** se quitaron 354 respaldos de color de `var(--token, #hex)` en 27 `.module.css` (el token siempre existía en `src/index.css`, así que el respaldo no se usaba y congelaría el color claro) y se unificaron los alias que valían lo mismo: `--color-ink-muted` pasa a `--color-muted` y `--font-headline` a `--font-primary`. **No se unificaron** `--color-surface`, `--color-surface-card` ni `--bg-card`, porque son tres colores distintos (`#EFE9DE` es la cartulina y `#FCF9F6` el papel); decidir cuál va en cada caja es una decisión de diseño, no una limpieza.
-- **Pendiente:** los componentes React `Button`, `Field` y `Modal` (hoy el estilo común es CSS compartido, no un componente), unificar los tres fondos de caja y el paso 5 (modo oscuro).
+- **Paso 5, hecho (2026-10-30):** modo oscuro con conmutador (§7.4). Medido en el navegador con una auditoría de contraste de cada texto contra su fondo (incluidos los degradados): Dashboard, Agenda, Planner, Notas y Carpetas quedan sin fallos; Integraciones y To-Do solo conservan la marca de agua decorativa de las solapas (`.tabWatermark`, 8 % de opacidad a propósito). Para llegar ahí se pasaron a token 35 colores que valían exactamente lo mismo que un token, 6 blancos translúcidos, 26 fondos neutros cálidos y 12 translúcidos cremas, 95 textos magenta (`--color-primary` pasa a `--color-text-primary`) y 32 anillos de foco (`--color-focus`), más una decena de textos con color fijo (verdes, ámbares y azules grisáceos); en claro cada reemplazo vale lo mismo que antes, salvo los neutros cálidos y esos textos, que convergen al token más cercano.
+- **Pendiente:** los componentes React `Button`, `Field` y `Modal` (hoy el estilo común es CSS compartido, no un componente); unificar los tres fondos de caja; revisar en oscuro la pantalla de Acceso, los modales de hábitos y carpetas y los 404 (no se auditaron); y los 274 colores literales que quedan fuera de la landing, el origami, el ornamento y el 404 (sobre todo sombras, adornos y papeles fijos) que la auditoría de contraste no marca pero siguen sin tokenizar.
 
 Orden de migración propuesto (cada paso se entrega y revierte por separado, con la suite en verde):
 
