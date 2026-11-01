@@ -218,6 +218,8 @@
   --superficie-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 40%, var(--bg-card)));
   --superficie-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 40%, var(--bg-card)));
   --lateral-mezcla: 56%;
+  --dashboard-hero-bg: linear-gradient(115deg, var(--papel-arena) 0%, var(--bg-card) 58%);
+  --shadow-bujo-canvas: inset 1px 1px 0 rgba(255, 255, 255, 0.8), inset -1px -1px 0 rgba(0, 0, 0, 0.02), 0 2px 8px rgba(26, 25, 23, 0.04);
   /* Contenedor que solo agrupa tarjetas (Áreas, Métricas): un nivel más suave, para que las tarjetas
      resalten sobre él y la superficie más grande del Dashboard no le quite el foco al saludo. */
   --contenedor-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 45%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 20%, var(--bg-card)));
@@ -359,6 +361,8 @@
   --superficie-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 44%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 20%, var(--bg-card)));
   --superficie-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 44%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 20%, var(--bg-card)));
   --lateral-mezcla: 28%;
+  --dashboard-hero-bg: linear-gradient(115deg, color-mix(in srgb, var(--papel-arena) 30%, var(--bg-card)) 0%, var(--bg-card) 58%);
+  --shadow-bujo-canvas: inset 1px 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -452,6 +456,8 @@
     --superficie-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 44%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 20%, var(--bg-card)));
     --superficie-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 44%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 20%, var(--bg-card)));
     --lateral-mezcla: 28%;
+    --dashboard-hero-bg: linear-gradient(115deg, color-mix(in srgb, var(--papel-arena) 30%, var(--bg-card)) 0%, var(--bg-card) 58%);
+    --shadow-bujo-canvas: inset 1px 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -552,7 +558,7 @@ html[data-theme-switching] :not(html) {
 
 /* Accessibility: Focus visible indicator (WCAG 2.4.7 / 1.4.11) */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
