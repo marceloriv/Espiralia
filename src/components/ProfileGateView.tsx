@@ -10,6 +10,7 @@ import { Pliego } from './common/Pliego';
 import { Papel } from './common/Papel';
 import { downloadFile } from '../utils/downloadFile';
 import { useEscapeKey } from '../utils/useEscapeKey';
+import { Marca } from './common/Marca';
 import styles from './ProfileGateView.module.css';
 
 interface ProfileGateViewProps {
@@ -139,8 +140,7 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 
       <header className={styles.header}>
         <div className={styles.brandRow}>
-          <span className={styles.brandIcon} aria-hidden="true">Es</span>
-          <span className={styles.brandName}>Espiralia</span>
+          <Marca variante="logotipo" alt="Espiralia" className={styles.brandLogotipo} />
         </div>
         <p className={styles.tagline}>TALLER DE ESCRITORIO • CUADERNO PERSONAL</p>
         <div className={styles.secBadge}>

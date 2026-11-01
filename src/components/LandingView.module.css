@@ -54,19 +54,8 @@
 }
 
 .logoMonogram {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-md, 8px);
-  background: linear-gradient(135deg, #8E1EA2 0%, var(--color-primary) 100%);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-primary, serif);
-  font-size: 1.15rem;
-  font-weight: 600;
-  box-shadow: 1px 2px 4px rgba(60, 10, 70, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(110, 0, 129, 0.6);
+  width: 38px;
+  height: auto;
   transition: transform 0.2s ease;
 }
 

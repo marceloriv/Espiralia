@@ -11,6 +11,7 @@ import { NoteModal } from './notes/NoteModal';
 import { VaultModal } from './vault/VaultModal';
 import { GlobalSearchModal } from './search/GlobalSearchModal';
 import { OrigamiHoja } from './common/OrigamiHoja';
+import { Marca } from './common/Marca';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -134,7 +135,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       <aside className={styles.sidebar} aria-label="Barra lateral">
         <div className={styles.brand}>
           <div className={styles.brandHeader}>
-            <div className={styles.monogram}>Es</div>
+            <Marca variante="monograma" className={styles.monogram} />
             <div className={styles.brandText}>
               <h1 className={styles.brandLogo}>Espiralia</h1>
               <p className={styles.brandCaption}>Taller de Escritorio</p>

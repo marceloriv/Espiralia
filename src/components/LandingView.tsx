@@ -10,6 +10,7 @@ import { LandingHeroCard } from './landing/LandingHeroCard';
 import { LandingFolderCards } from './landing/LandingFolderCards';
 import { LandingRitmosSection } from './landing/LandingRitmosSection';
 import { LandingManifestoSection } from './landing/LandingManifestoSection';
+import { Marca } from './common/Marca';
 import styles from './LandingView.module.css';
 
 export interface LandingViewProps {
@@ -42,7 +43,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       {/* 1. Top App Bar */}
       <header className={styles.topBar}>
         <div className={styles.brandGroup}>
-          <div className={styles.logoMonogram} aria-hidden="true">Es</div>
+          <Marca variante="monograma" className={styles.logoMonogram} />
           <button
             type="button"
             className={styles.logoTitle}
