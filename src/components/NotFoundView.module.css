@@ -120,9 +120,12 @@
 
 /* El título recibe el foco por código al montarse: un anillo tenue deja ver adónde se movió, sin un marco duro. */
 .titulo:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-focus) 60%, transparent);
-  outline-offset: 8px;
-  border-radius: 6px;
+  /* Subrayado tenue en lugar de marco; el contorno transparente reaparece en colores forzados. */
+  outline: 2px solid transparent;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-focus) 60%, transparent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
 }
 
 .texto {
