@@ -409,10 +409,7 @@
     radial-gradient(var(--color-grid-bujo) 1.15px, transparent 1.15px),
     var(--superficie-ambar);
   background-size: 100% 28px, 20px 20px, auto;
-  box-shadow: 
-    inset 1px 1px 0 rgba(255, 255, 255, 0.8),
-    inset -1px -1px 0 rgba(0, 0, 0, 0.02),
-    0 2px 8px rgba(26, 25, 23, 0.04);
+  box-shadow: var(--shadow-bujo-canvas);
   overflow: visible;
 }
 
