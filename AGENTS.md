@@ -238,7 +238,7 @@ PR debe indicar qué cambia y por qué, no solo qué archivos.
 
 Directo de conventionalcommits.org v1.0.0 — violar cualquiera de estas invalida el commit como Conventional Commit, no es cuestión de estilo:
 
-- Header: `tipo` + alcance opcional entre paréntesis + `!` opcional + `:` + espacio único + sujeto. Sin espacio antes de los dos puntos, sujeto arranca justo tras `: `.
+- Header: `tipo` + alcance opcional entre paréntesis + `!` opcional + `:` + espacio único + sujeto. Sin espacio antes de los dos puntos, sujeto arranca justo tras `:`.
 - `feat` únicamente para funcionalidad nueva (MINOR en semver). `fix` únicamente para corrección de bug (PATCH en semver).
 - Cuerpo, si existe, separado del header por exactamente una línea en blanco.
 - Footer, si existe, separado del cuerpo por una línea en blanco. Formato git trailer: `Token: valor` o `Token #valor`. El token usa guiones en vez de espacios (`Reviewed-by`, `Refs`, no "Reviewed by"). El valor de un footer puede extenderse en varias líneas hasta que aparece el siguiente token válido.
@@ -328,6 +328,7 @@ git branch -d release/v0.1.0
 ```
 
 **Reglas nunca:**
+
 - Siempre que se termine una feature: crear un Pull Request (PR) hacia la rama `develop`. NUNCA hacer merge directo local sobre `develop`.
 - Nunca commit directo en `main` si los tests no están verificados en verde.
 - Nunca force-push sobre `main` ni `develop` (`--force`).
@@ -340,6 +341,7 @@ git branch -d release/v0.1.0
 **Preguntar primero**: force-push, `git reset --hard`/`clean`, agregar o actualizar dependencias, cualquier acción que afecte estado compartido (push, PR, deploy a staging).
 
 **Nunca sin aprobación explícita**:
+
 - Merge directo de una rama `feature/*` a `develop` o `main` (siempre abrir un PR hacia `develop`, nunca merge directo).
 
 - Migraciones de base de datos aplicadas.
@@ -359,6 +361,7 @@ Este bloque es el que un agente debe poder aplicar sin interpretar: si una acci�
 Espiralia es una SPA puramente cliente servida como sitio estático a través de GitHub Pages. El despliegue está automatizado mediante GitHub Actions en `.github/workflows/deploy.yml`, activándose ante cada push a la rama `main` o ejecución manual (`workflow_dispatch`).
 
 El workflow ejecuta:
+
 1. `pnpm install --frozen-lockfile`
 2. `pnpm exec vitest run` (quality gate bloqueante)
 3. `pnpm build` (con `base: './'` en `vite.config.ts`)
@@ -523,7 +526,9 @@ Esta tabla es orientación técnica de implementación, no asesoría legal: el a
 
 <!-- antislop:start -->
 ## antislop
+
 For UI, copy, people, mobile layout, or code comments work, read `antislop.md` (core) and then the skill for the task:
+
 - UI / visual: `skills/antislop-ui/SKILL.md`
 - Copy & text: `skills/antislop-copywriting/SKILL.md`
 - People: `skills/antislop-human/SKILL.md`
