@@ -265,7 +265,7 @@ describe('AppLayout', () => {
   it('renderiza la barra lateral editorial con monograma Es, boton de entrada y ficha Local DB', () => {
     renderLayout();
 
-    expect(screen.getByText('Es')).toBeInTheDocument();
+    expect(document.querySelector('img[src$="01-monograma-Es.svg"]')).not.toBeNull();
     expect(screen.getByRole('heading', { name: 'Espiralia', level: 1 })).toBeInTheDocument();
     expect(screen.getByText('Taller de Escritorio')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /\+ acción rápida/i })).toBeInTheDocument();
