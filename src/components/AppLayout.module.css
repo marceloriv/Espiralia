@@ -41,9 +41,9 @@
   background-color: var(--bg-surface-soft);
   /* El degradado sigue el molinillo pizarra, la concha arena y la rosa de la hoja de origami. */
   background-image: linear-gradient(160deg,
-    color-mix(in srgb, var(--papel-pizarra) 58%, var(--bg-surface-soft)) 0%,
-    color-mix(in srgb, var(--papel-arena) 56%, var(--bg-surface-soft)) 49%,
-    color-mix(in srgb, var(--papel-rosa) 56%, var(--bg-surface-soft)) 100%);
+    color-mix(in srgb, var(--papel-pizarra) var(--lateral-mezcla), var(--bg-surface-soft)) 0%,
+    color-mix(in srgb, var(--papel-arena) var(--lateral-mezcla), var(--bg-surface-soft)) 49%,
+    color-mix(in srgb, var(--papel-rosa) var(--lateral-mezcla), var(--bg-surface-soft)) 100%);
   border-right: 1px solid var(--border-hairline);
 }
 
