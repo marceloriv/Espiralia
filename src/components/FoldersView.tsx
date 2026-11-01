@@ -16,6 +16,8 @@ import type { Folder, LinkItem, Note, Profile, StoredFile, ViewType } from '../t
 import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { addFile, deleteFile, deleteFolderFiles, getFileBlob, listFiles } from '../services/fileStore';
 import { formatBytes } from '../utils/formatBytes';
+import { folderTabColors } from '../utils/folderTabColors';
+import { Esqueleto } from './common/Esqueleto';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
 import { NoteModal } from './notes/NoteModal';
@@ -511,7 +513,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         <section className={styles.ficheroSection}>
           <div className={styles.ficheroTopBar}>
             <div className={styles.ficheroBrand}>
-              <FolderIcon size={20} color="var(--color-primary)" aria-hidden="true" />
+              <FolderIcon size={20} color="var(--color-text-primary)" aria-hidden="true" />
               <span className={styles.ficheroTitle}>Fichero de Índice Manuscrito</span>
               <span className={styles.countBadge}>{displayFolders.length} Carpetas Activas</span>
             </div>
@@ -537,7 +539,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             <div className={styles.flatFoldersRow} role="tablist" aria-label="Solapas de carpetas">
               {displayFolders.map((df) => {
                 const isActive = df.id === selectedFolderId;
-                const folderColor = df.color || '#E5B23E';
+                const { fill, ink } = folderTabColors(df.color || '#E5B23E');
 
                 return (
                   <button
@@ -547,7 +549,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                     aria-selected={isActive}
                     className={`${styles.flatFolderTab} ${isActive ? styles.flatFolderActive : ''}`}
                     onClick={() => setUserSelectedFolderId(df.id)}
-                    style={{ '--folder-color': folderColor } as React.CSSProperties}
+                    style={{ '--folder-color': fill, '--folder-ink': ink } as React.CSSProperties}
                   >
                     <div className={styles.flatBackFlap} aria-hidden="true" />
                     <div className={styles.flatSheets} data-testid="folder-flat-sheets" aria-hidden="true">
@@ -646,11 +648,16 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                         <tr>
                           <td colSpan={5} className={styles.emptyTableTd}>
                             <div className={styles.emptyTableBox}>
-                              <p className={styles.emptyTableText}>
-                                {filesStatus === 'loading'
-                                  ? 'Cargando los PDF de esta carpeta…'
-                                  : 'Esta carpeta no contiene notas, enlaces ni PDF todavía.'}
-                              </p>
+                              {filesStatus === 'loading' ? (
+                                <div className={styles.cargaPdf} role="status" aria-busy="true">
+                                  <span className="visually-hidden">Cargando los PDF de esta carpeta…</span>
+                                  <Esqueleto ancho="100%" alto="2.25rem" />
+                                  <Esqueleto ancho="100%" alto="2.25rem" />
+                                  <Esqueleto ancho="70%" alto="2.25rem" />
+                                </div>
+                              ) : (
+                                <p className={styles.emptyTableText}>Esta carpeta no contiene notas, enlaces ni PDF todavía.</p>
+                              )}
                               <div className={styles.emptyTableActions}>
                                 <button
                                   type="button"
@@ -688,7 +695,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                             <td className={styles.ledgerTd}>
                               <div className={styles.docTitleBox}>
                                 {item.type === 'note' ? (
-                                  <FileText size={18} color="var(--color-primary)" aria-hidden="true" />
+                                  <FileText size={18} color="var(--color-text-primary)" aria-hidden="true" />
                                 ) : item.type === 'file' ? (
                                   <FileUp size={18} color="var(--color-text-error)" aria-hidden="true" />
                                 ) : (
@@ -834,7 +841,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             <div className={styles.quickCaptureCard}>
               <div className={styles.quickCaptureHeader}>
                 <div className={styles.quickCaptureLead}>
-                  <BookmarkPlus size={20} color="var(--color-primary)" aria-hidden="true" />
+                  <BookmarkPlus size={20} color="var(--color-text-primary)" aria-hidden="true" />
                   <h4 className={styles.quickCaptureTitle}>Captura Veloz de Enlace</h4>
                 </div>
               </div>

@@ -238,7 +238,7 @@ PR debe indicar qué cambia y por qué, no solo qué archivos.
 
 Directo de conventionalcommits.org v1.0.0 — violar cualquiera de estas invalida el commit como Conventional Commit, no es cuestión de estilo:
 
-- Header: `tipo` + alcance opcional entre paréntesis + `!` opcional + `:` + espacio único + sujeto. Sin espacio antes de los dos puntos, sujeto arranca justo tras `: `.
+- Header: `tipo` + alcance opcional entre paréntesis + `!` opcional + `:` + espacio único + sujeto. Sin espacio antes de los dos puntos, sujeto arranca justo tras `:`.
 - `feat` únicamente para funcionalidad nueva (MINOR en semver). `fix` únicamente para corrección de bug (PATCH en semver).
 - Cuerpo, si existe, separado del header por exactamente una línea en blanco.
 - Footer, si existe, separado del cuerpo por una línea en blanco. Formato git trailer: `Token: valor` o `Token #valor`. El token usa guiones en vez de espacios (`Reviewed-by`, `Refs`, no "Reviewed by"). El valor de un footer puede extenderse en varias líneas hasta que aparece el siguiente token válido.
@@ -328,6 +328,7 @@ git branch -d release/v0.1.0
 ```
 
 **Reglas nunca:**
+
 - Siempre que se termine una feature: crear un Pull Request (PR) hacia la rama `develop`. NUNCA hacer merge directo local sobre `develop`.
 - Nunca commit directo en `main` si los tests no están verificados en verde.
 - Nunca force-push sobre `main` ni `develop` (`--force`).
@@ -340,6 +341,7 @@ git branch -d release/v0.1.0
 **Preguntar primero**: force-push, `git reset --hard`/`clean`, agregar o actualizar dependencias, cualquier acción que afecte estado compartido (push, PR, deploy a staging).
 
 **Nunca sin aprobación explícita**:
+
 - Merge directo de una rama `feature/*` a `develop` o `main` (siempre abrir un PR hacia `develop`, nunca merge directo).
 
 - Migraciones de base de datos aplicadas.
@@ -359,6 +361,7 @@ Este bloque es el que un agente debe poder aplicar sin interpretar: si una acci�
 Espiralia es una SPA puramente cliente servida como sitio estático a través de GitHub Pages. El despliegue está automatizado mediante GitHub Actions en `.github/workflows/deploy.yml`, activándose ante cada push a la rama `main` o ejecución manual (`workflow_dispatch`).
 
 El workflow ejecuta:
+
 1. `pnpm install --frozen-lockfile`
 2. `pnpm exec vitest run` (quality gate bloqueante)
 3. `pnpm build` (con `base: './'` en `vite.config.ts`)
@@ -420,7 +423,7 @@ Modelo de calidad del producto, edición 2023: 9 características, cada una con 
 | Característica | Subcaracterísticas (2023) | Qué exige en este proyecto | Cómo se verifica |
 | --- | --- | --- | --- |
 | Aptitud funcional | completitud, corrección, adecuación funcional | el sistema hace lo que el requisito dice, con el resultado correcto, sin funciones de más | trazabilidad requisito → test (§7); todo requisito con al menos un caso en `src/tests/` |
-| Eficiencia de desempeño | comportamiento temporal, uso de recursos, capacidad | tiempo de renderizado y respuesta en cliente inmediatos | tiempo de renderizado < 100ms y carga inicial comprimida (gzip de los JS y CSS enlazados desde `dist/index.html`) ≤ 184KB; medida 2026-10-29: 182.0KB (subió 0.8KB desde 181.2KB, medidos el 2026-10-26, por lo que v0.6.0 y v0.6.1 agregan al arranque: los tokens de superficie por tinte en `index.css`, la exportación de respaldos con PDF y el borrado en cascada de PDF al eliminar un perfil; el tope sube 2KB y deja 2KB de margen, por decisión de la persona dueña). Antes: ≤ 182KB con 181.2KB medidos el 2026-10-26. Los chunks por ruta no cuentan: `AgendaView` pesa 89KB por FullCalendar y solo carga en Agenda; `vendor-toast` pesa 45KB y es candidato a diferirse |
+| Eficiencia de desempeño | comportamiento temporal, uso de recursos, capacidad | tiempo de renderizado y respuesta en cliente inmediatos | tiempo de renderizado < 100ms y carga inicial comprimida (gzip de los JS y CSS enlazados desde `dist/index.html`) ≤ 186KB; medida 2026-10-31: 185.1KB (subió 3.1KB desde 182.0KB: el modo oscuro agrega los tokens del tema, el conmutador y la transición, y la regla de carga agrega el esqueleto y la ventana de carga con origami; el tope sube 2KB y deja 0.9KB de margen, por decisión de la persona dueña). Antes: ≤ 184KB con 182.0KB medidos el 2026-10-29 (subió 0.8KB desde 181.2KB, medidos el 2026-10-26, por lo que v0.6.0 y v0.6.1 agregan al arranque: los tokens de superficie por tinte en `index.css`, la exportación de respaldos con PDF y el borrado en cascada de PDF al eliminar un perfil; el tope sube 2KB y deja 2KB de margen, por decisión de la persona dueña). Antes: ≤ 182KB con 181.2KB medidos el 2026-10-26. Los chunks por ruta no cuentan: `AgendaView` pesa 89KB por FullCalendar y solo carga en Agenda; `vendor-toast` pesa 45KB y es candidato a diferirse |
 | Compatibilidad | coexistencia, interoperabilidad | contratos estables de tipos TypeScript y esquemas de datos locales | interfaces tipadas en `src/types/` + suites de prueba de esquema |
 | Capacidad de interacción *(era Usabilidad)* | reconocibilidad, aprendibilidad, operabilidad, protección contra errores de usuario, involucramiento, inclusividad, asistencia al usuario, autodescripción | interfaz operable, accesible y con errores comprensibles; inclusividad y autodescripción son subcaracterísticas nuevas de 2023, no opcionales de estilo | WCAG 2.2 AA, tap targets $\ge 44\text{ px}$, contraste $\ge 4.5:1$, mensajes contextuales de empty state; tokens en `DESIGN.md` |
 | Fiabilidad | ausencia de fallos *(antes madurez)*, disponibilidad, tolerancia a fallos, recuperabilidad | funcionamiento offline en cliente, degradación limpia ante fallo de `localStorage` | cobertura de fallbacks y pruebas de camino de error (§7) |
@@ -523,7 +526,9 @@ Esta tabla es orientación técnica de implementación, no asesoría legal: el a
 
 <!-- antislop:start -->
 ## antislop
+
 For UI, copy, people, mobile layout, or code comments work, read `antislop.md` (core) and then the skill for the task:
+
 - UI / visual: `skills/antislop-ui/SKILL.md`
 - Copy & text: `skills/antislop-copywriting/SKILL.md`
 - People: `skills/antislop-human/SKILL.md`

@@ -8,8 +8,8 @@
   background-color: var(--color-canvas);
   background-image:
     radial-gradient(circle at 50% 50%, rgba(20, 20, 19, 0.03) 1px, transparent 1px),
-    radial-gradient(var(--color-grid-bujo) 1px, transparent 1px);
-  background-size: 100% 100%, 20px 20px;
+    radial-gradient(color-mix(in srgb, var(--color-grid-bujo) 70%, transparent) 1px, transparent 1px);
+  background-size: 100% 100%, 28px 28px;
   color: var(--color-ink);
   box-sizing: border-box;
 }
@@ -97,9 +97,9 @@
   margin-top: 8px;
   background-color: var(--papel-arena);
   background-image: linear-gradient(120deg,
-    color-mix(in srgb, var(--papel-pizarra) 65%, var(--bg-card)),
+    color-mix(in srgb, var(--papel-pizarra) 30%, var(--bg-card)),
     var(--papel-arena) 48%,
-    color-mix(in srgb, var(--papel-rosa) 65%, var(--bg-card)));
+    color-mix(in srgb, var(--papel-rosa) 30%, var(--bg-card)));
   clip-path: polygon(0 4%, 5% 2%, 10% 5%, 16% 1%, 23% 4%, 30% 2%, 38% 4%, 47% 1%, 55% 4%, 64% 2%, 73% 5%, 82% 1%, 91% 4%, 100% 2%, 100% 96%, 94% 99%, 87% 96%, 79% 99%, 70% 96%, 61% 99%, 52% 96%, 43% 99%, 34% 96%, 25% 99%, 16% 96%, 8% 99%, 0 96%);
 }
 
@@ -120,9 +120,12 @@
 
 /* El título recibe el foco por código al montarse: un anillo tenue deja ver adónde se movió, sin un marco duro. */
 .titulo:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
-  outline-offset: 8px;
-  border-radius: 6px;
+  /* Subrayado tenue en lugar de marco; el contorno transparente reaparece en colores forzados. */
+  outline: 2px solid transparent;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-focus) 60%, transparent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
 }
 
 .texto {
@@ -161,12 +164,12 @@
 }
 
 .boton:hover {
-  background-color: var(--color-primary-active);
+  background-color: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
 .boton:focus-visible {
-  outline: 3px solid var(--color-primary);
+  outline: 3px solid var(--color-focus);
   outline-offset: 3px;
 }
 

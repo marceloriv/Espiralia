@@ -21,7 +21,7 @@
   background: repeating-conic-gradient(from 95deg at 22% 51%,
     var(--papel-arena) 0 11deg,
     var(--papel-arena-fuerte) 11deg 19deg,
-    color-mix(in srgb, var(--bg-card) 60%, var(--papel-arena)) 19deg 30deg);
+    color-mix(in srgb, var(--color-ink) 16%, var(--papel-arena)) 19deg 30deg);
 }
 
 /* Un pliegue: la mitad de abajo cae más oscura, con un corte duro. */
@@ -31,14 +31,14 @@
   inset: 0;
   border-radius: 50%;
   clip-path: polygon(46% 0, 100% 0, 100% 100%, 30% 100%);
-  background: color-mix(in srgb, var(--color-ink) 9%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 14%, transparent);
 }
 
 /* Las cámaras son anillos tangentes por la izquierda; cada uno deja un hueco distinto y se lee como espiral. */
 .camara {
   left: 38px;
   box-sizing: border-box;
-  border: 2.5px solid color-mix(in srgb, var(--papel-arena-fuerte), var(--color-ink) 38%);
+  border: 2.5px solid color-mix(in srgb, var(--papel-arena-fuerte), var(--color-ink) 55%);
   border-radius: 50%;
 }
 

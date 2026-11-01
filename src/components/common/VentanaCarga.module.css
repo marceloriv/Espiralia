@@ -1,0 +1,177 @@
+/* Ventana de carga (DESIGN.md §7.8): una hoja se pliega dos veces y se vuelve el Nautilus de la marca. Una sola pasada, sin bucle. */
+.ventana {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  background: var(--color-canvas);
+  /* No aparece hasta 300ms: una carga rápida no la ve nadie y no hay destello. Con movimiento reducido la duración se anula,
+     pero el retraso se conserva. */
+  animation: aparecer 220ms ease-out 300ms both;
+}
+
+.escena {
+  position: relative;
+  width: 240px;
+  height: 180px;
+  perspective: 900px;
+}
+
+/* La hoja: un cuadrado de 160px. Cada grupo lleva la misma hoja (base + solapa) y se recorta a una mitad para el segundo pliegue. */
+.hoja {
+  position: absolute;
+  left: 40px;
+  top: 10px;
+  width: 160px;
+  height: 160px;
+  filter: drop-shadow(0 1px 0 color-mix(in srgb, var(--color-ink) 22%, transparent));
+  animation: hoja-sale 2.8s ease-in-out 300ms both;
+}
+
+.grupo {
+  position: absolute;
+  inset: 0;
+}
+
+/* Mitad que no se mueve en el segundo pliegue: el triángulo BL-BR-centro. */
+.fija {
+  clip-path: polygon(0 100%, 100% 100%, 50% 50%);
+}
+
+/* Mitad que se dobla sobre la otra: el triángulo TL-BL-centro; su eje es la línea BL-centro. */
+.movil {
+  clip-path: polygon(0 0, 0 100%, 50% 50%);
+  animation: pliegue-2 2.8s cubic-bezier(0.45, 0, 0.25, 1) 300ms both;
+}
+
+/* El revés del papel: se oscurece al pasar de la mitad del giro. */
+.movil::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-ink) 12%, transparent);
+  animation: reverso 2.8s step-end 300ms both;
+}
+
+.base,
+.solapa {
+  position: absolute;
+  inset: 0;
+  background: var(--papel-arena);
+}
+
+/* Triángulo de abajo-izquierda: no se mueve en el primer pliegue. */
+.base {
+  clip-path: polygon(0 0, 0 100%, 100% 100%);
+}
+
+/* Triángulo de arriba-derecha: se dobla sobre la diagonal TL-BR y cae sobre la base. */
+.solapa {
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  background: var(--papel-arena-fuerte);
+  animation: pliegue-1 2.8s cubic-bezier(0.45, 0, 0.25, 1) 300ms both;
+}
+
+.nautilo {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: nautilo-entra 2.8s ease-out 300ms both;
+}
+
+.etiqueta {
+  margin: 0;
+  font-family: var(--font-family-2);
+  font-size: var(--text-body-sm);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 0-6 la hoja asoma; 6-32 primer pliegue; 36-62 segundo; 66-84 la hoja cede su lugar al Nautilus. */
+@keyframes hoja-sale {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  6%,
+  66% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  84%,
+  100% {
+    opacity: 0;
+    transform: scale(0.82) rotate(8deg);
+  }
+}
+
+@keyframes pliegue-1 {
+  0%,
+  6% {
+    transform: rotate3d(1, 1, 0, 0deg);
+  }
+  32%,
+  100% {
+    transform: rotate3d(1, 1, 0, -180deg);
+  }
+}
+
+@keyframes pliegue-2 {
+  0%,
+  36% {
+    transform: rotate3d(1, -1, 0, 0deg);
+  }
+  62%,
+  100% {
+    transform: rotate3d(1, -1, 0, 180deg);
+  }
+}
+
+@keyframes reverso {
+  0%,
+  49% {
+    opacity: 0;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes nautilo-entra {
+  0%,
+  64% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  90%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Sin movimiento: no hay pliegue; se ve el Nautilus ya formado, con el mismo retraso de 300ms. */
+@media (prefers-reduced-motion: reduce) {
+  .hoja {
+    display: none;
+  }
+
+  .nautilo {
+    opacity: 1;
+    animation: none;
+  }
+}

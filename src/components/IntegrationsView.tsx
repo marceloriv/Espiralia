@@ -337,7 +337,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     </div>
                     <p className={styles.dropzoneText}>
                       Arrastra tu archivo <code className={styles.codeBadge}>.ics</code> aquí o{' '}
-                      <span style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>
+                      <span style={{ color: 'var(--color-text-primary)', textDecoration: 'underline' }}>
                         explora tu equipo
                       </span>
                     </p>
@@ -452,7 +452,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                 <div className={styles.cardRight}>
                   <div className={styles.cardHeader}>
                     <div className={styles.cardHeaderIdentity}>
-                      <div className={styles.cardIconWrapper} style={{ color: '#3f7a4e' }} aria-hidden="true">
+                      <div className={styles.cardIconWrapper} style={{ color: 'var(--color-text-success)' }} aria-hidden="true">
                         <FileCheck2 size={22} />
                       </div>
                       <div>
@@ -471,7 +471,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                     className={styles.btnDownloadFullVault}
                     onClick={handleExportFullVault}
                   >
-                    <Download size={16} color="var(--color-primary)" aria-hidden="true" />
+                    <Download size={16} color="var(--color-text-primary)" aria-hidden="true" />
                     <span>Descargar copia completa (.json)</span>
                   </button>
                   <p className={styles.vaultSubhint}>

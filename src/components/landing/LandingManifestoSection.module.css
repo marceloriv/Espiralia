@@ -366,8 +366,8 @@
 }
 
 .primaryCtaBtn:hover {
-  background-color: var(--color-primary-active);
-  border-color: var(--color-primary-active);
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
 }
 
 .secondaryOutlineBtn {

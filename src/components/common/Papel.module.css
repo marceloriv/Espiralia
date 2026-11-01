@@ -55,10 +55,11 @@
 /* Tarjeta: bordes superior e inferior rasgados y cuadrícula bujo (misma forma que usaba bentoCardTorn). */
 .papel[data-forma='tarjeta'] {
   padding: 28px 24px 30px;
+  background-color: color-mix(in srgb, var(--tono) var(--papel-intensidad-tarjeta), var(--bg-card));
   /* La esquina inferior derecha se oscurece hacia el tinte fuerte: separa el papel del lienzo sin velar el texto. */
   background-image:
     radial-gradient(var(--color-grid-bujo) 0.65px, transparent 0.65px),
-    linear-gradient(155deg, transparent 54%, color-mix(in srgb, var(--tono-fuerte) 58%, transparent)),
+    linear-gradient(155deg, transparent 54%, color-mix(in srgb, var(--tono-fuerte) var(--papel-intensidad-esquina), transparent)),
     var(--fibra);
   background-size: 16px 16px, auto, 240px 240px;
   clip-path: polygon(

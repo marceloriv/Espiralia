@@ -568,7 +568,7 @@
 }
 
 .manifiestoCta:hover {
-  background-color: var(--color-primary-active);
+  background-color: var(--color-primary-hover);
 }
 
 .manifiestoCta:focus-visible {
