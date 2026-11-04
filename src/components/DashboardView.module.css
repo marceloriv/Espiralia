@@ -702,20 +702,6 @@
   color: var(--color-muted);
 }
 
-.statusStable {
-  color: var(--color-text-success);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.statusStableDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background-color: var(--color-success);
-}
 
 .metricQuadTile {
   min-width: 0;
