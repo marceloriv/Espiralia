@@ -10,15 +10,18 @@ import esLocale from '@fullcalendar/react/locales/es';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
-import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Smile, Leaf, Meh, BatteryLow } from 'lucide-react';
-import { ENERGY_LEVELS } from '../utils/energyLevels';
+import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon } from 'lucide-react';
+import { DISPOSITIONS, ENERGY_LEVELS, dispositionLabel, energyLabel } from '../utils/energyLevels';
 import { sileo } from 'sileo';
-import type { AgendaEvent, Profile, ViewType } from '../types';
+import type { AgendaEvent, Disposition, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
+import { IcsService } from '../services/icsService';
+import { downloadFile } from '../utils/downloadFile';
 import { defaultEndTime, isoWeekNumber, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
 import { emptyEventForm, eventFormFromEvent, validateEventForm } from './agenda/eventForm';
 import type { EventFormState } from './agenda/eventForm';
 import {
+  CATEGORIES,
   CATEGORY_COLORS,
   FILTERS,
   FILTER_LABELS,
@@ -75,9 +78,20 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   // ponytail: se evalúa al montar; si se rota el dispositivo, la barra se ajusta al recargar la vista.
   const [isNarrow] = useState(() => window.matchMedia(NARROW_QUERY).matches);
 
-  // Estados interactivos para Rhythm & Mood Tracker de Stitch
-  const [energyLevel, setEnergyLevel] = useState<string>('Alta');
-  const [moodState, setMoodState] = useState<string>('En Calma');
+  // Energía y ánimo del día: los mismos registros que To-Do, Planner, Notas y el Dashboard.
+  const todayStr = toLocalDateStr(hoy);
+  const [energyLevel, setEnergyLevel] = useState(() => StorageService.getTodayMood(activeProfileId, todayStr) ?? '');
+  const [disposition, setDisposition] = useState(() => StorageService.getTodayDisposition(activeProfileId, todayStr));
+
+  const handleSelectEnergy = (value: string) => {
+    setEnergyLevel(value);
+    StorageService.setTodayMood(activeProfileId, todayStr, value);
+  };
+
+  const handleSelectDisposition = (value: Disposition) => {
+    setDisposition(value);
+    StorageService.setTodayDisposition(activeProfileId, todayStr, value);
+  };
 
   const reload = () => setEvents(StorageService.getEvents(activeProfileId));
   const update = (patch: Partial<EventFormState>) => setForm(f => ({ ...f, ...patch }));
@@ -167,6 +181,12 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     reload();
   };
 
+  // Exporta lo que el filtro deja ver: el mismo .ics que Integraciones, sin salir de la Agenda.
+  const handleExportIcs = () => {
+    downloadFile(IcsService.exportToIcs(visible), `espiralia-agenda-${todayStr}.ics`, 'text/calendar;charset=utf-8');
+    sileo.success({ title: `${eventCountLabel(visible.length)} ${visible.length === 1 ? 'exportado' : 'exportados'}` });
+  };
+
   const handleGoToDate = (value: string) => {
     setGotoValue(value);
     if (!value || value < '1000') return;
@@ -213,7 +233,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
           <button
             type="button"
             className={styles.btnExportIcs}
-            onClick={() => sileo.info({ title: 'Exportación RFC 5545 lista en Bóveda' })}
+            onClick={handleExportIcs}
           >
             <Download size={15} aria-hidden="true" />
             <span>Exportar .ics</span>
@@ -234,19 +254,13 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               <span className={styles.sheetTitle}>Almanaque de Mesa</span>
             </div>
 
-            <div className={styles.toolbarLegend}>
-              <span className={styles.legendItem}>
-                <span className={`${styles.legendDot} ${styles.dotPrimary}`} />
-                Clave
-              </span>
-              <span className={styles.legendItem}>
-                <span className={`${styles.legendDot} ${styles.dotEmerald}`} />
-                Trámites
-              </span>
-              <span className={styles.legendItem}>
-                <span className={`${styles.legendDot} ${styles.dotBlue}`} />
-                Académico
-              </span>
+            <div className={styles.toolbarLegend} role="group" aria-label="Colores por categoría">
+              {CATEGORIES.map(c => (
+                <span key={c} className={styles.legendItem}>
+                  <span className={styles.legendDot} style={{ backgroundColor: CATEGORY_COLORS[c].color }} aria-hidden="true" />
+                  {FILTER_LABELS[c]}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -305,12 +319,9 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <div className={styles.panelBody}>
             {/* Cabecera de la ficha */}
             <div className={styles.panelHeaderRow}>
-              <div>
-                <span className={styles.agendaDiariaBadge}>Agenda Diaria</span>
-                <h3 id="agenda-day-title" className={styles.panelTitle}>Eventos del {selectedDate}</h3>
-              </div>
+              <h3 id="agenda-day-title" className={styles.panelTitle}>Eventos del {selectedDate}</h3>
               <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.agenda} className={styles.priorityCountBadge}>
-                {dayEvents.length} {dayEvents.length === 1 ? 'Prioritaria' : 'Prioritarias'}
+                {eventCountLabel(dayEvents.length)}
               </Papel>
             </div>
 
@@ -393,17 +404,17 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <div className={styles.vitalEnergyBox}>
               <div className={styles.vitalHeaderRow}>
                 <span className={styles.vitalLabel}>NIVEL DE ENERGÍA VITAL</span>
-                <span className={styles.vitalStatus}>{energyLevel}</span>
+                <span className={styles.vitalStatus}>{energyLabel(energyLevel)}</span>
               </div>
-              <div className={styles.energyButtonsGrid}>
-                {ENERGY_LEVELS.map(({ label, icon: Icon }) => (
+              <div className={styles.energyButtonsGrid} role="group" aria-label="Nivel de energía">
+                {ENERGY_LEVELS.map(({ value, label, icon: Icon }) => (
                   <button
-                    key={label}
+                    key={value}
                     type="button"
-                    className={`${styles.energyLevelBtn} ${energyLevel === label ? styles.energyLevelActive : ''}`}
-                    onClick={() => setEnergyLevel(label)}
+                    className={`${styles.energyLevelBtn} ${energyLevel === value ? styles.energyLevelActive : ''}`}
+                    onClick={() => handleSelectEnergy(value)}
                     title={`Nivel: ${label}`}
-                    aria-pressed={energyLevel === label}
+                    aria-pressed={energyLevel === value}
                   >
                     <Icon size={18} aria-hidden="true" />
                     <span className={styles.levelName}>{label}</span>
@@ -416,23 +427,19 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <div className={styles.moodBox}>
               <div className={styles.vitalHeaderRow}>
                 <span className={styles.vitalLabel}>DISPOSICIÓN EMOCIONAL</span>
-                <span className={styles.moodStatusText}>{moodState}</span>
+                <span className={styles.moodStatusText}>{dispositionLabel(disposition)}</span>
               </div>
-              <div className={styles.moodButtonsGrid}>
-                {[
-                  { id: 'Plena', Icon: Smile },
-                  { id: 'En Calma', Icon: Leaf },
-                  { id: 'Neutra', Icon: Meh },
-                  { id: 'Cansada', Icon: BatteryLow },
-                ].map(mood => (
+              <div className={styles.moodButtonsGrid} role="group" aria-label="Disposición emocional">
+                {DISPOSITIONS.map(({ value, label, icon: Icon }) => (
                   <button
-                    key={mood.id}
+                    key={value}
                     type="button"
-                    className={`${styles.moodBtn} ${moodState === mood.id ? styles.moodBtnActive : ''}`}
-                    onClick={() => setMoodState(mood.id)}
+                    className={`${styles.moodBtn} ${disposition === value ? styles.moodBtnActive : ''}`}
+                    onClick={() => handleSelectDisposition(value)}
+                    aria-pressed={disposition === value}
                   >
-                    <mood.Icon size={18} className={styles.moodEmoji} aria-hidden="true" />
-                    <span className={styles.moodLabelText}>{mood.id}</span>
+                    <Icon size={18} className={styles.moodEmoji} aria-hidden="true" />
+                    <span className={styles.moodLabelText}>{label}</span>
                   </button>
                 ))}
               </div>

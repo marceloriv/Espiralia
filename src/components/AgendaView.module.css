@@ -204,25 +204,11 @@
   gap: 6px;
 }
 
+/* El color de cada muestra lo pone el componente desde CATEGORY_COLORS: el mismo del evento en el calendario. */
 .legendDot {
   width: 9px;
   height: 9px;
   border-radius: 2px;
-}
-
-.dotPrimary {
-  background-color: rgba(142, 30, 162, 0.25);
-  border: 1px solid var(--color-primary);
-}
-
-.dotEmerald {
-  background-color: #d1fae5;
-  border: 1px solid #059669;
-}
-
-.dotBlue {
-  background-color: #dbeafe;
-  border: 1px solid #2563eb;
 }
 
 /* Touch targets para FullCalendar */
@@ -367,17 +353,6 @@
   justify-content: space-between;
   border-bottom: 1px solid var(--color-hairline);
   padding-bottom: 10px;
-}
-
-.agendaDiariaBadge {
-  display: block;
-  font-family: var(--font-family-3);
-  font-size: var(--text-micro);
-  font-weight: 700;
-  color: var(--color-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 2px;
 }
 
 .panelTitle {

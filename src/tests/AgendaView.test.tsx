@@ -7,7 +7,10 @@ import { WEEK_DAYS } from '../components/agenda/eventMapping';
 import { SAVE_ERROR } from '../components/agenda/eventPersistence';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
+import { downloadFile } from '../utils/downloadFile';
 import type { AgendaEvent } from '../types';
+
+vi.mock('../utils/downloadFile', () => ({ downloadFile: vi.fn() }));
 
 const profileId = 'p-agenda';
 const today = toLocalDateStr(new Date());
@@ -34,10 +37,55 @@ describe('AgendaView', () => {
     expect(screen.getByRole('heading', { level: 1, name: /octubre 2026/i })).toBeInTheDocument();
     expect(screen.getByText(/almanaque de mesa/i)).toBeInTheDocument();
     expect(screen.queryByText(/formato imprenta/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/agenda diaria/i)).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: /eventos del/i })).toBeInTheDocument();
+    // La insignia "Agenda Diaria" repetía el titular del resumen (R-09).
+    expect(screen.queryByText(/agenda diaria/i)).not.toBeInTheDocument();
     expect(screen.getByText(/ritmo de energía y ánimo/i)).toBeInTheDocument();
     expect(screen.queryByText(/energy & mood/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/the weekly flow/i)).not.toBeInTheDocument();
+  });
+
+  describe('exportación, leyenda y ritmo del día', () => {
+    it('"Exportar .ics" descarga los eventos visibles', async () => {
+      const user = userEvent.setup();
+      seed({ id: 'e-ics', title: 'Reunión de tesis', startTime: '10:00', endTime: '11:00', category: 'universidad' });
+      render(<AgendaView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /exportar \.ics/i }));
+
+      expect(downloadFile).toHaveBeenCalledTimes(1);
+      const [contenido, nombre, tipo] = vi.mocked(downloadFile).mock.calls[0];
+      expect(contenido).toContain('SUMMARY:Reunión de tesis');
+      expect(nombre).toMatch(/\.ics$/);
+      expect(tipo).toMatch(/text\/calendar/);
+    });
+
+    it('la leyenda nombra las cinco categorías de evento', () => {
+      render(<AgendaView profileId={profileId} />);
+
+      const leyenda = within(screen.getByRole('group', { name: /colores por categoría/i }));
+      for (const nombre of ['Trabajo', 'Personal', 'Urgente', 'Estudio', 'Universidad']) {
+        expect(leyenda.getByText(nombre)).toBeInTheDocument();
+      }
+      expect(screen.queryByText('Trámites')).not.toBeInTheDocument();
+    });
+
+    it('la energía y el ánimo elegidos se guardan y siguen al volver a la vista', async () => {
+      const user = userEvent.setup();
+      const energia = () => within(screen.getByRole('group', { name: /nivel de energía/i }));
+      const animo = () => within(screen.getByRole('group', { name: /disposición emocional/i }));
+      const { unmount } = render(<AgendaView profileId={profileId} />);
+
+      await user.click(energia().getByRole('button', { name: /plena/i }));
+      await user.click(animo().getByRole('button', { name: /cansada/i }));
+      unmount();
+      render(<AgendaView profileId={profileId} />);
+
+      expect(energia().getByRole('button', { name: /plena/i })).toHaveAttribute('aria-pressed', 'true');
+      expect(animo().getByRole('button', { name: /cansada/i })).toHaveAttribute('aria-pressed', 'true');
+      expect(StorageService.getTodayMood(profileId, today)).toBe('☀️');
+      expect(StorageService.getTodayDisposition(profileId, today)).toBe('cansada');
+    });
   });
 
   // DESIGN.md §0.9, paso 4: el almanaque es el pliego; el resumen del día, un papel pizarra; formulario y ritmo, cartulina.
@@ -58,10 +106,12 @@ describe('AgendaView', () => {
       expect(resumen.querySelector('[data-tinte="pizarra"][data-forma="tarjeta"]')).toBeInTheDocument();
     });
 
-    it('la semana ISO y el contador de prioritarias son piezas de papel pizarra', () => {
+    it('la semana ISO y el contador de eventos del día son piezas de papel pizarra', () => {
       render(<AgendaView profileId={profileId} />);
 
-      for (const pieza of [screen.getByText(/^semana \d+$/i), screen.getByText(/prioritarias?$/i)]) {
+      // El contador decía "Prioritarias" aunque contaba todos los eventos del día.
+      expect(screen.queryByText(/prioritarias?$/i)).not.toBeInTheDocument();
+      for (const pieza of [screen.getByText(/^semana \d+$/i), screen.getByText(/^\d+ eventos?$/i)]) {
         expect(pieza.closest('[data-forma="pieza"][data-tinte="pizarra"]')).not.toBeNull();
       }
     });
