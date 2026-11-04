@@ -74,7 +74,7 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
               </div>
               <h4 className={styles.pillarTitle}>Datos locales</h4>
               <p className={styles.pillarDesc}>
-                Se guardan en el localStorage de tu navegador. El PIN opcional bloquea el perfil. El respaldo exportable se cifra con tu contraseña (PBKDF2 y AES-GCM).
+                Se guardan en el localStorage de tu navegador. El PIN opcional bloquea el perfil. El respaldo se puede cifrar con una contraseña (PBKDF2 y AES-GCM).
               </p>
             </div>
 

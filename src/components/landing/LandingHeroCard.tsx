@@ -13,8 +13,7 @@ export const LandingHeroCard: React.FC = () => {
       <div className={styles.dossierFolder} aria-label="Expediente analógico de ejemplo">
         <div className={styles.dossierTab}>
           <span className={styles.dossierTabDot} aria-hidden="true" />
-          <span className={styles.dossierTabLabel}>EXP. 2026 / EJEMPLO</span>
-          <span className={styles.dossierTabSub}>• Bóveda Documental</span>
+          <span className={styles.dossierTabLabel}>EJEMPLO</span>
         </div>
         <div className={styles.dossierSeal} aria-hidden="true">
           SOLO EN TU NAVEGADOR

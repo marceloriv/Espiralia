@@ -48,6 +48,11 @@ const BANNED_EVERYWHERE: RegExp[] = [
   /ARCHIVADOR CONFIDENCIAL/i,
   /Serenidad Mental/i,
   /lista en Bóveda/i,
+  // Revisión de entrega de la auditoría 002 (2026-11-04): el respaldo se cifra solo si se elige,
+  // y no existen un número de expediente ni una "Bóveda Documental".
+  /respaldo exportable se cifra/i,
+  /EXP\. 2026/,
+  /Bóveda Documental/i,
   // Firma personal y ejemplos de otro dominio (conducción) que no pertenecen a un producto público.
   /r\.v\. notas de taller/,
   /Conducción real/,

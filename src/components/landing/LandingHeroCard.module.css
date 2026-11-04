@@ -64,12 +64,6 @@
   text-transform: uppercase;
 }
 
-.dossierTabSub {
-  font-family: var(--font-body, sans-serif);
-  font-size: 0.6875rem;
-  color: var(--color-muted);
-}
-
 .dossierSeal {
   font-family: var(--font-code, monospace);
   font-size: var(--text-micro);
