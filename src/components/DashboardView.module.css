@@ -209,7 +209,7 @@
 .chipCritical {
   border-color: var(--color-error);
   background-color: var(--color-canvas);
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 /* Right Post-it with Brass Paperclip */
@@ -1483,7 +1483,7 @@
 
 .distractionDelBtn:hover {
   opacity: 1;
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 .distractionDelBtn:focus-visible {

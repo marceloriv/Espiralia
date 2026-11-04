@@ -988,7 +988,7 @@
 
 .btnDelete:hover {
   background-color: rgba(198, 69, 69, 0.1);
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 /* Editar comparte forma con Eliminar; el color al pasar es el de acción, no el de peligro. */

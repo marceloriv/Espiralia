@@ -409,7 +409,7 @@
 
 .clearWeekBtn:hover {
   border-color: var(--color-error);
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 .clearWeekBtn:focus-visible {
