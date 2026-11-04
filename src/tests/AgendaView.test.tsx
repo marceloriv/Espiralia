@@ -22,7 +22,14 @@ describe('AgendaView', () => {
   });
 
   it('renderiza el almanaque de mesa, la agenda diaria y el ritmo de energía en español', () => {
-    render(<AgendaView profileId={profileId} />);
+    // El título es el mes en curso: sin reloj fijo, el test caducaba al terminar octubre.
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 9, 15));
+    try {
+      render(<AgendaView profileId={profileId} />);
+    } finally {
+      vi.useRealTimers();
+    }
 
     expect(screen.getByRole('heading', { level: 1, name: /octubre 2026/i })).toBeInTheDocument();
     expect(screen.getByText(/almanaque de mesa/i)).toBeInTheDocument();
