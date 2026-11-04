@@ -1,9 +1,15 @@
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem, HabitTrackerItem, MoodEntry, Disposition } from '../types';
+import { isoWeekKey } from '../utils/localDate';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
 
 const getScopedKey = (profileId: string, domain: string) => `espiralia_${profileId}_${domain}`;
+
+/** Semana de un bloque del Planner. Los guardados antes de que existiera `weekKey` cuentan como de la semana en curso. */
+export const blockWeekKey = (block: PlannerBlock): string => block.weekKey ?? isoWeekKey(new Date());
+
+const SEMANA_SIN_MARCAS = (): boolean[] => Array(7).fill(false);
 
 export const STORAGE_ERROR_EVENT = 'espiralia:storage-error';
 
@@ -137,11 +143,11 @@ export const StorageService = {
   deletePlanner(profileId: string, blockId: string): void {
     deleteScopedItem<PlannerBlock>(getScopedKey(profileId, 'planner'), blockId);
   },
-  /** Borra los bloques semanales del perfil y devuelve cuántos borró; los de otros periodos se conservan. */
-  clearWeeklyPlanner(profileId: string): number {
+  /** Borra los bloques semanales de una semana ISO y devuelve cuántos borró; las demás semanas y periodos se conservan. */
+  clearWeeklyPlanner(profileId: string, weekKey: string = isoWeekKey(new Date())): number {
     const key = getScopedKey(profileId, 'planner');
     const list = getScopedList<PlannerBlock>(key);
-    const kept = list.filter(b => b.period !== 'semanal');
+    const kept = list.filter(b => b.period !== 'semanal' || blockWeekKey(b) !== weekKey);
     writeItem(key, JSON.stringify(kept));
     return list.length - kept.length;
   },
@@ -338,8 +344,14 @@ export const StorageService = {
   },
 
   // Habits
-  getHabits(profileId: string): HabitTrackerItem[] {
-    return getScopedList<HabitTrackerItem>(getScopedKey(profileId, 'habits'));
+  /**
+   * Hábitos con las marcas de la semana pedida (por defecto, la actual). Las marcas guardadas son de una sola semana:
+   * si son de otra, el hábito llega sin marcar. Sin `weekKey` (versiones anteriores) cuentan como de la semana pedida.
+   */
+  getHabits(profileId: string, weekKey: string = isoWeekKey(new Date())): HabitTrackerItem[] {
+    return getScopedList<HabitTrackerItem>(getScopedKey(profileId, 'habits')).map(h =>
+      h.weekKey && h.weekKey !== weekKey ? { ...h, daysCompleted: SEMANA_SIN_MARCAS(), weekKey } : h,
+    );
   },
 
   saveHabit(habit: HabitTrackerItem): void {
@@ -350,17 +362,17 @@ export const StorageService = {
     deleteScopedItem<HabitTrackerItem>(getScopedKey(profileId, 'habits'), habitId);
   },
 
-  toggleHabitDay(profileId: string, habitId: string, dayIndex: number): void {
-    const habits = this.getHabits(profileId);
+  toggleHabitDay(profileId: string, habitId: string, dayIndex: number, weekKey: string = isoWeekKey(new Date())): void {
+    const habits = this.getHabits(profileId, weekKey);
     const habit = habits.find(h => h.id === habitId);
     if (!habit) return;
 
-    const days = [...(habit.daysCompleted ?? [false, false, false, false, false, false, false])];
+    const days = [...(habit.daysCompleted ?? SEMANA_SIN_MARCAS())];
     while (days.length < 7) {
       days.push(false);
     }
     days[dayIndex] = !days[dayIndex];
-    this.saveHabit({ ...habit, daysCompleted: days });
+    this.saveHabit({ ...habit, daysCompleted: days, weekKey });
   },
 
   // Distractions

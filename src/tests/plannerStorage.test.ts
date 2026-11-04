@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { StorageService } from '../services/storage';
+import { isoWeekKey } from '../utils/localDate';
 import type { Goal, PlannerBlock } from '../types';
 
 describe('StorageService - Goals & Planner persistence', () => {
@@ -78,5 +79,42 @@ describe('StorageService - Goals & Planner persistence', () => {
     expect(StorageService.clearWeeklyPlanner(profileA)).toBe(2);
     expect(StorageService.getPlanner(profileA).map(b => b.id)).toEqual(['a-mes']);
     expect(StorageService.getPlanner(profileB).map(b => b.id)).toEqual(['b-sem']);
+  });
+});
+
+// Bloques y hábitos no tenían semana: la misma semana se repetía siempre y las marcas no se reiniciaban.
+describe('StorageService - semanas ISO en bloques y hábitos', () => {
+  const profileId = 'p-semanas';
+  const semanaActual = isoWeekKey(new Date());
+
+  beforeEach(() => localStorage.clear());
+
+  it('clearWeeklyPlanner borra solo la semana indicada; un bloque sin semana cuenta como de la actual', () => {
+    const block = (id: string, weekKey?: string): PlannerBlock => ({
+      id, profileId, period: 'semanal', timeSlot: 'mañana', title: id, priority: 'media', completed: false, dayOfWeek: 1, ...(weekKey ? { weekKey } : {}),
+    });
+    StorageService.savePlanner(block('actual', semanaActual));
+    StorageService.savePlanner(block('antiguo'));
+    StorageService.savePlanner(block('otra', '1999-W01'));
+
+    expect(StorageService.clearWeeklyPlanner(profileId, semanaActual)).toBe(2);
+    expect(StorageService.getPlanner(profileId).map(b => b.id)).toEqual(['otra']);
+  });
+
+  it('un hábito marcado otra semana llega vacío y marcarlo lo pasa a la semana actual', () => {
+    StorageService.saveHabit({ id: 'h-vieja', profileId, name: 'Leer', weekKey: '1999-W01', daysCompleted: [true, true, false, false, false, false, false] });
+
+    expect(StorageService.getHabits(profileId)[0].daysCompleted).toEqual(Array(7).fill(false));
+
+    StorageService.toggleHabitDay(profileId, 'h-vieja', 3);
+    const [habito] = StorageService.getHabits(profileId);
+    expect(habito.daysCompleted).toEqual([false, false, false, true, false, false, false]);
+    expect(habito.weekKey).toBe(semanaActual);
+  });
+
+  it('un hábito guardado sin semana conserva sus marcas en la semana actual', () => {
+    StorageService.saveHabit({ id: 'h-antiguo', profileId, name: 'Caminar', daysCompleted: [true, false, false, false, false, false, false] });
+
+    expect(StorageService.getHabits(profileId)[0].daysCompleted[0]).toBe(true);
   });
 });

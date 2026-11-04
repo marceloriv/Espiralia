@@ -49,6 +49,8 @@ export interface PlannerBlock {
   completed: boolean;
   dayOfWeek?: DayOfWeek;
   time?: string;
+  /** Semana ISO 'AAAA-Www'. Ausente en bloques de versiones anteriores: cuentan como de la semana en curso. */
+  weekKey?: string;
 }
 
 export interface GoalSubItem {
@@ -140,8 +142,11 @@ export interface HabitTrackerItem {
   id: string;
   profileId: string;
   name: string;
+  /** Lunes a domingo de la semana `weekKey`. */
   daysCompleted: boolean[];
   category?: string;
+  /** Semana ISO de las marcas. Ausente en hábitos de versiones anteriores: cuentan como de la semana en curso. */
+  weekKey?: string;
 }
 
 /** Ánimo del día que comparten el Dashboard y la Agenda. */

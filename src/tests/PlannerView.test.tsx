@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { PlannerView } from '../components/PlannerView';
 import { StorageService } from '../services/storage';
+import { isoWeekKey } from '../utils/localDate';
 
 describe('PlannerView integración semanal y metas', () => {
   const profileId = 'p-planner';
@@ -297,6 +298,51 @@ describe('PlannerView integración semanal y metas', () => {
       await user.click(screen.getByRole('button', { name: /semana siguiente/i }));
 
       expect(screen.queryAllByRole('region').filter(el => el.getAttribute('aria-current') === 'date')).toHaveLength(0);
+    });
+  });
+
+  describe('semanas reales', () => {
+    it('un bloque de esta semana no se repite en la siguiente', async () => {
+      const user = userEvent.setup();
+      StorageService.savePlanner({
+        id: 'blk-semana', profileId, period: 'semanal', timeSlot: 'mañana', title: 'Taller de tesis',
+        priority: 'media', completed: false, dayOfWeek: 1, weekKey: isoWeekKey(new Date()),
+      });
+      render(<PlannerView profileId={profileId} />);
+      expect(screen.getByText('Taller de tesis')).toBeInTheDocument();
+
+      await user.click(screen.getByRole('button', { name: /semana siguiente/i }));
+      expect(screen.queryByText('Taller de tesis')).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole('button', { name: 'Hoy' }));
+      expect(screen.getByText('Taller de tesis')).toBeInTheDocument();
+    });
+
+    it('un bloque creado en otra semana queda en esa semana', async () => {
+      const user = userEvent.setup();
+      render(<PlannerView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /semana siguiente/i }));
+      await user.click(screen.getByRole('button', { name: /agregar bloque lunes/i }));
+      await user.type(screen.getByLabelText(/título del bloque/i), 'Repaso futuro');
+      await user.click(screen.getByRole('button', { name: /guardar bloque/i }));
+
+      const siguiente = new Date();
+      siguiente.setDate(siguiente.getDate() + 7);
+      expect(StorageService.getPlanner(profileId)[0].weekKey).toBe(isoWeekKey(siguiente));
+    });
+
+    it('fuera de la semana en curso los hábitos no se pueden marcar', async () => {
+      const user = userEvent.setup();
+      StorageService.saveHabit({ id: 'h-1', profileId, name: 'Caminar', daysCompleted: [true, false, false, false, false, false, false] });
+      render(<PlannerView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /semana anterior/i }));
+
+      const lunes = screen.getByRole('button', { name: 'Caminar: lunes' });
+      expect(lunes).toBeDisabled();
+      expect(lunes).toHaveAttribute('aria-pressed', 'false');
+      expect(screen.getByText(/los hábitos se marcan en la semana en curso/i)).toBeInTheDocument();
     });
   });
 

@@ -21,11 +21,11 @@ import {
   X,
 } from 'lucide-react';
 import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem, Note, DayOfWeek, Disposition } from '../types';
-import { StorageService } from '../services/storage';
+import { StorageService, blockWeekKey } from '../services/storage';
 import { DISPOSITIONS, dispositionLabel } from '../utils/energyLevels';
 import { moonPhase, type IconoLunar } from '../utils/moonPhase';
 import { sileo } from 'sileo';
-import { isoWeekNumber, semesterLabel, toLocalDateStr } from '../utils/localDate';
+import { isoWeekKey, isoWeekNumber, semesterLabel, toLocalDateStr } from '../utils/localDate';
 import { categoryOf } from './agenda/eventMapping';
 import {
   criticalTodos,
@@ -194,17 +194,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const pendingTodosList = todos.filter(t => (t.status ? t.status !== 'completada' : !t.completed));
   const { todo: activeFocusTodo, isDone: isFocusDone, areaName: focusAreaName, priorityLabel: focusPriorityLabel } =
     deriveFocus(todos, areas, pinnedFocusTodoId);
-  const allWeekBlocks = planner.filter(b => b.period === 'semanal');
+  // Solo los bloques de la semana en curso: el Planner guarda cada bloque con su semana ISO.
+  const currentWeekKey = isoWeekKey(now);
+  const allWeekBlocks = planner.filter(b => b.period === 'semanal' && blockWeekKey(b) === currentWeekKey);
   // Lunes primero y domingo al final: antes se tomaban los 4 primeros por orden de creación y los del domingo quedaban fuera.
   const weekDayRank = (d?: DayOfWeek) => (d === undefined ? 8 : d === 0 ? 7 : d);
   const weekBlocks = [...allWeekBlocks].sort((a, b) => weekDayRank(a.dayOfWeek) - weekDayRank(b.dayOfWeek));
   const areaSummaries = computeAreaSummaries(areas, todos);
 
   const todayDayOfWeek = now.getDay() as DayOfWeek;
-  const todayPlannerBlocks = planner.filter(b => b.dayOfWeek === todayDayOfWeek);
+  const todayPlannerBlocks = allWeekBlocks.filter(b => b.dayOfWeek === todayDayOfWeek);
   const todayHabitIdx = (todayDayOfWeek + 6) % 7;
   const habitStreak = computeHabitStreak(habits, todayHabitIdx);
-  const netFocus = computeNetFocusHours(events, planner, todayStr, todayDayOfWeek);
+  const netFocus = computeNetFocusHours(events, allWeekBlocks, todayStr, todayDayOfWeek);
   const taskPerf = computeTaskPerformance(todos);
   interface ScheduleItem {
     id: string;
