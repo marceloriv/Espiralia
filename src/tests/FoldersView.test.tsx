@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FoldersView } from '../components/FoldersView';
@@ -225,5 +225,24 @@ describe('FoldersView', () => {
       await user.click(screen.getByRole('button', { name: /crear mi primera carpeta/i }));
       expect(screen.getByLabelText(/nombre de la carpeta/i)).toBeInTheDocument();
     });
+  });
+  // En Carpetas una nota se creaba y editaba, pero solo se podía borrar desde Notas.
+  it('borra una nota desde la tabla de su carpeta tras confirmar', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    StorageService.saveFolder({ id: 'f-notas', profileId: 'p-borrar-nota', name: 'Apuntes', createdAt: '2026-11-01' });
+    StorageService.saveNote({ id: 'n-1', profileId: 'p-borrar-nota', folderId: 'f-notas', title: 'Resumen', content: 'x', createdAt: '2026-11-01', updatedAt: '2026-11-01' });
+    render(<FoldersView profileId="p-borrar-nota" />);
+
+    await user.click(screen.getByRole('button', { name: 'Eliminar nota Resumen' }));
+
+    expect(StorageService.getNotes('p-borrar-nota')).toHaveLength(0);
+    vi.restoreAllMocks();
+  });
+
+  it('el respaldo de Carpetas es la copia completa que restaura la Bóveda', () => {
+    render(<FoldersView profileId="p-test" />);
+    expect(screen.getByRole('button', { name: /descargar copia completa/i })).toBeInTheDocument();
+    expect(screen.queryByText(/hacer respaldo \.json/i)).not.toBeInTheDocument();
   });
 });

@@ -328,6 +328,13 @@ export const StorageService = {
 
   deleteFolder(profileId: string, folderId: string): void {
     deleteScopedItem<Folder>(getScopedKey(profileId, 'folders'), folderId);
+    // Sus notas y vínculos quedan sin carpeta, como avisa la confirmación; los tomos de Notas ('tomo-0X') no se tocan.
+    for (const domain of ['notes', 'links']) {
+      const items = getScopedList<{ folderId?: string }>(getScopedKey(profileId, domain));
+      if (items.some(i => i.folderId === folderId)) {
+        writeItem(getScopedKey(profileId, domain), JSON.stringify(items.map(i => (i.folderId === folderId ? { ...i, folderId: undefined } : i))));
+      }
+    }
   },
 
   // Links

@@ -69,6 +69,9 @@ const TOMOS_CONFIG: TomoConfig[] = [
   },
 ];
 
+/** Ids con los que Notas guarda sus tomos en `folderId` (versiones anteriores usaban '02' y '03' a secas). */
+const esTomo = (folderId: string): boolean => /^(tomo-)?0[1-3]$/.test(folderId);
+
 function getNoteTomo(note: Note): string {
   if (note.folderId === 'tomo-02' || note.folderId === '02') return '02';
   if (note.folderId === 'tomo-03' || note.folderId === '03') return '03';
@@ -636,7 +639,9 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveNote}
         initialNote={editingNote}
-        folders={folders}
+        // folderId guarda el tomo ('tomo-0X') o una carpeta real y no se puede renombrar (hay datos guardados):
+        // solo una nota que ya vive en una carpeta puede cambiar de carpeta desde aquí.
+        folders={editingNote?.folderId && !esTomo(editingNote.folderId) ? folders : []}
       />
     </div>
   );

@@ -16,6 +16,8 @@ import type { Folder, LinkItem, Note, Profile, StoredFile, ViewType } from '../t
 import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { addFile, deleteFile, deleteFolderFiles, getFileBlob, listFiles } from '../services/fileStore';
 import { formatBytes } from '../utils/formatBytes';
+import { downloadFile } from '../utils/downloadFile';
+import { VaultService } from '../services/vaultService';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
 import { NoteModal } from './notes/NoteModal';
@@ -452,21 +454,18 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     }
   };
 
-  const handleExportJson = () => {
-    const dataToExport = {
-      profileId,
-      exportDate: new Date().toISOString(),
-      folders: StorageService.getFolders(profileId),
-      links: StorageService.getLinks(profileId),
-      notes: StorageService.getNotes(profileId),
-    };
-    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `espiralia-carpetas-${profileId}-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleDeleteNote = (note: Note) => {
+    if (!window.confirm(`¿Eliminar la nota "${note.title}"? No se puede deshacer.`)) return;
+    StorageService.deleteNote(profileId, note.id);
+    sileo.info({ title: 'Nota eliminada', description: `Se eliminó la nota ${note.title}.` });
+    loadData();
+  };
+
+  // Antes generaba un JSON propio que nada podía importar; ahora es el mismo respaldo que restaura la Bóveda.
+  const handleExportJson = async () => {
+    const backup = await VaultService.exportProfileWithFiles(profileId).catch(() => VaultService.exportProfile(profileId));
+    downloadFile(JSON.stringify(backup, null, 2), VaultService.backupFilename(backup.profile.name, 'json'), 'application/json');
+    sileo.success({ title: 'Copia completa descargada', description: 'Restáurala desde Bóveda Offline.' });
   };
 
   return (
@@ -714,17 +713,20 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                                     Eliminar
                                   </button>
                                 </div>
+                              ) : item.type === 'note' ? (
+                                <div className={styles.fileActions}>
+                                  <button type="button" className={styles.btnActionTable} onClick={() => handleOpenViewNote(item.note)} aria-label={`Ver ficha ${item.title}`}>
+                                    Ver Ficha
+                                  </button>
+                                  <button type="button" className={styles.btnActionTable} onClick={() => handleDeleteNote(item.note)} aria-label={`Eliminar nota ${item.title}`}>
+                                    Eliminar
+                                  </button>
+                                </div>
                               ) : (
                                 <button
                                   type="button"
                                   className={styles.btnActionTable}
-                                  onClick={() => {
-                                    if (item.type === 'note') {
-                                      handleOpenViewNote(item.note);
-                                    } else {
-                                      handleOpenViewLink(item.link);
-                                    }
-                                  }}
+                                  onClick={() => handleOpenViewLink(item.link)}
                                   aria-label={`Ver ficha ${item.title}`}
                                 >
                                   Ver Ficha
@@ -892,9 +894,9 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
               <button
                 type="button"
                 className={styles.btnBackupLink}
-                onClick={handleExportJson}
+                onClick={() => void handleExportJson()}
               >
-                Hacer Respaldo .JSON
+                Descargar copia completa (.json)
               </button>
             </div>
           </div>
