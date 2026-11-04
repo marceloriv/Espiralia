@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Feather,
   Lock,
@@ -30,6 +30,11 @@ export const LandingView: React.FC<LandingViewProps> = ({
   onNavigateDashboard,
   hasActiveProfile = false,
 }) => {
+  // Al volver desde la app la pestaña conservaba el nombre de la última vista.
+  useEffect(() => {
+    document.title = 'Espiralia';
+  }, []);
+
   const handlePrimaryCta = () => {
     if (hasActiveProfile && onNavigateDashboard) {
       onNavigateDashboard();

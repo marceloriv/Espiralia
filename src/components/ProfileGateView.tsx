@@ -37,6 +37,10 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
   const [createPinError, setCreatePinError] = useState(false);
   const [busy, setBusy] = useState(false);
 
+  useEffect(() => {
+    document.title = 'Acceso · Espiralia';
+  }, []);
+
   // Migra PIN en texto plano a hash apenas se abre la pantalla (§10 A04).
   useEffect(() => {
     let cancelled = false;

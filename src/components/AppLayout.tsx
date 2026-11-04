@@ -70,6 +70,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const [isVaultOpen, setIsVaultOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
+  // Cada vista lee el almacenamiento al montarse; tras crear algo desde la barra se remonta para mostrarlo.
+  // ponytail: remontar pierde filtros y desplazamiento de la vista; avisar a cada vista si eso molesta.
+  const [contenidoVersion, setContenidoVersion] = useState(0);
+  const refrescarContenido = () => setContenidoVersion(v => v + 1);
+
+  useEffect(() => {
+    document.title = `${VIEW_TITLES[currentView]} · Espiralia`;
+  }, [currentView]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -118,6 +126,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       updatedAt: now,
     };
     StorageService.saveNote(newNote);
+    refrescarContenido();
     try {
       sileo.success({ title: 'Nota creada', description: 'La nota se guardó correctamente.' });
     } catch {
@@ -286,7 +295,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         </header>
 
         <main id="main-content" className={styles.contentArea} tabIndex={-1}>
-          {children}
+          <React.Fragment key={contenidoVersion}>{children}</React.Fragment>
         </main>
       </div>
 
@@ -294,6 +303,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         isOpen={isQuickActionOpen}
         onClose={() => setIsQuickActionOpen(false)}
         profileId={profile.id}
+        onItemCreated={refrescarContenido}
       />
 
       <ProfileSettingsModal
