@@ -55,6 +55,9 @@ const BANNED_EVERYWHERE: RegExp[] = [
   /Bóveda Documental/i,
   // Hallazgo 21: la tarjeta de notas del Dashboard decía "Guardado automáticamente" aun sin notas; la nota se guarda con su botón.
   /Guardado automáticamente/i,
+  // Hallazgo 22: la firma de la cita del manifiesto sumaba rótulos inflados al nombre del cuaderno.
+  /Principios Fundacionales/i,
+  /Serenidad Cotidiana/i,
   // Firma personal y ejemplos de otro dominio (conducción) que no pertenecen a un producto público.
   /r\.v\. notas de taller/,
   /Conducción real/,

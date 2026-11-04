@@ -32,7 +32,7 @@ export const LandingManifestoSection: React.FC<LandingManifestoSectionProps> = (
           </blockquote>
 
           <div className={styles.manifestoAuthor}>
-            Cuaderno Espiralia • Principios Fundacionales & Serenidad Cotidiana
+            Cuaderno Espiralia
           </div>
         </div>
 
