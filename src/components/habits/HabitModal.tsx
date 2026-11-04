@@ -85,6 +85,7 @@ export const HabitModal: React.FC<HabitModalProps> = ({
 
   const handleDelete = () => {
     if (habit?.id && onDelete) {
+      if (!window.confirm(`¿Eliminar el hábito "${habit.name}" y sus marcas? No se puede deshacer.`)) return;
       onDelete(habit.id);
     }
   };

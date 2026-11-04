@@ -139,8 +139,16 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
   const completedBlocks = weekBlocks.filter(b => b.completed).length;
   const fulfillment = totalBlocks > 0 ? Math.round((completedBlocks / totalBlocks) * 100) : 0;
 
+  const [editingBlock, setEditingBlock] = useState<PlannerBlock | undefined>(undefined);
+
   const handleOpenModal = (day?: DayOfWeek) => {
+    setEditingBlock(undefined);
     setSelectedDay(day);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditBlock = (block: PlannerBlock) => {
+    setEditingBlock(block);
     setIsModalOpen(true);
   };
 
@@ -152,6 +160,14 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
     time?: string;
     notes?: string;
   }) => {
+    if (editingBlock) {
+      // Editar conserva id, semana y estado; solo cambia lo que se ve en el formulario.
+      StorageService.savePlanner({ ...editingBlock, ...data, weekKey: blockWeekKey(editingBlock) });
+      sileo.success({ title: 'Bloque actualizado' });
+      setEditingBlock(undefined);
+      loadBlocks();
+      return;
+    }
     const newBlock: PlannerBlock = {
       id: `pb-${Date.now()}`,
       profileId,
@@ -182,6 +198,8 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
   };
 
   const handleDeleteBlock = (id: string) => {
+    const target = blocks.find(b => b.id === id);
+    if (!window.confirm(`¿Eliminar el bloque "${target?.title ?? ''}"?`)) return;
     StorageService.deletePlanner(profileId, id);
     sileo.success({ title: 'Bloque eliminado' });
     loadBlocks();
@@ -226,12 +244,6 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
       {/* Píldoras de Filtro por Área y Botón Principal */}
       <div className={styles.areaFilterBar}>
-        <div className={styles.areaTagsGroup}>
-          <span className={styles.areaPillAmber}>01. Estudios</span>
-          <span className={styles.areaPillEmerald}>02. Personal</span>
-          <span className={styles.areaPillViolet}>03. Universidad</span>
-        </div>
-
         <div className={styles.heroActions}>
           <button type="button" className={styles.clearWeekBtn} onClick={handleClearWeek}>
             <Eraser size={16} aria-hidden="true" />
@@ -344,6 +356,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
                 onAddBlock={() => handleOpenModal(undefined)}
                 onToggleBlock={handleToggleBlock}
                 onDeleteBlock={handleDeleteBlock}
+                onEditBlock={handleOpenEditBlock}
               />
             )}
 
@@ -357,6 +370,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
                 onAddBlock={() => handleOpenModal(day.dayOfWeek)}
                 onToggleBlock={handleToggleBlock}
                 onDeleteBlock={handleDeleteBlock}
+                onEditBlock={handleOpenEditBlock}
               />
             ))}
           </div>
@@ -469,9 +483,10 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
       {isModalOpen && (
         <PlannerBlockModal
-          key={`${selectedDay ?? 'none'}`}
+          key={editingBlock?.id ?? `${selectedDay ?? 'none'}`}
           isOpen={isModalOpen}
           initialDay={selectedDay}
+          initialBlock={editingBlock}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSaveBlock}
         />

@@ -284,6 +284,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   };
 
   const handleRemoveDistraction = (index: number) => {
+    if (!window.confirm(`¿Eliminar el compromiso "${distractions[index]}"?`)) return;
     // La edición se ubica por índice (los compromisos son strings sin id): borrar desplaza los índices, así que se cierra.
     setEditingDistractionIdx(null);
     const updated = distractions.filter((_, idx) => idx !== index);
