@@ -371,6 +371,23 @@ describe('TodoView', () => {
       expect(screen.queryByText(/Sesión Terapia Clínica Presencial/i)).not.toBeInTheDocument();
     });
 
+    // Hallazgo 19 de la auditoría 002: "MIÉ" en ámbar #e8a55a sobre el papel quedaba cerca de 2.1:1.
+    // Los tokens de texto se redefinen dentro del Papel y textTokensContrast los mide sobre cada tinte.
+    it('escribe el día de cada hito con un token de texto, no con el acento de su categoría', () => {
+      const hoy = toLocalDateStr(new Date());
+      StorageService.saveEvent({ id: 'ev-u', profileId, title: 'Hito urgente', date: hoy, category: 'urgente' });
+      StorageService.saveEvent({ id: 'ev-t', profileId, title: 'Hito de trabajo', date: hoy, category: 'trabajo' });
+      StorageService.saveEvent({ id: 'ev-p', profileId, title: 'Hito personal', date: hoy, category: 'personal' });
+
+      render(<TodoView profileId={profileId} />);
+
+      const dia = (titulo: string) =>
+        screen.getByRole('heading', { level: 4, name: titulo }).closest('[style]')!.querySelector('span')!.style.color;
+      expect(dia('Hito urgente')).toBe('var(--color-text-error)');
+      expect(dia('Hito de trabajo')).toBe('var(--color-text-teal)');
+      expect(dia('Hito personal')).toBe('var(--color-text-amber)');
+    });
+
     it('no muestra en Próximos hitos los eventos que ya pasaron', () => {
       StorageService.saveEvent({ id: 'ev-pasado', profileId, title: 'Evento de la semana pasada', date: '2000-01-05' });
 

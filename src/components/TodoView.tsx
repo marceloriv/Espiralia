@@ -740,12 +740,14 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                     const cat = event.category || 'personal';
                     const categoryLabel = cat.charAt(0).toUpperCase() + cat.slice(1);
                     const categoryColor = cat === 'urgente' ? 'var(--color-error)' : cat === 'trabajo' ? 'var(--color-accent-teal)' : '#e8a55a';
+                    // El acento queda para el borde; sobre el papel, el texto usa la variante de texto del mismo tono (4.5:1).
+                    const dayNameColor = cat === 'urgente' ? 'var(--color-text-error)' : cat === 'trabajo' ? 'var(--color-text-teal)' : 'var(--color-text-amber)';
                     const timeMeta = `${event.startTime ? `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''} hrs` : 'Todo el día'}${event.notes ? ` · ${event.notes}` : ''}`;
 
                     return (
                       <div key={event.id} className={styles.eventItem} style={{ borderLeftColor: categoryColor }}>
                         <div className={styles.eventDateCol}>
-                          <span className={styles.eventDayName} style={{ color: categoryColor }}>{dayName}</span>
+                          <span className={styles.eventDayName} style={{ color: dayNameColor }}>{dayName}</span>
                           <span className={styles.eventDayNum}>{dayNum}</span>
                         </div>
                         <div className={styles.eventInfo}>
