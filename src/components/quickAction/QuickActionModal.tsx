@@ -5,7 +5,6 @@ import type { Area, EventCategory, Priority, TaskStatus } from '../../types';
 import { StorageService } from '../../services/storage';
 import { defaultEndTime, toLocalDateStr } from '../../utils/localDate';
 import { emptyEventForm, validateEventForm } from '../agenda/eventForm';
-import { safeSaveEvent } from '../agenda/eventPersistence';
 import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './QuickActionModal.module.css';
 
@@ -107,7 +106,8 @@ const QuickActionModalContent: React.FC<QuickActionModalProps> = ({
       sileo.error({ title: result.error });
       return;
     }
-    if (!safeSaveEvent(result.event)) return;
+    // Igual que la tarea: saveEvent no lanza; si el almacenamiento falla, App avisa con STORAGE_ERROR_EVENT.
+    StorageService.saveEvent(result.event);
     sileo.success({ title: 'Evento creado con éxito' });
     setEventTitle('');
     setEventStartTime('');
