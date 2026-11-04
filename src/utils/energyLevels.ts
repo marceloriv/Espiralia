@@ -16,8 +16,6 @@ export const ENERGY_LEVELS: ReadonlyArray<EnergyLevel> = [
   { value: '☀️', label: 'Plena', icon: Sun },
 ];
 
-export const DEFAULT_ENERGY_VALUE = '✨';
-
 export const energyLabel = (value: string | undefined): string =>
   ENERGY_LEVELS.find(level => level.value === value)?.label ?? 'Sin registrar';
 

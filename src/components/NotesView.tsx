@@ -10,7 +10,7 @@ import { BujoBlocksView, PliegoMeta } from './notes/PliegoParts';
 import { Pliego } from './common/Pliego';
 import { parseBujoContent, countWords, getCategoryRibbonColor, wordsWrittenLabel } from '../utils/bujoFormatter';
 import { toLocalDateStr } from '../utils/localDate';
-import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE } from '../utils/energyLevels';
+import { ENERGY_LEVELS } from '../utils/energyLevels';
 import styles from './NotesView.module.css';
 
 interface NotesViewProps {
@@ -89,7 +89,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const todayStr = toLocalDateStr(hoy);
-  const [basalEnergy, setBasalEnergy] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
+  const [basalEnergy, setBasalEnergy] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) ?? '');
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [isEditingPliego, setIsEditingPliego] = useState(false);
   const [pliegoDraftTitle, setPliegoDraftTitle] = useState('');

@@ -90,6 +90,16 @@ describe('TodoView', () => {
     expect(StorageService.getTodos(profileId)).toEqual([]);
   });
 
+  // Sin registro del día no se muestra una energía elegida: antes aparecía "Alta" sin que nadie la marcara.
+  it('sin energía registrada hoy muestra "Sin registrar" y ningún nivel elegido', () => {
+    render(<TodoView profileId={profileId} />);
+
+    expect(screen.getByText('Sin registrar')).toBeInTheDocument();
+    for (const nivel of ['Baja', 'Suave', 'Media', 'Alta', 'Plena']) {
+      expect(screen.getByRole('button', { name: `Nivel ${nivel}` })).toHaveAttribute('aria-pressed', 'false');
+    }
+  });
+
   it('no borra la tarea si se cancela la confirmación', async () => {
     vi.spyOn(window, 'confirm').mockReturnValue(false);
     const user = userEvent.setup();

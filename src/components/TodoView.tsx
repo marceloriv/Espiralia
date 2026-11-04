@@ -4,7 +4,7 @@ import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag,
 import { sileo } from 'sileo';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import { focusOnMount } from '../utils/useDialogFocus';
-import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE, energyLabel } from '../utils/energyLevels';
+import { ENERGY_LEVELS, energyLabel } from '../utils/energyLevels';
 import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
 import { StorageService } from '../services/storage';
 import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
@@ -62,7 +62,8 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
   const todayStr = toLocalDateStr(hoy);
 
   // Nivel de energía en tarjeta mini reminders
-  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
+  // Sin registro del día no hay nivel elegido: se muestra "Sin registrar".
+  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) ?? '');
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profileId));
 
   const isFirstMount = useRef(true);

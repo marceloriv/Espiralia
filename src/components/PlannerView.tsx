@@ -12,7 +12,7 @@ import { Papel } from './common/Papel';
 import { TINTE_DE_MODULO } from './common/tintes';
 import { Pliego } from './common/Pliego';
 import { isoWeekKey, isoWeekNumber, toLocalDateStr } from '../utils/localDate';
-import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE, energyLabel } from '../utils/energyLevels';
+import { ENERGY_LEVELS, energyLabel } from '../utils/energyLevels';
 import styles from './PlannerView.module.css';
 
 // Mismo orden que `daysCompleted` de los hábitos: lunes a domingo.
@@ -45,7 +45,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
   const [selectedDay, setSelectedDay] = useState<DayOfWeek | undefined>(1);
   const isFirstMount = useRef(true);
   const todayStr = toLocalDateStr(hoy);
-  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
+  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) ?? '');
   const [habits, setHabits] = useState<HabitTrackerItem[]>(() => StorageService.getHabits(profileId));
   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<HabitTrackerItem | null>(null);
