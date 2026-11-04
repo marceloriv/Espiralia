@@ -56,7 +56,6 @@ Espiralia es una aplicación web autónoma (SPA) basada en React y TypeScript mo
 - Dependencia del servicio GitHub Pages y GitHub Actions para el flujo de build y distribución estática.
 
 ### Requisitos Futuros
-- Mecanismo de exportación e importación de copias de seguridad (JSON / iCal).
 - Opción de habilitar backend sincronizado o almacenamiento en nube opcional.
 - Soporte para notificaciones locales del navegador.
 
@@ -72,7 +71,7 @@ Espiralia es una aplicación web autónoma (SPA) basada en React y TypeScript mo
 #### Módulo de Perfiles Locales (MS-Perfiles-Client)
 - **RF-1 Creación y selección de perfiles:** El sistema debe permitir crear múltiples perfiles locales asignando un nombre y avatar representativo.
 - **RF-2 Protección por PIN:** El sistema debe permitir configurar opcionalmente un PIN de 4 a 6 dígitos para acceder a un perfil específico.
-- **RF-3 Aislamiento de datos:** El sistema debe particionar la persistencia en IndexedDB por identificador de perfil para evitar mezcla de información entre usuarios del mismo equipo.
+- **RF-3 Aislamiento de datos:** El sistema debe particionar la persistencia por identificador de perfil para evitar mezcla de información entre usuarios del mismo equipo: claves `espiralia_<perfil>_<dominio>` en `localStorage` y, para los PDF de Carpetas, la base `espiralia_files` de IndexedDB.
 
 #### Módulo Agenda (MS-Agenda-Client)
 - **RF-4 Gestión de eventos de agenda:** El sistema debe permitir crear, editar, listar y eliminar eventos asociados a una fecha y hora.
@@ -89,7 +88,8 @@ Espiralia es una aplicación web autónoma (SPA) basada en React y TypeScript mo
 
 #### Módulo Transversal / Dashboard (MS-Core-Client)
 - **RF-Transversal-1 Centralización de información:** El sistema debe consolidar en un dashboard inicial los eventos del día en curso, el plan activo y las tareas prioritarias.
-- **RF-Transversal-2 Persistencia reactiva:** Toda modificación de estado en cualquier módulo debe persistirse automáticamente en IndexedDB sin requerir guardado manual.
+- **RF-Transversal-2 Persistencia reactiva:** Toda modificación de estado en cualquier módulo debe persistirse automáticamente en el almacenamiento del navegador (`localStorage`; IndexedDB para los PDF) sin requerir guardado manual. Incluye la energía y el ánimo del día y el foco fijado del Dashboard.
+- **RF-Transversal-3 Respaldo y portabilidad:** El sistema debe exportar un perfil completo a un archivo JSON (con cifrado AES-GCM opcional) y restaurarlo en este u otro navegador, y exportar e importar la agenda en `.ics` (RFC 5545) conservando las series semanales.
 
 ### Requisitos No Funcionales
 

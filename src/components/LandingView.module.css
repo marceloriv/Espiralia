@@ -212,16 +212,16 @@
   }
 }
 
-/* 2. Hero Section con Retícula Japonesa y Guía de Margen */
+/* 2. Hero: hoja cuadriculada del cuaderno (DESIGN.md §0.12), la única cuadrícula sobre el lienzo marfil. */
 .heroSection {
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
   padding: var(--spacing-xxl) var(--spacing-lg) var(--spacing-xl);
   position: relative;
-  background-image: 
-    linear-gradient(to right, rgba(221, 214, 203, 0.3) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(221, 214, 203, 0.3) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-grid-bujo) 30%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-grid-bujo) 30%, transparent) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
