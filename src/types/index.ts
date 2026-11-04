@@ -144,6 +144,9 @@ export interface HabitTrackerItem {
   category?: string;
 }
 
+/** Ánimo del día que comparten el Dashboard y la Agenda. */
+export type Disposition = 'plena' | 'calma' | 'neutra' | 'cansada';
+
 export interface MoodEntry {
   id: string;
   profileId: string;
@@ -151,5 +154,6 @@ export interface MoodEntry {
   moonPhase?: 'new' | 'crescent' | 'full';
   energyLevel?: 'low' | 'medium' | 'high';
   note?: string;
+  disposition?: Disposition;
 }
 

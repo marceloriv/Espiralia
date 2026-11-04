@@ -1,4 +1,4 @@
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem, HabitTrackerItem, MoodEntry } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem, HabitTrackerItem, MoodEntry, Disposition } from '../types';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
@@ -77,7 +77,7 @@ export const StorageService = {
     deleteScopedItem<Profile>(PROFILES_KEY, id);
 
     // Cascade delete profile data
-    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links', 'habits', 'moods', 'distractions', 'daily_energy'];
+    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links', 'habits', 'moods', 'distractions', 'daily_energy', 'daily_focus'];
     for (const d of domains) {
       localStorage.removeItem(getScopedKey(id, d));
     }
@@ -383,6 +383,38 @@ export const StorageService = {
     const data = getScopedData<Record<string, string>>(key, {});
     data[dateStr] = energy;
     writeItem(key, JSON.stringify(data));
+  },
+
+  getTodayDisposition(profileId: string, dateStr: string): Disposition | undefined {
+    return this.getMoods(profileId).find(m => m.date === dateStr)?.disposition;
+  },
+
+  setTodayDisposition(profileId: string, dateStr: string, disposition: Disposition): void {
+    const existing = this.getMoods(profileId).find(m => m.date === dateStr);
+    this.saveMood({ ...(existing ?? { id: `mood-${dateStr}`, profileId, date: dateStr }), disposition });
+  },
+
+  /** Foco fijado del Dashboard: fecha local -> id de la tarea. */
+  getTodayFocus(profileId: string, dateStr: string): string | undefined {
+    return getScopedData<Record<string, string>>(getScopedKey(profileId, 'daily_focus'), {})[dateStr];
+  },
+
+  setTodayFocus(profileId: string, dateStr: string, todoId: string | null): void {
+    const key = getScopedKey(profileId, 'daily_focus');
+    const data = getScopedData<Record<string, string>>(key, {});
+    if (todoId) data[dateStr] = todoId;
+    else delete data[dateStr];
+    writeItem(key, JSON.stringify(data));
+  },
+
+  /** Un dominio del perfil tal como está guardado, sin normalizar (respaldos). */
+  getDomain<T>(profileId: string, domain: string, fallback: T): T {
+    return getScopedData<T>(getScopedKey(profileId, domain), fallback);
+  },
+
+  /** Reemplaza un dominio completo del perfil (restauración de respaldos). */
+  replaceDomain(profileId: string, domain: string, value: unknown): void {
+    writeItem(getScopedKey(profileId, domain), JSON.stringify(value));
   },
 
   seedInitialProfileData(profileId: string): void {
