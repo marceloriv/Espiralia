@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createNewProfile, updateProfilePin, removeProfilePin, deleteProfileData } from '../services/profileOperations';
+import { createNewProfile, updateProfilePin, removeProfilePin, deleteProfileData, renameProfile } from '../services/profileOperations';
 import { StorageService } from '../services/storage';
 import type { TodoItem } from '../types';
 
@@ -106,5 +106,28 @@ describe('profileOperations — desacoplamiento de lógica async para React Comp
     expect(res.success).toBe(true);
     expect(StorageService.getProfiles()).toHaveLength(0);
     expect(StorageService.getActiveProfileId()).toBeNull();
+  });
+});
+
+// El nombre de un perfil se elegía una sola vez: un error de tipeo obligaba a exportar e importar el respaldo.
+describe('renameProfile', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('cambia el nombre y la inicial del avatar, y lo guarda', () => {
+    const perfil = { id: 'p-renombrar', name: 'Marcela', avatar: 'M', createdAt: '2026-11-01' };
+    StorageService.saveProfile(perfil);
+
+    const res = renameProfile(perfil, '  Camila  ');
+
+    expect(res).toMatchObject({ success: true, updated: { name: 'Camila', avatar: 'C' } });
+    expect(StorageService.getProfiles()[0]).toMatchObject({ id: 'p-renombrar', name: 'Camila', avatar: 'C' });
+  });
+
+  it('rechaza un nombre vacío sin tocar el perfil', () => {
+    const perfil = { id: 'p-vacio', name: 'Rosa', avatar: 'R', createdAt: '2026-11-01' };
+    StorageService.saveProfile(perfil);
+
+    expect(renameProfile(perfil, '   ')).toEqual({ success: false, error: 'El nombre es obligatorio' });
+    expect(StorageService.getProfiles()[0].name).toBe('Rosa');
   });
 });

@@ -47,6 +47,17 @@ export async function createNewProfile(name: string, pin: string): Promise<Creat
   }
 }
 
+/** Cambia el nombre del perfil; el avatar es su inicial, como al crearlo. */
+export function renameProfile(profile: Profile, name: string): UpdateProfilePinResult {
+  const trimmed = name.trim();
+  if (!trimmed) {
+    return { success: false, error: 'El nombre es obligatorio' };
+  }
+  const updated: Profile = { ...profile, name: trimmed, avatar: trimmed.charAt(0).toUpperCase() };
+  StorageService.saveProfile(updated);
+  return { success: true, updated };
+}
+
 export async function updateProfilePin(
   profile: Profile,
   newPin: string,
