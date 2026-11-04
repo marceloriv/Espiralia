@@ -115,7 +115,7 @@
 }
 
 .bullet {
-  color: var(--color-hairline);
+  color: var(--color-muted);
 }
 
 .completionBadge {
