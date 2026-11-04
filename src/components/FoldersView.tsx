@@ -17,6 +17,7 @@ import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { addFile, deleteFile, deleteFolderFiles, getFileBlob, listFiles } from '../services/fileStore';
 import { formatBytes } from '../utils/formatBytes';
 import { downloadFile } from '../utils/downloadFile';
+import { textOnColor } from '../utils/textOnColor';
 import { VaultService } from '../services/vaultService';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
@@ -546,7 +547,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                     aria-selected={isActive}
                     className={`${styles.flatFolderTab} ${isActive ? styles.flatFolderActive : ''}`}
                     onClick={() => setUserSelectedFolderId(df.id)}
-                    style={{ '--folder-color': folderColor } as React.CSSProperties}
+                    style={{ '--folder-color': folderColor, color: textOnColor(folderColor) } as React.CSSProperties}
                   >
                     <div className={styles.flatBackFlap} aria-hidden="true" />
                     <div className={styles.flatSheets} data-testid="folder-flat-sheets" aria-hidden="true">

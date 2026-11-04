@@ -95,6 +95,16 @@ describe('FoldersView', () => {
     expect(activeTab.querySelector('[data-front-flap="true"]')).toBeInTheDocument();
   });
 
+  // R-25: el blanco fijo quedaba en 2.1:1 sobre el ámbar; el color de cada solapa decide la tinta.
+  it('escribe el título de cada solapa en negro o blanco según el color de la carpeta', () => {
+    StorageService.saveFolder({ id: 'f-ambar', profileId: 'p-tinta', name: 'Ámbar', color: '#e8a55a', createdAt: '2026-11-04' });
+    StorageService.saveFolder({ id: 'f-magenta', profileId: 'p-tinta', name: 'Magenta', color: '#8e1ea2', createdAt: '2026-11-04' });
+    render(<FoldersView profileId="p-tinta" />);
+
+    expect(screen.getByRole('tab', { name: /ámbar/i }).style.color).toBe('rgb(0, 0, 0)');
+    expect(screen.getByRole('tab', { name: /magenta/i }).style.color).toBe('rgb(255, 255, 255)');
+  });
+
   describe('Tabla de Fichas & Manuscritos Viva', () => {
     it('lista notas y enlaces reales de la carpeta activa y elimina mock de conaset', async () => {
       const { StorageService } = await import('../services/storage');
