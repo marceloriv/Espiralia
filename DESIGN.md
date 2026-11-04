@@ -368,7 +368,7 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 4. **Rastreos Visuales de Bienestar (*Sensory Trackers*)**:
    - *Mood & Energy Check*: Selector con fases lunares y caritas lineales de expresión (*Plena, En calma, Neutra, Cansada, Drenada*).
    - *Water Tracker*: 8 vasos ilustrados con trazo editorial que se rellenan gradualmente.
-   - *Habit Tracker Semanal*: Matriz minimalista `L M X J V S D` con círculos de cumplimiento en verde salvia (`--color-accent-sage`).
+   - *Habit Tracker Semanal*: Matriz minimalista `L M X J V S D` con círculos de cumplimiento en verde salvia (`--color-accent-sage` mezclado al 85 % con `--color-ink`: sobre el salvia puro, el ✓ blanco quedaba en 4.33:1).
 5. **Notas Adhesivas Flotantes & Washi Tape (*Post-its & Paper Clips*)**:
    - Tarjetas amarillas o lavanda suaves con micro-rotación (`transform: rotate(-1.5deg)` o `rotate(1.2deg)`), clip metálico dorado en la parte superior y lemas motivacionales manuscritos (*"discipline today, peace tomorrow ♡"*).
 6. **Widget "Brújula Interior Inmediata"**:

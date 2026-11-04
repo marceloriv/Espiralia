@@ -848,8 +848,9 @@
   font-weight: bold;
 }
 
+/* Salvia oscurecido con la tinta: el ✓ blanco sobre el salvia puro quedaba en 4.33:1. */
 .habitPillChecked::before {
-  background-color: #5a826d;
+  background-color: color-mix(in srgb, var(--color-accent-sage) 85%, var(--color-ink));
 }
 
 .habitPillEmpty {
