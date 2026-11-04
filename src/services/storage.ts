@@ -204,6 +204,14 @@ export const StorageService = {
         writeItem(getScopedKey(profileId, 'todos'), JSON.stringify(todos));
       }
     }
+
+    // Notas y vínculos no necesitan área: quedan sin ella en vez de apuntar a una que ya no existe.
+    for (const domain of ['notes', 'links']) {
+      const items = getScopedList<{ areaId?: string }>(getScopedKey(profileId, domain));
+      if (items.some(i => i.areaId === areaId)) {
+        writeItem(getScopedKey(profileId, domain), JSON.stringify(items.map(i => (i.areaId === areaId ? { ...i, areaId: undefined } : i))));
+      }
+    }
   },
 
   // Todos

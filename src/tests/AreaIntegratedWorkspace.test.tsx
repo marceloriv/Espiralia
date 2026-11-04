@@ -49,6 +49,23 @@ describe('AreaIntegratedWorkspace', () => {
     expect(todos.some(t => t.title === 'Repasar señales de tránsito' && t.areaId === area.id)).toBe(true);
   });
 
+  // Mismo criterio que la lista principal de To-Do: borrar pide confirmación.
+  it('borrar una tarea del área pide confirmación y respeta el cancelar', async () => {
+    const user = userEvent.setup();
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    StorageService.saveTodo({ id: 't-ws', profileId, title: 'Leer apunte', areaId: area.id, priority: 'media', status: 'pendiente', createdAt: '2026-10-10' });
+    render(<AreaIntegratedWorkspace area={area} profileId={profileId} onNavigateAgenda={vi.fn()} />);
+
+    await user.click(screen.getByRole('button', { name: 'Eliminar Leer apunte' }));
+    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining('Leer apunte'));
+    expect(StorageService.getTodos(profileId)).toHaveLength(1);
+
+    confirmSpy.mockReturnValue(true);
+    await user.click(screen.getByRole('button', { name: 'Eliminar Leer apunte' }));
+    expect(StorageService.getTodos(profileId)).toHaveLength(0);
+    confirmSpy.mockRestore();
+  });
+
   it('muestra eventos contextuales asociados al área o categoría', () => {
     StorageService.saveEvent({
       id: 'ev-test',

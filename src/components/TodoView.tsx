@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useHoy } from '../utils/useHoy';
-import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag, Check, ShieldCheck } from 'lucide-react';
+import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag, Check, ShieldCheck, Pencil } from 'lucide-react';
 import { sileo } from 'sileo';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import { focusOnMount } from '../utils/useDialogFocus';
@@ -10,6 +10,7 @@ import { StorageService } from '../services/storage';
 import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
 import { dueLabel, criticalTodos, upcomingOccurrences } from './dashboard/dashboardData';
 import { AreaIntegratedWorkspace } from './todo/AreaIntegratedWorkspace';
+import { TodoEditModal } from './todo/TodoEditModal';
 import { Papel } from './common/Papel';
 import { TINTE_DE_MODULO } from './common/tintes';
 import styles from './TodoView.module.css';
@@ -51,6 +52,9 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
   useEscapeKey(() => setIsAreaModalOpen(false), isAreaModalOpen);
   const [newAreaName, setNewAreaName] = useState('');
   const [newAreaColor, setNewAreaColor] = useState(COLOR_PALETTE[0]);
+  // null: el modal crea un área nueva; con un área, la edita.
+  const [editingArea, setEditingArea] = useState<Area | null>(null);
+  const [editingTodo, setEditingTodo] = useState<TodoItem | null>(null);
 
   // Edición rápida de fecha en fila
   const [editingDueDateId, setEditingDueDateId] = useState<string | null>(null);
@@ -121,8 +125,17 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
   };
 
   const handleDeleteTodo = (id: string) => {
+    const target = todos.find(t => t.id === id);
+    if (!window.confirm(`¿Eliminar la tarea "${target?.title ?? ''}"? No se puede deshacer.`)) return;
     StorageService.deleteTodo(profileId, id);
     sileo.success({ title: 'Tarea eliminada' });
+    loadData();
+  };
+
+  const handleSaveTodoEdit = (updated: TodoItem) => {
+    StorageService.saveTodo(updated);
+    setEditingTodo(null);
+    sileo.success({ title: 'Tarea actualizada' });
     loadData();
   };
 
@@ -144,22 +157,49 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
   const upcomingEvents = upcomingOccurrences(events, todayStr);
 
-  const handleCreateArea = (e: React.FormEvent) => {
+  const openAreaModal = (area: Area | null) => {
+    setEditingArea(area);
+    setNewAreaName(area?.name ?? '');
+    setNewAreaColor(area?.color ?? COLOR_PALETTE[0]);
+    setIsAreaModalOpen(true);
+  };
+
+  const handleSubmitArea = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newAreaName.trim()) return;
 
-    const newArea: Area = {
-      id: `area-${Date.now()}`,
-      profileId,
-      name: newAreaName.trim(),
-      color: newAreaColor,
-      createdAt: new Date().toISOString(),
-    };
-
-    StorageService.saveArea(newArea);
+    if (editingArea) {
+      StorageService.saveArea({ ...editingArea, name: newAreaName.trim(), color: newAreaColor });
+      sileo.success({ title: 'Área actualizada' });
+    } else {
+      StorageService.saveArea({
+        id: `area-${Date.now()}`,
+        profileId,
+        name: newAreaName.trim(),
+        color: newAreaColor,
+        createdAt: new Date().toISOString(),
+      });
+      sileo.success({ title: 'Área temática creada' });
+    }
     setNewAreaName('');
     setIsAreaModalOpen(false);
-    sileo.success({ title: 'Área temática creada' });
+    loadData();
+  };
+
+  // Siempre queda un área: las tareas necesitan una. Las del área borrada pasan a General o a la primera.
+  const handleDeleteArea = () => {
+    if (!editingArea || areas.length <= 1) return;
+    const restantes = areas.filter(a => a.id !== editingArea.id);
+    const destino = restantes.find(a => a.name.toLowerCase() === 'general') ?? restantes[0];
+    const cantidad = todos.filter(t => t.areaId === editingArea.id).length;
+    const aviso = cantidad > 0 ? ` ${cantidad === 1 ? 'Su tarea pasa' : `Sus ${cantidad} tareas pasan`} a "${destino.name}".` : '';
+    if (!window.confirm(`¿Eliminar el área "${editingArea.name}"?${aviso}`)) return;
+
+    StorageService.deleteArea(profileId, editingArea.id);
+    if (selectedAreaId === editingArea.id) setSelectedAreaId('todas');
+    if (selectedAreaForNew === editingArea.id) setSelectedAreaForNew(destino.id);
+    setIsAreaModalOpen(false);
+    sileo.success({ title: 'Área eliminada' });
     loadData();
   };
 
@@ -340,11 +380,23 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               className={styles.btnAddAreaTab}
               aria-label="Crear área"
               title="Añadir nueva área de vida"
-              onClick={() => setIsAreaModalOpen(true)}
+              onClick={() => openAreaModal(null)}
             >
               <FolderPlus size={16} aria-hidden="true" />
               <span>+ Área</span>
             </button>
+
+            {activeArea && (
+              <button
+                type="button"
+                className={styles.btnAddAreaTab}
+                aria-label={`Editar área ${activeArea.name}`}
+                onClick={() => openAreaModal(activeArea)}
+              >
+                <Pencil size={16} aria-hidden="true" />
+                <span>Editar área</span>
+              </button>
+            )}
           </div>
 
           {/* Filtros de Estado */}
@@ -636,6 +688,15 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                           </div>
                         )}
 
+                        <button
+                          type="button"
+                          className={styles.btnEdit}
+                          aria-label={`editar ${todo.title}`}
+                          onClick={() => setEditingTodo(todo)}
+                        >
+                          <Pencil size={16} aria-hidden="true" />
+                        </button>
+
                         {/* Botón Eliminar Tarea */}
                         <button
                           type="button"
@@ -755,12 +816,21 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
         </div>
       </footer>
 
-      {/* Modal para Crear Nueva Área Temática */}
+      {editingTodo && (
+        <TodoEditModal todo={editingTodo} areas={areas} onClose={() => setEditingTodo(null)} onSave={handleSaveTodoEdit} />
+      )}
+
+      {/* Modal para crear o editar un área temática */}
       {isAreaModalOpen && (
-        <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-label="Nueva área temática">
+        <div
+          className={styles.modalOverlay}
+          role="dialog"
+          aria-modal="true"
+          aria-label={editingArea ? 'Editar área temática' : 'Nueva área temática'}
+        >
           <div className={styles.modalCard}>
             <div className={styles.modalHeader}>
-              <h3 className={styles.modalTitle}>Nueva área temática</h3>
+              <h3 className={styles.modalTitle}>{editingArea ? 'Editar área temática' : 'Nueva área temática'}</h3>
               <button
                 type="button"
                 className={styles.modalCloseBtn}
@@ -771,7 +841,7 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
               </button>
             </div>
 
-            <form onSubmit={handleCreateArea} className={styles.modalForm}>
+            <form onSubmit={handleSubmitArea} className={styles.modalForm}>
               <label className={styles.formLabel} htmlFor="area-name-input">
                 Nombre del área
               </label>
@@ -802,6 +872,26 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
                   ))}
                 </div>
               </div>
+
+              {editingArea && (
+                <div className={styles.dangerRow}>
+                  <button
+                    type="button"
+                    className={styles.btnDanger}
+                    onClick={handleDeleteArea}
+                    disabled={areas.length <= 1}
+                    aria-describedby={areas.length <= 1 ? 'area-unica-hint' : undefined}
+                  >
+                    <Trash2 size={14} aria-hidden="true" />
+                    <span>Eliminar área</span>
+                  </button>
+                  {areas.length <= 1 && (
+                    <span id="area-unica-hint" className={styles.formHint}>
+                      Debe quedar al menos un área para las tareas.
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div className={styles.modalActions}>
                 <button
