@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  CATEGORIES,
   CATEGORY_COLORS,
   applyTimeChange,
   categoryOf,
@@ -91,6 +92,16 @@ describe('toCalendarEvent', () => {
     const out = toCalendarEvent(allDay);
     expect(out).toMatchObject({ start: '2026-10-14', allDay: true });
     expect(out).not.toHaveProperty('end');
+  });
+
+  // Auditoría 002, hallazgo 27: FullCalendar 7 descarta textColor (su prop es contrastColor) y el tema forma escribe el
+  // título con el color del texto sobre un tinte del color del evento. Un textColor aquí prometía un contraste que no se pintaba.
+  it('cada categoría pinta con un token de color y no entrega textColor, que FullCalendar 7 descarta', () => {
+    for (const category of CATEGORIES) {
+      const out = toCalendarEvent({ ...single, category });
+      expect(out.color, category).toMatch(/^var\(--color-[\w-]+\)$/);
+      expect(out, category).not.toHaveProperty('textColor');
+    }
   });
 
   it('sin categoría usa los colores de personal', () => {

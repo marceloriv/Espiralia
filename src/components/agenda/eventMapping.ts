@@ -16,13 +16,14 @@ export const FILTER_LABELS: Record<CategoryFilter, string> = {
   universidad: 'Universidad',
 };
 
-// Contraste texto/fondo >= 4.5:1: ink sobre teal y amber; blanco sobre primary y error.
-export const CATEGORY_COLORS: Record<EventCategory, { color: string; textColor: string }> = {
-  trabajo: { color: 'var(--color-accent-teal)', textColor: 'var(--color-ink)' },
-  personal: { color: 'var(--color-primary)', textColor: 'var(--color-on-primary)' },
-  urgente: { color: 'var(--color-error)', textColor: 'var(--color-on-primary)' },
-  estudio: { color: 'var(--color-accent-amber)', textColor: 'var(--color-ink)' },
-  universidad: { color: 'var(--color-primary-soft, #8b5cf6)', textColor: 'var(--color-on-primary, #ffffff)' },
+// Solo el color: FullCalendar 7 no tiene textColor (la prop es contrastColor y el tema forma la usa solo sin color-mix).
+// El tema escribe el título con el color del texto sobre un tinte claro de este color.
+export const CATEGORY_COLORS: Record<EventCategory, { color: string }> = {
+  trabajo: { color: 'var(--color-accent-teal)' },
+  personal: { color: 'var(--color-primary)' },
+  urgente: { color: 'var(--color-error)' },
+  estudio: { color: 'var(--color-accent-amber)' },
+  universidad: { color: 'var(--color-primary-soft)' },
 };
 
 export const WEEK_DAYS = [
