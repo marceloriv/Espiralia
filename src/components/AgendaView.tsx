@@ -10,7 +10,7 @@ import esLocale from '@fullcalendar/react/locales/es';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
-import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon } from 'lucide-react';
+import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, CalendarMinus } from 'lucide-react';
 import { DISPOSITIONS, ENERGY_LEVELS, dispositionLabel, energyLabel } from '../utils/energyLevels';
 import { sileo } from 'sileo';
 import type { AgendaEvent, Disposition, Profile, ViewType } from '../types';
@@ -28,6 +28,7 @@ import {
   categoryOf,
   countByCategory,
   occursOn,
+  removeOccurrence,
   toCalendarEvent,
 } from './agenda/eventMapping';
 import type { CategoryFilter } from './agenda/eventMapping';
@@ -154,8 +155,43 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     reload();
   };
 
+  // Quitar un día parte la serie en dos (removeOccurrence); si la primera parte no queda, se borra la serie original.
+  const quitarDiaDeSerie = (serie: AgendaEvent, date: string): boolean => {
+    // Sufijo aleatorio: el evento suelto de "Cambiar solo este día" se crea en el mismo milisegundo.
+    const quedan = removeOccurrence(serie, date, () => `e-${Date.now()}-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36)}`);
+    if (!quedan.some(parte => parte.id === serie.id) && !safeDeleteEvent(activeProfileId, serie.id)) return false;
+    return quedan.every(parte => safeSaveEvent(parte));
+  };
+
+  const handleRemoveOccurrence = (ev: AgendaEvent) => {
+    if (!window.confirm(`¿Quitar el ${selectedDate} de la serie "${ev.title}"? Las demás repeticiones se mantienen.`)) return;
+    if (!quitarDiaDeSerie(ev, selectedDate)) {
+      reload();
+      return;
+    }
+    sileo.success({ title: 'Día quitado de la serie' });
+    if (form.editingId === ev.id) resetForm(selectedDate);
+    reload();
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.editingId && form.soloDia) {
+      const serie = events.find(ev => ev.id === form.editingId);
+      const suelto = validateEventForm({ ...form, editingId: undefined, repeatWeekly: false, date: form.soloDia }, activeProfileId);
+      if (!suelto.ok) {
+        sileo.error({ title: suelto.error });
+        return;
+      }
+      if (!serie || !quitarDiaDeSerie(serie, form.soloDia) || !safeSaveEvent(suelto.event)) {
+        reload();
+        return;
+      }
+      sileo.success({ title: `Cambio guardado solo para el ${form.soloDia}` });
+      resetForm(selectedDate);
+      reload();
+      return;
+    }
     const result = validateEventForm(form, activeProfileId);
     if (!result.ok) {
       sileo.error({ title: result.error });
@@ -370,6 +406,17 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                     >
                       <Pencil size={16} aria-hidden="true" />
                     </button>
+                    {ev.recurrence && (
+                      <button
+                        type="button"
+                        className={styles.iconBtn}
+                        aria-label={`quitar ${ev.title} del ${selectedDate}`}
+                        title="Quitar este día de la serie"
+                        onClick={() => handleRemoveOccurrence(ev)}
+                      >
+                        <CalendarMinus size={16} aria-hidden="true" />
+                      </button>
+                    )}
                     <button
                       type="button"
                       className={styles.iconBtn}
@@ -386,7 +433,13 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
           </Papel>
 
           {/* 3.3 Formulario de Creación / Edición */}
-          <EventFormPanel form={form} update={update} onSubmit={handleSubmit} onCancel={() => resetForm(selectedDate)} />
+          <EventFormPanel
+            form={form}
+            update={update}
+            onSubmit={handleSubmit}
+            onCancel={() => resetForm(selectedDate)}
+            selectedDate={selectedDate}
+          />
 
           {/* 3.4 Tracker de Energía y Ánimo (Energy & Mood Rhythm Tracker) */}
           <div className={styles.rhythmCard}>

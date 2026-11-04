@@ -19,6 +19,8 @@ export interface EventFormState {
   repeatWeekly: boolean;
   daysOfWeek: number[];
   until: string; // '' = sin término
+  /** Al editar una serie: el día que se cambia solo. Guardar quita ese día de la serie y crea un evento suelto. */
+  soloDia?: string;
 }
 
 export type EventFormResult = { ok: true; event: AgendaEvent } | { ok: false; error: string };

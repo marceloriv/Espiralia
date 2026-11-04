@@ -4,9 +4,46 @@ import {
   applyTimeChange,
   countByCategory,
   occursOn,
+  removeOccurrence,
   toCalendarEvent,
 } from '../components/agenda/eventMapping';
 import type { AgendaEvent } from '../types';
+
+// Técnica: valores límite sobre el día quitado (primero, intermedio, último, única repetición).
+describe('removeOccurrence', () => {
+  // Lunes y miércoles del 2 al 25 de noviembre de 2026.
+  const serie: AgendaEvent = {
+    id: 's-1', profileId: 'p', title: 'Taller', date: '2026-11-02', startTime: '10:00',
+    recurrence: { daysOfWeek: [1, 3], until: '2026-11-25' },
+  };
+  const nuevoId = () => 's-2';
+
+  it('un día intermedio parte la serie en dos; la primera conserva el id', () => {
+    const quedan = removeOccurrence(serie, '2026-11-11', nuevoId);
+    expect(quedan).toEqual([
+      { ...serie, recurrence: { daysOfWeek: [1, 3], until: '2026-11-10' } },
+      { ...serie, id: 's-2', date: '2026-11-12' },
+    ]);
+    expect(quedan.some(ev => occursOn(ev, '2026-11-11'))).toBe(false);
+    expect(quedan.some(ev => occursOn(ev, '2026-11-09'))).toBe(true);
+    expect(quedan.some(ev => occursOn(ev, '2026-11-16'))).toBe(true);
+  });
+
+  it('el primer día solo corre el inicio', () => {
+    expect(removeOccurrence(serie, '2026-11-02', nuevoId)).toEqual([{ ...serie, id: 's-2', date: '2026-11-03' }]);
+  });
+
+  it('el último día solo adelanta el término', () => {
+    expect(removeOccurrence(serie, '2026-11-25', nuevoId)).toEqual([
+      { ...serie, recurrence: { daysOfWeek: [1, 3], until: '2026-11-24' } },
+    ]);
+  });
+
+  it('quitar la única repetición no deja series vacías', () => {
+    const unica: AgendaEvent = { ...serie, recurrence: { daysOfWeek: [1], until: '2026-11-08' } };
+    expect(removeOccurrence(unica, '2026-11-02', nuevoId)).toEqual([]);
+  });
+});
 
 const single: AgendaEvent = {
   id: 'e1',

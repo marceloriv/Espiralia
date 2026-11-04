@@ -3,10 +3,10 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { AgendaView } from '../components/AgendaView';
-import { WEEK_DAYS } from '../components/agenda/eventMapping';
+import { WEEK_DAYS, occursOn } from '../components/agenda/eventMapping';
 import { SAVE_ERROR } from '../components/agenda/eventPersistence';
 import { StorageService } from '../services/storage';
-import { toLocalDateStr } from '../utils/localDate';
+import { addDaysToDateStr, toLocalDateStr } from '../utils/localDate';
 import { downloadFile } from '../utils/downloadFile';
 import type { AgendaEvent } from '../types';
 
@@ -319,6 +319,43 @@ describe('AgendaView', () => {
     confirm.mockReturnValue(true);
     await user.click(screen.getByRole('button', { name: /eliminar serie gimnasio/i }));
     expect(StorageService.getEvents(profileId)).toEqual([]);
+  });
+
+  // Antes una serie solo se editaba o borraba entera.
+  describe('un solo día de una serie', () => {
+    const hoy = toLocalDateStr(new Date());
+    const seedSerie = () => seed({ id: 'r-dia', title: 'Natación', startTime: '07:00', endTime: '08:00', recurrence: { daysOfWeek: [0, 1, 2, 3, 4, 5, 6] } });
+
+    it('"Quitar este día" deja el resto de la serie', async () => {
+      seedSerie();
+      vi.spyOn(window, 'confirm').mockReturnValue(true);
+      const user = userEvent.setup();
+      render(<AgendaView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: new RegExp(`quitar natación del ${hoy}`, 'i') }));
+
+      const eventos = StorageService.getEvents(profileId);
+      expect(eventos.some(ev => occursOn(ev, hoy))).toBe(false);
+      expect(eventos.some(ev => occursOn(ev, addDaysToDateStr(hoy, 1)))).toBe(true);
+    });
+
+    it('"Cambiar solo este día" guarda un evento suelto y quita ese día de la serie', async () => {
+      seedSerie();
+      const user = userEvent.setup();
+      render(<AgendaView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /editar natación/i }));
+      await user.click(screen.getByRole('checkbox', { name: /cambiar solo el/i }));
+      const titulo = screen.getByPlaceholderText(/título del evento/i);
+      await user.clear(titulo);
+      await user.type(titulo, 'Natación libre');
+      await user.click(screen.getByRole('button', { name: /guardar cambios/i }));
+
+      const eventos = StorageService.getEvents(profileId);
+      const deHoy = eventos.filter(ev => occursOn(ev, hoy));
+      expect(deHoy.map(ev => [ev.title, Boolean(ev.recurrence)])).toEqual([['Natación libre', false]]);
+      expect(eventos.some(ev => ev.recurrence && occursOn(ev, addDaysToDateStr(hoy, 1)))).toBe(true);
+    });
   });
 
   it('no pide confirmación para borrar un evento único', async () => {

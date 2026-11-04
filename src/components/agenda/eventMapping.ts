@@ -87,6 +87,32 @@ export const occursOn = (ev: AgendaEvent, dateStr: string): boolean => {
   return ev.recurrence.daysOfWeek.includes(new Date(y, m - 1, d).getDay());
 };
 
+/** ¿Cae al menos un día de la serie entre su inicio y su término? Basta revisar una semana. */
+const tieneRepeticiones = (ev: AgendaEvent): boolean => {
+  for (let i = 0; i < 7; i++) {
+    const dia = addDaysToDateStr(ev.date, i);
+    if (ev.recurrence?.until && dia > ev.recurrence.until) return false;
+    if (occursOn(ev, dia)) return true;
+  }
+  return false;
+};
+
+/**
+ * Quita un día de una serie partiéndola: la parte anterior conserva el id y la posterior recibe uno nuevo.
+ * Devuelve las partes que todavía tienen repeticiones (de 0 a 2). FullCalendar no dibuja excepciones sin el plugin rrule.
+ */
+export const removeOccurrence = (ev: AgendaEvent, date: string, newId: () => string): AgendaEvent[] => {
+  if (!ev.recurrence) return [];
+  const quedan: AgendaEvent[] = [];
+  if (date > ev.date) {
+    const antes: AgendaEvent = { ...ev, recurrence: { ...ev.recurrence, until: addDaysToDateStr(date, -1) } };
+    if (tieneRepeticiones(antes)) quedan.push(antes);
+  }
+  const despues: AgendaEvent = { ...ev, id: newId(), date: addDaysToDateStr(date, 1) };
+  if ((!ev.recurrence.until || despues.date <= ev.recurrence.until) && tieneRepeticiones(despues)) quedan.push(despues);
+  return quedan;
+};
+
 export const countByCategory = (events: AgendaEvent[]): Record<CategoryFilter, number> => {
   const counts: Record<CategoryFilter, number> = {
     todas: events.length,
