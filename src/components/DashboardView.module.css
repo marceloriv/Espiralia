@@ -1424,24 +1424,19 @@
   color: var(--color-body);
 }
 
-.distractionList li {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
 .distractionDot {
   width: 6px;
   height: 6px;
   border-radius: 9999px;
   background-color: var(--color-error);
-  margin-top: 6px;
   flex-shrink: 0;
 }
 
+/* Por línea base: el punto, sin línea base propia, apoya su borde inferior en la del primer renglón del texto,
+   también cuando el compromiso ocupa varias líneas. La ✕ se centra en la fila. */
 .distractionListItem {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
 }
 
@@ -1476,6 +1471,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
   border-radius: 4px;
   transition: color 0.15s ease;
 }
