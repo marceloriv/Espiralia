@@ -16,11 +16,16 @@ const ratio = (a: string, b: string): number => {
   return (hi + 0.05) / (lo + 0.05);
 };
 
+const tokensCss = readFileSync('src/index.css', 'utf8');
+
+// Color opaco de una declaración: hex literal o var(--token) con valor hex en index.css.
 const color = (file: string, selector: string, property: string): string => {
   const css = readFileSync(`src/components/landing/${file}`, 'utf8');
-  const match = css.match(new RegExp(String.raw`\n\.${selector}\s*\{[^}]*?\n\s*${property}:\s*(#[0-9a-fA-F]{6})`));
-  if (!match) throw new Error(`${selector} sin ${property} en ${file}`);
-  return match[1];
+  const value = css.match(new RegExp(String.raw`\n\.${selector}\s*\{[^}]*?\n\s*${property}:\s*([^;]+);`))?.[1].trim();
+  const name = value?.match(/^var\(--([\w-]+)\)$/)?.[1];
+  const hex = name ? tokensCss.match(new RegExp(String.raw`--${name}:\s*(#[0-9a-fA-F]{6})`))?.[1] : value;
+  if (!hex || !/^#[0-9a-fA-F]{6}$/.test(hex)) throw new Error(`${selector} sin ${property} opaco (hex o token) en ${file}: ${value}`);
+  return hex;
 };
 
 const CASES: [string, string, string, string][] = [
@@ -28,6 +33,10 @@ const CASES: [string, string, string, string][] = [
   ['pie del post-it', 'LandingHeroCard.module.css', 'noteFooter', 'stickyNote'],
   ['hora de la nota rápida', 'LandingDeskPreview.module.css', 'quickNoteTag', 'quickNoteCard'],
   ['pie de la nota rápida', 'LandingDeskPreview.module.css', 'quickNoteFooter', 'quickNoteCard'],
+  // Hallazgo 20 de la auditoría 002: «En Foco» en --color-error quedaba en 4.01:1, y el sello del dossier,
+  // en magenta al 65 %, en 3.14:1.
+  ['sello «En Foco» del día de ejemplo', 'LandingHeroCard.module.css', 'stampSeal', 'tornPaperSlip'],
+  ['sello «Solo en tu navegador» del dossier', 'LandingHeroCard.module.css', 'dossierSeal', 'dossierFolder'],
 ];
 
 describe('Contraste de la insignia de la sección oscura de la landing', () => {
