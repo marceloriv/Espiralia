@@ -3,7 +3,9 @@ import { CalendarPlus, CheckSquare, ListPlus, X, Zap } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Area, EventCategory, Priority, TaskStatus } from '../../types';
 import { StorageService } from '../../services/storage';
-import { toLocalDateStr } from '../../utils/localDate';
+import { defaultEndTime, toLocalDateStr } from '../../utils/localDate';
+import { emptyEventForm, validateEventForm } from '../agenda/eventForm';
+import { safeSaveEvent } from '../agenda/eventPersistence';
 import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './QuickActionModal.module.css';
 
@@ -86,20 +88,26 @@ const QuickActionModalContent: React.FC<QuickActionModalProps> = ({
 
   const handleCreateEvent = (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = eventTitle.trim();
-    if (!trimmed) return;
+    if (!eventTitle.trim()) return;
 
-    const newEvent = {
-      id: `event-${Date.now()}`,
+    // La misma validación que la Agenda: título, fecha y término posterior al inicio. Sin hora, es de todo el día.
+    const result = validateEventForm(
+      {
+        ...emptyEventForm(eventDate),
+        title: eventTitle,
+        allDay: !eventStartTime,
+        startTime: eventStartTime,
+        endTime: eventEndTime || (eventStartTime ? defaultEndTime(eventStartTime) : ''),
+        category: eventCategory,
+      },
       profileId,
-      title: trimmed,
-      date: eventDate,
-      startTime: eventStartTime || undefined,
-      endTime: eventEndTime || undefined,
-      category: eventCategory,
-    };
-
-    StorageService.saveEvent(newEvent);
+      () => `event-${Date.now()}`,
+    );
+    if (!result.ok) {
+      sileo.error({ title: result.error });
+      return;
+    }
+    if (!safeSaveEvent(result.event)) return;
     sileo.success({ title: 'Evento creado con éxito' });
     setEventTitle('');
     setEventStartTime('');

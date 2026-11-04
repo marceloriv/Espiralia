@@ -79,6 +79,24 @@ describe('QuickActionModal', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
+  // La Agenda valida las horas; la Acción Rápida guardaba un evento que terminaba antes de empezar.
+  it('no guarda un evento cuya hora de término es anterior a la de inicio', async () => {
+    const errorSpy = vi.spyOn(sileo, 'error');
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+    render(<QuickActionModal isOpen={true} onClose={onClose} profileId={profileId} />);
+
+    await user.click(screen.getByRole('tab', { name: /nuevo evento/i }));
+    await user.type(screen.getByPlaceholderText(/título del evento/i), 'Al revés');
+    fireEvent.change(screen.getByLabelText(/hora inicio/i), { target: { value: '15:00' } });
+    fireEvent.change(screen.getByLabelText(/hora fin/i), { target: { value: '14:00' } });
+    await user.click(screen.getByRole('button', { name: /crear evento/i }));
+
+    expect(StorageService.getEvents(profileId)).toEqual([]);
+    expect(errorSpy).toHaveBeenCalledWith({ title: 'La hora de término debe ser posterior a la de inicio' });
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
   it('se cierra al presionar la tecla Escape', () => {
     const onClose = vi.fn();
     render(<QuickActionModal isOpen={true} onClose={onClose} profileId={profileId} />);
