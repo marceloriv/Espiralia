@@ -1477,12 +1477,10 @@
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  opacity: 0.6;
-  transition: opacity 0.15s ease, color 0.15s ease;
+  transition: color 0.15s ease;
 }
 
 .distractionDelBtn:hover {
-  opacity: 1;
   color: var(--color-text-error);
 }
 
