@@ -2058,18 +2058,6 @@
   max-width: 680px;
 }
 
-.autoSaveIndicator {
-  position: absolute;
-  bottom: 10px;
-  right: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-family-3);
-  font-size: 11px;
-  color: var(--color-muted);
-}
-
 .notesCardBtn {
   margin-top: 14px;
   width: 100%;

@@ -53,6 +53,8 @@ const BANNED_EVERYWHERE: RegExp[] = [
   /respaldo exportable se cifra/i,
   /EXP\. 2026/,
   /Bóveda Documental/i,
+  // Hallazgo 21: la tarjeta de notas del Dashboard decía "Guardado automáticamente" aun sin notas; la nota se guarda con su botón.
+  /Guardado automáticamente/i,
   // Firma personal y ejemplos de otro dominio (conducción) que no pertenecen a un producto público.
   /r\.v\. notas de taller/,
   /Conducción real/,

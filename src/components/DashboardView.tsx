@@ -1072,10 +1072,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               «Cuaderno en blanco. Pulsa + Nueva Anotación Rápida para registrar pensamientos espontáneos o notas de paso.»
             </p>
           )}
-          <div className={styles.autoSaveIndicator}>
-            <Check size={14} aria-hidden="true" />
-            <span>Guardado automáticamente</span>
-          </div>
         </div>
 
         <button
