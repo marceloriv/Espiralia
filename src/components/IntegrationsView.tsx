@@ -187,7 +187,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
             </svg>
           </div>
           <div>
-            <span className={styles.postitLabel}>Aforismo de Soberanía</span>
+            <span className={styles.postitLabel}>Aforismo</span>
             <p className={styles.postitQuote}>
               «Tus compromisos y pensamientos no necesitan servidores; viven en tu propio pliego ♡»
             </p>
@@ -481,7 +481,6 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
         {/* Sheet Bottom Editorial Mantra */}
         <div className={styles.sheetBottomMantra}>
           <div className={styles.mantraStorage}>
-            <span className={styles.greenDot}></span>
             <span>Almacenamiento Local: <strong style={{ color: 'var(--color-ink)' }}>{formatBytes(storageBytes)} de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)}</strong> (localStorage)</span>
           </div>
         </div>

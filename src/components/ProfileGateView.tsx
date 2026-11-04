@@ -148,7 +148,6 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
         </div>
         <p className={styles.tagline}>TALLER DE ESCRITORIO • CUADERNO PERSONAL</p>
         <div className={styles.secBadge}>
-          <span className={styles.secDot} aria-hidden="true" />
           <span>Datos en este navegador • PIN con hash PBKDF2</span>
         </div>
       </header>

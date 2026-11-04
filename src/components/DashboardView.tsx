@@ -426,7 +426,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className={styles.brassInnerLoop} />
               </div>
               <div className={styles.postItContent}>
-                <span className={styles.postItMottoLabel}>lema del día</span>
+                <span className={styles.postItMottoLabel}>lema</span>
                 <p className={styles.postItHandwriting}>
                   Disciplina hoy,<br />paz mañana.
                 </p>

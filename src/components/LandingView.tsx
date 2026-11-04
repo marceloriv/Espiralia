@@ -142,7 +142,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         <section id="pilares" className={`${styles.pilaresSection} ${styles.anchorSection}`} aria-labelledby="pilares-heading">
           <div className={styles.sectionHeader}>
             <h2 id="pilares-heading" className={styles.sectionTitle}>
-              Tres pilares de enfoque soberano
+              Tres cuadernos para tu semana
             </h2>
             <p className={styles.sectionSubtitle}>
               Estructurado como los tres cuadernos esenciales de una vida reflexiva y dirigida con propósito.

@@ -219,7 +219,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         <div className={styles.sidebarFooter}>
           <div className={styles.localDbBadge}>
             <span className={styles.localDbStatus}>
-              <span className={styles.localDbDot} aria-hidden="true" />
               Guardado en este navegador
             </span>
           </div>

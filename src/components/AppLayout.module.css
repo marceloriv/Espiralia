@@ -189,14 +189,6 @@
   color: var(--color-ink);
 }
 
-.localDbDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--color-success);
-  display: inline-block;
-}
-
 .localDbCipher {
   font-family: var(--font-mono, monospace);
   font-size: var(--text-micro);
