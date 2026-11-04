@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   CATEGORY_COLORS,
   applyTimeChange,
+  categoryOf,
   countByCategory,
   occursOn,
   removeOccurrence,
@@ -210,5 +211,24 @@ describe('countByCategory', () => {
       { ...single, id: 'd', category: 'urgente' },
     ];
     expect(countByCategory(events)).toEqual({ todas: 4, trabajo: 2, personal: 1, urgente: 1, estudio: 0, universidad: 0 });
+  });
+});
+
+// Técnica: partición de equivalencia (categoría de la lista, ausente, guardada fuera de la lista).
+// La Acción Rápida guardó 'salud' y 'general' hasta 2026-11-04; esos eventos siguen en localStorage.
+describe('categoryOf', () => {
+  const guardadoFueraDeLista = (category: string) =>
+    ({ ...single, id: `x-${category}`, category }) as unknown as AgendaEvent;
+
+  it('respeta una categoría de la lista y trata la ausencia como personal', () => {
+    expect(categoryOf({ ...single, category: 'urgente' })).toBe('urgente');
+    expect(categoryOf({ id: 'c', profileId: 'p', title: 'sin cat', date: '2026-10-14' })).toBe('personal');
+  });
+
+  it('una categoría que la Agenda no conoce se muestra y se cuenta como personal', () => {
+    const viejos = [guardadoFueraDeLista('salud'), guardadoFueraDeLista('general')];
+    expect(viejos.map(categoryOf)).toEqual(['personal', 'personal']);
+    expect(toCalendarEvent(viejos[0])).toMatchObject(CATEGORY_COLORS.personal);
+    expect(countByCategory(viejos)).toEqual({ todas: 2, trabajo: 0, personal: 2, urgente: 0, estudio: 0, universidad: 0 });
   });
 });

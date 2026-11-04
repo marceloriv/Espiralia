@@ -17,6 +17,16 @@ export interface QuickActionModalProps {
 
 type TabType = 'todo' | 'event';
 
+// Las categorías de la Agenda (CATEGORIES y FILTER_LABELS de agenda/eventMapping), copiadas aquí para no sumar
+// eventMapping a la carga inicial. El tipo impide ofrecer una categoría que la Agenda no sepa mostrar.
+const CATEGORIAS_EVENTO: { value: EventCategory; label: string }[] = [
+  { value: 'trabajo', label: 'Trabajo' },
+  { value: 'personal', label: 'Personal' },
+  { value: 'urgente', label: 'Urgente' },
+  { value: 'estudio', label: 'Estudio' },
+  { value: 'universidad', label: 'Universidad' },
+];
+
 const QuickActionModalContent: React.FC<QuickActionModalProps> = ({
   onClose,
   profileId,
@@ -295,11 +305,11 @@ const QuickActionModalContent: React.FC<QuickActionModalProps> = ({
                     value={eventCategory}
                     onChange={e => setEventCategory(e.target.value as EventCategory)}
                   >
-                    <option value="trabajo">Trabajo</option>
-                    <option value="personal">Personal</option>
-                    <option value="estudio">Estudio</option>
-                    <option value="salud">Salud</option>
-                    <option value="general">General</option>
+                    {CATEGORIAS_EVENTO.map(c => (
+                      <option key={c.value} value={c.value}>
+                        {c.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

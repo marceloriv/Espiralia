@@ -182,6 +182,14 @@ describe('AgendaView', () => {
     expect(dayList().getByText('13:00–14:00 · Personal')).toBeInTheDocument();
   });
 
+  // La Acción Rápida guardaba 'salud' y 'general'; con ese evento en el día la Agenda caía a "Algo salió mal".
+  it('muestra como personal un evento guardado con una categoría que la Agenda no conoce', () => {
+    seed({ id: 'qa-salud', title: 'Control médico', startTime: '10:00', endTime: '11:00', category: 'salud' as unknown as AgendaEvent['category'] });
+    render(<AgendaView profileId={profileId} />);
+
+    expect(dayList().getByText('10:00–11:00 · Personal')).toBeInTheDocument();
+  });
+
   it('crea un evento desde el formulario y lo persiste', async () => {
     const success = vi.spyOn(sileo, 'success');
     const user = userEvent.setup();

@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
+import { CATEGORIES, FILTER_LABELS } from '../components/agenda/eventMapping';
 import { QuickActionModal } from '../components/quickAction/QuickActionModal';
 import { StorageService } from '../services/storage';
 
@@ -95,6 +96,18 @@ describe('QuickActionModal', () => {
     expect(StorageService.getEvents(profileId)).toEqual([]);
     expect(errorSpy).toHaveBeenCalledWith({ title: 'La hora de término debe ser posterior a la de inicio' });
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  // Ofrecía 'salud' y 'general', que la Agenda no conoce: el evento guardado la hacía caer.
+  it('ofrece solo las categorías de evento que la Agenda sabe mostrar', async () => {
+    const user = userEvent.setup();
+    render(<QuickActionModal isOpen={true} onClose={vi.fn()} profileId={profileId} />);
+
+    await user.click(screen.getByRole('tab', { name: /nuevo evento/i }));
+    const opciones = within(screen.getByLabelText(/categoría/i)).getAllByRole('option');
+
+    expect(opciones.map(o => (o as HTMLOptionElement).value)).toEqual(CATEGORIES);
+    expect(opciones.map(o => o.textContent)).toEqual(CATEGORIES.map(c => FILTER_LABELS[c]));
   });
 
   it('se cierra al presionar la tecla Escape', () => {

@@ -35,7 +35,10 @@ export const WEEK_DAYS = [
   { value: 0, short: 'Do', long: 'Domingo' },
 ];
 
-export const categoryOf = (ev: AgendaEvent): EventCategory => ev.category ?? DEFAULT_CATEGORY;
+// Un evento sin categoría, o con una fuera de la lista (la Acción Rápida guardó 'salud' y 'general'), se muestra
+// como la de por defecto. El valor guardado no se reescribe: hay perfiles con esos eventos en localStorage.
+export const categoryOf = (ev: AgendaEvent): EventCategory =>
+  ev.category && CATEGORIES.includes(ev.category) ? ev.category : DEFAULT_CATEGORY;
 
 export const toCalendarEvent = (ev: AgendaEvent): EventInput => {
   const base = { id: ev.id, title: ev.title, ...CATEGORY_COLORS[categoryOf(ev)] };
