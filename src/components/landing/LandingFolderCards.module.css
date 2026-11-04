@@ -194,15 +194,6 @@
   border-radius: var(--radius-pill, 9999px);
 }
 
-.archivalTag {
-  font-family: var(--font-code, monospace);
-  font-size: var(--text-micro);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--color-muted);
-  text-transform: uppercase;
-}
-
 .cardTitle {
   font-family: var(--font-primary, serif);
   font-size: 1.25rem;

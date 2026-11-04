@@ -36,7 +36,7 @@ const PILLARS: PillarFolder[] = [
     title: '2. Introspección & Diario',
     desc: 'Escritura reflexiva, registro de estados emocionales y diario de sesiones sin límites ni juicios. Lo que escribes queda únicamente en tu disco.',
     metricIcon: <Feather size={14} color="var(--color-primary)" aria-hidden="true" />,
-    metricText: 'Sin límites de caracteres • Privacidad total',
+    metricText: 'Escritura libre • Se queda en este navegador',
     accentClass: styles.accentSage,
     decorType: 'washi-tape',
   },
@@ -108,7 +108,6 @@ export const LandingFolderCards: React.FC = () => {
             <div className={styles.cardBody}>
               <div className={styles.cardHeader}>
                 <span className={styles.moduleBadge}>Módulo {pilar.num}</span>
-                <span className={styles.archivalTag}>EXP. 2026 // CLASIFICADO</span>
               </div>
               <h3 id={`${pilar.id}-title`} className={styles.cardTitle}>
                 {pilar.title}

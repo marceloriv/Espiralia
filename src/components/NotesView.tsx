@@ -270,7 +270,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       };
       StorageService.saveNote(updatedNote);
       try {
-        sileo.success({ title: 'Pliego Guardado', description: 'Manuscrito preservado en almacenamiento seguro.' });
+        sileo.success({ title: 'Pliego Guardado', description: 'Se guardó en este navegador.' });
       } catch {
         // Ignorar
       }
@@ -290,7 +290,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       StorageService.saveNote(newNote);
       setActiveNoteId(newNote.id);
       try {
-        sileo.success({ title: 'Pliego Guardado', description: 'Manuscrito preservado en almacenamiento seguro.' });
+        sileo.success({ title: 'Pliego Guardado', description: 'Se guardó en este navegador.' });
       } catch {
         // Ignorar
       }

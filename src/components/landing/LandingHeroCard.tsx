@@ -17,7 +17,7 @@ export const LandingHeroCard: React.FC = () => {
           <span className={styles.dossierTabSub}>• Bóveda Documental</span>
         </div>
         <div className={styles.dossierSeal} aria-hidden="true">
-          ARCHIVADOR CONFIDENCIAL • 100% LOCAL
+          SOLO EN TU NAVEGADOR
         </div>
       </div>
 

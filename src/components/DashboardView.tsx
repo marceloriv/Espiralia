@@ -446,7 +446,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Zap size={16} className={styles.quickHeaderIcon} aria-hidden="true" />
               <span>A un solo clic</span>
             </h3>
-            <span className={styles.quickSubtext}>Respaldado en memoria local</span>
+            <span className={styles.quickSubtext}>Guardado en este navegador</span>
           </div>
 
           <div className={styles.quickGrid}>
