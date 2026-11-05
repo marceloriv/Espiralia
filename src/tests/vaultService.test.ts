@@ -68,8 +68,10 @@ describe('VaultService', () => {
     StorageService.setTodayDisposition(profileId, '2026-11-03', 'calma');
     StorageService.setTodayFocus(profileId, '2026-11-03', 't-src');
 
-    // Ida y vuelta por JSON, como el archivo descargado.
-    const backup = JSON.parse(JSON.stringify(VaultService.exportProfile(profileId)));
+    // Ida y vuelta por el JSON del archivo descargado, que las vistas escriben con JSON.stringify(backup, null, 2).
+    // No es una copia: structuredClone conservaría undefined, Date o Map, que el archivo pierde.
+    const archivo = JSON.stringify(VaultService.exportProfile(profileId), null, 2);
+    const backup = JSON.parse(archivo);
     const { profile } = VaultService.restoreProfile(backup, 'new_profile');
 
     expect(StorageService.getHabits(profile.id).map(h => [h.name, h.daysCompleted[0]])).toEqual([['Leer', true]]);
