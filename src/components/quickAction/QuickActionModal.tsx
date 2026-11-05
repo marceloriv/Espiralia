@@ -3,7 +3,8 @@ import { CalendarPlus, CheckSquare, ListPlus, X, Zap } from 'lucide-react';
 import { sileo } from 'sileo';
 import type { Area, EventCategory, Priority, TaskStatus } from '../../types';
 import { StorageService } from '../../services/storage';
-import { toLocalDateStr } from '../../utils/localDate';
+import { defaultEndTime, toLocalDateStr } from '../../utils/localDate';
+import { emptyEventForm, validateEventForm } from '../agenda/eventForm';
 import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './QuickActionModal.module.css';
 
@@ -15,6 +16,16 @@ export interface QuickActionModalProps {
 }
 
 type TabType = 'todo' | 'event';
+
+// Las categorías de la Agenda (CATEGORIES y FILTER_LABELS de agenda/eventMapping), copiadas aquí para no sumar
+// eventMapping a la carga inicial. El tipo impide ofrecer una categoría que la Agenda no sepa mostrar.
+const CATEGORIAS_EVENTO: { value: EventCategory; label: string }[] = [
+  { value: 'trabajo', label: 'Trabajo' },
+  { value: 'personal', label: 'Personal' },
+  { value: 'urgente', label: 'Urgente' },
+  { value: 'estudio', label: 'Estudio' },
+  { value: 'universidad', label: 'Universidad' },
+];
 
 const QuickActionModalContent: React.FC<QuickActionModalProps> = ({
   onClose,
@@ -86,20 +97,27 @@ const QuickActionModalContent: React.FC<QuickActionModalProps> = ({
 
   const handleCreateEvent = (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = eventTitle.trim();
-    if (!trimmed) return;
+    if (!eventTitle.trim()) return;
 
-    const newEvent = {
-      id: `event-${Date.now()}`,
+    // La misma validación que la Agenda: título, fecha y término posterior al inicio. Sin hora, es de todo el día.
+    const result = validateEventForm(
+      {
+        ...emptyEventForm(eventDate),
+        title: eventTitle,
+        allDay: !eventStartTime,
+        startTime: eventStartTime,
+        endTime: eventEndTime || (eventStartTime ? defaultEndTime(eventStartTime) : ''),
+        category: eventCategory,
+      },
       profileId,
-      title: trimmed,
-      date: eventDate,
-      startTime: eventStartTime || undefined,
-      endTime: eventEndTime || undefined,
-      category: eventCategory,
-    };
-
-    StorageService.saveEvent(newEvent);
+      () => `event-${Date.now()}`,
+    );
+    if (!result.ok) {
+      sileo.error({ title: result.error });
+      return;
+    }
+    // Igual que la tarea: saveEvent no lanza; si el almacenamiento falla, App avisa con STORAGE_ERROR_EVENT.
+    StorageService.saveEvent(result.event);
     sileo.success({ title: 'Evento creado con éxito' });
     setEventTitle('');
     setEventStartTime('');
@@ -287,11 +305,11 @@ const QuickActionModalContent: React.FC<QuickActionModalProps> = ({
                     value={eventCategory}
                     onChange={e => setEventCategory(e.target.value as EventCategory)}
                   >
-                    <option value="trabajo">Trabajo</option>
-                    <option value="personal">Personal</option>
-                    <option value="estudio">Estudio</option>
-                    <option value="salud">Salud</option>
-                    <option value="general">General</option>
+                    {CATEGORIAS_EVENTO.map(c => (
+                      <option key={c.value} value={c.value}>
+                        {c.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

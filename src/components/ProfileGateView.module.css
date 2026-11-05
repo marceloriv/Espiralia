@@ -36,16 +36,9 @@
   margin-bottom: 4px;
 }
 
-.brandIcon {
-  font-size: 24px;
-}
-
-.brandName {
-  font-family: var(--font-primary);
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--color-primary);
-  letter-spacing: -0.02em;
+.brandLogotipo {
+  width: min(100%, 280px);
+  height: auto;
 }
 
 .tagline {
@@ -68,13 +61,6 @@
   border-radius: var(--radius-pill);
   font-size: 11px;
   color: var(--color-muted);
-}
-
-.secDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--color-success);
 }
 
 .mainSheet {

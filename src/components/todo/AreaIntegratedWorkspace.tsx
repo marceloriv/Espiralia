@@ -103,6 +103,8 @@ export const AreaIntegratedWorkspace: React.FC<AreaIntegratedWorkspaceProps> = (
   };
 
   const handleDeleteTodo = (id: string) => {
+    const target = todos.find(t => t.id === id);
+    if (!window.confirm(`¿Eliminar la tarea "${target?.title ?? ''}"? No se puede deshacer.`)) return;
     StorageService.deleteTodo(profileId, id);
     sileo.info({ title: 'Tarea eliminada' });
     loadData();

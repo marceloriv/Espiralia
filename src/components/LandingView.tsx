@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Feather,
   Lock,
@@ -10,6 +10,7 @@ import { LandingHeroCard } from './landing/LandingHeroCard';
 import { LandingFolderCards } from './landing/LandingFolderCards';
 import { LandingRitmosSection } from './landing/LandingRitmosSection';
 import { LandingManifestoSection } from './landing/LandingManifestoSection';
+import { Marca } from './common/Marca';
 import styles from './LandingView.module.css';
 
 export interface LandingViewProps {
@@ -29,6 +30,11 @@ export const LandingView: React.FC<LandingViewProps> = ({
   onNavigateDashboard,
   hasActiveProfile = false,
 }) => {
+  // Al volver desde la app la pestaña conservaba el nombre de la última vista.
+  useEffect(() => {
+    document.title = 'Espiralia';
+  }, []);
+
   const handlePrimaryCta = () => {
     if (hasActiveProfile && onNavigateDashboard) {
       onNavigateDashboard();
@@ -42,7 +48,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       {/* 1. Top App Bar */}
       <header className={styles.topBar}>
         <div className={styles.brandGroup}>
-          <div className={styles.logoMonogram} aria-hidden="true">Es</div>
+          <Marca variante="monograma" className={styles.logoMonogram} />
           <button
             type="button"
             className={styles.logoTitle}
@@ -136,7 +142,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         <section id="pilares" className={`${styles.pilaresSection} ${styles.anchorSection}`} aria-labelledby="pilares-heading">
           <div className={styles.sectionHeader}>
             <h2 id="pilares-heading" className={styles.sectionTitle}>
-              Tres pilares de enfoque soberano
+              Tres cuadernos para tu semana
             </h2>
             <p className={styles.sectionSubtitle}>
               Estructurado como los tres cuadernos esenciales de una vida reflexiva y dirigida con propósito.

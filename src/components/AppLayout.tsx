@@ -11,6 +11,7 @@ import { NoteModal } from './notes/NoteModal';
 import { VaultModal } from './vault/VaultModal';
 import { GlobalSearchModal } from './search/GlobalSearchModal';
 import { OrigamiHoja } from './common/OrigamiHoja';
+import { Marca } from './common/Marca';
 import styles from './AppLayout.module.css';
 
 interface AppLayoutProps {
@@ -69,6 +70,14 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   const [isVaultOpen, setIsVaultOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
+  // Cada vista lee el almacenamiento al montarse; tras crear algo desde la barra se remonta para mostrarlo.
+  // ponytail: remontar pierde filtros y desplazamiento de la vista; avisar a cada vista si eso molesta.
+  const [contenidoVersion, setContenidoVersion] = useState(0);
+  const refrescarContenido = () => setContenidoVersion(v => v + 1);
+
+  useEffect(() => {
+    document.title = `${VIEW_TITLES[currentView]} · Espiralia`;
+  }, [currentView]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -117,6 +126,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       updatedAt: now,
     };
     StorageService.saveNote(newNote);
+    refrescarContenido();
     try {
       sileo.success({ title: 'Nota creada', description: 'La nota se guardó correctamente.' });
     } catch {
@@ -134,7 +144,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
       <aside className={styles.sidebar} aria-label="Barra lateral">
         <div className={styles.brand}>
           <div className={styles.brandHeader}>
-            <div className={styles.monogram}>Es</div>
+            <Marca variante="monograma" className={styles.monogram} />
             <div className={styles.brandText}>
               <h1 className={styles.brandLogo}>Espiralia</h1>
               <p className={styles.brandCaption}>Taller de Escritorio</p>
@@ -209,7 +219,6 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         <div className={styles.sidebarFooter}>
           <div className={styles.localDbBadge}>
             <span className={styles.localDbStatus}>
-              <span className={styles.localDbDot} aria-hidden="true" />
               Guardado en este navegador
             </span>
           </div>
@@ -285,7 +294,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         </header>
 
         <main id="main-content" className={styles.contentArea} tabIndex={-1}>
-          {children}
+          <React.Fragment key={contenidoVersion}>{children}</React.Fragment>
         </main>
       </div>
 
@@ -293,6 +302,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         isOpen={isQuickActionOpen}
         onClose={() => setIsQuickActionOpen(false)}
         profileId={profile.id}
+        onItemCreated={refrescarContenido}
       />
 
       <ProfileSettingsModal

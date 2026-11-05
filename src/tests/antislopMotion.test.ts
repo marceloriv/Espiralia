@@ -30,7 +30,6 @@ describe('Movimiento, desenfoque y franjas decorativas', () => {
       .filter(r => /animation(-iteration-count)?:[^;]*\binfinite\b/.test(r.body))
       .filter(r => !(r.file === 'RouteLoadingFallback.module.css' && /spin/.test(r.body)))
       .filter(r => !(r.file === path.join('common', 'OrigamiHoja.module.css') && /aspas 24s/.test(r.body)))
-      .filter(r => !(r.file === path.join('common', 'OrigamiNautilus.module.css') && /flotar 8s|ondular 5s/.test(r.body)))
       .map(r => `${r.file} ${r.selector}`);
 
     expect(offenders).toEqual([]);

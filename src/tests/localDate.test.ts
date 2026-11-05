@@ -1,5 +1,17 @@
 import { describe, it, expect } from 'vitest';
-import { addDaysToDateStr, defaultEndTime, isoWeekNumber, semesterLabel, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
+import { addDaysToDateStr, defaultEndTime, isoWeekKey, isoWeekNumber, semesterLabel, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
+
+// Técnica: valores límite en el cambio de año ISO (el año de la clave es el del jueves).
+describe('isoWeekKey', () => {
+  it.each([
+    [new Date(2026, 10, 4), '2026-W45'],
+    [new Date(2026, 10, 9), '2026-W46'],
+    [new Date(2027, 0, 1), '2026-W53'],
+    [new Date(2024, 11, 30), '2025-W01'],
+  ])('%s cae en %s', (fecha, clave) => {
+    expect(isoWeekKey(fecha)).toBe(clave);
+  });
+});
 
 describe('semesterLabel', () => {
   it.each([

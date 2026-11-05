@@ -20,6 +20,13 @@ describe('LandingManifestoSection', () => {
     expect(screen.getByText(/agenda exportable/i)).toBeInTheDocument();
   });
 
+  // R-36: la Bóveda ofrece también el respaldo plano y Carpetas descarga JSON sin cifrar; el cifrado es una opción.
+  it('presenta el cifrado del respaldo como opcional', () => {
+    render(<LandingManifestoSection onAction={() => {}} />);
+    expect(screen.getByText(/el respaldo se puede cifrar con una contraseña \(PBKDF2 y AES-GCM\)/i)).toBeInTheDocument();
+    expect(screen.queryByText(/respaldo exportable se cifra/i)).not.toBeInTheDocument();
+  });
+
   it('incluye el banner de cierre con CTA primario y sin plantillas imprimibles', async () => {
     const user = userEvent.setup();
     const handleAction = vi.fn();

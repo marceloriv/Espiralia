@@ -67,4 +67,19 @@ describe('StorageService - Notes, Folders & Links', () => {
     expect(StorageService.getFolders(profileId)).toHaveLength(0);
     expect(StorageService.getLinks(profileId)).toHaveLength(0);
   });
+
+  // El aviso dice que notas y vínculos quedan sin carpeta, pero seguían apuntando a una carpeta borrada.
+  it('borrar una carpeta deja sus notas y vínculos sin carpeta y no toca los tomos de Notas', () => {
+    StorageService.saveFolder({ id: 'f-borrar', profileId, name: 'Temporal', createdAt: '2026-11-01' });
+    StorageService.saveNote({ id: 'n-en', profileId, folderId: 'f-borrar', title: 'En carpeta', content: '', createdAt: '2026-11-01', updatedAt: '2026-11-01' });
+    StorageService.saveNote({ id: 'n-tomo', profileId, folderId: 'tomo-02', title: 'En tomo', content: '', createdAt: '2026-11-01', updatedAt: '2026-11-01' });
+    StorageService.saveLink({ id: 'l-en', profileId, folderId: 'f-borrar', title: 'Enlace', url: 'https://example.com', createdAt: '2026-11-01' });
+
+    StorageService.deleteFolder(profileId, 'f-borrar');
+
+    const notas = StorageService.getNotes(profileId);
+    expect(notas.find(n => n.id === 'n-en')?.folderId).toBeUndefined();
+    expect(notas.find(n => n.id === 'n-tomo')?.folderId).toBe('tomo-02');
+    expect(StorageService.getLinks(profileId)[0].folderId).toBeUndefined();
+  });
 });

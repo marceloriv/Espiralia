@@ -344,9 +344,9 @@
 .flatFolderTab.flatFolderActive .flatFrontFlap,
 .flatFolderTab[aria-selected="true"] .flatFrontFlap {
   height: 40px;
-  filter: brightness(1.08);
 }
 
+/* El color del texto lo pone FoldersView según el de la carpeta (utils/textOnColor): negro o blanco, 4.5:1 o más. */
 .flatFolderTitle {
   display: flex;
   align-items: center;
@@ -354,8 +354,6 @@
   font-family: inherit;
   font-size: 0.8rem;
   font-weight: 700;
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -365,15 +363,15 @@
   font-family: var(--font-code, monospace);
   font-size: 0.72rem;
   font-weight: 700;
-  opacity: 0.9;
 }
 
+/* Etiqueta de papel: su texto no depende del color de la carpeta. */
 .flatCountPill {
   font-family: var(--font-code, monospace);
   font-size: var(--text-micro);
   font-weight: 700;
-  background: rgba(0, 0, 0, 0.2);
-  color: #ffffff;
+  background: var(--color-canvas);
+  color: var(--color-ink);
   padding: 1px 6px;
   border-radius: 9999px;
   flex-shrink: 0;

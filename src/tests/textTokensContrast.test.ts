@@ -138,7 +138,9 @@ describe('Tokens de texto con contraste AA', () => {
       readdirSync(dir, { withFileTypes: true }).flatMap(e =>
         e.isDirectory() ? walk(path.join(dir, e.name)) : e.name.endsWith('.module.css') ? [path.join(dir, e.name)] : [],
       );
-    const decorative = /(^|[;{\s])color:\s*var\(--color-(muted-soft|accent-teal|success|accent-amber|primary-active|tertiary|secondary)\b/m;
+    // Auditoría 002, hallazgo 23: --color-error (4.01:1 sobre las tarjetas) es para fondos y bordes; el texto rojo usa --color-text-error.
+    // Hallazgo 24: --color-hairline es para divisores; un separador «•» escrito como texto quedaba en 1.2:1.
+    const decorative = /(^|[;{\s])color:\s*var\(--color-(muted-soft|accent-teal|success|accent-amber|primary-active|tertiary|secondary|error|hairline)\b/m;
 
     const offenders = walk(componentsDir)
       .filter(f => decorative.test(readFileSync(f, 'utf8')))

@@ -34,6 +34,12 @@ export class VaultService {
       notes: StorageService.getNotes(profileId),
       folders: StorageService.getFolders(profileId),
       links: StorageService.getLinks(profileId),
+      // Hábitos tal como están guardados: con su semana y sus marcas, sin la vista de la semana en curso.
+      habits: StorageService.getDomain(profileId, 'habits', []),
+      distractions: StorageService.getDistractions(profileId),
+      dailyEnergy: StorageService.getDomain(profileId, 'daily_energy', {}),
+      moods: StorageService.getMoods(profileId),
+      dailyFocus: StorageService.getDomain(profileId, 'daily_focus', {}),
     };
   }
 
@@ -72,6 +78,13 @@ export class VaultService {
     if (!Array.isArray(candidate.folders)) return false;
     if (!Array.isArray(candidate.links)) return false;
     if (candidate.files !== undefined && !Array.isArray(candidate.files)) return false;
+    for (const lista of ['habits', 'distractions', 'moods']) {
+      if (candidate[lista] !== undefined && !Array.isArray(candidate[lista])) return false;
+    }
+    for (const mapa of ['dailyEnergy', 'dailyFocus']) {
+      const valor = candidate[mapa];
+      if (valor !== undefined && (typeof valor !== 'object' || valor === null || Array.isArray(valor))) return false;
+    }
 
     return true;
   }
@@ -101,74 +114,29 @@ export class VaultService {
       createdAt: mode === 'new_profile' ? new Date().toISOString() : backup.profile.createdAt,
     };
 
-    // Guardar perfil
     StorageService.saveProfile(restoredProfile);
 
-    // Si es sobrescritura, limpiar colecciones existentes del perfil destino primero
-    if (mode === 'overwrite') {
-      const existingEvents = StorageService.getEvents(destProfileId);
-      existingEvents.forEach((e) => StorageService.deleteEvent(destProfileId, e.id));
-
-      const existingPlanner = StorageService.getPlanner(destProfileId);
-      existingPlanner.forEach((p) => StorageService.deletePlanner(destProfileId, p.id));
-
-      const existingGoals = StorageService.getGoals(destProfileId);
-      existingGoals.forEach((g) => StorageService.deleteGoal(destProfileId, g.id));
-
-      const existingTodos = StorageService.getTodos(destProfileId);
-      existingTodos.forEach((t) => StorageService.deleteTodo(destProfileId, t.id));
-
-      const existingNotes = StorageService.getNotes(destProfileId);
-      existingNotes.forEach((n) => StorageService.deleteNote(destProfileId, n.id));
-
-      const existingFolders = StorageService.getFolders(destProfileId);
-      existingFolders.forEach((f) => StorageService.deleteFolder(destProfileId, f.id));
-
-      const existingLinks = StorageService.getLinks(destProfileId);
-      existingLinks.forEach((l) => StorageService.deleteLink(destProfileId, l.id));
+    // Cada colección del respaldo reemplaza la del perfil destino. Las que un respaldo antiguo no trae no se tocan.
+    const conPerfil = <T extends { profileId: string }>(items: T[]): T[] =>
+      items.map((item) => ({ ...item, profileId: destProfileId }));
+    const dominios: Array<[string, unknown]> = [
+      ['events', conPerfil(backup.events)],
+      ['planner', conPerfil(backup.planner)],
+      ['goals', conPerfil(backup.goals)],
+      ['todos', conPerfil(backup.todos)],
+      ['areas', conPerfil(backup.areas)],
+      ['notes', conPerfil(backup.notes)],
+      ['folders', conPerfil(backup.folders)],
+      ['links', conPerfil(backup.links)],
+    ];
+    if (backup.habits) dominios.push(['habits', conPerfil(backup.habits)]);
+    if (backup.moods) dominios.push(['moods', conPerfil(backup.moods)]);
+    if (backup.distractions) dominios.push(['distractions', backup.distractions]);
+    if (backup.dailyEnergy) dominios.push(['daily_energy', backup.dailyEnergy]);
+    if (backup.dailyFocus) dominios.push(['daily_focus', backup.dailyFocus]);
+    for (const [dominio, valor] of dominios) {
+      StorageService.replaceDomain(destProfileId, dominio, valor);
     }
-
-    // Insertar áreas
-    if (backup.areas.length > 0) {
-      backup.areas.forEach((a) => {
-        StorageService.saveArea({ ...a, profileId: destProfileId });
-      });
-    }
-
-    // Insertar eventos
-    backup.events.forEach((e) => {
-      StorageService.saveEvent({ ...e, profileId: destProfileId });
-    });
-
-    // Insertar planner
-    backup.planner.forEach((p) => {
-      StorageService.savePlanner({ ...p, profileId: destProfileId });
-    });
-
-    // Insertar goals
-    backup.goals.forEach((g) => {
-      StorageService.saveGoal({ ...g, profileId: destProfileId });
-    });
-
-    // Insertar todos
-    backup.todos.forEach((t) => {
-      StorageService.saveTodo({ ...t, profileId: destProfileId });
-    });
-
-    // Insertar carpetas
-    backup.folders.forEach((f) => {
-      StorageService.saveFolder({ ...f, profileId: destProfileId });
-    });
-
-    // Insertar notas
-    backup.notes.forEach((n) => {
-      StorageService.saveNote({ ...n, profileId: destProfileId });
-    });
-
-    // Insertar links
-    backup.links.forEach((l) => {
-      StorageService.saveLink({ ...l, profileId: destProfileId });
-    });
 
     return {
       profile: restoredProfile,

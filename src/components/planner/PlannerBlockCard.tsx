@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trash2, Sun, Sunset, Moon, Target } from 'lucide-react';
+import { Trash2, Sun, Sunset, Moon, Target, Pencil } from 'lucide-react';
 import type { PlannerBlock, TimeSlot, Priority } from '../../types';
 import styles from './PlannerBlockCard.module.css';
 
@@ -7,6 +7,7 @@ interface PlannerBlockCardProps {
   block: PlannerBlock;
   onToggle: (block: PlannerBlock) => void;
   onDelete: (id: string) => void;
+  onEdit?: (block: PlannerBlock) => void;
 }
 
 const slotIcons: Record<TimeSlot, React.ReactNode> = {
@@ -29,7 +30,7 @@ const priorityClasses: Record<Priority, string> = {
   baja: styles.priorityBaja,
 };
 
-export const PlannerBlockCard: React.FC<PlannerBlockCardProps> = ({ block, onToggle, onDelete }) => {
+export const PlannerBlockCard: React.FC<PlannerBlockCardProps> = ({ block, onToggle, onDelete, onEdit }) => {
   const priorityLabel = block.priority.charAt(0).toUpperCase() + block.priority.slice(1);
 
   return (
@@ -61,6 +62,16 @@ export const PlannerBlockCard: React.FC<PlannerBlockCardProps> = ({ block, onTog
               aria-label={`Completar ${block.title}`}
             />
           </label>
+          {onEdit && (
+            <button
+              type="button"
+              className={styles.deleteBtn}
+              onClick={() => onEdit(block)}
+              aria-label={`Editar ${block.title}`}
+            >
+              <Pencil size={14} aria-hidden="true" />
+            </button>
+          )}
           <button
             type="button"
             className={styles.deleteBtn}

@@ -1,12 +1,51 @@
 import { describe, it, expect } from 'vitest';
 import {
+  CATEGORIES,
   CATEGORY_COLORS,
   applyTimeChange,
+  categoryOf,
   countByCategory,
   occursOn,
+  removeOccurrence,
   toCalendarEvent,
 } from '../components/agenda/eventMapping';
 import type { AgendaEvent } from '../types';
+
+// Técnica: valores límite sobre el día quitado (primero, intermedio, último, única repetición).
+describe('removeOccurrence', () => {
+  // Lunes y miércoles del 2 al 25 de noviembre de 2026.
+  const serie: AgendaEvent = {
+    id: 's-1', profileId: 'p', title: 'Taller', date: '2026-11-02', startTime: '10:00',
+    recurrence: { daysOfWeek: [1, 3], until: '2026-11-25' },
+  };
+  const nuevoId = () => 's-2';
+
+  it('un día intermedio parte la serie en dos; la primera conserva el id', () => {
+    const quedan = removeOccurrence(serie, '2026-11-11', nuevoId);
+    expect(quedan).toEqual([
+      { ...serie, recurrence: { daysOfWeek: [1, 3], until: '2026-11-10' } },
+      { ...serie, id: 's-2', date: '2026-11-12' },
+    ]);
+    expect(quedan.some(ev => occursOn(ev, '2026-11-11'))).toBe(false);
+    expect(quedan.some(ev => occursOn(ev, '2026-11-09'))).toBe(true);
+    expect(quedan.some(ev => occursOn(ev, '2026-11-16'))).toBe(true);
+  });
+
+  it('el primer día solo corre el inicio', () => {
+    expect(removeOccurrence(serie, '2026-11-02', nuevoId)).toEqual([{ ...serie, id: 's-2', date: '2026-11-03' }]);
+  });
+
+  it('el último día solo adelanta el término', () => {
+    expect(removeOccurrence(serie, '2026-11-25', nuevoId)).toEqual([
+      { ...serie, recurrence: { daysOfWeek: [1, 3], until: '2026-11-24' } },
+    ]);
+  });
+
+  it('quitar la única repetición no deja series vacías', () => {
+    const unica: AgendaEvent = { ...serie, recurrence: { daysOfWeek: [1], until: '2026-11-08' } };
+    expect(removeOccurrence(unica, '2026-11-02', nuevoId)).toEqual([]);
+  });
+});
 
 const single: AgendaEvent = {
   id: 'e1',
@@ -53,6 +92,16 @@ describe('toCalendarEvent', () => {
     const out = toCalendarEvent(allDay);
     expect(out).toMatchObject({ start: '2026-10-14', allDay: true });
     expect(out).not.toHaveProperty('end');
+  });
+
+  // Auditoría 002, hallazgo 27: FullCalendar 7 descarta textColor (su prop es contrastColor) y el tema forma escribe el
+  // título con el color del texto sobre un tinte del color del evento. Un textColor aquí prometía un contraste que no se pintaba.
+  it('cada categoría pinta con un token de color y no entrega textColor, que FullCalendar 7 descarta', () => {
+    for (const category of CATEGORIES) {
+      const out = toCalendarEvent({ ...single, category });
+      expect(out.color, category).toMatch(/^var\(--color-[\w-]+\)$/);
+      expect(out, category).not.toHaveProperty('textColor');
+    }
   });
 
   it('sin categoría usa los colores de personal', () => {
@@ -173,5 +222,24 @@ describe('countByCategory', () => {
       { ...single, id: 'd', category: 'urgente' },
     ];
     expect(countByCategory(events)).toEqual({ todas: 4, trabajo: 2, personal: 1, urgente: 1, estudio: 0, universidad: 0 });
+  });
+});
+
+// Técnica: partición de equivalencia (categoría de la lista, ausente, guardada fuera de la lista).
+// La Acción Rápida guardó 'salud' y 'general' hasta 2026-11-04; esos eventos siguen en localStorage.
+describe('categoryOf', () => {
+  const guardadoFueraDeLista = (category: string) =>
+    ({ ...single, id: `x-${category}`, category }) as unknown as AgendaEvent;
+
+  it('respeta una categoría de la lista y trata la ausencia como personal', () => {
+    expect(categoryOf({ ...single, category: 'urgente' })).toBe('urgente');
+    expect(categoryOf({ id: 'c', profileId: 'p', title: 'sin cat', date: '2026-10-14' })).toBe('personal');
+  });
+
+  it('una categoría que la Agenda no conoce se muestra y se cuenta como personal', () => {
+    const viejos = [guardadoFueraDeLista('salud'), guardadoFueraDeLista('general')];
+    expect(viejos.map(categoryOf)).toEqual(['personal', 'personal']);
+    expect(toCalendarEvent(viejos[0])).toMatchObject(CATEGORY_COLORS.personal);
+    expect(countByCategory(viejos)).toEqual({ todas: 2, trabajo: 0, personal: 2, urgente: 0, estudio: 0, universidad: 0 });
   });
 });

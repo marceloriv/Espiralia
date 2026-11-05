@@ -61,8 +61,9 @@ describe('TodoView', () => {
     expect(screen.getByText('Comprar insumos')).toBeInTheDocument();
   });
 
-  it('permite eliminar una tarea', async () => {
+  it('permite eliminar una tarea tras confirmar', async () => {
     const successSpy = vi.spyOn(sileo, 'success');
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
     const user = userEvent.setup();
     const areas = StorageService.getAreas(profileId);
     StorageService.saveTodo({
@@ -83,9 +84,95 @@ describe('TodoView', () => {
     const deleteBtn = screen.getByRole('button', { name: /eliminar tarea a borrar/i });
     await user.click(deleteBtn);
 
+    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining('Tarea a borrar'));
     expect(screen.queryByText('Tarea a borrar')).not.toBeInTheDocument();
     expect(successSpy).toHaveBeenCalledWith({ title: 'Tarea eliminada' });
     expect(StorageService.getTodos(profileId)).toEqual([]);
+  });
+
+  // Sin registro del día no se muestra una energía elegida: antes aparecía "Alta" sin que nadie la marcara.
+  it('sin energía registrada hoy muestra "Sin registrar" y ningún nivel elegido', () => {
+    render(<TodoView profileId={profileId} />);
+
+    expect(screen.getByText('Sin registrar')).toBeInTheDocument();
+    for (const nivel of ['Baja', 'Suave', 'Media', 'Alta', 'Plena']) {
+      expect(screen.getByRole('button', { name: `Nivel ${nivel}` })).toHaveAttribute('aria-pressed', 'false');
+    }
+  });
+
+  it('no borra la tarea si se cancela la confirmación', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const user = userEvent.setup();
+    StorageService.saveTodo({ id: 't-keep', profileId, title: 'Se queda', areaId: StorageService.getAreas(profileId)[0].id, priority: 'baja', status: 'pendiente', createdAt: '2026-10-09' });
+    render(<TodoView profileId={profileId} />);
+
+    await user.click(screen.getByRole('button', { name: /eliminar se queda/i }));
+
+    expect(StorageService.getTodos(profileId)).toHaveLength(1);
+  });
+
+  // Antes solo se podía cambiar la fecha de una tarea, y las áreas se creaban pero no se podían renombrar ni borrar.
+  describe('edición de tareas y áreas', () => {
+    const area = (nombre: string) => StorageService.getAreas(profileId).find(a => a.name === nombre)!;
+
+    it('edita el título, la prioridad y el área de una tarea', async () => {
+      const user = userEvent.setup();
+      StorageService.saveTodo({ id: 't-edit', profileId, title: 'Borrador', areaId: area('Estudios').id, priority: 'baja', status: 'pendiente', createdAt: '2026-10-09' });
+      render(<TodoView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /editar borrador/i }));
+      const dialogo = within(screen.getByRole('dialog', { name: /editar tarea/i }));
+      await user.clear(dialogo.getByLabelText(/título/i));
+      await user.type(dialogo.getByLabelText(/título/i), 'Informe final');
+      await user.selectOptions(dialogo.getByLabelText(/prioridad/i), 'alta');
+      await user.selectOptions(dialogo.getByLabelText(/área/i), area('Personal').id);
+      await user.click(dialogo.getByRole('button', { name: /guardar cambios/i }));
+
+      expect(StorageService.getTodos(profileId)[0]).toMatchObject({ title: 'Informe final', priority: 'alta', areaId: area('Personal').id });
+      // Aparece en la lista y, por ser alta, también en Prioridades clave.
+      expect(screen.getAllByText('Informe final').length).toBeGreaterThan(0);
+      expect(screen.queryByText('Borrador')).not.toBeInTheDocument();
+    });
+
+    it('renombra un área', async () => {
+      const user = userEvent.setup();
+      render(<TodoView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /área estudios/i }));
+      await user.click(screen.getByRole('button', { name: /editar área estudios/i }));
+      const dialogo = within(screen.getByRole('dialog', { name: /editar área temática/i }));
+      await user.clear(dialogo.getByLabelText(/nombre del área/i));
+      await user.type(dialogo.getByLabelText(/nombre del área/i), 'Tesis');
+      await user.click(dialogo.getByRole('button', { name: /guardar área/i }));
+
+      expect(StorageService.getAreas(profileId).map(a => a.name)).toContain('Tesis');
+      expect(screen.getByRole('button', { name: 'Área Tesis' })).toBeInTheDocument();
+    });
+
+    it('borrar un área pasa sus tareas a General', async () => {
+      vi.spyOn(window, 'confirm').mockReturnValue(true);
+      const user = userEvent.setup();
+      StorageService.saveTodo({ id: 't-area', profileId, title: 'Leer paper', areaId: area('Estudios').id, priority: 'media', status: 'pendiente', createdAt: '2026-10-09' });
+      render(<TodoView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /área estudios/i }));
+      await user.click(screen.getByRole('button', { name: /editar área estudios/i }));
+      await user.click(within(screen.getByRole('dialog', { name: /editar área temática/i })).getByRole('button', { name: /eliminar área/i }));
+
+      expect(StorageService.getAreas(profileId).map(a => a.name)).not.toContain('Estudios');
+      expect(StorageService.getTodos(profileId)[0].areaId).toBe(area('General').id);
+    });
+
+    it('no deja borrar la última área', async () => {
+      const user = userEvent.setup();
+      localStorage.setItem(`espiralia_${profileId}_areas`, JSON.stringify([{ id: 'area-unica', profileId, name: 'Única', color: '#e8a55a', createdAt: '2026-10-09' }]));
+      render(<TodoView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /área única/i }));
+      await user.click(screen.getByRole('button', { name: /editar área única/i }));
+
+      expect(within(screen.getByRole('dialog', { name: /editar área temática/i })).getByRole('button', { name: /eliminar área/i })).toBeDisabled();
+    });
   });
 
   it('muestra mensajes explicativos contextuales cuando la lista esta vacia', async () => {
@@ -282,6 +369,23 @@ describe('TodoView', () => {
       expect(screen.getByText('Revisión Técnica de Vehículo')).toBeInTheDocument();
       expect(screen.queryByText(/Simulacro Conaset & Práctica en Calle/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/Sesión Terapia Clínica Presencial/i)).not.toBeInTheDocument();
+    });
+
+    // Hallazgo 19 de la auditoría 002: "MIÉ" en ámbar #e8a55a sobre el papel quedaba cerca de 2.1:1.
+    // Los tokens de texto se redefinen dentro del Papel y textTokensContrast los mide sobre cada tinte.
+    it('escribe el día de cada hito con un token de texto, no con el acento de su categoría', () => {
+      const hoy = toLocalDateStr(new Date());
+      StorageService.saveEvent({ id: 'ev-u', profileId, title: 'Hito urgente', date: hoy, category: 'urgente' });
+      StorageService.saveEvent({ id: 'ev-t', profileId, title: 'Hito de trabajo', date: hoy, category: 'trabajo' });
+      StorageService.saveEvent({ id: 'ev-p', profileId, title: 'Hito personal', date: hoy, category: 'personal' });
+
+      render(<TodoView profileId={profileId} />);
+
+      const dia = (titulo: string) =>
+        screen.getByRole('heading', { level: 4, name: titulo }).closest('[style]')!.querySelector('span')!.style.color;
+      expect(dia('Hito urgente')).toBe('var(--color-text-error)');
+      expect(dia('Hito de trabajo')).toBe('var(--color-text-teal)');
+      expect(dia('Hito personal')).toBe('var(--color-text-amber)');
     });
 
     it('no muestra en Próximos hitos los eventos que ya pasaron', () => {

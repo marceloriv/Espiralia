@@ -13,6 +13,7 @@ interface PlannerDayColumnProps {
   onAddBlock: () => void;
   onToggleBlock: (block: PlannerBlock) => void;
   onDeleteBlock: (id: string) => void;
+  onEditBlock?: (block: PlannerBlock) => void;
 }
 
 export const PlannerDayColumn: React.FC<PlannerDayColumnProps> = ({
@@ -23,6 +24,7 @@ export const PlannerDayColumn: React.FC<PlannerDayColumnProps> = ({
   onAddBlock,
   onToggleBlock,
   onDeleteBlock,
+  onEditBlock,
 }) => {
   // Con hora primero (de la más temprana a la más tardía); sin hora al final, en el orden en que se guardaron.
   const ordered = [...blocks].sort((a, b) => (a.time ?? '99:99').localeCompare(b.time ?? '99:99'));
@@ -71,6 +73,7 @@ export const PlannerDayColumn: React.FC<PlannerDayColumnProps> = ({
               block={block}
               onToggle={onToggleBlock}
               onDelete={onDeleteBlock}
+              onEdit={onEditBlock}
             />
           ))
         )}

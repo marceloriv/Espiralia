@@ -160,5 +160,17 @@ describe('NotesView - Tomos y Carpetas', () => {
     expect(screen.getByTestId('count-tomo-02')).toHaveTextContent('1');
     expect(screen.getByTestId('count-tomo-03')).toHaveTextContent('0');
   });
+
+  // folderId guarda el tomo ('tomo-0X') o una carpeta real: elegir una carpeta desde Notas sacaba la nota de su tomo.
+  it('al editar una nota de un tomo no ofrece moverla a una carpeta', async () => {
+    const user = userEvent.setup();
+    StorageService.saveFolder({ id: 'f-real', profileId, name: 'Apuntes reales', createdAt: '2026-11-01' });
+    StorageService.saveNote({ id: 'n-tomo', profileId, folderId: 'tomo-01', title: 'Entrada del diario', content: 'Hoy', createdAt: '2026-11-01', updatedAt: '2026-11-01' });
+    render(<NotesView profileId={profileId} />);
+
+    await user.click(screen.getByRole('button', { name: /editar nota entrada del diario/i }));
+
+    expect(screen.queryByRole('option', { name: 'Apuntes reales' })).not.toBeInTheDocument();
+  });
 });
 

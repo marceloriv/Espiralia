@@ -84,10 +84,17 @@ describe('HabitModal', () => {
     const nameInput = screen.getByLabelText(/nombre del hábito/i) as HTMLInputElement;
     expect(nameInput.value).toBe('Lectura diaria');
 
+    // Borrar un hábito pierde sus marcas: se confirma, como las notas y carpetas.
+    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
     const deleteBtn = screen.getByRole('button', { name: /eliminar hábito/i });
     await user.click(deleteBtn);
+    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining('Lectura diaria'));
+    expect(handleDelete).not.toHaveBeenCalled();
 
+    confirmSpy.mockReturnValue(true);
+    await user.click(deleteBtn);
     expect(handleDelete).toHaveBeenCalledWith('h-123');
+    confirmSpy.mockRestore();
   });
 
   it('cierra el modal al pulsar la tecla Escape o el botón cerrar', async () => {

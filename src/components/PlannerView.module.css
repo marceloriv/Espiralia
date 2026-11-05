@@ -209,6 +209,45 @@
   align-items: stretch;
 }
 
+/* Señal de desplazamiento: con días fuera de vista, el borde de ese lado se desvanece.
+   Sin días ocultos la línea de tiempo no avanza y no hay desvanecido. Sin soporte, la grilla queda como antes. */
+@property --desvanecer-inicio {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --desvanecer-fin {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@supports (animation-timeline: scroll()) {
+  .gridArea {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--desvanecer-inicio),
+      #000 calc(100% - var(--desvanecer-fin)),
+      transparent 100%
+    );
+    animation: senalDesplazamiento linear both;
+    animation-timeline: scroll(self inline);
+  }
+}
+
+@keyframes senalDesplazamiento {
+  from {
+    --desvanecer-inicio: 0px;
+    --desvanecer-fin: 48px;
+  }
+  to {
+    --desvanecer-inicio: 48px;
+    --desvanecer-fin: 0px;
+  }
+}
+
 /* El Pliego abarca las siete columnas aunque el área haga scroll horizontal, en vez de terminar en el borde visible. */
 .gridArea > .weekPliego {
   width: max-content;
@@ -317,49 +356,13 @@
 
 .areaFilterBar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 8px 24px 14px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-hairline);
   flex-wrap: wrap;
   gap: 12px;
-}
-
-.areaTagsGroup {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.areaPillAmber {
-  background: rgba(217, 119, 6, 0.1);
-  color: var(--color-text-amber);
-  border: 1px solid rgba(217, 119, 6, 0.25);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-}
-
-.areaPillEmerald {
-  background: rgba(13, 148, 136, 0.1);
-  color: var(--color-text-teal);
-  border: 1px solid rgba(13, 148, 136, 0.25);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-}
-
-.areaPillViolet {
-  background: rgba(94, 23, 85, 0.08);
-  color: var(--color-primary);
-  border: 1px solid rgba(94, 23, 85, 0.2);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
 }
 
 .addBlockHeroBtn {
@@ -406,7 +409,7 @@
 
 .clearWeekBtn:hover {
   border-color: var(--color-error);
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 .clearWeekBtn:focus-visible {

@@ -19,10 +19,12 @@ describe('LandingHeroCard', () => {
     expect(screen.queryByText(/88%/i)).not.toBeInTheDocument();
   });
 
-  it('despliega la carpeta dossier de expediente analógico con pestaña de archivo y clip metálico', () => {
+  // DESIGN.md §0.6: el rótulo de ficha lleva un dato real; no hay número de expediente ni "Bóveda Documental".
+  it('despliega la carpeta dossier rotulada como ejemplo, sin expediente ni bóveda inventados', () => {
     render(<LandingHeroCard />);
-    expect(screen.getByText(/exp\. 2026 \/ ejemplo/i)).toBeInTheDocument();
-    expect(screen.getByText(/bóveda documental/i)).toBeInTheDocument();
+    expect(screen.getByText('EJEMPLO')).toBeInTheDocument();
+    expect(screen.queryByText(/exp\. 2026/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/bóveda documental/i)).not.toBeInTheDocument();
     const dossier = screen.getByLabelText(/expediente analógico de ejemplo/i);
     expect(dossier).toBeInTheDocument();
   });
