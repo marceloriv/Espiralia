@@ -10,12 +10,8 @@ import {
   Heart,
   Zap,
   Target,
-  Leaf,
-  Cloud,
-  BatteryLow,
   CheckCircle,
   Coffee,
-  Star,
   Check,
   Clock,
   Bell,
@@ -24,11 +20,13 @@ import {
   ArrowRight,
   X,
 } from 'lucide-react';
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem, Note, DayOfWeek } from '../types';
-import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
-import { formatBytes } from '../utils/formatBytes';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, ViewType, HabitTrackerItem, Note, DayOfWeek, Disposition } from '../types';
+import { StorageService, blockWeekKey } from '../services/storage';
+import { DISPOSITIONS, dispositionLabel } from '../utils/energyLevels';
+import { moonPhase, type IconoLunar } from '../utils/moonPhase';
 import { sileo } from 'sileo';
-import { isoWeekNumber, semesterLabel, toLocalDateStr } from '../utils/localDate';
+import { confirmar } from '../utils/confirmar';
+import { isoWeekKey, isoWeekNumber, semesterLabel, toLocalDateStr } from '../utils/localDate';
 import { categoryOf } from './agenda/eventMapping';
 import {
   criticalTodos,
@@ -40,12 +38,17 @@ import {
   computeHabitStreak,
   computeNetFocusHours,
   computeTaskPerformance,
+  computeHabitsCompliance,
+  computeWeekHabitDays,
+  deriveFocus,
 } from './dashboard/dashboardData';
 import { TaskCompletionChart } from './charts/TaskCompletionChart';
 import { CategoryDistributionChart } from './charts/CategoryDistributionChart';
 import { HabitModal } from './habits/HabitModal';
 import { Pliego } from './common/Pliego';
-import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Papel } from './common/Papel';
+import { TINTE_DE_MODULO } from './common/tintes';
+import { FocusBanner, MetricsStrip } from './dashboard/DashboardParts';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import { focusOnMount } from '../utils/useDialogFocus';
 import { occurrenceKeys } from '../utils/occurrenceKeys';
@@ -82,6 +85,41 @@ const formatHeroDate = (date: Date): string => {
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
 
+// Las cinco fases dibujadas; la de hoy toma el color primario por CSS (todas usan currentColor).
+const ICONOS_LUNA: ReadonlyArray<{ id: IconoLunar; dibujo: React.ReactNode }> = [
+  { id: 'nueva', dibujo: <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2" /> },
+  {
+    id: 'creciente',
+    dibujo: <path d="M12 4a8 8 0 1 0 8 8c0-.4-.04-.8-.1-1.2a4.8 4.8 0 0 1-3.9 2 4.8 4.8 0 0 1-2.8-8.7c-.4-.06-.8-.1-1.2-.1z" fill="none" stroke="currentColor" strokeWidth="1.5" />,
+  },
+  {
+    id: 'gibosa',
+    dibujo: (
+      <>
+        <path d="M12 3a9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9 9 9 0 0 1 9-9z" fill="currentColor" opacity="0.2" />
+        <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" fill="currentColor" />
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      </>
+    ),
+  },
+  {
+    id: 'llena',
+    dibujo: (
+      <>
+        <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="2" />
+        <circle cx="12" cy="12" r="3.5" fill="currentColor" opacity="0.3" />
+      </>
+    ),
+  },
+  {
+    id: 'menguante',
+    dibujo: <path d="M12 4a8 8 0 0 1-8 8c0 .4.04.8.1 1.2a4.8 4.8 0 0 0 3.9 2 4.8 4.8 0 0 0 2.8-8.7c.4-.06.8-.1 1.2-.1z" fill="none" stroke="currentColor" strokeWidth="1.5" />,
+  },
+];
+
+/** Clase de un botón de energía; el elegido lleva además el resaltado. */
+const energyBtnClass = (isActive: boolean) => (isActive ? `${styles.energyBtn} ${styles.energyBtnActive}` : styles.energyBtn);
+
 export const DashboardView: React.FC<DashboardViewProps> = ({
   profile,
   onNavigate,
@@ -95,7 +133,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [habits, setHabits] = useState<HabitTrackerItem[]>(() => StorageService.getHabits(profile.id));
   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<HabitTrackerItem | null>(null);
-  const [pinnedFocusTodoId, setPinnedFocusTodoId] = useState<string | null>(null);
+  // El foco fijado y el ánimo valen para el día: se guardan con la fecha local.
+  const [pinnedFocusTodoId, setPinnedFocusTodoId] = useState<string | null>(
+    () => StorageService.getTodayFocus(profile.id, toLocalDateStr(new Date())) ?? null,
+  );
+  const [disposition, setDisposition] = useState<Disposition | undefined>(
+    () => StorageService.getTodayDisposition(profile.id, toLocalDateStr(new Date())),
+  );
   const [isFocusModalOpen, setIsFocusModalOpen] = useState(false);
   const focusCloseBtnRef = useRef<HTMLButtonElement>(null);
   useEscapeKey(() => setIsFocusModalOpen(false), isFocusModalOpen);
@@ -109,7 +153,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const [editingDistractionText, setEditingDistractionText] = useState('');
   const [notes, setNotes] = useState<Note[]>(() => StorageService.getNotes(profile.id));
   const [now] = useState(() => new Date());
-  const [energyState, setEnergyState] = useState<'calma' | 'plena' | 'neutra' | 'cansada'>('calma');
   const [reflection1, setReflection1] = useState('');
   const [reflection2, setReflection2] = useState('');
   const [reflection3, setReflection3] = useState('');
@@ -134,35 +177,37 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   }, [loadData]);
 
   const todayStr = toLocalDateStr(now);
+  const faseLunar = moonPhase(now);
   const todayEvents = todayEventsSorted(events, todayStr);
+
+  const fijarFoco = (todoId: string | null) => {
+    setPinnedFocusTodoId(todoId);
+    StorageService.setTodayFocus(profile.id, todayStr, todoId);
+  };
+
+  const handleSelectDisposition = (value: Disposition) => {
+    setDisposition(value);
+    StorageService.setTodayDisposition(profile.id, todayStr, value);
+  };
   const pendingCount = todos.filter(t => (t.status ? t.status !== 'completada' : !t.completed)).length;
   const criticalCount = todos.filter(isCritical).length;
   const critical = criticalTodos(todos);
   const pendingTodosList = todos.filter(t => (t.status ? t.status !== 'completada' : !t.completed));
-  const activeFocusTodo = (pinnedFocusTodoId ? todos.find(t => t.id === pinnedFocusTodoId) : null)
-    ?? critical[0]
-    ?? pendingTodosList[0]
-    ?? null;
-  const isFocusDone = activeFocusTodo ? (activeFocusTodo.status === 'completada' || Boolean(activeFocusTodo.completed)) : false;
-  const focusAreaName = activeFocusTodo
-    ? (areas.find(a => a.id === activeFocusTodo.areaId)?.name || activeFocusTodo.category || 'General')
-    : 'General';
-  const focusPriorityLabel = activeFocusTodo?.priority === 'alta'
-    ? 'Alta Prioridad'
-    : activeFocusTodo?.priority === 'media'
-    ? 'Media Prioridad'
-    : 'Baja Prioridad';
-  const allWeekBlocks = planner.filter(b => b.period === 'semanal');
+  const { todo: activeFocusTodo, isDone: isFocusDone, areaName: focusAreaName, priorityLabel: focusPriorityLabel } =
+    deriveFocus(todos, areas, pinnedFocusTodoId);
+  // Solo los bloques de la semana en curso: el Planner guarda cada bloque con su semana ISO.
+  const currentWeekKey = isoWeekKey(now);
+  const allWeekBlocks = planner.filter(b => b.period === 'semanal' && blockWeekKey(b) === currentWeekKey);
   // Lunes primero y domingo al final: antes se tomaban los 4 primeros por orden de creación y los del domingo quedaban fuera.
   const weekDayRank = (d?: DayOfWeek) => (d === undefined ? 8 : d === 0 ? 7 : d);
   const weekBlocks = [...allWeekBlocks].sort((a, b) => weekDayRank(a.dayOfWeek) - weekDayRank(b.dayOfWeek));
   const areaSummaries = computeAreaSummaries(areas, todos);
 
   const todayDayOfWeek = now.getDay() as DayOfWeek;
-  const todayPlannerBlocks = planner.filter(b => b.dayOfWeek === todayDayOfWeek);
+  const todayPlannerBlocks = allWeekBlocks.filter(b => b.dayOfWeek === todayDayOfWeek);
   const todayHabitIdx = (todayDayOfWeek + 6) % 7;
   const habitStreak = computeHabitStreak(habits, todayHabitIdx);
-  const netFocus = computeNetFocusHours(events, planner, todayStr, todayDayOfWeek);
+  const netFocus = computeNetFocusHours(events, allWeekBlocks, todayStr, todayDayOfWeek);
   const taskPerf = computeTaskPerformance(todos);
   interface ScheduleItem {
     id: string;
@@ -240,11 +285,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   };
 
   const handleRemoveDistraction = (index: number) => {
-    // La edición se ubica por índice (los compromisos son strings sin id): borrar desplaza los índices, así que se cierra.
-    setEditingDistractionIdx(null);
-    const updated = distractions.filter((_, idx) => idx !== index);
-    StorageService.saveDistractions(profile.id, updated);
-    setDistractions(updated);
+    const texto = distractions[index];
+    confirmar(`¿Eliminar el compromiso "${texto}"?`, () => {
+      // La lista pudo cambiar mientras el aviso estaba abierto: se busca el texto en la lista guardada, no el índice.
+      const actual = StorageService.getDistractions(profile.id);
+      const posicion = actual.indexOf(texto);
+      if (posicion < 0) return;
+      // La edición se ubica por índice (los compromisos son strings sin id): borrar desplaza los índices, así que se cierra.
+      setEditingDistractionIdx(null);
+      const updated = actual.filter((_, idx) => idx !== posicion);
+      StorageService.saveDistractions(profile.id, updated);
+      setDistractions(updated);
+      sileo.success({ title: 'Compromiso eliminado' });
+    });
   };
 
   const handleSaveReflection = () => {
@@ -287,9 +340,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     sileo.success({ title: 'Pliego reflexivo guardado en tu cuaderno de notas' });
   };
 
-  const totalHabitSlots = habits.length * 7;
-  const completedHabitSlots = habits.reduce((acc, h) => acc + (h.daysCompleted ? h.daysCompleted.filter(Boolean).length : 0), 0);
-  const habitsComplianceRate = totalHabitSlots > 0 ? Math.round((completedHabitSlots / totalHabitSlots) * 100) : 0;
+  const habitsComplianceRate = computeHabitsCompliance(habits);
 
   const handleToggleHabitDay = (habitId: string, dayIndex: number) => {
     StorageService.toggleHabitDay(profile.id, habitId, dayIndex);
@@ -383,7 +434,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className={styles.brassInnerLoop} />
               </div>
               <div className={styles.postItContent}>
-                <span className={styles.postItMottoLabel}>lema del día</span>
+                <span className={styles.postItMottoLabel}>lema</span>
                 <p className={styles.postItHandwriting}>
                   Disciplina hoy,<br />paz mañana.
                 </p>
@@ -403,7 +454,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <Zap size={16} className={styles.quickHeaderIcon} aria-hidden="true" />
               <span>A un solo clic</span>
             </h3>
-            <span className={styles.quickSubtext}>Respaldado en memoria local</span>
+            <span className={styles.quickSubtext}>Guardado en este navegador</span>
           </div>
 
           <div className={styles.quickGrid}>
@@ -461,59 +512,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* =====================================================================
           1b. FRANJA DE MÉTRICAS DE SERENIDAD (cuatro indicadores en una fila)
           ===================================================================== */}
-      <section className={styles.kpiStrip} aria-label="Métricas de serenidad">
-        <div className={styles.metricQuadTile}>
-          <span className={styles.metricTileLabel}>Racha Serena</span>
-          <div className={styles.metricTileValueBox}>
-            <span className={styles.metricTileValAccent}>{habitStreak}</span>
-            <span className={styles.metricTileUnit}>días</span>
-          </div>
-          <span className={styles.metricTileSub}>{habitStreak > 0 ? 'Hábitos al día' : 'Marca un hábito para empezarla'}</span>
-        </div>
-
-        <div className={styles.metricQuadTile}>
-          <span className={styles.metricTileLabel}>Foco Neto Hoy</span>
-          <div className={styles.metricTileValueBox}>
-            <span className={styles.metricTileVal}>{netFocus.hours}</span>
-            <span className={styles.metricTileUnit}>horas</span>
-          </div>
-          <span className={styles.metricTileSub}>
-            {netFocus.count > 0 ? `${netFocus.count} actividades hoy` : 'Día libre de foco'}
-          </span>
-        </div>
-
-        <div className={styles.metricQuadTile}>
-          <span className={styles.metricTileLabel}>Almacenamiento</span>
-          <div className={styles.metricTileValueBox}>
-            <span className={styles.metricTileValTeal}>{formatBytes(storageBytes)}</span>
-          </div>
-          <span className={styles.metricTileSub}>de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)} en este navegador</span>
-        </div>
-
-        <div className={styles.metricQuadTile}>
-          <span className={styles.metricTileLabel}>Rendimiento</span>
-          <div className={styles.metricTileValueBox}>
-            <span className={styles.metricTileValPurple}>
-              {taskPerf.percentage === null ? 'Sin datos' : `${taskPerf.percentage}%`}
-            </span>
-          </div>
-          {taskPerf.percentage !== null && (
-            <div
-              className={styles.metricTileBar}
-              role="progressbar"
-              aria-label="Rendimiento de tareas"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={taskPerf.percentage}
-            >
-              <div className={styles.metricTileBarFill} style={{ width: `${taskPerf.percentage}%` }} />
-            </div>
-          )}
-          <span className={styles.metricTileSub}>
-            {taskPerf.total > 0 ? `${taskPerf.completed} de ${taskPerf.total} tareas logradas` : 'Sin tareas registradas'}
-          </span>
-        </div>
-      </section>
+      <MetricsStrip
+        habitStreak={habitStreak}
+        netFocus={netFocus}
+        storageBytes={storageBytes}
+        taskPerf={taskPerf}
+        weekHabitDays={computeWeekHabitDays(habits)}
+        todayHabitIdx={todayHabitIdx}
+      />
 
       {/* =====================================================================
           2. BENTO TRILOGÍA DE SERENIDAD & ENERGY PHASES
@@ -528,78 +534,42 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               </svg>
               <span>Energía y fases</span>
             </span>
-            <span className={styles.bentoBadge}>Luna Creciente</span>
+            <span className={styles.bentoBadge}>{faseLunar.nombre}</span>
           </div>
 
-          <div className={styles.lunarCycleVisualizer} aria-label="Fases lunares">
-            <svg viewBox="0 0 24 24" className={styles.moonVector} aria-hidden="true">
-              <title>Nueva</title>
-              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 2" />
-            </svg>
-            <svg viewBox="0 0 24 24" className={styles.moonVector} aria-hidden="true">
-              <title>Creciente</title>
-              <path d="M12 4a8 8 0 1 0 8 8c0-.4-.04-.8-.1-1.2a4.8 4.8 0 0 1-3.9 2 4.8 4.8 0 0 1-2.8-8.7c-.4-.06-.8-.1-1.2-.1z" fill="none" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-            <svg viewBox="0 0 24 24" className={`${styles.moonVector} ${styles.moonVectorActive}`} aria-hidden="true">
-              <title>Gibosa Creciente (Hoy)</title>
-              <path d="M12 3a9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9 9 9 0 0 1 9-9z" fill="var(--color-primary-soft)" opacity="0.35" />
-              <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" fill="var(--color-primary)" />
-              <circle cx="12" cy="12" r="9" fill="none" stroke="var(--color-primary)" strokeWidth="1.5" />
-            </svg>
-            <svg viewBox="0 0 24 24" className={styles.moonVector} aria-hidden="true">
-              <title>Luna Llena</title>
-              <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="2" />
-              <circle cx="12" cy="12" r="3.5" fill="currentColor" opacity="0.3" />
-            </svg>
-            <svg viewBox="0 0 24 24" className={styles.moonVector} aria-hidden="true">
-              <title>Menguante</title>
-              <path d="M12 4a8 8 0 0 1-8 8c0 .4.04.8.1 1.2a4.8 4.8 0 0 0 3.9 2 4.8 4.8 0 0 0 2.8-8.7c.4-.06.8-.1 1.2-.1z" fill="none" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
+          <div className={styles.lunarCycleVisualizer} role="img" aria-label={`Fase lunar de hoy: ${faseLunar.nombre}`}>
+            {ICONOS_LUNA.map(({ id, dibujo }) => (
+              <svg
+                key={id}
+                viewBox="0 0 24 24"
+                className={id === faseLunar.icono ? `${styles.moonVector} ${styles.moonVectorActive}` : styles.moonVector}
+                aria-hidden="true"
+              >
+                {dibujo}
+              </svg>
+            ))}
           </div>
 
-          <p className={styles.clarityQuestion}>¿Cómo está tu nivel de claridad hoy?</p>
+          <p className={styles.clarityQuestion}>¿Cómo te sientes hoy?</p>
 
-          <div className={styles.energySelector}>
-            <button
-              type="button"
-              className={`${styles.energyBtn} ${energyState === 'plena' ? styles.energyBtnActive : ''}`}
-              onClick={() => setEnergyState('plena')}
-            >
-              <Leaf size={18} className={styles.energyEmoji} aria-hidden="true" />
-              <span className={styles.energyLabel}>Plena</span>
-            </button>
-            <button
-              type="button"
-              className={`${styles.energyBtn} ${energyState === 'calma' ? styles.energyBtnActive : ''}`}
-              onClick={() => setEnergyState('calma')}
-            >
-              <Coffee size={18} className={styles.energyEmoji} aria-hidden="true" />
-              <span className={styles.energyLabel}>En Calma</span>
-            </button>
-            <button
-              type="button"
-              className={`${styles.energyBtn} ${energyState === 'neutra' ? styles.energyBtnActive : ''}`}
-              onClick={() => setEnergyState('neutra')}
-            >
-              <Cloud size={18} className={styles.energyEmoji} aria-hidden="true" />
-              <span className={styles.energyLabel}>Neutra</span>
-            </button>
-            <button
-              type="button"
-              className={`${styles.energyBtn} ${energyState === 'cansada' ? styles.energyBtnActive : ''}`}
-              onClick={() => setEnergyState('cansada')}
-            >
-              <BatteryLow size={18} className={styles.energyEmoji} aria-hidden="true" />
-              <span className={styles.energyLabel}>Cansada</span>
-            </button>
+          <div className={styles.energySelector} role="group" aria-label="Ánimo de hoy">
+            {DISPOSITIONS.map(({ value, label, icon: Icon }) => (
+              <button
+                key={value}
+                type="button"
+                className={energyBtnClass(disposition === value)}
+                onClick={() => handleSelectDisposition(value)}
+                aria-pressed={disposition === value}
+              >
+                <Icon size={18} className={styles.energyEmoji} aria-hidden="true" />
+                <span className={styles.energyLabel}>{label}</span>
+              </button>
+            ))}
           </div>
 
           <div className={styles.bentoCardFooter}>
             <span>Registro mental diario</span>
-            <span className={styles.statusStable}>
-              <span className={styles.statusStableDot} />
-              <span>Estable</span>
-            </span>
+            <span>{dispositionLabel(disposition)}</span>
           </div>
         </div>
 
@@ -688,72 +658,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Columna Izquierda: Foco, Prioridades, Distracciones (7 cols) */}
         <div className={styles.mainLeftCol}>
           {/* Banner Today's Main Focus */}
-          <div className={styles.focusBanner}>
-            <div className={styles.focusHeaderRow}>
-              <div className={styles.washiTapeBadge} aria-hidden="true">
-                <Star size={14} />
-                <span>FOCO PRINCIPAL DE HOY</span>
-              </div>
-              {pendingTodosList.length > 0 && (
-                <button
-                  type="button"
-                  className={styles.changeFocusBtn}
-                  onClick={() => setIsFocusModalOpen(true)}
-                  aria-label="Cambiar foco del día"
-                >
-                  Cambiar Foco
-                </button>
-              )}
-            </div>
-
-            {activeFocusTodo ? (
-              <div className={styles.focusInnerCard}>
-                <label className={styles.focusCheckboxHit} htmlFor="main-focus-checkbox">
-                  <input
-                    type="checkbox"
-                    id="main-focus-checkbox"
-                    className={styles.focusCheckbox}
-                    checked={isFocusDone}
-                    onChange={() => handleToggleTodo(activeFocusTodo.id)}
-                    aria-label="Marcar foco principal completado"
-                  />
-                </label>
-                <div className={styles.focusDetails}>
-                  <h3 className={`${styles.focusTitle} ${isFocusDone ? styles.rowTitleDone : ''}`}>
-                    {activeFocusTodo.title}
-                  </h3>
-                  <div className={styles.focusChipsRow}>
-                    <span className={styles.focusChipArea}>
-                      <span className={styles.focusChipDot} />
-                      <span>Área: {focusAreaName}</span>
-                    </span>
-                    <span className={styles.metaDot}>•</span>
-                    <span className={styles.priorityHighBadge}>{focusPriorityLabel}</span>
-                    {activeFocusTodo.dueDate && (
-                      <>
-                        <span className={styles.metaDot}>•</span>
-                        <span>Plazo: {dueLabel(activeFocusTodo.dueDate, todayStr) || activeFocusTodo.dueDate}</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className={styles.focusInnerCard} style={{ justifyContent: 'center', textAlign: 'center', padding: '24px' }}>
-                <div>
-                  <p style={{ margin: '0 0 10px 0', color: 'var(--color-muted)' }}>Sin tareas pendientes en el cuaderno</p>
-                  <button
-                    type="button"
-                    className={styles.addHabitBtn}
-                    onClick={() => onNavigate('todo')}
-                    aria-label="Fijar foco del día"
-                  >
-                    + Fijar foco del día
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <FocusBanner
+            focus={{ todo: activeFocusTodo, isDone: isFocusDone, areaName: focusAreaName, priorityLabel: focusPriorityLabel }}
+            canChangeFocus={pendingTodosList.length > 0}
+            todayStr={todayStr}
+            onChangeFocus={() => setIsFocusModalOpen(true)}
+            onToggleTodo={handleToggleTodo}
+            onPlanFocus={() => onNavigate('todo')}
+          />
 
           {/* Top Priorities no negociables */}
           <Pliego aria-labelledby="dash-critical">
@@ -1168,10 +1080,6 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               «Cuaderno en blanco. Pulsa + Nueva Anotación Rápida para registrar pensamientos espontáneos o notas de paso.»
             </p>
           )}
-          <div className={styles.autoSaveIndicator}>
-            <Check size={14} aria-hidden="true" />
-            <span>Guardado automáticamente</span>
-          </div>
         </div>
 
         <button
@@ -1266,7 +1174,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <span>Métricas y Rendimiento</span>
         </h3>
         <div className={styles.metricsGrid}>
-          <TaskCompletionChart todos={todos} />
+          <TaskCompletionChart todos={todos} areas={areas} />
           <CategoryDistributionChart todos={todos} planner={planner} />
         </div>
       </section>
@@ -1307,7 +1215,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   type="button"
                   className={`${styles.focusModalItem} ${!pinnedFocusTodoId ? styles.focusModalItemActive : ''}`}
                   onClick={() => {
-                    setPinnedFocusTodoId(null);
+                    fijarFoco(null);
                     setIsFocusModalOpen(false);
                   }}
                 >
@@ -1320,7 +1228,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     type="button"
                     className={`${styles.focusModalItem} ${pinnedFocusTodoId === t.id ? styles.focusModalItemActive : ''}`}
                     onClick={() => {
-                      setPinnedFocusTodoId(t.id);
+                      fijarFoco(t.id);
                       setIsFocusModalOpen(false);
                     }}
                   >

@@ -3,11 +3,15 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { AgendaView } from '../components/AgendaView';
-import { WEEK_DAYS } from '../components/agenda/eventMapping';
+import { WEEK_DAYS, occursOn } from '../components/agenda/eventMapping';
 import { SAVE_ERROR } from '../components/agenda/eventPersistence';
 import { StorageService } from '../services/storage';
-import { toLocalDateStr } from '../utils/localDate';
+import { addDaysToDateStr, toLocalDateStr } from '../utils/localDate';
+import { downloadFile } from '../utils/downloadFile';
 import type { AgendaEvent } from '../types';
+import { simularConfirmacion } from './confirmacion';
+
+vi.mock('../utils/downloadFile', () => ({ downloadFile: vi.fn() }));
 
 const profileId = 'p-agenda';
 const today = toLocalDateStr(new Date());
@@ -22,15 +26,67 @@ describe('AgendaView', () => {
   });
 
   it('renderiza el almanaque de mesa, la agenda diaria y el ritmo de energía en español', () => {
-    render(<AgendaView profileId={profileId} />);
+    // El título es el mes en curso: sin reloj fijo, el test caducaba al terminar octubre.
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 9, 15));
+    try {
+      render(<AgendaView profileId={profileId} />);
+    } finally {
+      vi.useRealTimers();
+    }
 
     expect(screen.getByRole('heading', { level: 1, name: /octubre 2026/i })).toBeInTheDocument();
     expect(screen.getByText(/almanaque de mesa/i)).toBeInTheDocument();
     expect(screen.queryByText(/formato imprenta/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/agenda diaria/i)).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: /eventos del/i })).toBeInTheDocument();
+    // La insignia "Agenda Diaria" repetía el titular del resumen (R-09).
+    expect(screen.queryByText(/agenda diaria/i)).not.toBeInTheDocument();
     expect(screen.getByText(/ritmo de energía y ánimo/i)).toBeInTheDocument();
     expect(screen.queryByText(/energy & mood/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/the weekly flow/i)).not.toBeInTheDocument();
+  });
+
+  describe('exportación, leyenda y ritmo del día', () => {
+    it('"Exportar .ics" descarga los eventos visibles', async () => {
+      const user = userEvent.setup();
+      seed({ id: 'e-ics', title: 'Reunión de tesis', startTime: '10:00', endTime: '11:00', category: 'universidad' });
+      render(<AgendaView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /exportar \.ics/i }));
+
+      expect(downloadFile).toHaveBeenCalledTimes(1);
+      const [contenido, nombre, tipo] = vi.mocked(downloadFile).mock.calls[0];
+      expect(contenido).toContain('SUMMARY:Reunión de tesis');
+      expect(nombre).toMatch(/\.ics$/);
+      expect(tipo).toMatch(/text\/calendar/);
+    });
+
+    it('la leyenda nombra las cinco categorías de evento', () => {
+      render(<AgendaView profileId={profileId} />);
+
+      const leyenda = within(screen.getByRole('group', { name: /colores por categoría/i }));
+      for (const nombre of ['Trabajo', 'Personal', 'Urgente', 'Estudio', 'Universidad']) {
+        expect(leyenda.getByText(nombre)).toBeInTheDocument();
+      }
+      expect(screen.queryByText('Trámites')).not.toBeInTheDocument();
+    });
+
+    it('la energía y el ánimo elegidos se guardan y siguen al volver a la vista', async () => {
+      const user = userEvent.setup();
+      const energia = () => within(screen.getByRole('group', { name: /nivel de energía/i }));
+      const animo = () => within(screen.getByRole('group', { name: /disposición emocional/i }));
+      const { unmount } = render(<AgendaView profileId={profileId} />);
+
+      await user.click(energia().getByRole('button', { name: /plena/i }));
+      await user.click(animo().getByRole('button', { name: /cansada/i }));
+      unmount();
+      render(<AgendaView profileId={profileId} />);
+
+      expect(energia().getByRole('button', { name: /plena/i })).toHaveAttribute('aria-pressed', 'true');
+      expect(animo().getByRole('button', { name: /cansada/i })).toHaveAttribute('aria-pressed', 'true');
+      expect(StorageService.getTodayMood(profileId, today)).toBe('☀️');
+      expect(StorageService.getTodayDisposition(profileId, today)).toBe('cansada');
+    });
   });
 
   // DESIGN.md §0.9, paso 4: el almanaque es el pliego; el resumen del día, un papel pizarra; formulario y ritmo, cartulina.
@@ -51,10 +107,12 @@ describe('AgendaView', () => {
       expect(resumen.querySelector('[data-tinte="pizarra"][data-forma="tarjeta"]')).toBeInTheDocument();
     });
 
-    it('la semana ISO y el contador de prioritarias son piezas de papel pizarra', () => {
+    it('la semana ISO y el contador de eventos del día son piezas de papel pizarra', () => {
       render(<AgendaView profileId={profileId} />);
 
-      for (const pieza of [screen.getByText(/^semana \d+$/i), screen.getByText(/prioritarias?$/i)]) {
+      // El contador decía "Prioritarias" aunque contaba todos los eventos del día.
+      expect(screen.queryByText(/prioritarias?$/i)).not.toBeInTheDocument();
+      for (const pieza of [screen.getByText(/^semana \d+$/i), screen.getByText(/^\d+ eventos?$/i)]) {
         expect(pieza.closest('[data-forma="pieza"][data-tinte="pizarra"]')).not.toBeNull();
       }
     });
@@ -123,6 +181,14 @@ describe('AgendaView', () => {
     render(<AgendaView profileId={profileId} />);
 
     expect(dayList().getByText('13:00–14:00 · Personal')).toBeInTheDocument();
+  });
+
+  // La Acción Rápida guardaba 'salud' y 'general'; con ese evento en el día la Agenda caía a "Algo salió mal".
+  it('muestra como personal un evento guardado con una categoría que la Agenda no conoce', () => {
+    seed({ id: 'qa-salud', title: 'Control médico', startTime: '10:00', endTime: '11:00', category: 'salud' as unknown as AgendaEvent['category'] });
+    render(<AgendaView profileId={profileId} />);
+
+    expect(dayList().getByText('10:00–11:00 · Personal')).toBeInTheDocument();
   });
 
   it('crea un evento desde el formulario y lo persiste', async () => {
@@ -251,7 +317,7 @@ describe('AgendaView', () => {
   // Revisión final, Important #1. Técnica: tabla de decisión (único/serie × confirma/cancela).
   it('pide confirmación antes de borrar una serie y no borra si se cancela', async () => {
     seed({ id: 'r-del', title: 'Gimnasio', startTime: '20:00', recurrence: { daysOfWeek: [new Date().getDay()] } });
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const confirm = simularConfirmacion(false);
     const user = userEvent.setup();
     render(<AgendaView profileId={profileId} />);
 
@@ -259,14 +325,51 @@ describe('AgendaView', () => {
     expect(confirm).toHaveBeenCalledOnce();
     expect(StorageService.getEvents(profileId)).toHaveLength(1);
 
-    confirm.mockReturnValue(true);
+    simularConfirmacion(true);
     await user.click(screen.getByRole('button', { name: /eliminar serie gimnasio/i }));
     expect(StorageService.getEvents(profileId)).toEqual([]);
   });
 
+  // Antes una serie solo se editaba o borraba entera.
+  describe('un solo día de una serie', () => {
+    const hoy = toLocalDateStr(new Date());
+    const seedSerie = () => seed({ id: 'r-dia', title: 'Natación', startTime: '07:00', endTime: '08:00', recurrence: { daysOfWeek: [0, 1, 2, 3, 4, 5, 6] } });
+
+    it('"Quitar este día" deja el resto de la serie', async () => {
+      seedSerie();
+      simularConfirmacion(true);
+      const user = userEvent.setup();
+      render(<AgendaView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: new RegExp(`quitar natación del ${hoy}`, 'i') }));
+
+      const eventos = StorageService.getEvents(profileId);
+      expect(eventos.some(ev => occursOn(ev, hoy))).toBe(false);
+      expect(eventos.some(ev => occursOn(ev, addDaysToDateStr(hoy, 1)))).toBe(true);
+    });
+
+    it('"Cambiar solo este día" guarda un evento suelto y quita ese día de la serie', async () => {
+      seedSerie();
+      const user = userEvent.setup();
+      render(<AgendaView profileId={profileId} />);
+
+      await user.click(screen.getByRole('button', { name: /editar natación/i }));
+      await user.click(screen.getByRole('checkbox', { name: /cambiar solo el/i }));
+      const titulo = screen.getByPlaceholderText(/título del evento/i);
+      await user.clear(titulo);
+      await user.type(titulo, 'Natación libre');
+      await user.click(screen.getByRole('button', { name: /guardar cambios/i }));
+
+      const eventos = StorageService.getEvents(profileId);
+      const deHoy = eventos.filter(ev => occursOn(ev, hoy));
+      expect(deHoy.map(ev => [ev.title, Boolean(ev.recurrence)])).toEqual([['Natación libre', false]]);
+      expect(eventos.some(ev => ev.recurrence && occursOn(ev, addDaysToDateStr(hoy, 1)))).toBe(true);
+    });
+  });
+
   it('no pide confirmación para borrar un evento único', async () => {
     seed({ id: 'e-one', title: 'Único', startTime: '09:00' });
-    const confirm = vi.spyOn(window, 'confirm');
+    const confirm = vi.spyOn(sileo, 'action');
     const user = userEvent.setup();
     render(<AgendaView profileId={profileId} />);
 

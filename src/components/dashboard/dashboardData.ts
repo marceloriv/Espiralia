@@ -110,6 +110,10 @@ export const computeHabitStreak = (habits: HabitTrackerItem[], todayHabitIdx: nu
   return streak;
 };
 
+/** Por día de la semana (0 = lunes), si se marcó al menos un hábito: la misma regla que usa la racha. */
+export const computeWeekHabitDays = (habits: HabitTrackerItem[]): boolean[] =>
+  Array.from({ length: 7 }, (_, i) => habits.some(h => Boolean(h.daysCompleted?.[i])));
+
 export interface NetFocusResult {
   hours: number;
   count: number;
@@ -167,3 +171,32 @@ export const computeTaskPerformance = (todos: TodoItem[]): TaskPerformanceResult
   return { percentage, completed, total };
 };
 
+
+export interface FocusSummary {
+  todo: TodoItem | null;
+  isDone: boolean;
+  areaName: string;
+  priorityLabel: 'Alta Prioridad' | 'Media Prioridad' | 'Baja Prioridad';
+}
+
+const isPending = (t: TodoItem) => (t.status ? t.status !== 'completada' : !t.completed);
+
+/** Foco del día: la tarea fijada; si no hay, la primera crítica; si no, la primera pendiente. */
+export const deriveFocus = (todos: TodoItem[], areas: Area[], pinnedId: string | null): FocusSummary => {
+  const todo =
+    (pinnedId ? todos.find(t => t.id === pinnedId) : undefined) ?? criticalTodos(todos)[0] ?? todos.find(isPending) ?? null;
+  if (!todo) return { todo: null, isDone: false, areaName: 'General', priorityLabel: 'Baja Prioridad' };
+  return {
+    todo,
+    isDone: todo.status === 'completada' || Boolean(todo.completed),
+    areaName: areas.find(a => a.id === todo.areaId)?.name || todo.category || 'General',
+    priorityLabel: todo.priority === 'alta' ? 'Alta Prioridad' : todo.priority === 'media' ? 'Media Prioridad' : 'Baja Prioridad',
+  };
+};
+
+/** Porcentaje de casillas de hábitos marcadas en la semana (7 por hábito); 0 sin hábitos. */
+export const computeHabitsCompliance = (habits: HabitTrackerItem[]): number => {
+  const total = habits.length * 7;
+  const done = habits.reduce((acc, h) => acc + (h.daysCompleted ? h.daysCompleted.filter(Boolean).length : 0), 0);
+  return total > 0 ? Math.round((done / total) * 100) : 0;
+};

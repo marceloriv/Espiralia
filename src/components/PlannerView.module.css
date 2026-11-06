@@ -3,14 +3,14 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--bg-canvas, var(--color-canvas, #faf9f5));
+  background: var(--bg-canvas);
   overflow: hidden;
 }
 
 .subHeader {
   position: relative;
-  background: var(--bg-card, var(--color-surface, #fcf9f6));
-  border-bottom: 1px solid var(--border-hairline, var(--color-hairline, #e6dfd8));
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-hairline);
   padding: 0.85rem 1.5rem 0.85rem 3.25rem;
   display: flex;
   flex-wrap: wrap;
@@ -26,10 +26,10 @@
 }
 
 .pageTitle {
-  font-family: var(--font-headline, serif);
+  font-family: var(--font-primary, serif);
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0;
   line-height: 1.2;
 }
@@ -40,8 +40,8 @@
   max-width: 100%;
   align-items: center;
   gap: 0.5rem;
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md, 0.375rem);
   padding: 0.25rem 0.5rem;
 }
@@ -61,7 +61,7 @@
 }
 
 .navBtn:hover {
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   background: rgba(20, 20, 19, 0.05);
 }
 
@@ -69,19 +69,19 @@
   font-family: var(--font-family-3, monospace);
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   padding: 0 0.5rem;
   white-space: nowrap;
 }
 
 .todayBtn {
   background: transparent;
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm, 0.25rem);
   font-family: var(--font-family-2, sans-serif);
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   padding: 0.35rem 0.65rem;
   cursor: pointer;
   min-height: 44px;
@@ -92,8 +92,8 @@
 }
 
 .todayBtn:hover {
-  background: var(--color-canvas, #faf9f5);
-  border-color: var(--color-primary-soft, #ed96d7);
+  background: var(--color-canvas);
+  border-color: var(--color-primary-soft);
 }
 
 .priorityGroup {
@@ -104,8 +104,8 @@
 }
 
 .priorityPill {
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-sm, 0.25rem);
   font-family: var(--font-family-3, monospace);
   font-size: 0.6875rem;
@@ -121,8 +121,8 @@
 }
 
 .priorityPill:hover {
-  color: var(--color-ink, #141413);
-  border-color: var(--color-primary-soft, #ed96d7);
+  color: var(--color-ink);
+  border-color: var(--color-primary-soft);
 }
 
 .priorityPillActive {
@@ -142,8 +142,8 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  background: var(--color-surface-card, #efe9de);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-md, 0.375rem);
   padding: 0.35rem 0.75rem;
 }
@@ -159,15 +159,15 @@
 .fulfillmentBarBg {
   width: 80px;
   height: 6px;
-  background: var(--color-canvas, #faf9f5);
+  background: var(--color-canvas);
   border-radius: 9999px;
   overflow: hidden;
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-hairline);
 }
 
 .fulfillmentBarFill {
   height: 100%;
-  background: var(--color-primary-active, #c654c3);
+  background: var(--color-primary-active);
   border-radius: 9999px;
   transition: width 0.25s ease;
 }
@@ -209,6 +209,45 @@
   align-items: stretch;
 }
 
+/* Señal de desplazamiento: con días fuera de vista, el borde de ese lado se desvanece.
+   Sin días ocultos la línea de tiempo no avanza y no hay desvanecido. Sin soporte, la grilla queda como antes. */
+@property --desvanecer-inicio {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --desvanecer-fin {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@supports (animation-timeline: scroll()) {
+  .gridArea {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--desvanecer-inicio),
+      #000 calc(100% - var(--desvanecer-fin)),
+      transparent 100%
+    );
+    animation: senalDesplazamiento linear both;
+    animation-timeline: scroll(self inline);
+  }
+}
+
+@keyframes senalDesplazamiento {
+  from {
+    --desvanecer-inicio: 0px;
+    --desvanecer-fin: 48px;
+  }
+  to {
+    --desvanecer-inicio: 48px;
+    --desvanecer-fin: 0px;
+  }
+}
+
 /* El Pliego abarca las siete columnas aunque el área haga scroll horizontal, en vez de terminar en el borde visible. */
 .gridArea > .weekPliego {
   width: max-content;
@@ -238,7 +277,7 @@
   .drawerArea {
     width: 100%;
     border-left: none;
-    border-top: 1px solid var(--color-hairline, #e6dfd8);
+    border-top: 1px solid var(--color-hairline);
   }
 
   /* El cajón ya ocupa todo el ancho: sin margen lateral caben los siete días de 44px de los hábitos. */
@@ -259,7 +298,7 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 20px 24px 10px;
-  background: var(--color-surface, #fcf9f6);
+  background: var(--color-surface);
   flex-wrap: wrap;
   gap: 16px;
 }
@@ -281,13 +320,13 @@
   font-family: var(--font-primary, serif);
   font-size: var(--text-display-md);
   font-weight: 700;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
   margin: 0 0 2px;
   line-height: 1.2;
 }
 
 .stickyAphorism {
-  background: var(--color-bg-postit, #fef8d6);
+  background: var(--color-bg-postit);
   padding: 10px 14px;
   border-radius: 2px;
   box-shadow: var(--shadow-postit);
@@ -317,49 +356,13 @@
 
 .areaFilterBar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 8px 24px 14px;
-  background: var(--color-surface, #fcf9f6);
-  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-hairline);
   flex-wrap: wrap;
   gap: 12px;
-}
-
-.areaTagsGroup {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.areaPillAmber {
-  background: rgba(217, 119, 6, 0.1);
-  color: var(--color-text-amber);
-  border: 1px solid rgba(217, 119, 6, 0.25);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-}
-
-.areaPillEmerald {
-  background: rgba(13, 148, 136, 0.1);
-  color: var(--color-text-teal);
-  border: 1px solid rgba(13, 148, 136, 0.25);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-}
-
-.areaPillViolet {
-  background: rgba(94, 23, 85, 0.08);
-  color: var(--color-primary);
-  border: 1px solid rgba(94, 23, 85, 0.2);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
 }
 
 .addBlockHeroBtn {
@@ -395,7 +398,7 @@
   min-height: 44px;
   background: transparent;
   color: var(--color-ink);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
   padding: 8px 14px;
   font-size: 12px;
@@ -406,7 +409,7 @@
 
 .clearWeekBtn:hover {
   border-color: var(--color-error);
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 .clearWeekBtn:focus-visible {
@@ -488,7 +491,7 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm);
   color: var(--color-primary);
   cursor: pointer;
@@ -576,7 +579,7 @@
 
 .moodBtn {
   background: transparent;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: 6px;
   width: 32px;
   height: 32px;

@@ -31,5 +31,12 @@ export const isoWeekNumber = (date: Date): number => {
   return 1 + Math.round((thursday.getTime() - firstThursday.getTime()) / (7 * 24 * 60 * 60 * 1000));
 };
 
+/** Clave de semana ISO 'AAAA-Www'. El año es el del jueves de esa semana: el 1 de enero puede caer en la semana 53. */
+export const isoWeekKey = (date: Date): string => {
+  const thursday = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  thursday.setDate(thursday.getDate() - ((thursday.getDay() + 6) % 7) + 3);
+  return `${thursday.getFullYear()}-W${pad(isoWeekNumber(date))}`;
+};
+
 /** Semestre académico: enero a junio es 'AAAA-I', julio a diciembre es 'AAAA-II'. */
 export const semesterLabel = (date: Date): string => `${date.getFullYear()}-${date.getMonth() < 6 ? 'I' : 'II'}`;

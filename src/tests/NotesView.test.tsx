@@ -40,7 +40,7 @@ describe('NotesView', () => {
 
     expect(screen.getByRole('heading', { level: 2, name: /notas & reflexiones/i })).toBeInTheDocument();
 
-    const addBtn = screen.getByRole('button', { name: /\+ nueva nota/i });
+    const addBtn = screen.getByRole('button', { name: /^nueva nota$/i });
     await user.click(addBtn);
 
     const titleInput = screen.getByLabelText(/título/i);
@@ -110,7 +110,7 @@ describe('NotesView', () => {
     render(<NotesView profileId={profileId} />);
 
     // 1. Crear una nueva nota con secciones § 1. y caja [caja: Examen | 100% | Excelente]
-    const addBtn = screen.getByRole('button', { name: /\+ nueva nota/i });
+    const addBtn = screen.getByRole('button', { name: /^nueva nota$/i });
     await user.click(addBtn);
 
     const titleInput = screen.getByLabelText(/título/i);

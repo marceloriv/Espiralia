@@ -3,7 +3,6 @@ import {
   PenLine,
   Activity,
   ShieldCheck,
-  Check,
 } from 'lucide-react';
 import styles from './LandingDeskPreview.module.css';
 
@@ -40,7 +39,6 @@ export const LandingDeskPreview: React.FC = () => {
 
   const completedCount = tasks.filter(task => task.completed).length;
   const totalTasks = tasks.length;
-  const serenityPercentage = Math.round(60 + (completedCount / totalTasks) * 40);
   const completionPercentage = Math.round((completedCount / totalTasks) * 100);
 
   const handleToggleTask = (id: string) => {
@@ -57,10 +55,10 @@ export const LandingDeskPreview: React.FC = () => {
       <div className={styles.deskHeader}>
         <div className={styles.deskBadge}>
           <PenLine size={14} aria-hidden="true" />
-          <span>Mesa de Trabajo en Vivo</span>
+          <span>Ejemplo interactivo</span>
         </div>
         <h2 id="desk-preview-heading" className={styles.deskTitle}>
-          La Mesa de Trabajo: Tu Centro de Control Silencioso
+          La mesa de trabajo de un día
         </h2>
         <p className={styles.deskSubtitle}>
           Diseñado como un escritorio físico de papelería fina donde la reflexión introspectiva, el estudio riguroso y tus metas vitales conviven con total serenidad.
@@ -85,9 +83,9 @@ export const LandingDeskPreview: React.FC = () => {
                 <h3 id="sheet-title" className={styles.sheetTitle}>
                   PLAN DE FOCO • HOY
                 </h3>
-                <span className={styles.sheetDate}>Martes, 14 Oct</span>
+                <span className={styles.sheetDate}>Un día cualquiera</span>
               </div>
-              <span className={styles.sheetWeekBadge}>Semana 42</span>
+              <span className={styles.sheetWeekBadge}>Ejemplo</span>
             </div>
 
             {/* Prioridades */}
@@ -155,11 +153,7 @@ export const LandingDeskPreview: React.FC = () => {
             </div>
 
             <footer className={styles.sheetFooter}>
-              <span>Papel libre de ácido • 120 gsm • Sincronización local instantánea</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                <Check size={12} color="var(--color-primary)" aria-hidden="true" />
-                <span>Aprobado en Bóveda</span>
-              </span>
+              <span>Marca las tareas del ejemplo para ver cómo cambia el avance.</span>
             </footer>
           </article>
         </div>
@@ -179,9 +173,9 @@ export const LandingDeskPreview: React.FC = () => {
                 className={styles.vitalBadge}
                 role="status"
                 aria-live="polite"
-                aria-label={`${serenityPercentage}% de serenidad alcanzada`}
+                aria-label={`${completionPercentage}% de las tareas del ejemplo completadas`}
               >
-                {serenityPercentage}% Serenidad
+                {completionPercentage}% completado
               </span>
             </div>
 
@@ -223,26 +217,6 @@ export const LandingDeskPreview: React.FC = () => {
             <div className={styles.metricsList}>
               <div className={styles.metricRow}>
                 <div className={styles.metricLabelGroup}>
-                  <span className={styles.metricLabel}>Horas de Foco Silencioso</span>
-                  <span className={styles.metricValue}>4.5h / 6h</span>
-                </div>
-                <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={75} aria-valuemin={0} aria-valuemax={100} aria-label="Horas de foco">
-                  <div className={styles.progressBarFillPrimary} />
-                </div>
-              </div>
-
-              <div className={styles.metricRow}>
-                <div className={styles.metricLabelGroup}>
-                  <span className={styles.metricLabel}>Serenidad Mental</span>
-                  <span className={styles.metricValue}>90%</span>
-                </div>
-                <div className={styles.progressBarTrack} role="progressbar" aria-valuenow={90} aria-valuemin={0} aria-valuemax={100} aria-label="Serenidad mental">
-                  <div className={styles.progressBarFillTeal} />
-                </div>
-              </div>
-
-              <div className={styles.metricRow}>
-                <div className={styles.metricLabelGroup}>
                   <span className={styles.metricLabel}>Módulos Completados</span>
                   <span className={styles.metricValue}>
                     {completedCount} de {totalTasks}
@@ -272,7 +246,7 @@ export const LandingDeskPreview: React.FC = () => {
               <h3 id="note-title" className={styles.quickNoteTitle}>
                 Captura Rápida
               </h3>
-              <span className={styles.quickNoteTag}>Hoy • 11:20 AM</span>
+              <span className={styles.quickNoteTag}>Ejemplo</span>
             </div>
 
             <blockquote className={styles.quickNoteContent}>
@@ -281,7 +255,7 @@ export const LandingDeskPreview: React.FC = () => {
 
             <div className={styles.quickNoteFooter}>
               <ShieldCheck size={13} aria-hidden="true" />
-              <span>Guardado en Bóveda Local • Sin conexión requerida</span>
+              <span>Las notas se guardan en tu navegador</span>
             </div>
           </article>
         </div>

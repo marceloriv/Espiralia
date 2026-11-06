@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import type { DayOfWeek, TimeSlot, Priority } from '../../types';
+import type { DayOfWeek, TimeSlot, Priority, PlannerBlock } from '../../types';
 import styles from './PlannerBlockModal.module.css';
 
 interface PlannerBlockModalProps {
   isOpen: boolean;
   initialDay?: DayOfWeek;
+  /** Con un bloque, el modal lo edita; sin él, crea uno nuevo. */
+  initialBlock?: PlannerBlock;
   onClose: () => void;
   onSave: (blockData: {
     title: string;
@@ -18,17 +20,19 @@ interface PlannerBlockModalProps {
 
 const PlannerBlockModalContent: React.FC<PlannerBlockModalProps> = ({
   initialDay,
+  initialBlock,
   onClose,
   onSave,
 }) => {
-  const [title, setTitle] = useState('');
-  const [dayOfWeek, setDayOfWeek] = useState<string>(
-    () => (initialDay !== undefined ? String(initialDay) : 'none')
-  );
-  const [timeSlot, setTimeSlot] = useState<TimeSlot>('mañana');
-  const [priority, setPriority] = useState<Priority>('alta');
-  const [time, setTime] = useState('');
-  const [notes, setNotes] = useState('');
+  const [title, setTitle] = useState(initialBlock?.title ?? '');
+  const [dayOfWeek, setDayOfWeek] = useState<string>(() => {
+    const day = initialBlock ? initialBlock.dayOfWeek : initialDay;
+    return day !== undefined ? String(day) : 'none';
+  });
+  const [timeSlot, setTimeSlot] = useState<TimeSlot>(initialBlock?.timeSlot ?? 'mañana');
+  const [priority, setPriority] = useState<Priority>(initialBlock?.priority ?? 'alta');
+  const [time, setTime] = useState(initialBlock?.time ?? '');
+  const [notes, setNotes] = useState(initialBlock?.notes ?? '');
 
   const onCloseRef = useRef(onClose);
   useEffect(() => {
@@ -64,7 +68,9 @@ const PlannerBlockModalContent: React.FC<PlannerBlockModalProps> = ({
   return (
     <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="modal-block-title">
       <div className={styles.modalBox}>
-        <h3 id="modal-block-title" className={styles.modalTitle}>Nuevo Bloque de Enfoque</h3>
+        <h3 id="modal-block-title" className={styles.modalTitle}>
+          {initialBlock ? 'Editar Bloque de Enfoque' : 'Nuevo Bloque de Enfoque'}
+        </h3>
         <form onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
             <label htmlFor="block-title" className={styles.label}>Título del bloque</label>
@@ -171,5 +177,6 @@ const PlannerBlockModalContent: React.FC<PlannerBlockModalProps> = ({
 
 export const PlannerBlockModal: React.FC<PlannerBlockModalProps> = (props) => {
   if (!props.isOpen) return null;
-  return <PlannerBlockModalContent {...props} key={props.initialDay !== undefined ? String(props.initialDay) : 'none'} />;
+  const key = props.initialBlock?.id ?? (props.initialDay !== undefined ? String(props.initialDay) : 'none');
+  return <PlannerBlockModalContent {...props} key={key} />;
 };

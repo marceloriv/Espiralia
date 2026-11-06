@@ -6,7 +6,7 @@
   justify-content: center;
   padding: 32px 16px;
   /* Marfil liso, como el resto de la app: el color vive en los papeles (DESIGN.md §0.12). */
-  background-color: var(--bg-canvas, var(--color-canvas));
+  background-color: var(--bg-canvas);
   position: relative;
 }
 
@@ -36,16 +36,9 @@
   margin-bottom: 4px;
 }
 
-.brandIcon {
-  font-size: 24px;
-}
-
-.brandName {
-  font-family: var(--font-primary);
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--color-primary);
-  letter-spacing: -0.02em;
+.brandLogotipo {
+  width: min(100%, 280px);
+  height: auto;
 }
 
 .tagline {
@@ -68,13 +61,6 @@
   border-radius: var(--radius-pill);
   font-size: 11px;
   color: var(--color-muted);
-}
-
-.secDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--color-success);
 }
 
 .mainSheet {
@@ -354,7 +340,7 @@
   align-self: flex-end;
   width: 100%;
   max-width: 220px;
-  background-color: var(--color-bg-postit, #fef8d6);
+  background-color: var(--color-bg-postit);
   padding: 12px 14px;
   transform: rotate(2deg);
   box-shadow: var(--shadow-postit);
@@ -588,7 +574,7 @@
   width: 100%;
   padding: 10px 12px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   background-color: var(--color-surface-card);
   color: var(--color-ink);
   font-size: 14px;
@@ -603,7 +589,7 @@
 .errorMessage {
   margin-top: 6px;
   font-size: 12px;
-  color: var(--color-accent-red, var(--color-error));
+  color: var(--color-accent-red);
 }
 
 .modalActions {
@@ -615,7 +601,7 @@
 .btnSecondary {
   padding: 10px 16px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   background-color: transparent;
   color: var(--color-ink);
   font-size: 14px;

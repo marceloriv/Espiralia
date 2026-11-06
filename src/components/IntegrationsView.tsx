@@ -13,13 +13,16 @@ import {
   CalendarCheck,
 } from 'lucide-react';
 import { sileo } from 'sileo';
-import type { Profile, AgendaEvent, Area, ViewType } from '../types';
+import type { Profile, AgendaEvent, ViewType } from '../types';
+import { CATEGORIES, FILTER_LABELS, categoryOf } from './agenda/eventMapping';
+import type { CategoryFilter } from './agenda/eventMapping';
 import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { formatBytes } from '../utils/formatBytes';
 import { toLocalDateStr } from '../utils/localDate';
 import { IcsService } from '../services/icsService';
 import { VaultService } from '../services/vaultService';
-import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Papel } from './common/Papel';
+import { TINTE_DE_MODULO } from './common/tintes';
 import styles from './IntegrationsView.module.css';
 
 export interface IntegrationsViewProps {
@@ -39,12 +42,13 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
   const storageBytes = StorageService.getProfileStorageBytes(profile.id);
   const todayStr = toLocalDateStr(hoy);
   const [events, setEvents] = useState<AgendaEvent[]>(() => StorageService.getEvents(profile.id));
-  const [areas, setAreas] = useState<Area[]>(() => StorageService.getAreas(profile.id));
   const upcomingEvents = events
     .filter(ev => ev.date >= todayStr)
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 2);
-  const [selectedArea, setSelectedArea] = useState('todas');
+  // El .ics se filtra por categoría de evento (las de la Agenda), no por área de tareas.
+  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('todas');
+  const exportables = selectedCategory === 'todas' ? events : events.filter(ev => categoryOf(ev) === selectedCategory);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const areaSelectId = useId();
@@ -54,19 +58,10 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
   if (perfilCargado !== profile.id) {
     setPerfilCargado(profile.id);
     setEvents(StorageService.getEvents(profile.id));
-    setAreas(StorageService.getAreas(profile.id));
   }
 
   const handleExportIcs = () => {
-    let categoryFilter: string | undefined = undefined;
-    if (selectedArea !== 'todas') {
-      const match = areas.find(
-        (a) => a.id === selectedArea || a.name.toLowerCase() === selectedArea.toLowerCase()
-      );
-      categoryFilter = match ? match.name : selectedArea;
-    }
-
-    const icsContent = IcsService.exportToIcs(events, { category: categoryFilter });
+    const icsContent = IcsService.exportToIcs(exportables);
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -192,7 +187,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
             </svg>
           </div>
           <div>
-            <span className={styles.postitLabel}>Aforismo de Soberanía</span>
+            <span className={styles.postitLabel}>Aforismo</span>
             <p className={styles.postitQuote}>
               «Tus compromisos y pensamientos no necesitan servidores; viven en tu propio pliego ♡»
             </p>
@@ -269,16 +264,16 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
 
                   <div className={styles.controlsGrid}>
                     <div className={styles.controlField}>
-                      <label htmlFor={areaSelectId} className={styles.controlLabel}>Filtro por Área Temática</label>
+                      <label htmlFor={areaSelectId} className={styles.controlLabel}>Filtro por categoría</label>
                       <select
                         id={areaSelectId}
                         className={styles.selectInput}
-                        value={selectedArea}
-                        onChange={(e) => setSelectedArea(e.target.value)}
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value as CategoryFilter)}
                       >
-                        <option value="todas">Todas las áreas ({areas.length})</option>
-                        {areas.map((a) => (
-                          <option key={a.id} value={a.id}>{a.name}</option>
+                        <option value="todas">Todas las categorías</option>
+                        {CATEGORIES.map((c) => (
+                          <option key={c} value={c}>{FILTER_LABELS[c]}</option>
                         ))}
                       </select>
                     </div>
@@ -290,7 +285,7 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
                       <span>Descargar archivo .ics</span>
                     </button>
                     <span className={styles.eventsReadyCount}>
-                      {events.length} eventos programados listos
+                      {exportables.length} {exportables.length === 1 ? 'evento listo' : 'eventos listos'} para exportar
                     </span>
                   </div>
                 </div>
@@ -486,7 +481,6 @@ export const IntegrationsView: React.FC<IntegrationsViewProps> = ({ profile: pro
         {/* Sheet Bottom Editorial Mantra */}
         <div className={styles.sheetBottomMantra}>
           <div className={styles.mantraStorage}>
-            <span className={styles.greenDot}></span>
             <span>Almacenamiento Local: <strong style={{ color: 'var(--color-ink)' }}>{formatBytes(storageBytes)} de ~{formatBytes(LOCALSTORAGE_QUOTA_BYTES)}</strong> (localStorage)</span>
           </div>
         </div>

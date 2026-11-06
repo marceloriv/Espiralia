@@ -57,7 +57,7 @@ describe('NotFoundView', () => {
   it('muestra la dirección como texto y nunca como HTML', () => {
     renderView(false, vi.fn(), '/<img src=x onerror=alert(1)>');
     expect(screen.getByText('/<img src=x onerror=alert(1)>')).toBeInTheDocument();
-    expect(document.querySelector('img')).toBeNull();
+    expect(document.querySelector('img[onerror]')).toBeNull();
   });
 
   it('el origami del Nautilus es decorativo: va fuera del árbol de accesibilidad', () => {

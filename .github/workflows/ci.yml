@@ -30,7 +30,7 @@ env:
   NODE_VERSION: 24
   PNPM_VERSION: 10
   # Carga inicial comprimida máxima en KB (AGENTS.md §17.1).
-  PRESUPUESTO_KB: 182
+  PRESUPUESTO_KB: 184
 
 # Las acciones van fijadas a un SHA de commit: los tags son mutables y un tag
 # reescrito en una acción comprometida ejecutaría código ajeno con acceso al

@@ -13,7 +13,7 @@
 
 .titulo {
   margin: 0;
-  font-family: var(--font-headline);
+  font-family: var(--font-primary);
   font-size: var(--text-display-md);
   line-height: 1.15;
 }

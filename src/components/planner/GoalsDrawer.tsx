@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Target, Plus, X } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../../utils/confirmar';
 import { useEscapeKey } from '../../utils/useEscapeKey';
-import type { Goal, GoalSubItem } from '../../types';
+import type { Goal, GoalSubItem, PlannerPeriod } from '../../types';
 import { StorageService } from '../../services/storage';
 import { GoalCard } from './GoalCard';
-import { Papel, TINTE_DE_MODULO } from '../common/Papel';
+import { Papel } from '../common/Papel';
+import { TINTE_DE_MODULO } from '../common/tintes';
 import styles from './GoalsDrawer.module.css';
 
 interface GoalsDrawerProps {
@@ -22,6 +24,20 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
   const [description, setDescription] = useState('');
   const [subItemInput, setSubItemInput] = useState('');
   const [subItems, setSubItems] = useState<GoalSubItem[]>([]);
+  const [period, setPeriod] = useState<PlannerPeriod>('semanal');
+  // null: el modal crea una meta; con una meta, la edita conservando sus sub-tareas marcadas.
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
+
+  const openGoalModal = (goal: Goal | null) => {
+    setEditingGoal(goal);
+    setTitle(goal?.title ?? '');
+    setCategory(goal ? goal.category ?? '' : 'Metas Académicas');
+    setDescription(goal?.description ?? '');
+    setSubItems(goal?.items ?? []);
+    setPeriod(goal?.period ?? 'semanal');
+    setSubItemInput('');
+    setIsModalOpen(true);
+  };
 
   const loadGoals = useCallback(() => {
     const list = StorageService.getGoals(profileId);
@@ -55,9 +71,12 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
   };
 
   const handleDeleteGoal = (goalId: string) => {
-    StorageService.deleteGoal(profileId, goalId);
-    sileo.info({ title: 'Meta eliminada' });
-    loadGoals();
+    const target = goals.find(g => g.id === goalId);
+    confirmar(`¿Eliminar la meta "${target?.title ?? ''}" y sus sub-tareas?`, () => {
+      StorageService.deleteGoal(profileId, goalId);
+      sileo.info({ title: 'Meta eliminada' });
+      loadGoals();
+    });
   };
 
   const handleAddSubItem = (e: React.KeyboardEvent | React.MouseEvent) => {
@@ -83,19 +102,21 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
     e.preventDefault();
     if (!title.trim()) return;
 
-    const newGoal: Goal = {
-      id: `goal-${Date.now()}`,
-      profileId,
+    const campos = {
       title: title.trim(),
       category: category.trim() || undefined,
       description: description.trim() || undefined,
-      period: 'semanal',
+      period,
       items: subItems,
-      createdAt: new Date().toISOString(),
     };
-
-    StorageService.saveGoal(newGoal);
-    sileo.success({ title: 'Meta semanal guardada' });
+    if (editingGoal) {
+      StorageService.saveGoal({ ...editingGoal, ...campos });
+      sileo.success({ title: 'Meta actualizada' });
+    } else {
+      StorageService.saveGoal({ id: `goal-${Date.now()}`, profileId, createdAt: new Date().toISOString(), ...campos });
+      sileo.success({ title: period === 'mensual' ? 'Meta mensual guardada' : 'Meta semanal guardada' });
+    }
+    setEditingGoal(null);
     setIsModalOpen(false);
     setTitle('');
     setDescription('');
@@ -108,13 +129,13 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
       <Papel as="div" tinte={TINTE_DE_MODULO.planner}>
       <div className={styles.drawerHeader}>
         <div className={styles.titleArea}>
-          <span className={styles.subHeading}>Objetivos de Horizonte</span>
-          <h3 className={styles.mainHeading}>Metas Semanales</h3>
+          <span className={styles.subHeading}>Semanales y mensuales</span>
+          <h3 className={styles.mainHeading}>Metas</h3>
         </div>
         <button
           type="button"
           className={styles.addGoalBtn}
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => openGoalModal(null)}
           aria-label="+ Nueva meta"
         >
           <Plus size={16} aria-hidden="true" />
@@ -126,7 +147,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
         {goals.length === 0 ? (
           <div className={styles.emptyState}>
             <Target size={32} aria-hidden="true" style={{ margin: '0 auto 0.5rem auto', opacity: 0.4 }} />
-            <p>Sin metas registradas para esta semana</p>
+            <p>Sin metas registradas</p>
           </div>
         ) : (
           goals.map(goal => (
@@ -135,6 +156,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
               goal={goal}
               onToggleSubItem={handleToggleSubItem}
               onDeleteGoal={handleDeleteGoal}
+              onEditGoal={openGoalModal}
             />
           ))
         )}
@@ -144,7 +166,7 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
       {isModalOpen && (
         <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="modal-goal-title">
           <div className={styles.modalBox}>
-            <h3 id="modal-goal-title" className={styles.modalTitle}>Nueva Meta Semanal</h3>
+            <h3 id="modal-goal-title" className={styles.modalTitle}>{editingGoal ? 'Editar Meta' : 'Nueva Meta'}</h3>
             <form onSubmit={handleSaveGoal}>
               <div className={styles.formGroup}>
                 <label htmlFor="goal-title-input" className={styles.label}>Título de la meta</label>
@@ -170,6 +192,19 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
                   onChange={e => setCategory(e.target.value)}
                   placeholder="Ej. Metas Académicas, Metas Personales"
                 />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="goal-period-select" className={styles.label}>Período</label>
+                <select
+                  id="goal-period-select"
+                  className={styles.input}
+                  value={period}
+                  onChange={e => setPeriod(e.target.value as PlannerPeriod)}
+                >
+                  <option value="semanal">Semanal</option>
+                  <option value="mensual">Mensual</option>
+                </select>
               </div>
 
               <div className={styles.formGroup}>

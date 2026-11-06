@@ -1,9 +1,10 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GoalsDrawer } from '../components/planner/GoalsDrawer';
 import { StorageService } from '../services/storage';
 import type { Goal } from '../types';
+import { simularConfirmacion } from './confirmacion';
 
 describe('GoalsDrawer', () => {
   const profileId = 'p-goals-test';
@@ -59,6 +60,39 @@ describe('GoalsDrawer', () => {
 
     expect(screen.getByText('Lectura semanal')).toBeInTheDocument();
     expect(screen.getByText('Capítulo 1')).toBeInTheDocument();
+  });
+
+  // Una meta solo se podía crear, marcar o borrar; el período "mensual" existía en el tipo pero no en la UI.
+  it('edita una meta: título, período y sub-tareas, sin perder las marcadas', async () => {
+    const user = userEvent.setup();
+    StorageService.saveGoal({ id: 'g-edit', profileId, title: 'Leer más', period: 'semanal', items: [{ id: 's-1', title: 'Capítulo 1', completed: true }], createdAt: '2026-11-01' });
+    render(<GoalsDrawer profileId={profileId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Editar meta Leer más' }));
+    expect(screen.getByRole('heading', { name: /editar meta/i })).toBeInTheDocument();
+    const titulo = screen.getByLabelText(/título de la meta/i);
+    await user.clear(titulo);
+    await user.type(titulo, 'Leer cada día');
+    await user.selectOptions(screen.getByLabelText(/período/i), 'mensual');
+    await user.type(screen.getByLabelText(/sub-tareas/i), 'Capítulo 2{enter}');
+    await user.click(screen.getByRole('button', { name: /guardar meta/i }));
+
+    const [meta] = StorageService.getGoals(profileId);
+    expect(meta).toMatchObject({ id: 'g-edit', title: 'Leer cada día', period: 'mensual' });
+    expect(meta.items.map(i => [i.title, i.completed])).toEqual([['Capítulo 1', true], ['Capítulo 2', false]]);
+    expect(screen.getByText('Mensual')).toBeInTheDocument();
+  });
+
+  it('borrar una meta pide confirmación', async () => {
+    const user = userEvent.setup();
+    simularConfirmacion(false);
+    StorageService.saveGoal({ id: 'g-keep', profileId, title: 'Correr', period: 'semanal', items: [], createdAt: '2026-11-01' });
+    render(<GoalsDrawer profileId={profileId} />);
+
+    await user.click(screen.getByRole('button', { name: 'Eliminar meta Correr' }));
+
+    expect(StorageService.getGoals(profileId)).toHaveLength(1);
+    vi.restoreAllMocks();
   });
 
   it('se cierra con Escape', async () => {

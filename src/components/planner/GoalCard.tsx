@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import type { Goal } from '../../types';
 import styles from './GoalCard.module.css';
 
@@ -7,9 +7,10 @@ interface GoalCardProps {
   goal: Goal;
   onToggleSubItem: (goalId: string, subId: string) => void;
   onDeleteGoal: (goalId: string) => void;
+  onEditGoal?: (goal: Goal) => void;
 }
 
-export const GoalCard: React.FC<GoalCardProps> = ({ goal, onToggleSubItem, onDeleteGoal }) => {
+export const GoalCard: React.FC<GoalCardProps> = ({ goal, onToggleSubItem, onDeleteGoal, onEditGoal }) => {
   const total = goal.items.length;
   const completed = goal.items.filter(i => i.completed).length;
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -18,6 +19,17 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal, onToggleSubItem, onDel
     <article className={styles.goalCard} aria-labelledby={`goal-title-${goal.id}`}>
       <div className={styles.headerRow}>
         {goal.category && <span className={styles.categoryBadge}>{goal.category}</span>}
+        <span className={styles.categoryBadge}>{goal.period === 'mensual' ? 'Mensual' : 'Semanal'}</span>
+        {onEditGoal && (
+          <button
+            type="button"
+            className={styles.deleteBtn}
+            onClick={() => onEditGoal(goal)}
+            aria-label={`Editar meta ${goal.title}`}
+          >
+            <Pencil size={16} aria-hidden="true" />
+          </button>
+        )}
         <button
           type="button"
           className={styles.deleteBtn}

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { CheckCircle2, Trash2, X } from 'lucide-react';
+import { sileo } from 'sileo';
+import { confirmar } from '../../utils/confirmar';
 import type { HabitTrackerItem } from '../../types';
 import styles from './HabitModal.module.css';
 
@@ -85,7 +87,11 @@ export const HabitModal: React.FC<HabitModalProps> = ({
 
   const handleDelete = () => {
     if (habit?.id && onDelete) {
-      onDelete(habit.id);
+      const id = habit.id;
+      confirmar(`¿Eliminar el hábito "${habit.name}" y sus marcas? No se puede deshacer.`, () => {
+        onDelete(id);
+        sileo.success({ title: 'Hábito eliminado' });
+      });
     }
   };
 

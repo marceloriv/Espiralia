@@ -25,6 +25,7 @@ vi.mock('../services/fileStore', () => ({
 import { FoldersView } from '../components/FoldersView';
 import { StorageService } from '../services/storage';
 import { sileo } from 'sileo';
+import { simularConfirmacion, conMensaje } from './confirmacion';
 
 const profileId = 'p-pdf';
 
@@ -64,14 +65,14 @@ describe('FoldersView - PDF en carpetas', () => {
   it('elimina un PDF solo tras confirmar', async () => {
     const user = userEvent.setup();
     store.files = [{ id: 'file-1', profileId, folderId: 'f-estudio', name: 'guia.pdf', size: 2048, createdAt: '2026-10-28T12:00:00.000Z' }];
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    simularConfirmacion(false);
     render(<FoldersView profileId={profileId} />);
 
     const borrar = await screen.findByRole('button', { name: /eliminar guia\.pdf/i });
     await user.click(borrar);
     expect(store.files).toHaveLength(1);
 
-    confirm.mockReturnValue(true);
+    simularConfirmacion(true);
     await user.click(borrar);
     expect(store.files).toHaveLength(0);
     expect(await screen.findByText(/no contiene notas, enlaces ni pdf todavía/i)).toBeInTheDocument();
@@ -80,13 +81,13 @@ describe('FoldersView - PDF en carpetas', () => {
   it('al borrar la carpeta avisa que sus PDF se borran con ella', async () => {
     const user = userEvent.setup();
     store.files = [{ id: 'file-1', profileId, folderId: 'f-estudio', name: 'guia.pdf', size: 2048, createdAt: '2026-10-28T12:00:00.000Z' }];
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const confirm = simularConfirmacion(true);
     render(<FoldersView profileId={profileId} />);
     await screen.findByText('guia.pdf');
 
     await user.click(screen.getByTitle('Eliminar Carpeta'));
 
-    expect(confirm).toHaveBeenCalledWith(expect.stringContaining('Su PDF sí se borrará.'));
+    expect(confirm).toHaveBeenCalledWith(conMensaje('Su PDF sí se borrará.'));
     await vi.waitFor(() => expect(store.files).toHaveLength(0));
   });
 });

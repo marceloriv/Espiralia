@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useHoy } from '../utils/useHoy';
-import { Plus, BookOpen, FileText, Lightbulb, Feather, Activity, ShieldCheck } from 'lucide-react';
+import { Plus, BookOpen, FileText, Lightbulb, Activity, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../utils/confirmar';
 import type { Note, Folder, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { NoteModal } from './notes/NoteModal';
 import { BujoCard } from './notes/BujoCard';
+import { BujoBlocksView, PliegoMeta } from './notes/PliegoParts';
 import { Pliego } from './common/Pliego';
-import { parseBujoContent, countWords, getCategoryRibbonColor } from '../utils/bujoFormatter';
+import { parseBujoContent, countWords, getCategoryRibbonColor, wordsWrittenLabel } from '../utils/bujoFormatter';
 import { toLocalDateStr } from '../utils/localDate';
-import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE } from '../utils/energyLevels';
-import { occurrenceKeys } from '../utils/occurrenceKeys';
+import { ENERGY_LEVELS } from '../utils/energyLevels';
 import styles from './NotesView.module.css';
 
 interface NotesViewProps {
@@ -26,7 +27,10 @@ const DEFAULT_THERAPEUTIC_TITLE = 'Descompresión mental & Autoobservación';
 const EMPTY_TOMO_CONTENT = `§ 1. Tu primera entrada
 Este tomo aún no tiene notas. Pulsa "Nueva Nota" para escribir la primera: lo que escribas se guarda solo en este navegador.`;
 
-export interface TomoConfig {
+/** Clase de una pestaña del listado; la activa lleva además el resaltado. */
+const tabClass = (isActive: boolean) => (isActive ? `${styles.tabBtn} ${styles.tabBtnActive}` : styles.tabBtn);
+
+interface TomoConfig {
   id: string;
   folderId: string;
   title: string;
@@ -36,9 +40,7 @@ export interface TomoConfig {
   defaultContent: string;
 }
 
-// La regla solo afecta el HMR en desarrollo; mover estas exportaciones obligaría a tocar a sus importadores.
-// eslint-disable-next-line react-refresh/only-export-components
-export const TOMOS_CONFIG: TomoConfig[] = [
+const TOMOS_CONFIG: TomoConfig[] = [
   {
     id: '01',
     folderId: 'tomo-01',
@@ -68,8 +70,10 @@ export const TOMOS_CONFIG: TomoConfig[] = [
   },
 ];
 
-// eslint-disable-next-line react-refresh/only-export-components
-export function getNoteTomo(note: Note): string {
+/** Ids con los que Notas guarda sus tomos en `folderId` (versiones anteriores usaban '02' y '03' a secas). */
+const esTomo = (folderId: string): boolean => /^(tomo-)?0[1-3]$/.test(folderId);
+
+function getNoteTomo(note: Note): string {
   if (note.folderId === 'tomo-02' || note.folderId === '02') return '02';
   if (note.folderId === 'tomo-03' || note.folderId === '03') return '03';
   return '01'; // Por defecto pertenece a Tomo 01 (Diario Íntimo)
@@ -86,7 +90,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const todayStr = toLocalDateStr(hoy);
-  const [basalEnergy, setBasalEnergy] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
+  const [basalEnergy, setBasalEnergy] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) ?? '');
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [isEditingPliego, setIsEditingPliego] = useState(false);
   const [pliegoDraftTitle, setPliegoDraftTitle] = useState('');
@@ -169,7 +173,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   };
 
   const handleDeleteNote = (note: Note) => {
-    if (window.confirm(`¿Seguro que deseas eliminar "${note.title}"?`)) {
+    confirmar(`¿Seguro que deseas eliminar "${note.title}"?`, () => {
       StorageService.deleteNote(profileId, note.id);
       if (activeNoteId === note.id) {
         setActiveNoteId(null);
@@ -181,7 +185,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         // Ignorar
       }
       loadData();
-    }
+    });
   };
 
   const currentTomoConfig = useMemo(() => {
@@ -267,7 +271,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       };
       StorageService.saveNote(updatedNote);
       try {
-        sileo.success({ title: 'Pliego Guardado', description: 'Manuscrito preservado en almacenamiento seguro.' });
+        sileo.success({ title: 'Pliego Guardado', description: 'Se guardó en este navegador.' });
       } catch {
         // Ignorar
       }
@@ -287,7 +291,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       StorageService.saveNote(newNote);
       setActiveNoteId(newNote.id);
       try {
-        sileo.success({ title: 'Pliego Guardado', description: 'Manuscrito preservado en almacenamiento seguro.' });
+        sileo.success({ title: 'Pliego Guardado', description: 'Se guardó en este navegador.' });
       } catch {
         // Ignorar
       }
@@ -353,10 +357,15 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
 
           {/* Título accesible para tests que buscan 'notas & reflexiones' */}
           <h2 className={styles.visuallyHidden}>Notas &amp; Reflexiones</h2>
+          {/* Fuera de la fila de lomos: dentro, el scroll horizontal lo sacaba de pantalla en móvil. */}
+          <button type="button" className={styles.btnAddNoteHeader} onClick={handleOpenNew}>
+            <Plus size={16} aria-hidden="true" />
+            <span>Nueva Nota</span>
+          </button>
         </div>
 
         {/* Archival Binder Spines / Lomos de Archivador de Oficina */}
-        <div className={styles.binderCabinetRow} role="tablist" aria-label="Archivadores de Tomos">
+        <div className={styles.binderCabinetRow} role="group" aria-label="Archivadores de Tomos">
           {TOMOS_CONFIG.map((tomo) => {
             const isActive = activeTomo === tomo.id;
             const binderTomoClassMap: Record<string, string> = {
@@ -371,6 +380,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               <button
                 key={tomo.id}
                 type="button"
+                title={tomo.title}
                 aria-current={isActive ? 'page' : 'false'}
                 className={`${styles.binderSpineBtn} ${tomoStyleClass} ${isActive ? styles.binderActive : ''}`}
                 onClick={() => setActiveTomo(tomo.id)}
@@ -389,16 +399,6 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
               </button>
             );
           })}
-
-          <button
-            type="button"
-            className={styles.btnAddNoteHeader}
-            onClick={handleOpenNew}
-            aria-label="+ Nueva Nota"
-          >
-            <Plus size={16} aria-hidden="true" />
-            <span>+ Nueva Nota</span>
-          </button>
         </div>
       </div>
 
@@ -416,21 +416,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                 <span className={styles.metaLabel}>FECHA:</span>
                 <span className={styles.metaDateUnderlined}>{pliegoDate}</span>
               </div>
-              <div className={styles.metaDetailsGroup}>
-                {activeNote && (
-                  <span className={styles.activePliegoBadge}>Pliego Activo de Trabajo</span>
-                )}
-                <span className={styles.metaItem}>
-                  <Feather size={14} className={styles.iconTeal} aria-hidden="true" />
-                  <span>{activeNote ? activeNote.title : 'Nueva nota'}</span>
-                </span>
-                {activeNote && (
-                  <span className={styles.metaItem}>
-                    <BookOpen size={14} className={styles.iconPrimary} aria-hidden="true" />
-                    <span>{`${activeWordCount} palabras`}</span>
-                  </span>
-                )}
-              </div>
+              <PliegoMeta noteTitle={activeNote?.title ?? null} wordCount={activeWordCount} />
             </div>
 
             {/* Lienzo Manuscrito Bujo Dot Grid */}
@@ -463,40 +449,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                   />
                 </div>
               ) : (
-                <div className={styles.bujoTextContent}>
-                  {occurrenceKeys(bujoBlocks.map((b) => JSON.stringify(b))).map((blockKey, idx) => {
-                    const block = bujoBlocks[idx];
-                    if (block.type === 'heading') {
-                      return (
-                        <div key={blockKey} className={styles.journalSection}>
-                          <h3 className={styles.sectionHeading}>
-                            <span className={styles.sectionSymbol}>{block.symbol}</span>
-                            <span>{block.title}</span>
-                          </h3>
-                        </div>
-                      );
-                    }
-                    if (block.type === 'callout') {
-                      return (
-                        <div key={blockKey} className={styles.conasetEmbeddedBox}>
-                          <div className={styles.conasetHeader}>
-                            <span className={styles.conasetTitle}>
-                              {block.icon && <span className={styles.conasetIcon}>{block.icon}</span>}
-                              {block.title}
-                            </span>
-                            {block.badge && <span className={styles.conasetBadge}>{block.badge}</span>}
-                          </div>
-                          {block.text && <p className={styles.conasetText}>{block.text}</p>}
-                        </div>
-                      );
-                    }
-                    return (
-                      <p key={blockKey} className={styles.journalParagraph}>
-                        {block.text}
-                      </p>
-                    );
-                  })}
-                </div>
+                <BujoBlocksView blocks={bujoBlocks} />
               )}
 
               {/* Barra de estado de escritura en vivo */}
@@ -504,7 +457,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
                 <span className={styles.blinkingCursor} />
                 <span>Guardado en este navegador • Sin telemetría</span>
                 <span className={styles.wordCount}>
-                  {activeWordCount} {activeWordCount === 1 ? 'palabra escrita' : 'palabras escritas'}
+                  {wordsWrittenLabel(activeWordCount)}
                 </span>
               </div>
             </div>
@@ -611,14 +564,14 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
           <div className={styles.tabs} aria-label="Filtro de notas">
             <button
               type="button"
-              className={`${styles.tabBtn} ${activeTab === 'all' ? styles.tabBtnActive : ''}`}
+              className={tabClass(activeTab === 'all')}
               onClick={() => setActiveTab('all')}
             >
               Todas ({notes.length})
             </button>
             <button
               type="button"
-              className={`${styles.tabBtn} ${activeTab === 'reflections' ? styles.tabBtnActive : ''}`}
+              className={tabClass(activeTab === 'reflections')}
               onClick={() => setActiveTab('reflections')}
             >
               <BookOpen size={16} aria-hidden="true" style={{ verticalAlign: 'middle', marginRight: 4 }} />
@@ -626,7 +579,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
             </button>
             <button
               type="button"
-              className={`${styles.tabBtn} ${activeTab === 'quick' ? styles.tabBtnActive : ''}`}
+              className={tabClass(activeTab === 'quick')}
               onClick={() => setActiveTab('quick')}
             >
               <FileText size={16} aria-hidden="true" style={{ verticalAlign: 'middle', marginRight: 4 }} />
@@ -687,7 +640,9 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveNote}
         initialNote={editingNote}
-        folders={folders}
+        // folderId guarda el tomo ('tomo-0X') o una carpeta real y no se puede renombrar (hay datos guardados):
+        // solo una nota que ya vive en una carpeta puede cambiar de carpeta desde aquí.
+        folders={editingNote?.folderId && !esTomo(editingNote.folderId) ? folders : []}
       />
     </div>
   );

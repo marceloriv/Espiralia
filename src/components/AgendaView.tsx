@@ -10,29 +10,34 @@ import esLocale from '@fullcalendar/react/locales/es';
 import '@fullcalendar/react/skeleton.css';
 import '@fullcalendar/react/themes/forma/theme.css';
 import './agenda/fullcalendar-palette.css';
-import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, Smile, Leaf, Meh, BatteryLow } from 'lucide-react';
-import { ENERGY_LEVELS } from '../utils/energyLevels';
+import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, CalendarMinus } from 'lucide-react';
+import { DISPOSITIONS, ENERGY_LEVELS, dispositionLabel, energyLabel } from '../utils/energyLevels';
 import { sileo } from 'sileo';
-import type { AgendaEvent, EventCategory, Profile, ViewType } from '../types';
+import { confirmar } from '../utils/confirmar';
+import type { AgendaEvent, Disposition, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
+import { IcsService } from '../services/icsService';
+import { downloadFile } from '../utils/downloadFile';
 import { defaultEndTime, isoWeekNumber, toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
-import { MAX_TITLE_LENGTH, emptyEventForm, eventFormFromEvent, validateEventForm } from './agenda/eventForm';
+import { emptyEventForm, eventFormFromEvent, validateEventForm } from './agenda/eventForm';
 import type { EventFormState } from './agenda/eventForm';
 import {
   CATEGORIES,
   CATEGORY_COLORS,
   FILTERS,
   FILTER_LABELS,
-  WEEK_DAYS,
   categoryOf,
   countByCategory,
   occursOn,
+  removeOccurrence,
   toCalendarEvent,
 } from './agenda/eventMapping';
 import type { CategoryFilter } from './agenda/eventMapping';
 import { commitTimeChange, safeDeleteEvent, safeSaveEvent } from './agenda/eventPersistence';
-import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Papel } from './common/Papel';
+import { TINTE_DE_MODULO } from './common/tintes';
 import { Pliego } from './common/Pliego';
+import { EventFormPanel } from './agenda/EventFormPanel';
 import styles from './AgendaView.module.css';
 
 interface AgendaViewProps {
@@ -75,9 +80,20 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   // ponytail: se evalúa al montar; si se rota el dispositivo, la barra se ajusta al recargar la vista.
   const [isNarrow] = useState(() => window.matchMedia(NARROW_QUERY).matches);
 
-  // Estados interactivos para Rhythm & Mood Tracker de Stitch
-  const [energyLevel, setEnergyLevel] = useState<string>('Alta');
-  const [moodState, setMoodState] = useState<string>('En Calma');
+  // Energía y ánimo del día: los mismos registros que To-Do, Planner, Notas y el Dashboard.
+  const todayStr = toLocalDateStr(hoy);
+  const [energyLevel, setEnergyLevel] = useState(() => StorageService.getTodayMood(activeProfileId, todayStr) ?? '');
+  const [disposition, setDisposition] = useState(() => StorageService.getTodayDisposition(activeProfileId, todayStr));
+
+  const handleSelectEnergy = (value: string) => {
+    setEnergyLevel(value);
+    StorageService.setTodayMood(activeProfileId, todayStr, value);
+  };
+
+  const handleSelectDisposition = (value: Disposition) => {
+    setDisposition(value);
+    StorageService.setTodayDisposition(activeProfileId, todayStr, value);
+  };
 
   const reload = () => setEvents(StorageService.getEvents(activeProfileId));
   const update = (patch: Partial<EventFormState>) => setForm(f => ({ ...f, ...patch }));
@@ -140,8 +156,45 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     reload();
   };
 
+  // Quitar un día parte la serie en dos (removeOccurrence); si la primera parte no queda, se borra la serie original.
+  const quitarDiaDeSerie = (serie: AgendaEvent, date: string): boolean => {
+    // Sufijo aleatorio: el evento suelto de "Cambiar solo este día" se crea en el mismo milisegundo.
+    const quedan = removeOccurrence(serie, date, () => `e-${Date.now()}-${crypto.getRandomValues(new Uint32Array(1))[0].toString(36)}`);
+    if (!quedan.some(parte => parte.id === serie.id) && !safeDeleteEvent(activeProfileId, serie.id)) return false;
+    return quedan.every(parte => safeSaveEvent(parte));
+  };
+
+  const handleRemoveOccurrence = (ev: AgendaEvent) => {
+    const date = selectedDate;
+    confirmar(`¿Quitar el ${date} de la serie "${ev.title}"? Las demás repeticiones se mantienen.`, () => {
+      if (!quitarDiaDeSerie(ev, date)) {
+        reload();
+        return;
+      }
+      sileo.success({ title: 'Día quitado de la serie' });
+      setForm(f => (f.editingId === ev.id ? emptyEventForm(date) : f));
+      reload();
+    }, 'Quitar');
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.editingId && form.soloDia) {
+      const serie = events.find(ev => ev.id === form.editingId);
+      const suelto = validateEventForm({ ...form, editingId: undefined, repeatWeekly: false, date: form.soloDia }, activeProfileId);
+      if (!suelto.ok) {
+        sileo.error({ title: suelto.error });
+        return;
+      }
+      if (!serie || !quitarDiaDeSerie(serie, form.soloDia) || !safeSaveEvent(suelto.event)) {
+        reload();
+        return;
+      }
+      sileo.success({ title: `Cambio guardado solo para el ${form.soloDia}` });
+      resetForm(selectedDate);
+      reload();
+      return;
+    }
     const result = validateEventForm(form, activeProfileId);
     if (!result.ok) {
       sileo.error({ title: result.error });
@@ -157,14 +210,21 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   };
 
   const handleDelete = (ev: AgendaEvent) => {
+    const borrar = () => {
+      if (!safeDeleteEvent(activeProfileId, ev.id)) return;
+      sileo.success({ title: 'Evento eliminado' });
+      setForm(f => (f.editingId === ev.id ? emptyEventForm(selectedDate) : f));
+      reload();
+    };
     // Borrar una serie elimina todas sus repeticiones, pasadas incluidas: se confirma antes.
-    if (ev.recurrence && !window.confirm(`Se eliminará la serie "${ev.title}" con todas sus repeticiones. ¿Continuar?`)) {
-      return;
-    }
-    if (!safeDeleteEvent(activeProfileId, ev.id)) return;
-    sileo.success({ title: 'Evento eliminado' });
-    if (form.editingId === ev.id) resetForm(selectedDate);
-    reload();
+    if (ev.recurrence) confirmar(`Se eliminará la serie "${ev.title}" con todas sus repeticiones.`, borrar);
+    else borrar();
+  };
+
+  // Exporta lo que el filtro deja ver: el mismo .ics que Integraciones, sin salir de la Agenda.
+  const handleExportIcs = () => {
+    downloadFile(IcsService.exportToIcs(visible), `espiralia-agenda-${todayStr}.ics`, 'text/calendar;charset=utf-8');
+    sileo.success({ title: `${eventCountLabel(visible.length)} ${visible.length === 1 ? 'exportado' : 'exportados'}` });
   };
 
   const handleGoToDate = (value: string) => {
@@ -173,11 +233,6 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
     selectDay(value);
     calendarRef.current?.getApi().gotoDate(value);
   };
-
-  const toggleDay = (day: number) =>
-    update({
-      daysOfWeek: form.daysOfWeek.includes(day) ? form.daysOfWeek.filter(d => d !== day) : [...form.daysOfWeek, day],
-    });
 
   return (
     <div className={styles.agendaContainer}>
@@ -218,7 +273,7 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
           <button
             type="button"
             className={styles.btnExportIcs}
-            onClick={() => sileo.info({ title: 'Exportación RFC 5545 lista en Bóveda' })}
+            onClick={handleExportIcs}
           >
             <Download size={15} aria-hidden="true" />
             <span>Exportar .ics</span>
@@ -239,19 +294,13 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
               <span className={styles.sheetTitle}>Almanaque de Mesa</span>
             </div>
 
-            <div className={styles.toolbarLegend}>
-              <span className={styles.legendItem}>
-                <span className={`${styles.legendDot} ${styles.dotPrimary}`} />
-                Clave
-              </span>
-              <span className={styles.legendItem}>
-                <span className={`${styles.legendDot} ${styles.dotEmerald}`} />
-                Trámites
-              </span>
-              <span className={styles.legendItem}>
-                <span className={`${styles.legendDot} ${styles.dotBlue}`} />
-                Académico
-              </span>
+            <div className={styles.toolbarLegend} role="group" aria-label="Colores por categoría">
+              {CATEGORIES.map(c => (
+                <span key={c} className={styles.legendItem}>
+                  <span className={styles.legendDot} style={{ backgroundColor: CATEGORY_COLORS[c].color }} aria-hidden="true" />
+                  {FILTER_LABELS[c]}
+                </span>
+              ))}
             </div>
           </div>
 
@@ -310,12 +359,9 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <div className={styles.panelBody}>
             {/* Cabecera de la ficha */}
             <div className={styles.panelHeaderRow}>
-              <div>
-                <span className={styles.agendaDiariaBadge}>Agenda Diaria</span>
-                <h3 id="agenda-day-title" className={styles.panelTitle}>Eventos del {selectedDate}</h3>
-              </div>
+              <h3 id="agenda-day-title" className={styles.panelTitle}>Eventos del {selectedDate}</h3>
               <Papel as="span" forma="pieza" tinte={TINTE_DE_MODULO.agenda} className={styles.priorityCountBadge}>
-                {dayEvents.length} {dayEvents.length === 1 ? 'Prioritaria' : 'Prioritarias'}
+                {eventCountLabel(dayEvents.length)}
               </Papel>
             </div>
 
@@ -364,6 +410,17 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
                     >
                       <Pencil size={16} aria-hidden="true" />
                     </button>
+                    {ev.recurrence && (
+                      <button
+                        type="button"
+                        className={styles.iconBtn}
+                        aria-label={`quitar ${ev.title} del ${selectedDate}`}
+                        title="Quitar este día de la serie"
+                        onClick={() => handleRemoveOccurrence(ev)}
+                      >
+                        <CalendarMinus size={16} aria-hidden="true" />
+                      </button>
+                    )}
                     <button
                       type="button"
                       className={styles.iconBtn}
@@ -380,150 +437,13 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
           </Papel>
 
           {/* 3.3 Formulario de Creación / Edición */}
-          <form
-            className={styles.panelCard}
+          <EventFormPanel
+            form={form}
+            update={update}
             onSubmit={handleSubmit}
-            aria-label={form.editingId ? 'Editar evento' : 'Nuevo evento'}
-          >
-            <h3 className={styles.panelTitle}>
-              {form.editingId ? 'Editar evento' : `Nuevo evento para ${form.date}`}
-            </h3>
-            {form.editingId && form.repeatWeekly && (
-              <p className={styles.hint}>Los cambios se aplican a todas las repeticiones.</p>
-            )}
-
-            <div className={styles.formGroup}>
-              <label className={styles.fieldLabel} htmlFor="agenda-title">
-                Título
-              </label>
-              <input
-                id="agenda-title"
-                type="text"
-                className={styles.inputField}
-                placeholder="Título del evento"
-                maxLength={MAX_TITLE_LENGTH}
-                value={form.title}
-                onChange={e => update({ title: e.target.value })}
-                required
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.fieldLabel} htmlFor="agenda-date">
-                Fecha
-              </label>
-              <input
-                id="agenda-date"
-                type="date"
-                className={styles.inputField}
-                value={form.date}
-                onChange={e => update({ date: e.target.value })}
-                required
-              />
-            </div>
-
-            <label className={styles.checkRow}>
-              <input type="checkbox" checked={form.allDay} onChange={e => update({ allDay: e.target.checked })} />
-              Todo el día
-            </label>
-
-            {!form.allDay && (
-              <div className={styles.timeRow}>
-                <div className={styles.formGroup}>
-                  <label className={styles.fieldLabel} htmlFor="agenda-start">
-                    Hora de inicio
-                  </label>
-                  <input
-                    id="agenda-start"
-                    type="time"
-                    className={styles.inputField}
-                    value={form.startTime}
-                    onChange={e => update({ startTime: e.target.value })}
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.fieldLabel} htmlFor="agenda-end">
-                    Hora de término
-                  </label>
-                  <input
-                    id="agenda-end"
-                    type="time"
-                    className={styles.inputField}
-                    value={form.endTime}
-                    onChange={e => update({ endTime: e.target.value })}
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className={styles.formGroup}>
-              <label className={styles.fieldLabel} htmlFor="agenda-category">
-                Categoría
-              </label>
-              <select
-                id="agenda-category"
-                className={styles.inputField}
-                value={form.category}
-                onChange={e => update({ category: e.target.value as EventCategory })}
-              >
-                {CATEGORIES.map(c => (
-                  <option key={c} value={c}>
-                    {FILTER_LABELS[c]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <label className={styles.checkRow}>
-              <input
-                type="checkbox"
-                checked={form.repeatWeekly}
-                onChange={e => update({ repeatWeekly: e.target.checked })}
-              />
-              Repetir semanalmente
-            </label>
-
-            {form.repeatWeekly && (
-              <fieldset className={styles.repeatFieldset}>
-                <legend className={styles.fieldLabel}>Días de repetición</legend>
-                <div className={styles.daysRow}>
-                  {WEEK_DAYS.map(d => (
-                    <label key={d.value} className={styles.dayChip}>
-                      <input
-                        type="checkbox"
-                        aria-label={d.long}
-                        checked={form.daysOfWeek.includes(d.value)}
-                        onChange={() => toggleDay(d.value)}
-                      />
-                      <span aria-hidden="true">{d.short}</span>
-                    </label>
-                  ))}
-                </div>
-                <label className={styles.fieldLabel} htmlFor="agenda-until">
-                  Repetir hasta (opcional)
-                </label>
-                <input
-                  id="agenda-until"
-                  type="date"
-                  className={styles.inputField}
-                  min={form.date}
-                  value={form.until}
-                  onChange={e => update({ until: e.target.value })}
-                />
-              </fieldset>
-            )}
-
-            <div className={styles.formActions}>
-              <button type="submit" className={styles.btnPrimary}>
-                {form.editingId ? 'Guardar cambios' : 'Agregar evento'}
-              </button>
-              {form.editingId && (
-                <button type="button" className={styles.btnSecondary} onClick={() => resetForm(selectedDate)}>
-                  Cancelar edición
-                </button>
-              )}
-            </div>
-          </form>
+            onCancel={() => resetForm(selectedDate)}
+            selectedDate={selectedDate}
+          />
 
           {/* 3.4 Tracker de Energía y Ánimo (Energy & Mood Rhythm Tracker) */}
           <div className={styles.rhythmCard}>
@@ -541,17 +461,17 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <div className={styles.vitalEnergyBox}>
               <div className={styles.vitalHeaderRow}>
                 <span className={styles.vitalLabel}>NIVEL DE ENERGÍA VITAL</span>
-                <span className={styles.vitalStatus}>{energyLevel}</span>
+                <span className={styles.vitalStatus}>{energyLabel(energyLevel)}</span>
               </div>
-              <div className={styles.energyButtonsGrid}>
-                {ENERGY_LEVELS.map(({ label, icon: Icon }) => (
+              <div className={styles.energyButtonsGrid} role="group" aria-label="Nivel de energía">
+                {ENERGY_LEVELS.map(({ value, label, icon: Icon }) => (
                   <button
-                    key={label}
+                    key={value}
                     type="button"
-                    className={`${styles.energyLevelBtn} ${energyLevel === label ? styles.energyLevelActive : ''}`}
-                    onClick={() => setEnergyLevel(label)}
+                    className={`${styles.energyLevelBtn} ${energyLevel === value ? styles.energyLevelActive : ''}`}
+                    onClick={() => handleSelectEnergy(value)}
                     title={`Nivel: ${label}`}
-                    aria-pressed={energyLevel === label}
+                    aria-pressed={energyLevel === value}
                   >
                     <Icon size={18} aria-hidden="true" />
                     <span className={styles.levelName}>{label}</span>
@@ -564,23 +484,19 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
             <div className={styles.moodBox}>
               <div className={styles.vitalHeaderRow}>
                 <span className={styles.vitalLabel}>DISPOSICIÓN EMOCIONAL</span>
-                <span className={styles.moodStatusText}>{moodState}</span>
+                <span className={styles.moodStatusText}>{dispositionLabel(disposition)}</span>
               </div>
-              <div className={styles.moodButtonsGrid}>
-                {[
-                  { id: 'Plena', Icon: Smile },
-                  { id: 'En Calma', Icon: Leaf },
-                  { id: 'Neutra', Icon: Meh },
-                  { id: 'Cansada', Icon: BatteryLow },
-                ].map(mood => (
+              <div className={styles.moodButtonsGrid} role="group" aria-label="Disposición emocional">
+                {DISPOSITIONS.map(({ value, label, icon: Icon }) => (
                   <button
-                    key={mood.id}
+                    key={value}
                     type="button"
-                    className={`${styles.moodBtn} ${moodState === mood.id ? styles.moodBtnActive : ''}`}
-                    onClick={() => setMoodState(mood.id)}
+                    className={`${styles.moodBtn} ${disposition === value ? styles.moodBtnActive : ''}`}
+                    onClick={() => handleSelectDisposition(value)}
+                    aria-pressed={disposition === value}
                   >
-                    <mood.Icon size={18} className={styles.moodEmoji} aria-hidden="true" />
-                    <span className={styles.moodLabelText}>{mood.id}</span>
+                    <Icon size={18} className={styles.moodEmoji} aria-hidden="true" />
+                    <span className={styles.moodLabelText}>{label}</span>
                   </button>
                 ))}
               </div>

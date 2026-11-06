@@ -216,3 +216,47 @@ describe('DashboardView', () => {
     expect(filas[filas.length - 1]).toHaveTextContent('Revisar la semana');
   });
 });
+
+// La fase lunar, el estado "Estable", el ánimo y el foco fijado eran fijos o se perdían al salir.
+describe('DashboardView: registros del día', () => {
+  beforeEach(() => localStorage.clear());
+  afterEach(() => vi.useRealTimers());
+
+  it('muestra la fase lunar del día, no una fija, y no inventa un estado', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date(2026, 9, 26, 12));
+    renderDashboard();
+
+    expect(screen.getByText('Luna llena')).toBeInTheDocument();
+    expect(screen.queryByText('Luna Creciente')).not.toBeInTheDocument();
+    expect(screen.queryByText('Estable')).not.toBeInTheDocument();
+  });
+
+  it('el ánimo elegido se guarda y sigue al volver al Dashboard', async () => {
+    const user = userEvent.setup();
+    const animo = () => within(screen.getByRole('group', { name: /ánimo de hoy/i }));
+    renderDashboard();
+
+    await user.click(animo().getByRole('button', { name: /neutra/i }));
+    document.body.innerHTML = '';
+    renderDashboard();
+
+    expect(animo().getByRole('button', { name: /neutra/i })).toHaveAttribute('aria-pressed', 'true');
+    expect(StorageService.getTodayDisposition(profile.id, toLocalDateStr(new Date()))).toBe('neutra');
+  });
+
+  it('el foco fijado del día se guarda y sigue al volver al Dashboard', async () => {
+    const user = userEvent.setup();
+    saveTodo({ id: 't-urgente', title: 'Entregar informe' });
+    saveTodo({ id: 't-elegida', title: 'Leer capítulo 3', priority: 'baja' });
+    renderDashboard();
+
+    await user.click(screen.getByRole('button', { name: /cambiar foco/i }));
+    await user.click(within(screen.getByRole('dialog', { name: /seleccionar foco/i })).getByRole('button', { name: /leer capítulo 3/i }));
+    document.body.innerHTML = '';
+    renderDashboard();
+
+    expect(StorageService.getTodayFocus(profile.id, toLocalDateStr(new Date()))).toBe('t-elegida');
+    expect(screen.getByRole('heading', { level: 3, name: 'Leer capítulo 3' })).toBeInTheDocument();
+  });
+});

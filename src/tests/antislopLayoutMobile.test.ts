@@ -84,6 +84,16 @@ describe('Antislop Layoutmobile Contract (R-03, R-05, R-35)', () => {
     expect(dashboardCss).toMatch(/\.habitPillChecked,\s*\.habitPillEmpty\s*\{[^}]*width:\s*44px[^}]*height:\s*44px/);
   });
 
+  // Auditoría 002, hallazgo 28: `.distractionList li` (flex-start) ganaba en especificidad a `.distractionListItem` (center)
+  // y, con los botones de 44px, el punto de cada compromiso quedaba 13 px sobre la línea de su texto. Centrar la fila lo
+  // dejaba junto al renglón del medio en los compromisos largos: la fila alinea por línea base y la ✕ queda centrada.
+  it('DashboardView alinea el punto de cada compromiso con el primer renglón de su texto', () => {
+    expect(dashboardCss).toMatch(/\.distractionListItem\s*\{[^}]*align-items:\s*baseline/);
+    expect(dashboardCss).toMatch(/\.distractionDelBtn\s*\{[^}]*align-self:\s*center/);
+    expect(dashboardCss).not.toMatch(/\.distractionList li\s*\{[^}]*align-items/);
+    expect(dashboardCss).not.toMatch(/\.distractionDot\s*\{[^}]*margin-top/);
+  });
+
   it('el contenido que no cabe hace scroll o encoge en vez de cortarse (tabla de Carpetas y métricas del Dashboard)', () => {
     expect(foldersCss).toMatch(/\.ledgerTableWrapper\s*\{[^}]*overflow-x:\s*auto/);
     expect(dashboardCss).toMatch(/\.kpiStrip\s*\{[^}]*repeat\(auto-fit,\s*minmax\(min\(100%,\s*150px\),\s*1fr\)\)/);

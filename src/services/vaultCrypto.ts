@@ -1,4 +1,4 @@
-import type { Profile, AgendaEvent, PlannerBlock, Goal, TodoItem, Area, Note, Folder, LinkItem } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, Goal, TodoItem, Area, Note, Folder, LinkItem, HabitTrackerItem, MoodEntry } from '../types';
 import { toHex, fromHex } from '../utils/hex';
 import type { FileBackup } from './fileStore';
 
@@ -16,6 +16,14 @@ export interface ProfileBackup {
   links: LinkItem[];
   /** PDFs de Carpetas en base64. Opcional: los respaldos anteriores a la subida de archivos no lo traen. */
   files?: FileBackup[];
+  // Opcionales: los respaldos anteriores al 2026-11 no los traen y deben seguir restaurando.
+  habits?: HabitTrackerItem[];
+  distractions?: string[];
+  /** Energía del día: fecha local -> valor de ENERGY_LEVELS. */
+  dailyEnergy?: Record<string, string>;
+  moods?: MoodEntry[];
+  /** Foco fijado del Dashboard: fecha local -> id de tarea. */
+  dailyFocus?: Record<string, string>;
 }
 
 export interface EncryptedVaultEnvelope {

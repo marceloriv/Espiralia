@@ -10,6 +10,7 @@ import {
   CalendarPlus,
 } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../../utils/confirmar';
 import type { Area, TodoItem, AgendaEvent, Note, LinkItem, EventCategory } from '../../types';
 import { StorageService } from '../../services/storage';
 import { toLocalDateStr } from '../../utils/localDate';
@@ -103,10 +104,13 @@ export const AreaIntegratedWorkspace: React.FC<AreaIntegratedWorkspaceProps> = (
   };
 
   const handleDeleteTodo = (id: string) => {
-    StorageService.deleteTodo(profileId, id);
-    sileo.info({ title: 'Tarea eliminada' });
-    loadData();
-    onDataChanged?.();
+    const target = todos.find(t => t.id === id);
+    confirmar(`¿Eliminar la tarea "${target?.title ?? ''}"? No se puede deshacer.`, () => {
+      StorageService.deleteTodo(profileId, id);
+      sileo.info({ title: 'Tarea eliminada' });
+      loadData();
+      onDataChanged?.();
+    });
   };
 
   const handleQuickAddEvent = (e: React.FormEvent) => {

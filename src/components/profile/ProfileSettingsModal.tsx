@@ -3,7 +3,7 @@ import { Lock, Shield, ShieldAlert, ShieldCheck, Trash2, Unlock, X } from 'lucid
 import { sileo } from 'sileo';
 import type { Profile } from '../../types';
 import { PIN_PATTERN, isPinProtected } from '../../services/pinHash';
-import { updateProfilePin, removeProfilePin, deleteProfileData } from '../../services/profileOperations';
+import { updateProfilePin, removeProfilePin, deleteProfileData, renameProfile } from '../../services/profileOperations';
 import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './ProfileSettingsModal.module.css';
 
@@ -30,6 +30,7 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   const [removeCurrentPin, setRemoveCurrentPin] = useState('');
   const [confirmName, setConfirmName] = useState('');
   const [deletePin, setDeletePin] = useState('');
+  const [newName, setNewName] = useState(profile.name);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dialogRef = useDialogFocus(isOpen);
@@ -52,6 +53,17 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const handleRename = (e: React.FormEvent) => {
+    e.preventDefault();
+    const res = renameProfile(profile, newName);
+    if (!res.success || !res.updated) {
+      sileo.error({ title: res.error || 'No se pudo cambiar el nombre' });
+      return;
+    }
+    sileo.success({ title: 'Nombre del perfil actualizado' });
+    onProfileUpdated(res.updated);
+  };
 
   const handleSetOrChangePin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -187,6 +199,32 @@ export const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({
               </span>
             </div>
           </div>
+
+          <section className={styles.section} aria-labelledby="settings-name-form-title">
+            <h3 id="settings-name-form-title" className={styles.sectionTitle}>
+              Nombre del perfil
+            </h3>
+            <form onSubmit={handleRename} className={styles.form}>
+              <div className={styles.field}>
+                <label htmlFor="settings-name" className={styles.label}>
+                  Nombre
+                </label>
+                <input
+                  id="settings-name"
+                  name="settingsName"
+                  type="text"
+                  autoComplete="off"
+                  className={styles.input}
+                  value={newName}
+                  onChange={e => setNewName(e.target.value)}
+                  required
+                />
+              </div>
+              <button type="submit" className={styles.submitBtn} disabled={newName.trim() === profile.name}>
+                <span>Guardar nombre</span>
+              </button>
+            </form>
+          </section>
 
           <section className={styles.section} aria-labelledby="settings-pin-form-title">
             <h3 id="settings-pin-form-title" className={styles.sectionTitle}>

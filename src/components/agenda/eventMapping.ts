@@ -16,13 +16,14 @@ export const FILTER_LABELS: Record<CategoryFilter, string> = {
   universidad: 'Universidad',
 };
 
-// Contraste texto/fondo >= 4.5:1: ink sobre teal y amber; blanco sobre primary y error.
-export const CATEGORY_COLORS: Record<EventCategory, { color: string; textColor: string }> = {
-  trabajo: { color: 'var(--color-accent-teal)', textColor: 'var(--color-ink)' },
-  personal: { color: 'var(--color-primary)', textColor: 'var(--color-on-primary)' },
-  urgente: { color: 'var(--color-error)', textColor: 'var(--color-on-primary)' },
-  estudio: { color: 'var(--color-accent-amber)', textColor: 'var(--color-ink)' },
-  universidad: { color: 'var(--color-primary-soft, #8b5cf6)', textColor: 'var(--color-on-primary, #ffffff)' },
+// Solo el color: FullCalendar 7 no tiene textColor (la prop es contrastColor y el tema forma la usa solo sin color-mix).
+// El tema escribe el título con el color del texto sobre un tinte claro de este color.
+export const CATEGORY_COLORS: Record<EventCategory, { color: string }> = {
+  trabajo: { color: 'var(--color-accent-teal)' },
+  personal: { color: 'var(--color-primary)' },
+  urgente: { color: 'var(--color-error)' },
+  estudio: { color: 'var(--color-accent-amber)' },
+  universidad: { color: 'var(--color-primary-soft)' },
 };
 
 export const WEEK_DAYS = [
@@ -35,7 +36,10 @@ export const WEEK_DAYS = [
   { value: 0, short: 'Do', long: 'Domingo' },
 ];
 
-export const categoryOf = (ev: AgendaEvent): EventCategory => ev.category ?? DEFAULT_CATEGORY;
+// Un evento sin categoría, o con una fuera de la lista (la Acción Rápida guardó 'salud' y 'general'), se muestra
+// como la de por defecto. El valor guardado no se reescribe: hay perfiles con esos eventos en localStorage.
+export const categoryOf = (ev: AgendaEvent): EventCategory =>
+  ev.category && CATEGORIES.includes(ev.category) ? ev.category : DEFAULT_CATEGORY;
 
 export const toCalendarEvent = (ev: AgendaEvent): EventInput => {
   const base = { id: ev.id, title: ev.title, ...CATEGORY_COLORS[categoryOf(ev)] };
@@ -85,6 +89,32 @@ export const occursOn = (ev: AgendaEvent, dateStr: string): boolean => {
   if (ev.recurrence.until && dateStr > ev.recurrence.until) return false;
   const [y, m, d] = dateStr.split('-').map(Number);
   return ev.recurrence.daysOfWeek.includes(new Date(y, m - 1, d).getDay());
+};
+
+/** ¿Cae al menos un día de la serie entre su inicio y su término? Basta revisar una semana. */
+const tieneRepeticiones = (ev: AgendaEvent): boolean => {
+  for (let i = 0; i < 7; i++) {
+    const dia = addDaysToDateStr(ev.date, i);
+    if (ev.recurrence?.until && dia > ev.recurrence.until) return false;
+    if (occursOn(ev, dia)) return true;
+  }
+  return false;
+};
+
+/**
+ * Quita un día de una serie partiéndola: la parte anterior conserva el id y la posterior recibe uno nuevo.
+ * Devuelve las partes que todavía tienen repeticiones (de 0 a 2). FullCalendar no dibuja excepciones sin el plugin rrule.
+ */
+export const removeOccurrence = (ev: AgendaEvent, date: string, newId: () => string): AgendaEvent[] => {
+  if (!ev.recurrence) return [];
+  const quedan: AgendaEvent[] = [];
+  if (date > ev.date) {
+    const antes: AgendaEvent = { ...ev, recurrence: { ...ev.recurrence, until: addDaysToDateStr(date, -1) } };
+    if (tieneRepeticiones(antes)) quedan.push(antes);
+  }
+  const despues: AgendaEvent = { ...ev, id: newId(), date: addDaysToDateStr(date, 1) };
+  if ((!ev.recurrence.until || despues.date <= ev.recurrence.until) && tieneRepeticiones(despues)) quedan.push(despues);
+  return quedan;
 };
 
 export const countByCategory = (events: AgendaEvent[]): Record<CategoryFilter, number> => {

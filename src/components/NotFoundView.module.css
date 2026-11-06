@@ -88,6 +88,11 @@
   pointer-events: none;
 }
 
+.mascota {
+  width: min(100%, 260px);
+  height: auto;
+}
+
 /* Hoja rasgada que sostiene el origami: degradado y corte artesanal */
 .hoja {
   display: flex;

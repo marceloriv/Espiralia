@@ -1,13 +1,5 @@
 .modalOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(20, 20, 19, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  z-index: 50;
-  backdrop-filter: blur(2px);
+  composes: velo from '../common/Dialogo.module.css';
 }
 
 .modalWrap {
@@ -31,8 +23,8 @@
   height: 24px;
   background: repeating-linear-gradient(
     -45deg,
-    var(--color-washi-primary, rgba(142, 30, 162, 0.18)),
-    var(--color-washi-primary, rgba(142, 30, 162, 0.18)) 6px,
+    var(--color-washi-primary),
+    var(--color-washi-primary) 6px,
     rgba(237, 150, 215, 0.25) 6px,
     rgba(237, 150, 215, 0.25) 12px
   );
@@ -45,8 +37,8 @@
 }
 
 .modalBox {
-  background-color: var(--bg-card, #fcf9f6);
-  background-image: radial-gradient(var(--color-grid-bujo, #dfd8cc) 0.65px, transparent 0.65px);
+  background-color: var(--bg-card);
+  background-image: radial-gradient(var(--color-grid-bujo) 0.65px, transparent 0.65px);
   background-size: 18px 18px;
   box-shadow: var(--shadow-lg);
   /* Polígono rasgado asimétrico: dientes irregulares arriba y abajo, laterales limpios */
@@ -91,15 +83,13 @@
 }
 
 .modalTitle {
-  font-family: var(--font-headline, serif);
-  font-size: 1.25rem;
-  color: var(--color-ink, #141413);
+  composes: titulo from '../common/Dialogo.module.css';
   margin: 0;
 }
 
 .modalSubtitle {
   font-size: 0.8125rem;
-  color: var(--color-ink-muted, #666);
+  color: var(--color-muted);
   margin: 0.25rem 0 0;
 }
 
@@ -108,7 +98,7 @@
   min-width: 44px;
   background: transparent;
   border: none;
-  color: var(--color-ink-muted, #666);
+  color: var(--color-muted);
   cursor: pointer;
   padding: 0.25rem;
   display: flex;
@@ -118,15 +108,15 @@
 }
 
 .closeBtn:hover {
-  background: var(--color-hairline, #e6dfd8);
-  color: var(--color-ink, #141413);
+  background: var(--color-hairline);
+  color: var(--color-ink);
 }
 
 .tabs {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.25rem;
-  border-bottom: 1px solid var(--color-hairline, #e6dfd8);
+  border-bottom: 1px solid var(--color-hairline);
   padding-bottom: 0.5rem;
 }
 
@@ -135,7 +125,7 @@
   padding: 0.5rem 1rem;
   border: none;
   background: transparent;
-  color: var(--color-ink-muted, #666);
+  color: var(--color-muted);
   border-radius: var(--radius-sm, 0.25rem);
   font-size: 0.875rem;
   font-weight: 500;
@@ -146,13 +136,13 @@
 }
 
 .tabBtn:hover {
-  color: var(--color-ink, #141413);
-  background: var(--color-hairline, #e6dfd8);
+  color: var(--color-ink);
+  background: var(--color-hairline);
 }
 
 .tabBtnActive {
-  background: var(--color-canvas, #faf9f5);
-  color: var(--color-accent, #c96442);
+  background: var(--color-canvas);
+  color: var(--color-accent);
   font-weight: 600;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
@@ -164,13 +154,13 @@
 }
 
 .infoCard {
-  background: var(--color-canvas, #faf9f5);
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  background: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
   border-radius: var(--radius-sm, 0.25rem);
   padding: 1rem;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
 }
 
 .infoGrid {
@@ -179,13 +169,11 @@
   gap: 0.5rem;
   margin-top: 0.5rem;
   font-size: 0.8125rem;
-  color: var(--color-ink-muted, #666);
+  color: var(--color-muted);
 }
 
 .formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  composes: campo from '../common/Dialogo.module.css';
 }
 
 .checkboxGroup {
@@ -198,74 +186,24 @@
 .checkbox {
   width: 20px;
   height: 20px;
-  accent-color: var(--color-accent, #c96442);
+  accent-color: var(--color-accent);
   cursor: pointer;
 }
 
 .label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-ink, #141413);
+  composes: etiqueta from '../common/Dialogo.module.css';
 }
 
 .input {
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  border-radius: var(--radius-sm, 0.25rem);
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  background: var(--color-canvas, #faf9f5);
-  color: var(--color-ink, #141413);
-  min-height: 44px;
-}
-
-.input:focus {
-  border-color: var(--color-accent, #c96442);
-}
-
-.input:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 1px;
-  border-color: var(--color-primary);
+  composes: control from '../common/Dialogo.module.css';
 }
 
 .btnPrimary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 44px;
-  padding: 0.6rem 1.25rem;
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  border: none;
-  border-radius: var(--radius-sm, 0.25rem);
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.15s ease, opacity 0.15s ease;
-}
-
-.btnPrimary:hover {
-  background: var(--color-primary-active);
+  composes: btnPrimario from '../common/Dialogo.module.css';
 }
 
 .btnSecondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 44px;
-  padding: 0.6rem 1rem;
-  border: 1px solid var(--color-hairline, #e6dfd8);
-  background: transparent;
-  color: var(--color-ink, #141413);
-  border-radius: var(--radius-sm, 0.25rem);
-  font-size: 0.875rem;
-  cursor: pointer;
-}
-
-.btnSecondary:hover {
-  background: var(--color-hairline, #e6dfd8);
+  composes: btnSecundario from '../common/Dialogo.module.css';
 }
 
 .radioOption {
@@ -274,35 +212,35 @@
   align-items: start;
   column-gap: 0.5rem;
   padding: 0.75rem;
-  border: 1px solid var(--color-hairline, #e6dfd8);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-sm, 0.25rem);
-  background: var(--color-canvas, #faf9f5);
+  background: var(--color-canvas);
   cursor: pointer;
 }
 
 .radioOption input {
   margin-top: 0.2rem;
-  accent-color: var(--color-accent, #c96442);
+  accent-color: var(--color-accent);
 }
 
 .radioOptionTitle {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
 }
 
 .radioOptionDesc {
   grid-column: 2;
   font-size: 0.75rem;
-  color: var(--color-ink-muted, #666);
+  color: var(--color-muted);
   margin-top: 0.2rem;
 }
 
 .alertBox {
   background: rgba(201, 100, 66, 0.1);
-  border-left: 3px solid var(--color-accent, #c96442);
+  border-left: 3px solid var(--color-accent);
   padding: 0.75rem;
   border-radius: var(--radius-sm, 0.25rem);
   font-size: 0.8125rem;
-  color: var(--color-ink, #141413);
+  color: var(--color-ink);
 }

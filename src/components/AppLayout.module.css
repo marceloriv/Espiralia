@@ -2,7 +2,7 @@
   display: flex;
   min-height: 100dvh;
   /* El marfil mantiene la calma: el color vive en superficies con función, no en un velo sobre toda la pantalla. */
-  background-color: var(--bg-canvas, var(--color-canvas));
+  background-color: var(--bg-canvas);
 }
 
 .skipLink {
@@ -38,13 +38,13 @@
   width: 260px;
   height: 100dvh;
   padding: 24px 16px;
-  background-color: var(--bg-surface-soft, var(--color-surface-soft));
+  background-color: var(--bg-surface-soft);
   /* El degradado sigue el molinillo pizarra, la concha arena y la rosa de la hoja de origami. */
   background-image: linear-gradient(160deg,
-    color-mix(in srgb, var(--papel-pizarra) 58%, var(--bg-surface-soft, var(--color-surface-soft))) 0%,
-    color-mix(in srgb, var(--papel-arena) 56%, var(--bg-surface-soft, var(--color-surface-soft))) 49%,
-    color-mix(in srgb, var(--papel-rosa) 56%, var(--bg-surface-soft, var(--color-surface-soft))) 100%);
-  border-right: 1px solid var(--border-hairline, var(--color-hairline));
+    color-mix(in srgb, var(--papel-pizarra) 58%, var(--bg-surface-soft)) 0%,
+    color-mix(in srgb, var(--papel-arena) 56%, var(--bg-surface-soft)) 49%,
+    color-mix(in srgb, var(--papel-rosa) 56%, var(--bg-surface-soft)) 100%);
+  border-right: 1px solid var(--border-hairline);
 }
 
 .brand {
@@ -59,19 +59,8 @@
 }
 
 .monogram {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background-color: var(--color-canvas);
-  border: 1px solid var(--color-hairline);
-  color: var(--color-primary);
-  font-family: var(--font-primary);
-  font-size: 16px;
-  font-weight: 700;
-  box-shadow: var(--shadow-sm);
+  height: auto;
   flex-shrink: 0;
 }
 
@@ -111,7 +100,7 @@
   width: 100%;
   min-height: 44px;
   padding: 10px 16px;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
   background-color: var(--color-surface-card);
   color: var(--color-primary);
@@ -198,14 +187,6 @@
   gap: 6px;
   font-weight: 500;
   color: var(--color-ink);
-}
-
-.localDbDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--color-success);
-  display: inline-block;
 }
 
 .localDbCipher {
@@ -366,7 +347,7 @@
   gap: 8px;
   min-height: 44px;
   padding: 0 12px;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
   background-color: var(--color-surface-card);
   color: var(--color-muted);
@@ -437,7 +418,7 @@
   gap: 6px;
   min-height: 44px;
   padding: 0 14px;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
   background-color: var(--color-surface-card);
   color: var(--color-primary);
@@ -463,7 +444,7 @@
   gap: 8px;
   min-height: 44px;
   padding: 0 14px;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
   background-color: var(--color-canvas);
   color: var(--color-body);
@@ -626,7 +607,7 @@
     width: 100%;
     height: calc(64px + env(safe-area-inset-bottom, 0px));
     padding: 0 8px env(safe-area-inset-bottom, 0px);
-    border-top: 1px solid var(--border-hairline, var(--color-hairline));
+    border-top: 1px solid var(--border-hairline);
     border-right: none;
     background-color: rgba(245, 240, 232, 0.95);
     background-image: none;

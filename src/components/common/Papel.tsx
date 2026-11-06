@@ -1,20 +1,10 @@
 import React from 'react';
 import styles from './Papel.module.css';
 
-export type PapelTinte = 'arena' | 'pizarra' | 'salvia' | 'terracota' | 'ambar' | 'rosa' | 'turquesa';
-type PapelTag = 'div' | 'section' | 'article' | 'aside' | 'span';
+import type { PapelTinte } from './tintes';
 
-/** El color codifica el módulo (DESIGN.md §0.4): el mismo tinte significa lo mismo en toda la app. */
-// eslint-disable-next-line react-refresh/only-export-components -- solo afecta el HMR en desarrollo
-export const TINTE_DE_MODULO = {
-  dashboard: 'arena',
-  agenda: 'pizarra',
-  planner: 'salvia',
-  todo: 'terracota',
-  notas: 'ambar',
-  carpetas: 'rosa',
-  integraciones: 'turquesa',
-} as const satisfies Record<string, PapelTinte>;
+export type { PapelTinte } from './tintes';
+type PapelTag = 'div' | 'section' | 'article' | 'aside' | 'span';
 
 interface PapelProps extends React.HTMLAttributes<HTMLElement> {
   as?: PapelTag;

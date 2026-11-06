@@ -80,7 +80,9 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 | Título | **Playball** (un solo peso, 400) | Todo `h1` de la app, incluida la marca de la barra lateral. A 22px o más (`--text-script-min`), sin interletraje negativo: es una caligrafía enlazada. |
 | Cuerpo | **Atkinson Hyperlegible Next** | Listas, formularios, controles. Reemplaza a Inter, que es la sans por defecto de este tipo de interfaz. |
 | Manuscrito | **Reenie Beanie** | Aforismos y notas, a 22px o más. Reemplaza a Caveat. |
-| Técnica | **Spline Sans Mono** | Semana ISO, horas, almacenamiento, metadatos. Reemplaza a JetBrains Mono. |
+| Técnica | **Spline Sans Mono** | Semana ISO, horas, almacenamiento, metadatos y rótulos de ficha. Reemplaza a JetBrains Mono. |
+
+- **Rótulo de ficha** (auditoría 002, 2026-11-03): la monoespaciada en mayúsculas espaciadas también titula el encabezado corto de una tarjeta ("PRIORIDADES DE LA SEMANA", "HÁBITOS DE LA SEMANA"), como la etiqueta impresa de una ficha de archivo. Un rótulo por tarjeta, de cinco palabras como máximo, y siempre con un dato real: no se usa para expedientes ficticios ("EXP. 2026 // CLASIFICADO", "ARCHIVADOR CONFIDENCIAL" se quitaron).
 
 - Las cinco familias se publican con licencia abierta (OFL); se confirma al descargar cada una.
 - **Los `h1` van en Playball** (descargada de Google Fonts el 2026-10-26). Cada `h1` tiene una clase de CSS Modules con su propia `font-family`, así que la regla `h1[class]` de `src/index.css` los cubre a todos con un selector más específico; los `h1` nuevos la heredan sin tocar su módulo.
@@ -176,9 +178,12 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 - **Contraste del degradado de esquina:** al 58% el texto secundario del Papel bajaba a 4.18:1; los seis `--papel-texto-*` se oscurecieron un 6% y `textTokensContrast.test.ts` mide la esquina de los siete tintes.
 - **Barra lateral:** degradado pizarra, arena y rosa (160°), y debajo de la navegación una hoja de origami en CSS (`OrigamiHoja`: molinillo, caracol y rosa, con el alfiler magenta de las tres figuras). Solo se muestra con 1024px de ancho y 900px de alto o más; el riel de íconos, el móvil y `forced-colors` la ocultan.
 - **Excepción a R-19 (movimiento sin propósito), mantenida por la persona dueña:** el molinillo gira una vuelta cada 24 s, solo con `prefers-reduced-motion: no-preference`. Junto con el Nautilus de la página 404, es la única animación infinita de la app fuera del spinner de carga (`antislopMotion.test.ts`).
-- **Página 404 y Nautilus (decisión de la persona dueña, 2026-10-26):** una dirección desconocida muestra `NotFoundView`, a pantalla completa y con o sin sesión, en vez de redirigir en silencio a la raíz. La ilustra `OrigamiNautilus`, un origami en CSS con la técnica de `OrigamiHoja`: caparazón de franjas radiales que nacen del centro de la espiral, cuatro cámaras como anillos, capucha de dos tonos con el alfiler magenta y cinco tentáculos. Va fuera del árbol de accesibilidad, sin `drop-shadow` y oculto con `forced-colors`.
+- **Página 404 y Nautilus (decisión de la persona dueña, 2026-10-26; actualizada el 2026-11-03):** una dirección desconocida muestra `NotFoundView`, a pantalla completa y con o sin sesión, en vez de redirigir en silencio a la raíz. La ilustra la mascota `public/03-mascota-Nautilus.svg` a través de `Marca` (commit de identidad `883155a`); el origami CSS `OrigamiNautilus` que la ilustraba antes se borró en la auditoría 002. Va fuera del árbol de accesibilidad (`alt` vacío).
+- **Marca en el navegador (auditoría 002):** monograma como favicon y como ícono de `public/manifest.webmanifest`; metadatos `og:` sin imagen. `apple-touch-icon` y `og:image` esperan un PNG de la marca que aporte la persona dueña (R-23). El logotipo no lleva variante oscura propia: un SVG en `<img>` sigue al sistema y no a `data-theme`, y la dejaba casi blanca sobre la app clara. Si vuelve el modo oscuro, el logotipo se sirve en línea o con un segundo archivo.
+- **Retícula del hero (auditoría 002):** la hoja cuadriculada de 24px del hero de la landing es la única cuadrícula sobre el lienzo marfil; usa `--color-grid-bujo` al 30 %.
 - **Movimiento del Nautilus (segunda excepción a R-19):** el caparazón se pliega una vez al entrar y después el animal flota 8 s por ciclo, con los tentáculos ondulando 5 s. Todo bajo `prefers-reduced-motion: no-preference`; sin movimiento queda quieto y completo.
 - **`public/404.html`:** GitHub Pages lo sirve para cualquier URL inexistente. Lleva `/Espiralia/<ruta>` a `/Espiralia/#/<ruta>` para que la app decida si la ruta existe y, si no, muestre su 404; sin JavaScript queda como página mínima con enlace de regreso.
+- **Movimiento del donut de Progreso de Tareas (tercera excepción a MOTION 1, decisión de la persona dueña, 2026-10-30):** al elegir otra área, la porción, el anillo exterior y el texto del centro se mueven con el resorte del ejemplo oficial de TanStack Charts (`motion()`, rigidez 190, amortiguación 21). Es respuesta a una acción, no un bucle: sin animación de entrada (`initial: false`) y sin movimiento propio. `motion()` respeta `prefers-reduced-motion`; con movimiento reducido el cambio es inmediato. El pastel de Distribución por Categoría no se anima.
 - **Presupuesto de sombras (§0.10.7):** la hoja de origami no usa `filter: drop-shadow`, para no sumar a las cuatro de las tarjetas de Papel.
 
 ---
@@ -223,10 +228,11 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 | **`ink`** | `#1A1917` (`#141413`) | `--color-ink` | Tinta de pluma estilográfica; titulares principales de máximo contraste. |
 | **`body`** | `#3D3D3A` | `--color-body` | Color de texto para lectura corrida, tareas e instrucciones. |
 | **`body-strong`** | `#252523` | `--color-body-strong` | Texto de peso medio para énfasis y etiquetas destacadas. |
-| **`muted`** | `#64625C` | `--color-muted` | Metadatos, horas, subtítulos, etiquetas y números monumentales de agua. Oscurecido en 2026-10-22 para cumplir 4.5:1 sobre todas las superficies cálidas. |
+| **`muted`** | `#57554F` | `--color-muted` | Metadatos, horas, subtítulos, etiquetas y números monumentales de agua. Oscurecido en 2026-10-22 (de `#8E8B82`) y otra vez el 2026-10-30 (de `#64625C`): a 11px el texto quedaba en 4.6:1 sobre los tintes y con poco brillo se leía mal. Ahora 5.5:1 o más sobre las superficies y 4.5:1 sobre los tintes. |
 | **`muted-soft`** | `#8E8B82` | `--color-muted-soft` | Elementos terciarios de baja jerarquía visual. |
 | **`hairline`** | `#E8E2D8` (`#E6DFD8`) | `--color-hairline` | Renglones de cuaderno, divisores finos y bordes sutiles de papel. |
 | **`hairline-soft`** | `#EBE6DF` | `--color-hairline-soft` | Divisores interiores ultra tenues. |
+| **`border-control`** | `#76716A` | `--color-border-control` | Borde de botones, campos y selectores (desde 2026-10-30). 3:1 o más (WCAG 1.4.11) sobre toda superficie, incluida la esquina oscura de la tarjeta de Papel; 4.6:1 sobre el marfil. El `--color-hairline` (1.2:1) solo se usa en divisores y contenedores, nunca como borde de un control. |
 | **`grid-bujo`** | `#DFD8CC` | `--color-grid-bujo` | Trama de puntos y cuadrícula milimetrada (*bullet journal* / *brain dump*). |
 | **`botanical-sage`** | `#5A826D` | `--color-accent-sage` | Seguimiento de bienestar, hábitos cumplidos y estados armónicos. |
 | **`terracotta`** | `#9C4A3B` | `--color-accent-terracotta` | Alertas amables, prioridades críticas y washi tape de destaque. |
@@ -362,7 +368,7 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 4. **Rastreos Visuales de Bienestar (*Sensory Trackers*)**:
    - *Mood & Energy Check*: Selector con fases lunares y caritas lineales de expresión (*Plena, En calma, Neutra, Cansada, Drenada*).
    - *Water Tracker*: 8 vasos ilustrados con trazo editorial que se rellenan gradualmente.
-   - *Habit Tracker Semanal*: Matriz minimalista `L M X J V S D` con círculos de cumplimiento en verde salvia (`--color-accent-sage`).
+   - *Habit Tracker Semanal*: Matriz minimalista `L M X J V S D` con círculos de cumplimiento en verde salvia (`--color-accent-sage` mezclado al 85 % con `--color-ink`: sobre el salvia puro, el ✓ blanco quedaba en 4.33:1).
 5. **Notas Adhesivas Flotantes & Washi Tape (*Post-its & Paper Clips*)**:
    - Tarjetas amarillas o lavanda suaves con micro-rotación (`transform: rotate(-1.5deg)` o `rotate(1.2deg)`), clip metálico dorado en la parte superior y lemas motivacionales manuscritos (*"discipline today, peace tomorrow ♡"*).
 6. **Widget "Brújula Interior Inmediata"**:
@@ -395,3 +401,134 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 - **No omitir las frases y aforismos motivacionales**: Son parte nuclear de la experiencia de calma y bienestar solicitada por el usuario.
 - **No usar colores neón estridentes ni esquemas corporativos fríos**: Preservar siempre la atmósfera íntima de cuaderno personal y papelería física de autor.
 - **No introducir colores fuera de los tokens documentados**: Mantener la disciplina cromática entre el magenta identitario, tonos marfil y acentos orgánicos (pizarra, salvia, terracota).
+
+---
+
+## 7. Consistencia entre componentes y modo oscuro (regla de diseño, 2026-10-30)
+
+> Decisión de la persona dueña: **un mismo componente se ve y se comporta igual en todas las vistas**, y toda regla de diseño se documenta aquí, en `DESIGN.md`. Una decisión visual que solo vive en un `.module.css` o en la cabeza de quien la tomó no cuenta como regla. Estado: la regla rige desde hoy para todo cambio nuevo; la migración de lo existente y los tests que la vigilan están *por implementar* (§7.5).
+
+### 7.1 La regla
+
+1. **Un componente, un lenguaje.** Botón, tarjeta, campo y modal comparten forma, medida, borde, sombra, foco y estados en toda la app. La variación entre vistas la da **solo el tinte del módulo** (§0.4) y el contenido; nunca el radio, el relleno, la altura, la sombra ni la tipografía del control.
+2. **Todo valor sale de un token.** Radio, espaciado, sombra, color, tamaño de texto y duración vienen de `src/index.css`. Prohibido en un componente: hex sueltos (`#ffffff`, `#e6dfd8` como respaldo), `rgba(...)` de sombra escritos a mano, radios en `px` o `rem` literales y alturas mínimas distintas de `--tap-min`. Si falta un token, se agrega a `src/index.css` y a §2 o §4 en el mismo cambio, no se inventa un valor local.
+3. **Un componente nuevo busca primero al existente.** Antes de escribir `.btnSave`, `.cancelBtn` o `.modalBox` en un módulo, se usa el primitivo compartido (§7.2). Si el primitivo no alcanza, se extiende el primitivo, no se copia.
+4. **Mismo estado, mismo aspecto.** Hover, foco visible, activo, deshabilitado, error y carga se ven igual en todos los controles de una misma familia (§7.3).
+5. **Cualquier tema cumple lo mismo.** Las reglas 1 a 4 y los umbrales de contraste valen en claro y, si existe, en oscuro (§7.4). Un componente que solo se ve bien en uno de los dos temas no está terminado.
+
+### 7.2 Contrato por familia de componente
+
+Valores objetivo. Todos son tokens existentes salvo los marcados como nuevos en §7.4 y §7.5; la columna "Primitivo" es el archivo donde debe vivir el estilo único.
+
+| Familia | Forma y medida | Color y borde | Sombra | Primitivo |
+| :--- | :--- | :--- | :--- | :--- |
+| **Botón primario** | `--radius-md`, `min-height: var(--tap-min)`, relleno `12px 20px`, `--text-button`, peso 600 | `bg: --color-primary`, `color: --color-on-primary`, sin borde; hover `--color-primary-active` | ninguna | `common/Button.tsx` |
+| **Botón secundario** | igual medida que el primario | `bg: transparent`, `1px solid --color-border-control`, `color: --color-ink` | ninguna | `common/Button.tsx` |
+| **Botón destructivo** | igual medida; solo para borrar | `color: --color-error` sobre fondo claro; confirmación obligatoria | ninguna | `common/Button.tsx` |
+| **Botón ícono** | 44x44px, `--radius-pill`, un solo `aria-label` | `bg: --color-canvas`, `1px solid --color-border-control` | ninguna | `common/Button.tsx` |
+| **Campo** (texto, área, select, fecha) | `--radius-md`, `min-height: var(--tap-min)`, relleno `10px 14px`, `--text-body-md` | `bg: --color-canvas`, borde `--color-border-control`; foco `--color-primary` + anillo de 3px | ninguna | `common/Field.tsx` |
+| **Tarjeta (Cartulina)** | `--radius-lg`, relleno `--spacing-lg` (`--spacing-md` en compacta) | `bg: --color-surface-card`, `1px solid --color-hairline` | `--shadow-paper` | `.card` de `src/index.css` |
+| **Tarjeta de lectura (Papel)** | forma `tarjeta` o `pieza` de §0.3 | tinte del módulo (§0.4) | la del primitivo | `common/Papel.tsx` |
+| **Modal** | `--radius-xl`, ancho máximo 480px (formularios), 540px (bóveda), 640px (búsqueda); relleno `--spacing-lg` | `bg: --color-surface-card`, `1px solid --color-hairline`; velo `--color-scrim` | `--shadow-lg` | `common/Modal.tsx` |
+| **Insignia** | `--radius-pill`, `--text-caption` | tinte del módulo o `--color-surface-warm` | ninguna | clase compartida |
+
+- **Estructura fija de un modal:** título (`h2` o `h3` en `--font-primary`), cuerpo, y una fila de acciones alineada a la derecha con **cancelar a la izquierda y la acción principal a la derecha**. La acción principal usa el verbo de lo que hace ("Guardar carpeta", "Borrar nota"), nunca "Aceptar" ni "Enviar". Cierra con Escape y con clic en el velo, devuelve el foco al elemento que lo abrió y atrapa el foco mientras está abierto.
+- **Una sola forma de modal.** El recorte rasgado de `HabitModal` y `VaultModal` (`clip-path` de dientes arriba y abajo) es la única variación vigente y se reserva para modales de **ritual** (hábitos, bóveda), que usan el material Papel. Los modales de formulario y de decisión usan Cartulina lisa. No se crea una tercera forma.
+- **Un solo velo.** `--color-scrim` (hoy `rgba(20, 20, 19, 0.45)` repetido a mano en cada modal) y `backdrop-filter: blur(2px)` como máximo; nunca otro desenfoque.
+- **Un solo radio por tamaño de control.** Botón y campo comparten `--radius-md`. El botón en píldora (`--radius-pill`) queda solo para insignias, filtros tipo etiqueta y la acción primaria de una barra de herramientas, y se decide por **posición** (barra) y no por vista.
+
+### 7.3 Estados compartidos
+
+| Estado | Regla |
+| :--- | :--- |
+| **Foco visible** | `outline: 2px solid var(--color-focus)` con `outline-offset: 2px`; contraste mínimo 3:1 contra el fondo del control y el de la superficie. Nunca `outline: none` sin reemplazo. |
+| **Hover** | solo en dispositivos con puntero (`@media (hover: hover)`). Primario: `--color-primary-active`. Secundario: fondo `--color-surface-warm`. Sin `transform` que desplace la maquetación. |
+| **Activo / pulsado** | escala `0.98` como máximo; sin cambio de color distinto del hover. |
+| **Deshabilitado** | opacidad `0.5`, `cursor: not-allowed`, `aria-disabled` o `disabled`; el texto deshabilitado no está obligado a cumplir contraste, pero la etiqueta sí debe seguir legible. |
+| **Error** | borde `--color-error`, texto de error en `--color-text-error` **y** un ícono o mensaje (el color no es el único canal), enlazado con `aria-describedby`. |
+| **Carga** | texto que dice qué carga ("Guardando…"), sin spinner solitario; el botón se bloquea para evitar doble envío. |
+| **Transición** | `--duration-fast` (150ms) en color, borde y sombra. `transition: all` queda prohibido. Con `prefers-reduced-motion: reduce` se anulan las transiciones de transformación. |
+
+### 7.4 Modo oscuro
+
+**Estado vigente: no existe un modo oscuro.** La app es de tema claro (marfil). Las superficies `--color-surface-dark*` del manifiesto, el pie de página y el "bloque nocturno" son **superficies oscuras fijas**, presentes en cualquier tema; no son un modo oscuro y no se reutilizan como tal. No hay `prefers-color-scheme`, `color-scheme` ni `data-theme` en `src/`.
+
+Si se añade, debe definirse así, sin excepciones locales:
+
+1. **Mecanismo.** Un solo conjunto de tokens redefinidos, en `src/index.css`:
+   - `:root:not([data-theme="light"])` dentro de `@media (prefers-color-scheme: dark)`, y `:root[data-theme="dark"]` para la elección manual.
+   - `color-scheme: light dark` en `:root` para que controles nativos, barras de scroll y autocompletado sigan el tema.
+   - Una preferencia explícita de la persona (claro, oscuro, sistema) se guarda en `localStorage` con una clave propia (`espiralia_theme`), fuera de los datos de los perfiles, y se lee **antes** del primer pintado para no parpadear.
+2. **Ningún componente conoce el tema.** Un `.module.css` no contiene `@media (prefers-color-scheme)` ni `[data-theme]`: solo consume tokens. Si un componente "necesita" una regla de oscuro, falta un token.
+3. **Tokens semánticos, no de tinte.** Se redefinen los semánticos; los tintes de módulo (`--papel-*`) tienen su propia versión oscura y siguen codificando el mismo módulo.
+
+Valores propuestos (contraste medido con la fórmula WCAG el 2026-10-30; antes de adoptarlos, `textTokensContrast.test.ts` debe cubrir ambos temas):
+
+| Token | Claro (vigente) | Oscuro (propuesto) | Contraste oscuro |
+| :--- | :--- | :--- | :--- |
+| `--color-canvas` | `#FCF9F6` | `#1A1817` | base |
+| `--color-surface-card` | `#FFFFFF` | `#252320` | 1.13:1 con el canvas (separa por borde y sombra, no por contraste) |
+| `--color-ink` | `#1A1917` | `#F2EEE8` | 15.3:1 sobre canvas |
+| `--color-body` | `#3D3D3A` | `#D4D0C8` | 11.5:1 sobre canvas |
+| `--color-muted` | `#57554F` | `#A09D96` | 6.5:1 sobre canvas, 5.8:1 sobre tarjeta |
+| `--color-hairline` | `#E8E2D8` | `#3A3732` | 1.5:1; solo para divisores decorativos |
+| `--color-border-control` (claro vigente desde 2026-10-30) | `#76716A` | `#8A857A` | 4.3:1 sobre tarjeta, 4.8:1 sobre canvas |
+| `--color-primary` (relleno de botón) | `#8E1EA2` | `#8E1EA2` | texto blanco 7.4:1 |
+| **`--color-text-primary`** (nuevo: enlaces y texto magenta) | `#8E1EA2` | `#E3A6F0` | 9.3:1 sobre canvas, 8.2:1 sobre tarjeta |
+| **`--color-focus`** (nuevo) | `#8E1EA2` | `#E3A6F0` | 8.2:1 sobre tarjeta |
+| `--color-text-success` | `#316F3F` | `#7FD08F` | 8.5:1 sobre tarjeta |
+| `--color-text-error` | `#B13636` | `#F08A8A` | 6.5:1 sobre tarjeta |
+| `--color-text-teal` | `#2F6B60` | `#7FD3C2` | 9.0:1 sobre tarjeta |
+| `--color-text-amber` | `#8E5414` | `#F0BE7A` | 9.2:1 sobre tarjeta |
+| **`--color-scrim`** (nuevo) | `rgba(20, 20, 19, 0.45)` | `rgba(0, 0, 0, 0.6)` | n/a |
+
+Reglas propias del oscuro:
+
+- **El magenta `#8E1EA2` no se usa como texto, ícono ni borde sobre fondo oscuro** (2.4:1 contra el canvas). Como relleno de botón con texto blanco sí (7.4:1). Para texto y foco se usa `--color-text-primary` y `--color-focus`.
+- **El borde de un campo o control no puede ser el `--color-hairline` oscuro** (1.5:1): un control debe distinguirse con 3:1 o más (WCAG 1.4.11), así que los campos usan `--color-border-control`.
+- **Sombras:** sobre fondo oscuro una sombra negra casi no se ve. La elevación se expresa con superficie más clara (`--color-surface-card`) y un borde de `--color-hairline`; la sombra `--shadow-paper` se reduce a opacidad `0.35` sobre negro puro. Nada de `box-shadow` con color claro ni brillos.
+- **El Papel conserva su lógica.** Los siete tintes (§0.4) tienen versión oscura: mismo matiz, luminosidad baja, saturación suficiente para que sigan distinguiéndose entre sí (mismo criterio que el de §0.4: distancia mínima entre tintes). Ejemplos de partida: arena `#3A3228`, pizarra `#2B3541`; con texto `--color-ink` rinden 10.9:1 y 10.8:1. El degradado de esquina (§0.12) oscurece hacia `--papel-<tinte>-fuerte` en su versión oscura. El grano de papel baja a `1.5 %`.
+- **Imágenes, íconos y SVG** usan `currentColor` o tokens; ninguno lleva color fijo. Prohibido `filter: invert()` para "generar" el tema oscuro.
+- **Datos de usuario no se tocan.** El color de un área o de una carpeta que la persona eligió se guarda como dato y **no cambia con el tema**; lo que cambia es el color del texto que se pone encima (se elige por contraste, no por tema). Los gráficos usan esos colores de área con contorno `--color-ink` para sostener 3:1.
+- **`forced-colors: active` y `prefers-contrast: more`** mandan sobre ambos temas: borde visible en todo control, sin sombras desplazadas, sin `clip-path` en los papeles (§0.10.6).
+- **Verificación obligatoria al añadirlo:** capturas de las ocho rutas a 375 y 1440px en los dos temas; `textTokensContrast.test.ts` ampliado para recorrer cada par texto/fondo en ambos temas; sin parpadeo del tema claro al cargar con preferencia oscura guardada.
+
+### 7.5 Estado actual medido (2026-10-30) y plan de migración
+
+Inventario: hay **101 definiciones de clases de botón, campo, modal y tarjeta repartidas en 20 archivos `.module.css`**, sin primitivos compartidos (`src/components/common/` solo tiene `Pliego` y `Papel`). Divergencias encontradas:
+
+| Elemento | Qué varía hoy |
+| :--- | :--- |
+| Botón primario | radio `--radius-pill` en Agenda, `--radius-md` en Acceso, `--radius-sm` en `FolderModal`, `6px` literal en `HabitModal`; relleno `8px 18px`, `10px 16px`, `0.5rem 1.25rem` y `0 18px`; texto `#ffffff` literal en `HabitModal` en lugar de `--color-on-primary`. |
+| Botón secundario | cinco definiciones (`FoldersView`, `AgendaView`, `FolderModal`, `HabitModal`, `ProfileGateView`) con colores de texto distintos (`--color-ink`, `--color-body`, `--color-ink-muted` con respaldo `#666`). |
+| Modal | radio `--radius-lg` (Planner, búsqueda), `--radius-xl` (acción rápida) y recorte `clip-path` (hábitos, bóveda); sombra `--shadow-lg`, `0 10px 25px rgba(0,0,0,0.1)` literal y `drop-shadow` literal; fondo `--color-surface-card`, `--color-surface` (inexistente, con respaldo) y `--color-canvas`; velo `rgba(20, 20, 19, 0.45)` repetido en cada archivo. |
+| Respaldos de hex en `var()` y alias | muchos `var(--x, #e6dfd8)`: el respaldo en hex congela el color claro y no cambiaría con el tema oscuro. Además conviven alias distintos para el mismo rol (`--color-surface`, `--color-surface-card`, `--bg-card`, `--color-canvas` para el fondo de una caja; `--color-ink-muted` y `--color-muted` para el texto secundario; `--font-headline` y `--font-primary` para titulares). Todos existen en `src/index.css`, pero cada vista elige uno distinto. |
+
+**Avance (2026-10-30):**
+- **Paso 1, hecho:** `--color-scrim`, `--color-focus`, `--color-text-primary` y `--duration-fast` existen en `src/index.css` con su valor claro (`--color-border-control` y `--color-text-error` ya estaban).
+- **Pasos 2 y 3, hechos en CSS:** los primitivos viven en `src/components/common/Dialogo.module.css` (`velo`, `caja`, `titulo`, `campo`, `etiqueta`, `control`, `acciones`, `btnPrimario`, `btnSecundario`, `btnPeligro`) y cada modal los toma con `composes`. Migrados: carpetas, bloque del Planner, metas, nota, ajustes de perfil, acción rápida, hábitos y bóveda (72 reglas, 34 reglas de hover y foco repetidas eliminadas). Todos miden igual: controles de 44px con radio `--radius-md` y borde `--color-border-control`, botones con radio `--radius-md` y relleno `12px 20px`, un solo velo. `HabitModal`, `VaultModal`, `NoteModal` y `ProfileSettingsModal` conservan su caja de ritual (papel y recorte); `QuickActionModal` conserva su caja con encabezado. Fuera de esta pasada: la búsqueda global (solo toma el velo) y el modal de foco del Dashboard (solo el velo).
+- **Paso 4, hecho (2026-10-30):** se quitaron 354 respaldos de color de `var(--token, #hex)` en 27 `.module.css` (el token siempre existía en `src/index.css`, así que el respaldo no se usaba y congelaría el color claro) y se unificaron los alias que valían lo mismo: `--color-ink-muted` pasa a `--color-muted` y `--font-headline` a `--font-primary`. **No se unificaron** `--color-surface`, `--color-surface-card` ni `--bg-card`, porque son tres colores distintos (`#EFE9DE` es la cartulina y `#FCF9F6` el papel); decidir cuál va en cada caja es una decisión de diseño, no una limpieza.
+- **Pendiente:** los componentes React `Button`, `Field` y `Modal` (hoy el estilo común es CSS compartido, no un componente), unificar los tres fondos de caja y el paso 5 (modo oscuro).
+
+Orden de migración propuesto (cada paso se entrega y revierte por separado, con la suite en verde):
+
+| Paso | Qué | Verificación |
+| :--- | :--- | :--- |
+| 1 | Agregar tokens faltantes a `src/index.css` (`--color-scrim`, `--color-focus`, `--duration-fast`, `--color-text-primary`; `--color-text-error` y `--color-border-control` ya existen) y fijar un solo alias por rol (fondo de caja: `--color-surface-card`; texto secundario: `--color-muted`; titulares: `--font-primary`) con su valor claro actual; sin cambio visual. | Suite y `textTokensContrast.test.ts` en verde; capturas idénticas. |
+| 2 | `common/Modal` (velo, caja, título, fila de acciones, foco y Escape) y migrar los 9 modales (Planner, acción rápida, búsqueda, carpeta, enlace, nota, ajustes de perfil, hábitos y bóveda), uno por commit. | Tests por modal; Escape, devolución del foco y atrape del foco. |
+| 3 | `common/Button` y `common/Field`; migrar por vista, empezando por los modales ya migrados. | Sin controles menores de 44px; foco visible 3:1. |
+| 4 | Quitar los hex de respaldo y los tokens inexistentes de los `.module.css`. | Test de consistencia de §7.6. |
+| 5 | Si se decide, activar el modo oscuro (§7.4). | Lista de verificación de §7.4. |
+
+### 7.6 Cómo se vigila (parcial: ya vigilado en `src/tests/textTokensContrast.test.ts`; el resto por implementar en `src/tests/designConsistency.test.ts`)
+
+La regla no es solo texto: se vuelve test, igual que el presupuesto de Papel (§0.10). **Ya vigilado (2026-10-30):** `--color-border-control` con 3:1 o más sobre toda superficie y esquina de Papel; `--color-muted` con 5.5:1 sobre las superficies y 4.5:1 sobre los tintes; y que ningún botón, campo ni selector (fuera de la landing) use `--color-hairline` como borde. Lo que sigue en la lista es lo que falta. **Desde el 2026-10-30 también vigila `src/tests/designConsistency.test.ts`:** los 8 modales toman sus controles de `common/Dialogo.module.css` y ninguno redefine el radio de sus botones; el velo sale de `--color-scrim` y no de un `rgba()` propio; `Dialogo.module.css` no tiene colores sueltos ni `transition: all`; y cada `var(--token)` que usa existe en `src/index.css`. Del paso 4 vigila además que ningún módulo use `var(--token, color)` con un token definido en `src/index.css`, que cada `var(--token)` de un módulo esté definido en `src/index.css`, en otro módulo o en un estilo en línea, y que no se usen los alias `--color-ink-muted` ni `--font-headline`.
+
+- **Tokens inexistentes:** cada `var(--nombre)` de un `.module.css` debe existir en `src/index.css`; un `var(--x, #hex)` cuyo `--x` no existe falla.
+- **Sin color suelto:** ningún `.module.css` de componente contiene un `#hex` ni un `rgb()` o `rgba()` fuera de `src/index.css` y de los archivos de ilustración (`Origami*`), que quedan en una lista cerrada.
+- **Un solo velo y una sola sombra de modal:** el velo y la sombra de un modal solo pueden venir de `--color-scrim` y `--shadow-lg`.
+- **Radios:** botones y campos solo usan `--radius-md`, salvo la lista cerrada de píldoras.
+- **Sin `transition: all`.**
+- **Modo oscuro (si existe):** cada token semántico redefinido cumple su umbral de §7.4 en ambos temas, y ningún `.module.css` contiene `prefers-color-scheme` ni `data-theme`.
+
+Mientras el test no exista, la revisión de PR aplica esta lista a mano: un cambio que agrega un botón, tarjeta, campo o modal con estilo propio se devuelve.

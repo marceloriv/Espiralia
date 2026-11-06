@@ -20,6 +20,9 @@ describe('Chroma & Elevation Harmonization (H1, H6)', () => {
     const cssPath = path.resolve(__dirname, '../components/vault/VaultModal.module.css');
     const css = fs.readFileSync(cssPath, 'utf-8');
     expect(css).toMatch(/\.modalBox\s*\{[^}]*box-shadow:\s*var\(--shadow-lg\)/);
-    expect(css).toMatch(/\.btnPrimary\s*\{[^}]*background:\s*var\(--color-primary\)/);
+    // El relleno primario ya no se declara aquí: lo da el primitivo btnPrimario de common/Dialogo.module.css.
+    expect(css).toMatch(/\.btnPrimary\s*\{[^}]*composes:\s*btnPrimario/);
+    const primitivo = fs.readFileSync(path.resolve(__dirname, '../components/common/Dialogo.module.css'), 'utf-8');
+    expect(primitivo).toMatch(/\.btnPrimario\s*\{[^}]*background:\s*var\(--color-primary\)/);
   });
 });

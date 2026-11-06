@@ -13,11 +13,11 @@
 
 .heroCard {
   position: relative;
-  background-color: var(--bg-card, var(--color-canvas));
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 32px;
-  box-shadow: var(--shadow-card-stack, var(--shadow-paper));
+  box-shadow: var(--shadow-card-stack);
   overflow: hidden;
 }
 
@@ -49,7 +49,7 @@
 }
 
 .metaDot {
-  color: var(--color-hairline);
+  color: var(--color-muted);
 }
 
 .hero {
@@ -209,7 +209,7 @@
 .chipCritical {
   border-color: var(--color-error);
   background-color: var(--color-canvas);
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 /* Right Post-it with Brass Paperclip */
@@ -279,7 +279,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: rgba(120, 53, 15, 0.75);
+  color: var(--papel-texto-ambar);
 }
 
 .postItHandwriting {
@@ -375,7 +375,7 @@
   gap: 14px;
   min-height: 58px;
   padding: 12px 16px;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-lg);
   background-color: var(--color-surface-soft);
   color: var(--color-ink);
@@ -497,7 +497,7 @@
 .kpiStrip .metricQuadTile {
   padding: 16px;
   gap: 4px;
-  background-color: var(--bg-card, #FCF9F6);
+  background-color: var(--bg-card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-paper);
 }
@@ -516,6 +516,46 @@
   background-color: var(--color-primary);
 }
 
+/* Uso real casi siempre es una fracción mínima de la cuota: el mínimo mantiene visible que hay algo. */
+.metricTileBarFillTeal {
+  height: 100%;
+  min-width: 4px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-text-teal);
+}
+
+/* Siete marcas de lápiz, una por día: llena si hubo hábito, punteada si no, con anillo el día de hoy. */
+.weekDots {
+  display: flex;
+  gap: 4px;
+  margin: 4px 0 6px;
+}
+
+.weekDot {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px dashed var(--papel-texto-suave);
+  border-radius: 50%;
+  font-family: var(--font-family-3);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--papel-texto-suave);
+}
+
+.weekDotDone {
+  border-style: solid;
+  border-color: var(--papel-texto-exito);
+  background-color: var(--papel-texto-exito);
+  color: var(--bg-card);
+}
+
+.weekDotToday {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 1px;
+}
+
 /* Energía y hábitos: dos tarjetas, la de hábitos necesita ~350px para sus siete días de 44px. */
 .bentoTrio {
   display: grid;
@@ -531,8 +571,8 @@
 
 .bentoCard {
   position: relative;
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 22px;
   box-shadow: var(--shadow-paper);
@@ -619,7 +659,7 @@
   padding: 8px 4px;
   border-radius: var(--radius-md);
   background-color: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -662,20 +702,6 @@
   color: var(--color-muted);
 }
 
-.statusStable {
-  color: var(--color-text-success);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.statusStableDot {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background-color: var(--color-success);
-}
 
 .metricQuadTile {
   min-width: 0;
@@ -822,8 +848,9 @@
   font-weight: bold;
 }
 
+/* Salvia oscurecido con la tinta: el ✓ blanco sobre el salvia puro quedaba en 4.33:1. */
 .habitPillChecked::before {
-  background-color: #5a826d;
+  background-color: color-mix(in srgb, var(--color-accent-sage) 85%, var(--color-ink));
 }
 
 .habitPillEmpty {
@@ -852,7 +879,7 @@
   font-weight: 600;
   color: var(--color-primary);
   background: transparent;
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: 4px;
   padding: 3px 8px;
   cursor: pointer;
@@ -1040,7 +1067,7 @@
   font-weight: 600;
   color: var(--color-primary);
   background: rgba(255, 255, 255, 0.85);
-  border: 1px solid #d6dbe0;
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-xs);
   padding: 3px 8px;
   cursor: pointer;
@@ -1093,7 +1120,7 @@
 .modalBackdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(20, 20, 19, 0.5);
+  background-color: var(--color-scrim);
   backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
@@ -1105,7 +1132,7 @@
 .focusModalCard {
   width: 100%;
   max-width: 480px;
-  background-color: var(--bg-card, #fcf9f6);
+  background-color: var(--bg-card);
   border: 1px solid var(--color-hairline);
   border-radius: var(--radius-lg);
   box-shadow: 0 14px 28px rgba(26, 25, 23, 0.16);
@@ -1397,24 +1424,19 @@
   color: var(--color-body);
 }
 
-.distractionList li {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
 .distractionDot {
   width: 6px;
   height: 6px;
   border-radius: 9999px;
   background-color: var(--color-error);
-  margin-top: 6px;
   flex-shrink: 0;
 }
 
+/* Por línea base: el punto, sin línea base propia, apoya su borde inferior en la del primer renglón del texto,
+   también cuando el compromiso ocupa varias líneas. La ✕ se centra en la fila. */
 .distractionListItem {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
 }
 
@@ -1449,14 +1471,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
   border-radius: 4px;
-  opacity: 0.6;
-  transition: opacity 0.15s ease, color 0.15s ease;
+  transition: color 0.15s ease;
 }
 
 .distractionDelBtn:hover {
-  opacity: 1;
-  color: var(--color-error);
+  color: var(--color-text-error);
 }
 
 .distractionDelBtn:focus-visible {
@@ -1479,7 +1500,7 @@
   font-family: inherit;
   font-size: var(--text-body-sm);
   background: var(--bg-card);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-xs);
   color: var(--color-ink);
 }
@@ -1698,8 +1719,8 @@
 
 .areasSection {
   position: relative;
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 26px 28px;
   box-shadow: var(--shadow-paper);
@@ -1750,7 +1771,7 @@
   font-weight: 600;
   color: var(--color-primary);
   background-color: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   border-radius: var(--radius-md);
   padding: 6px 12px;
   cursor: pointer;
@@ -1955,8 +1976,8 @@
 
 .notesSection {
   position: relative;
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 26px 28px;
   box-shadow: var(--shadow-paper);
@@ -2031,24 +2052,12 @@
   max-width: 680px;
 }
 
-.autoSaveIndicator {
-  position: absolute;
-  bottom: 10px;
-  right: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-family: var(--font-family-3);
-  font-size: 11px;
-  color: var(--color-muted);
-}
-
 .notesCardBtn {
   margin-top: 14px;
   width: 100%;
   padding: 10px;
   border-radius: var(--radius-md);
-  border: 1px dashed var(--color-hairline);
+  border: 1px dashed var(--color-border-control);
   background: none;
   font-family: var(--font-family-3);
   font-size: 12px;
@@ -2069,8 +2078,8 @@
 
 .reflectionSection {
   position: relative;
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 28px;
   box-shadow: var(--shadow-paper);
@@ -2145,7 +2154,7 @@
   padding: 12px 14px;
   border-radius: var(--radius-md);
   background-color: var(--color-surface-soft);
-  border: 1px solid var(--color-hairline);
+  border: 1px solid var(--color-border-control);
   font-family: var(--font-family-2);
   font-size: var(--text-body-sm);
   color: var(--color-ink);
@@ -2216,8 +2225,8 @@
    ========================================================================= */
 
 .metricsSection {
-  background-color: var(--bg-card, #FCF9F6);
-  border: 1px solid var(--border-hairline, var(--color-hairline));
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-hairline);
   border-radius: var(--radius-xl);
   padding: 24px;
   box-shadow: var(--shadow-paper);

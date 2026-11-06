@@ -26,7 +26,7 @@ const ratio = (a: string, b: string): number => {
 };
 
 const SURFACES = ['color-canvas', 'color-surface-card', 'color-surface-warm', 'color-surface-cream-strong'].map(token).concat('#ffffff');
-const TEXT_TOKENS = ['color-muted', 'color-text-success', 'color-text-teal', 'color-text-amber', 'color-text-primary-active'];
+const TEXT_TOKENS = ['color-muted', 'color-text-success', 'color-text-teal', 'color-text-amber', 'color-text-primary-active', 'color-text-primary'];
 
 // DESIGN.md §0.4: color-mix(in srgb, <base> N%, <canvas>) interpola los canales sRGB; se resuelve aquí sin navegador.
 const mixHex = (base: string, pct: number, over: string): string =>
@@ -138,7 +138,9 @@ describe('Tokens de texto con contraste AA', () => {
       readdirSync(dir, { withFileTypes: true }).flatMap(e =>
         e.isDirectory() ? walk(path.join(dir, e.name)) : e.name.endsWith('.module.css') ? [path.join(dir, e.name)] : [],
       );
-    const decorative = /(^|[;{\s])color:\s*var\(--color-(muted-soft|accent-teal|success|accent-amber|primary-active|tertiary|secondary)\b/m;
+    // Auditoría 002, hallazgo 23: --color-error (4.01:1 sobre las tarjetas) es para fondos y bordes; el texto rojo usa --color-text-error.
+    // Hallazgo 24: --color-hairline es para divisores; un separador «•» escrito como texto quedaba en 1.2:1.
+    const decorative = /(^|[;{\s])color:\s*var\(--color-(muted-soft|accent-teal|success|accent-amber|primary-active|tertiary|secondary|error|hairline)\b/m;
 
     const offenders = walk(componentsDir)
       .filter(f => decorative.test(readFileSync(f, 'utf8')))
@@ -169,5 +171,65 @@ describe('Superficies planas por módulo (--superficie-*)', () => {
     expect(tokensCss).toContain(`--contenedor-${tinte}: linear-gradient(145deg, color-mix(in srgb, var(--papel-${tinte}) 45%, var(--bg-card)), color-mix(in srgb, var(--papel-${tinte}) 20%, var(--bg-card)));`);
     const bg = mixHex(papelTint(`papel-${tinte}`), 45, token('bg-card'));
     for (const name of TEXTOS) expect(ratio(token(name), bg), `--${name} sobre contenedor ${tinte}`).toBeGreaterThanOrEqual(4.5);
+  });
+});
+
+describe('Borde de controles y margen del texto secundario', () => {
+  // Valores límite: las superficies más oscuras donde puede caer un control son los tintes al 100 % y la esquina oscura de la tarjeta de Papel.
+  const superficies = (): Record<string, string> => {
+    const out: Record<string, string> = Object.fromEntries(SURFACES.map((hex, i) => [`superficie ${i + 1} (${hex})`, hex]));
+    for (const t of TINTES) {
+      const tinte = papelTint(`papel-${t}`);
+      out[`papel-${t}`] = tinte;
+      out[`papel-${t} al 72 %`] = mixHex(tinte, 72, token('bg-card'));
+      out[`esquina de papel-${t}`] = mixHex(papelTint(`papel-${t}-fuerte`), 58, tinte);
+    }
+    return out;
+  };
+
+  it('--color-border-control alcanza 3:1 (WCAG 1.4.11) sobre toda superficie', () => {
+    const border = token('color-border-control');
+    for (const [name, bg] of Object.entries(superficies())) {
+      expect(ratio(border, bg), `${border} sobre ${name} (${bg})`).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  it('--color-muted conserva margen: 5.5:1 sobre las superficies y 4.5:1 sobre los tintes', () => {
+    const muted = token('color-muted');
+    for (const bg of SURFACES) expect(ratio(muted, bg), `${muted} sobre ${bg}`).toBeGreaterThanOrEqual(5.5);
+    for (const [name, bg] of Object.entries(superficies())) {
+      expect(ratio(muted, bg), `${muted} sobre ${name} (${bg})`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('el texto del Papel nunca es más claro que el texto secundario global', () => {
+    expect(luminance(token('papel-texto-suave'))).toBeLessThanOrEqual(luminance(token('color-muted')));
+  });
+
+  it('ningún botón, campo ni selector dibuja su borde con --color-hairline (queda para divisores)', () => {
+    const componentsDir = path.resolve('src/components');
+    const walk = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap(e =>
+        e.isDirectory() ? walk(path.join(dir, e.name)) : e.name.endsWith('.module.css') && !/landing|LandingView/i.test(e.name) ? [path.join(dir, e.name)] : [],
+      );
+    const control = /btn|button|input|select|field|textarea|search|quick|energy|toggle|trigger|opt|tab|switch|mood|scale|picker|date/i;
+    // No son controles: contenedores, divisores y etiquetas de solo lectura.
+    const noControl = /moodTrackerCard|docFormatPill|priorityPill|statusPill|dayChip|repeatFieldset|ledgerTableWrapper|distractionBox|moodCard|energyMeterBox|\.actions\b|searchHeader|localDbBadge|searchShortcut|monogram|moreMenu\b|priorityCheckbox|moodSelector|folderTabCount|chip\b|[Bb]adge/;
+
+    const offenders: string[] = [];
+    for (const file of walk(componentsDir)) {
+      for (const chunk of readFileSync(file, 'utf8').split('}')) {
+        const open = chunk.lastIndexOf('{');
+        if (open < 0) continue;
+        const selector = chunk.slice(0, open).replace(/\/\*[\s\S]*?\*\//g, '').trim().split('\n').pop()!.trim().replace(/\s+/g, ' ');
+        if (!control.test(selector) || noControl.test(selector) || /:(hover|focus|active|disabled|checked)|::|@/.test(selector)) continue;
+        const usesHairline = chunk
+          .slice(open + 1)
+          .split(';')
+          .some(l => /^\s*border(-color)?\s*:/.test(l) && /hairline/.test(l) && !/dashed|none/.test(l));
+        if (usesHairline) offenders.push(`${path.relative(componentsDir, file)} ${selector}`);
+      }
+    }
+    expect(offenders).toEqual([]);
   });
 });

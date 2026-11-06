@@ -2,16 +2,18 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useHoy } from '../utils/useHoy';
 import { ChevronLeft, ChevronRight, Eraser, Plus } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../utils/confirmar';
 import type { PlannerBlock, DayOfWeek, TimeSlot, Priority, Profile, ViewType, HabitTrackerItem } from '../types';
-import { StorageService } from '../services/storage';
+import { StorageService, blockWeekKey } from '../services/storage';
 import { PlannerDayColumn } from './planner/PlannerDayColumn';
 import { PlannerBlockModal } from './planner/PlannerBlockModal';
 import { GoalsDrawer } from './planner/GoalsDrawer';
 import { HabitModal } from './habits/HabitModal';
-import { Papel, TINTE_DE_MODULO } from './common/Papel';
+import { Papel } from './common/Papel';
+import { TINTE_DE_MODULO } from './common/tintes';
 import { Pliego } from './common/Pliego';
-import { isoWeekNumber, toLocalDateStr } from '../utils/localDate';
-import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE, energyLabel } from '../utils/energyLevels';
+import { isoWeekKey, isoWeekNumber, toLocalDateStr } from '../utils/localDate';
+import { ENERGY_LEVELS, energyLabel } from '../utils/energyLevels';
 import styles from './PlannerView.module.css';
 
 // Mismo orden que `daysCompleted` de los hábitos: lunes a domingo.
@@ -44,7 +46,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
   const [selectedDay, setSelectedDay] = useState<DayOfWeek | undefined>(1);
   const isFirstMount = useRef(true);
   const todayStr = toLocalDateStr(hoy);
-  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
+  const [energyLevel, setEnergyLevel] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) ?? '');
   const [habits, setHabits] = useState<HabitTrackerItem[]>(() => StorageService.getHabits(profileId));
   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<HabitTrackerItem | null>(null);
@@ -100,7 +102,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
     loadBlocks();
   }, [loadBlocks]);
 
-  const { weekDays, weekLabel } = useMemo(() => {
+  const { weekDays, weekLabel, weekKey } = useMemo(() => {
     const now = hoy;
     const currentDay = now.getDay();
     const distToMonday = currentDay === 0 ? -6 : 1 - currentDay;
@@ -127,15 +129,27 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
     sunday.setDate(monday.getDate() + 6);
     const label = `${monday.getDate()} ${monday.toLocaleString('es-ES', { month: 'short' })} – ${sunday.getDate()} ${sunday.toLocaleString('es-ES', { month: 'short' })} ${sunday.getFullYear()}`;
 
-    return { weekDays: days, weekLabel: label };
+    return { weekDays: days, weekLabel: label, weekKey: isoWeekKey(monday) };
   }, [weekOffset, hoy]);
 
-  const totalBlocks = blocks.length;
-  const completedBlocks = blocks.filter(b => b.completed).length;
+  // Cada bloque pertenece a una semana ISO; los hábitos solo guardan las marcas de la semana en curso.
+  const esSemanaActual = weekKey === isoWeekKey(hoy);
+  const weekBlocks = blocks.filter(b => b.period === 'semanal' && blockWeekKey(b) === weekKey);
+
+  const totalBlocks = weekBlocks.length;
+  const completedBlocks = weekBlocks.filter(b => b.completed).length;
   const fulfillment = totalBlocks > 0 ? Math.round((completedBlocks / totalBlocks) * 100) : 0;
 
+  const [editingBlock, setEditingBlock] = useState<PlannerBlock | undefined>(undefined);
+
   const handleOpenModal = (day?: DayOfWeek) => {
+    setEditingBlock(undefined);
     setSelectedDay(day);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditBlock = (block: PlannerBlock) => {
+    setEditingBlock(block);
     setIsModalOpen(true);
   };
 
@@ -147,6 +161,14 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
     time?: string;
     notes?: string;
   }) => {
+    if (editingBlock) {
+      // Editar conserva id, semana y estado; solo cambia lo que se ve en el formulario.
+      StorageService.savePlanner({ ...editingBlock, ...data, weekKey: blockWeekKey(editingBlock) });
+      sileo.success({ title: 'Bloque actualizado' });
+      setEditingBlock(undefined);
+      loadBlocks();
+      return;
+    }
     const newBlock: PlannerBlock = {
       id: `pb-${Date.now()}`,
       profileId,
@@ -158,6 +180,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
       dayOfWeek: data.dayOfWeek,
       time: data.time,
       notes: data.notes,
+      weekKey,
     };
 
     StorageService.savePlanner(newBlock);
@@ -169,32 +192,37 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
     StorageService.savePlanner({
       ...block,
       completed: !block.completed,
+      weekKey: blockWeekKey(block),
     });
     sileo.info({ title: block.completed ? 'Bloque reabierto' : 'Bloque completado' });
     loadBlocks();
   };
 
   const handleDeleteBlock = (id: string) => {
-    StorageService.deletePlanner(profileId, id);
-    sileo.success({ title: 'Bloque eliminado' });
-    loadBlocks();
+    const target = blocks.find(b => b.id === id);
+    confirmar(`¿Eliminar el bloque "${target?.title ?? ''}"?`, () => {
+      StorageService.deletePlanner(profileId, id);
+      sileo.success({ title: 'Bloque eliminado' });
+      loadBlocks();
+    });
   };
 
   const handleClearWeek = () => {
-    const weeklyCount = blocks.filter(b => b.period === 'semanal').length;
+    const weeklyCount = weekBlocks.length;
     if (weeklyCount === 0) {
       sileo.info({ title: 'No hay bloques que limpiar' });
       return;
     }
-    if (!window.confirm(`Se borrarán los ${weeklyCount} bloques de la semana. ¿Continuar?`)) return;
-    StorageService.clearWeeklyPlanner(profileId);
-    sileo.success({ title: 'Semana limpia' });
-    loadBlocks();
+    confirmar(`Se borrarán los ${weeklyCount} bloques de la semana.`, () => {
+      StorageService.clearWeeklyPlanner(profileId, weekKey);
+      sileo.success({ title: 'Semana limpia' });
+      loadBlocks();
+    }, 'Borrar');
   };
 
   const filteredBlocks = priorityFilter === 'todas'
-    ? blocks
-    : blocks.filter(b => b.priority === priorityFilter);
+    ? weekBlocks
+    : weekBlocks.filter(b => b.priority === priorityFilter);
 
   const legacyBlocks = filteredBlocks.filter(b => b.dayOfWeek === undefined);
 
@@ -219,12 +247,6 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
       {/* Píldoras de Filtro por Área y Botón Principal */}
       <div className={styles.areaFilterBar}>
-        <div className={styles.areaTagsGroup}>
-          <span className={styles.areaPillAmber}>01. Estudios</span>
-          <span className={styles.areaPillEmerald}>02. Personal</span>
-          <span className={styles.areaPillViolet}>03. Universidad</span>
-        </div>
-
         <div className={styles.heroActions}>
           <button type="button" className={styles.clearWeekBtn} onClick={handleClearWeek}>
             <Eraser size={16} aria-hidden="true" />
@@ -337,6 +359,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
                 onAddBlock={() => handleOpenModal(undefined)}
                 onToggleBlock={handleToggleBlock}
                 onDeleteBlock={handleDeleteBlock}
+                onEditBlock={handleOpenEditBlock}
               />
             )}
 
@@ -350,6 +373,7 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
                 onAddBlock={() => handleOpenModal(day.dayOfWeek)}
                 onToggleBlock={handleToggleBlock}
                 onDeleteBlock={handleDeleteBlock}
+                onEditBlock={handleOpenEditBlock}
               />
             ))}
           </div>
@@ -389,6 +413,9 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
                 <Plus size={16} aria-hidden="true" />
               </button>
             </div>
+            {!esSemanaActual && habits.length > 0 && (
+              <p className={styles.habitEmpty}>Los hábitos se marcan en la semana en curso.</p>
+            )}
             {habits.length === 0 ? (
               <p className={styles.habitEmpty}>Sin hábitos registrados. Añade el primero con el botón +.</p>
             ) : (
@@ -404,13 +431,14 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
                   </button>
                   <div className={styles.daysCircles}>
                     {HABIT_DAYS.map((day, idx) => {
-                      const done = Boolean(habit.daysCompleted?.[idx]);
+                      const done = esSemanaActual && Boolean(habit.daysCompleted?.[idx]);
                       return (
                         <button
                           key={day.letter + idx}
                           type="button"
                           className={`${styles.dayCircle} ${done ? styles.dayCircleChecked : ''}`}
                           onClick={() => handleToggleHabitDay(habit.id, idx)}
+                          disabled={!esSemanaActual}
                           aria-pressed={done}
                           aria-label={`${habit.name}: ${day.name}`}
                         >
@@ -458,9 +486,10 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
       {isModalOpen && (
         <PlannerBlockModal
-          key={`${selectedDay ?? 'none'}`}
+          key={editingBlock?.id ?? `${selectedDay ?? 'none'}`}
           isOpen={isModalOpen}
           initialDay={selectedDay}
+          initialBlock={editingBlock}
           onClose={() => setIsModalOpen(false)}
           onSave={handleSaveBlock}
         />

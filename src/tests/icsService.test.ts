@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { IcsService } from '../services/icsService';
+import { toLocalDateStr, toLocalTimeStr } from '../utils/localDate';
 import type { AgendaEvent } from '../types';
 
 describe('IcsService', () => {
@@ -67,5 +68,47 @@ END:VCALENDAR`;
   it('maneja con seguridad archivos corruptos o vacíos sin lanzar errores', () => {
     expect(IcsService.parseIcs('', 'p-1')).toEqual([]);
     expect(IcsService.parseIcs('NOT AN ICS FILE', 'p-1')).toEqual([]);
+  });
+});
+
+// El export perdía las series, el import duplicaba al reimportar, ignoraba las series y leía la hora UTC como local.
+describe('IcsService: series, UID y UTC', () => {
+  const ics = (...vevent: string[]) =>
+    ['BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT', ...vevent, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+
+  it('exporta una serie semanal como RRULE con sus días y su término', () => {
+    const serie: AgendaEvent = {
+      id: 'ev-serie', profileId: 'p-1', title: 'Taller', date: '2026-11-02', startTime: '10:00', endTime: '11:00',
+      recurrence: { daysOfWeek: [1, 3], until: '2026-12-18' },
+    };
+    expect(IcsService.exportToIcs([serie])).toContain('RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20261218T235959');
+  });
+
+  it('reimportar su propio .ics conserva los ids: guardar reemplaza en vez de duplicar', () => {
+    const propios: AgendaEvent[] = [
+      { id: 'e-1', profileId: 'p-1', title: 'Uno', date: '2026-11-04', startTime: '09:00', endTime: '10:00' },
+      { id: 'e-2', profileId: 'p-1', title: 'Dos', date: '2026-11-05' },
+    ];
+    expect(IcsService.parseIcs(IcsService.exportToIcs(propios), 'p-1').map(e => e.id)).toEqual(['e-1', 'e-2']);
+  });
+
+  it('un UID ajeno da siempre el mismo id', () => {
+    const contenido = ics('UID:abc-123@google.com', 'SUMMARY:Externo', 'DTSTART;VALUE=DATE:20261110');
+    expect(IcsService.parseIcs(contenido, 'p-1')[0].id).toBe(IcsService.parseIcs(contenido, 'p-1')[0].id);
+  });
+
+  it('importa RRULE semanal como serie', () => {
+    const [ev] = IcsService.parseIcs(
+      ics('UID:serie@x', 'SUMMARY:Gimnasio', 'DTSTART:20261102T100000', 'DTEND:20261102T110000', 'RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20261130'),
+      'p-1',
+    );
+    expect(ev.recurrence).toEqual({ daysOfWeek: [1, 3], until: '2026-11-30' });
+  });
+
+  it('convierte las horas en UTC (Z) a la hora local', () => {
+    const [ev] = IcsService.parseIcs(ics('UID:utc@x', 'SUMMARY:Llamada', 'DTSTART:20261103T150000Z', 'DTEND:20261103T160000Z'), 'p-1');
+    const inicio = new Date(Date.UTC(2026, 10, 3, 15, 0));
+    const fin = new Date(Date.UTC(2026, 10, 3, 16, 0));
+    expect(ev).toMatchObject({ date: toLocalDateStr(inicio), startTime: toLocalTimeStr(inicio), endTime: toLocalTimeStr(fin) });
   });
 });
