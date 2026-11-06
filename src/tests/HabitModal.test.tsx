@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { HabitModal } from '../components/habits/HabitModal';
 import type { HabitTrackerItem } from '../types';
+import { simularConfirmacion, conMensaje } from './confirmacion';
 
 describe('HabitModal', () => {
   beforeEach(() => {
@@ -85,13 +86,13 @@ describe('HabitModal', () => {
     expect(nameInput.value).toBe('Lectura diaria');
 
     // Borrar un hábito pierde sus marcas: se confirma, como las notas y carpetas.
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const confirmSpy = simularConfirmacion(false);
     const deleteBtn = screen.getByRole('button', { name: /eliminar hábito/i });
     await user.click(deleteBtn);
-    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining('Lectura diaria'));
+    expect(confirmSpy).toHaveBeenCalledWith(conMensaje('Lectura diaria'));
     expect(handleDelete).not.toHaveBeenCalled();
 
-    confirmSpy.mockReturnValue(true);
+    simularConfirmacion(true);
     await user.click(deleteBtn);
     expect(handleDelete).toHaveBeenCalledWith('h-123');
     confirmSpy.mockRestore();

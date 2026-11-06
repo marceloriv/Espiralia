@@ -5,6 +5,7 @@ import { sileo } from 'sileo';
 import { PlannerView } from '../components/PlannerView';
 import { StorageService } from '../services/storage';
 import { isoWeekKey } from '../utils/localDate';
+import { simularConfirmacion } from './confirmacion';
 
 describe('PlannerView integración semanal y metas', () => {
   const profileId = 'p-planner';
@@ -370,7 +371,7 @@ describe('PlannerView integración semanal y metas', () => {
     it('borrar un bloque pide confirmación', async () => {
       const user = userEvent.setup();
       seedBlock();
-      vi.spyOn(window, 'confirm').mockReturnValue(false);
+      simularConfirmacion(false);
       render(<PlannerView profileId={profileId} />);
 
       await user.click(screen.getByRole('button', { name: 'Eliminar Leer' }));
@@ -394,7 +395,7 @@ describe('PlannerView integración semanal y metas', () => {
     it('borra los bloques de la semana tras confirmar', async () => {
       const user = userEvent.setup();
       seed();
-      vi.spyOn(window, 'confirm').mockReturnValue(true);
+      simularConfirmacion(true);
       render(<PlannerView profileId={profileId} />);
 
       await user.click(screen.getByRole('button', { name: /limpiar semana/i }));
@@ -406,7 +407,7 @@ describe('PlannerView integración semanal y metas', () => {
     it('no borra nada si se cancela la confirmación', async () => {
       const user = userEvent.setup();
       seed();
-      vi.spyOn(window, 'confirm').mockReturnValue(false);
+      simularConfirmacion(false);
       render(<PlannerView profileId={profileId} />);
 
       await user.click(screen.getByRole('button', { name: /limpiar semana/i }));

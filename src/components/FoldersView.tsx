@@ -12,6 +12,7 @@ import {
   FileUp,
 } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../utils/confirmar';
 import type { Folder, LinkItem, Note, Profile, StoredFile, ViewType } from '../types';
 import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { addFile, deleteFile, deleteFolderFiles, getFileBlob, listFiles } from '../services/fileStore';
@@ -251,14 +252,15 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     });
 
   const handleDeleteFile = async (file: StoredFile) => {
-    if (!window.confirm(`¿Eliminar el PDF "${file.name}"? No se puede deshacer.`)) return;
-    try {
-      await deleteFile(profileId, file.id);
-      sileo.success({ title: 'PDF eliminado' });
-    } catch (err) {
-      sileo.error({ title: 'No se pudo eliminar el PDF', description: (err as Error).message });
-    }
-    await loadFiles();
+    confirmar(`¿Eliminar el PDF "${file.name}"? No se puede deshacer.`, async () => {
+      try {
+        await deleteFile(profileId, file.id);
+        sileo.success({ title: 'PDF eliminado' });
+      } catch (err) {
+        sileo.error({ title: 'No se pudo eliminar el PDF', description: (err as Error).message });
+      }
+      await loadFiles();
+    });
   };
 
   const handleOpenNewNote = () => {
@@ -361,7 +363,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     // Los vínculos y notas siguen visibles en sus propias vistas; un PDF sin carpeta no tendría dónde verse, así que se borra con ella.
     const pdfCount = files.filter((f) => f.folderId === folder.id).length;
     const pdfWarning = pdfCount > 0 ? ` ${pdfCount === 1 ? 'Su PDF sí se borrará.' : `Sus ${pdfCount} PDF sí se borrarán.`}` : '';
-    if (window.confirm(`¿Seguro que deseas eliminar la carpeta "${folder.name}"? Los vínculos y notas no se borrarán pero quedarán sin carpeta.${pdfWarning}`)) {
+    confirmar(`¿Seguro que deseas eliminar la carpeta "${folder.name}"? Los vínculos y notas no se borrarán pero quedarán sin carpeta.${pdfWarning}`, () => {
       StorageService.deleteFolder(profileId, folder.id);
       if (pdfCount > 0) void deleteFolderFiles(profileId, folder.id).catch(() => {}).then(loadFiles);
       try {
@@ -370,7 +372,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         // Ignorar
       }
       loadData();
-    }
+    });
   };
 
   // Handlers para vínculos
@@ -417,7 +419,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
   };
 
   const handleDeleteLink = (link: LinkItem) => {
-    if (window.confirm(`¿Deseas eliminar el vínculo "${link.title}"?`)) {
+    confirmar(`¿Deseas eliminar el vínculo "${link.title}"?`, () => {
       StorageService.deleteLink(profileId, link.id);
       try {
         sileo.info({ title: 'Vínculo eliminado', description: 'Enlace borrado correctamente.' });
@@ -425,7 +427,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         // Ignorar
       }
       loadData();
-    }
+    });
   };
 
   const handleQuickCapture = (e: React.FormEvent) => {
@@ -456,10 +458,11 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
   };
 
   const handleDeleteNote = (note: Note) => {
-    if (!window.confirm(`¿Eliminar la nota "${note.title}"? No se puede deshacer.`)) return;
-    StorageService.deleteNote(profileId, note.id);
-    sileo.info({ title: 'Nota eliminada', description: `Se eliminó la nota ${note.title}.` });
-    loadData();
+    confirmar(`¿Eliminar la nota "${note.title}"? No se puede deshacer.`, () => {
+      StorageService.deleteNote(profileId, note.id);
+      sileo.info({ title: 'Nota eliminada', description: `Se eliminó la nota ${note.title}.` });
+      loadData();
+    });
   };
 
   // Antes generaba un JSON propio que nada podía importar; ahora es el mismo respaldo que restaura la Bóveda.

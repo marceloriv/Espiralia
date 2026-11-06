@@ -25,6 +25,7 @@ import { StorageService, blockWeekKey } from '../services/storage';
 import { DISPOSITIONS, dispositionLabel } from '../utils/energyLevels';
 import { moonPhase, type IconoLunar } from '../utils/moonPhase';
 import { sileo } from 'sileo';
+import { confirmar } from '../utils/confirmar';
 import { isoWeekKey, isoWeekNumber, semesterLabel, toLocalDateStr } from '../utils/localDate';
 import { categoryOf } from './agenda/eventMapping';
 import {
@@ -284,12 +285,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   };
 
   const handleRemoveDistraction = (index: number) => {
-    if (!window.confirm(`¿Eliminar el compromiso "${distractions[index]}"?`)) return;
-    // La edición se ubica por índice (los compromisos son strings sin id): borrar desplaza los índices, así que se cierra.
-    setEditingDistractionIdx(null);
-    const updated = distractions.filter((_, idx) => idx !== index);
-    StorageService.saveDistractions(profile.id, updated);
-    setDistractions(updated);
+    const texto = distractions[index];
+    confirmar(`¿Eliminar el compromiso "${texto}"?`, () => {
+      // La lista pudo cambiar mientras el aviso estaba abierto: se busca el texto en la lista guardada, no el índice.
+      const actual = StorageService.getDistractions(profile.id);
+      const posicion = actual.indexOf(texto);
+      if (posicion < 0) return;
+      // La edición se ubica por índice (los compromisos son strings sin id): borrar desplaza los índices, así que se cierra.
+      setEditingDistractionIdx(null);
+      const updated = actual.filter((_, idx) => idx !== posicion);
+      StorageService.saveDistractions(profile.id, updated);
+      setDistractions(updated);
+      sileo.success({ title: 'Compromiso eliminado' });
+    });
   };
 
   const handleSaveReflection = () => {

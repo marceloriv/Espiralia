@@ -9,6 +9,7 @@ import { StorageService } from '../services/storage';
 import { addDaysToDateStr, toLocalDateStr } from '../utils/localDate';
 import { downloadFile } from '../utils/downloadFile';
 import type { AgendaEvent } from '../types';
+import { simularConfirmacion } from './confirmacion';
 
 vi.mock('../utils/downloadFile', () => ({ downloadFile: vi.fn() }));
 
@@ -316,7 +317,7 @@ describe('AgendaView', () => {
   // Revisión final, Important #1. Técnica: tabla de decisión (único/serie × confirma/cancela).
   it('pide confirmación antes de borrar una serie y no borra si se cancela', async () => {
     seed({ id: 'r-del', title: 'Gimnasio', startTime: '20:00', recurrence: { daysOfWeek: [new Date().getDay()] } });
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const confirm = simularConfirmacion(false);
     const user = userEvent.setup();
     render(<AgendaView profileId={profileId} />);
 
@@ -324,7 +325,7 @@ describe('AgendaView', () => {
     expect(confirm).toHaveBeenCalledOnce();
     expect(StorageService.getEvents(profileId)).toHaveLength(1);
 
-    confirm.mockReturnValue(true);
+    simularConfirmacion(true);
     await user.click(screen.getByRole('button', { name: /eliminar serie gimnasio/i }));
     expect(StorageService.getEvents(profileId)).toEqual([]);
   });
@@ -336,7 +337,7 @@ describe('AgendaView', () => {
 
     it('"Quitar este día" deja el resto de la serie', async () => {
       seedSerie();
-      vi.spyOn(window, 'confirm').mockReturnValue(true);
+      simularConfirmacion(true);
       const user = userEvent.setup();
       render(<AgendaView profileId={profileId} />);
 
@@ -368,7 +369,7 @@ describe('AgendaView', () => {
 
   it('no pide confirmación para borrar un evento único', async () => {
     seed({ id: 'e-one', title: 'Único', startTime: '09:00' });
-    const confirm = vi.spyOn(window, 'confirm');
+    const confirm = vi.spyOn(sileo, 'action');
     const user = userEvent.setup();
     render(<AgendaView profileId={profileId} />);
 

@@ -413,3 +413,18 @@ html {
     scroll-padding-bottom: 72px;
   }
 }
+
+/* Las confirmaciones de borrado (src/utils/confirmar.ts) se abren desde modales con z-index 1000: el aviso va encima. */
+section[data-sileo-viewport] {
+  z-index: 1100;
+}
+
+/* El azul de acción de sileo queda bajo 4.5:1 sobre el aviso blanco. Una confirmación de borrado va en rojo.
+   Valor fijo y no var(--color-text-error): el aviso sigue blanco en modo oscuro, y ahí el token se aclara. */
+section[data-sileo-viewport] [data-state='action'] {
+  --_c: #b13636;
+}
+
+section[data-sileo-viewport] [data-sileo-button] {
+  text-decoration: none;
+}

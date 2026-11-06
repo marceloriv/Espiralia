@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useHoy } from '../utils/useHoy';
 import { ChevronLeft, ChevronRight, Eraser, Plus } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../utils/confirmar';
 import type { PlannerBlock, DayOfWeek, TimeSlot, Priority, Profile, ViewType, HabitTrackerItem } from '../types';
 import { StorageService, blockWeekKey } from '../services/storage';
 import { PlannerDayColumn } from './planner/PlannerDayColumn';
@@ -199,10 +200,11 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
 
   const handleDeleteBlock = (id: string) => {
     const target = blocks.find(b => b.id === id);
-    if (!window.confirm(`¿Eliminar el bloque "${target?.title ?? ''}"?`)) return;
-    StorageService.deletePlanner(profileId, id);
-    sileo.success({ title: 'Bloque eliminado' });
-    loadBlocks();
+    confirmar(`¿Eliminar el bloque "${target?.title ?? ''}"?`, () => {
+      StorageService.deletePlanner(profileId, id);
+      sileo.success({ title: 'Bloque eliminado' });
+      loadBlocks();
+    });
   };
 
   const handleClearWeek = () => {
@@ -211,10 +213,11 @@ export const PlannerView: React.FC<PlannerViewProps> = ({ profileId: propProfile
       sileo.info({ title: 'No hay bloques que limpiar' });
       return;
     }
-    if (!window.confirm(`Se borrarán los ${weeklyCount} bloques de la semana. ¿Continuar?`)) return;
-    StorageService.clearWeeklyPlanner(profileId, weekKey);
-    sileo.success({ title: 'Semana limpia' });
-    loadBlocks();
+    confirmar(`Se borrarán los ${weeklyCount} bloques de la semana.`, () => {
+      StorageService.clearWeeklyPlanner(profileId, weekKey);
+      sileo.success({ title: 'Semana limpia' });
+      loadBlocks();
+    }, 'Borrar');
   };
 
   const filteredBlocks = priorityFilter === 'todas'
