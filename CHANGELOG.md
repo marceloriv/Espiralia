@@ -49,6 +49,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/
 
 - **Carga inicial**: Acción Rápida guarda con `StorageService.saveEvent` en vez de importar la persistencia de la Agenda, que había subido el arranque a 185.6 KB.
 - **Pruebas**: el test del almanaque de Agenda fija la fecha, porque desde noviembre dejó de pasar. Un test de respaldo lee el formato del archivo realmente descargado.
+- **Advertencia conocida en el build**: `pnpm build` muestra "A PostCSS plugin did not pass the `from` option to `postcss.parse`". Viene de Vite y salta por los `composes … from` de los modales hacia `Dialogo.module.css`. No afecta al resultado: ese archivo no usa `url()`. Se registra como excepción en AGENTS §17.1, con vencimiento el 2026-12-05 o al subir Vite.
 
 ## [0.6.1] - 2026-10-29
 
