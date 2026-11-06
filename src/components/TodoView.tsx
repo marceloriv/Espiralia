@@ -3,6 +3,7 @@ import { useHoy } from '../utils/useHoy';
 import { Plus, Trash2, CheckCircle2, Calendar, Clock, FolderPlus, X, Star, Flag, Check, ShieldCheck, Pencil } from 'lucide-react';
 import { sileo } from 'sileo';
 import { useEscapeKey } from '../utils/useEscapeKey';
+import { confirmar } from '../utils/confirmar';
 import { focusOnMount } from '../utils/useDialogFocus';
 import { ENERGY_LEVELS, energyLabel } from '../utils/energyLevels';
 import type { TodoItem, Priority, Area, TaskStatus, Profile, ViewType, AgendaEvent } from '../types';
@@ -127,10 +128,11 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
 
   const handleDeleteTodo = (id: string) => {
     const target = todos.find(t => t.id === id);
-    if (!window.confirm(`¿Eliminar la tarea "${target?.title ?? ''}"? No se puede deshacer.`)) return;
-    StorageService.deleteTodo(profileId, id);
-    sileo.success({ title: 'Tarea eliminada' });
-    loadData();
+    confirmar(`¿Eliminar la tarea "${target?.title ?? ''}"? No se puede deshacer.`, () => {
+      StorageService.deleteTodo(profileId, id);
+      sileo.success({ title: 'Tarea eliminada' });
+      loadData();
+    });
   };
 
   const handleSaveTodoEdit = (updated: TodoItem) => {
@@ -194,14 +196,15 @@ export const TodoView: React.FC<TodoViewProps> = ({ profileId: propProfileId, pr
     const destino = restantes.find(a => a.name.toLowerCase() === 'general') ?? restantes[0];
     const cantidad = todos.filter(t => t.areaId === editingArea.id).length;
     const aviso = cantidad > 0 ? ` ${cantidad === 1 ? 'Su tarea pasa' : `Sus ${cantidad} tareas pasan`} a "${destino.name}".` : '';
-    if (!window.confirm(`¿Eliminar el área "${editingArea.name}"?${aviso}`)) return;
-
-    StorageService.deleteArea(profileId, editingArea.id);
-    if (selectedAreaId === editingArea.id) setSelectedAreaId('todas');
-    if (selectedAreaForNew === editingArea.id) setSelectedAreaForNew(destino.id);
-    setIsAreaModalOpen(false);
-    sileo.success({ title: 'Área eliminada' });
-    loadData();
+    const area = editingArea;
+    confirmar(`¿Eliminar el área "${area.name}"?${aviso}`, () => {
+      StorageService.deleteArea(profileId, area.id);
+      setSelectedAreaId(actual => (actual === area.id ? 'todas' : actual));
+      setSelectedAreaForNew(actual => (actual === area.id ? destino.id : actual));
+      setIsAreaModalOpen(false);
+      sileo.success({ title: 'Área eliminada' });
+      loadData();
+    });
   };
 
   // Filtrado

@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { GoalsDrawer } from '../components/planner/GoalsDrawer';
 import { StorageService } from '../services/storage';
 import type { Goal } from '../types';
+import { simularConfirmacion } from './confirmacion';
 
 describe('GoalsDrawer', () => {
   const profileId = 'p-goals-test';
@@ -84,7 +85,7 @@ describe('GoalsDrawer', () => {
 
   it('borrar una meta pide confirmación', async () => {
     const user = userEvent.setup();
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    simularConfirmacion(false);
     StorageService.saveGoal({ id: 'g-keep', profileId, title: 'Correr', period: 'semanal', items: [], createdAt: '2026-11-01' });
     render(<GoalsDrawer profileId={profileId} />);
 

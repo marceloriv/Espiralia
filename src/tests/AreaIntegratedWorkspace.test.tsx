@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { AreaIntegratedWorkspace } from '../components/todo/AreaIntegratedWorkspace';
 import { StorageService } from '../services/storage';
 import type { Area } from '../types';
+import { simularConfirmacion, conMensaje } from './confirmacion';
 
 describe('AreaIntegratedWorkspace', () => {
   const profileId = 'p-area-1';
@@ -52,15 +53,15 @@ describe('AreaIntegratedWorkspace', () => {
   // Mismo criterio que la lista principal de To-Do: borrar pide confirmación.
   it('borrar una tarea del área pide confirmación y respeta el cancelar', async () => {
     const user = userEvent.setup();
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const confirmSpy = simularConfirmacion(false);
     StorageService.saveTodo({ id: 't-ws', profileId, title: 'Leer apunte', areaId: area.id, priority: 'media', status: 'pendiente', createdAt: '2026-10-10' });
     render(<AreaIntegratedWorkspace area={area} profileId={profileId} onNavigateAgenda={vi.fn()} />);
 
     await user.click(screen.getByRole('button', { name: 'Eliminar Leer apunte' }));
-    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining('Leer apunte'));
+    expect(confirmSpy).toHaveBeenCalledWith(conMensaje('Leer apunte'));
     expect(StorageService.getTodos(profileId)).toHaveLength(1);
 
-    confirmSpy.mockReturnValue(true);
+    simularConfirmacion(true);
     await user.click(screen.getByRole('button', { name: 'Eliminar Leer apunte' }));
     expect(StorageService.getTodos(profileId)).toHaveLength(0);
     confirmSpy.mockRestore();

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Target, Plus, X } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../../utils/confirmar';
 import { useEscapeKey } from '../../utils/useEscapeKey';
 import type { Goal, GoalSubItem, PlannerPeriod } from '../../types';
 import { StorageService } from '../../services/storage';
@@ -71,10 +72,11 @@ export const GoalsDrawer: React.FC<GoalsDrawerProps> = ({ profileId, onGoalsChan
 
   const handleDeleteGoal = (goalId: string) => {
     const target = goals.find(g => g.id === goalId);
-    if (!window.confirm(`¿Eliminar la meta "${target?.title ?? ''}" y sus sub-tareas?`)) return;
-    StorageService.deleteGoal(profileId, goalId);
-    sileo.info({ title: 'Meta eliminada' });
-    loadGoals();
+    confirmar(`¿Eliminar la meta "${target?.title ?? ''}" y sus sub-tareas?`, () => {
+      StorageService.deleteGoal(profileId, goalId);
+      sileo.info({ title: 'Meta eliminada' });
+      loadGoals();
+    });
   };
 
   const handleAddSubItem = (e: React.KeyboardEvent | React.MouseEvent) => {

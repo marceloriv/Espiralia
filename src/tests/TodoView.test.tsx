@@ -5,6 +5,7 @@ import { sileo } from 'sileo';
 import { TodoView } from '../components/TodoView';
 import { StorageService } from '../services/storage';
 import { toLocalDateStr } from '../utils/localDate';
+import { simularConfirmacion, conMensaje } from './confirmacion';
 
 describe('TodoView', () => {
   const profileId = 'p-test';
@@ -63,7 +64,7 @@ describe('TodoView', () => {
 
   it('permite eliminar una tarea tras confirmar', async () => {
     const successSpy = vi.spyOn(sileo, 'success');
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const confirmSpy = simularConfirmacion(true);
     const user = userEvent.setup();
     const areas = StorageService.getAreas(profileId);
     StorageService.saveTodo({
@@ -84,7 +85,7 @@ describe('TodoView', () => {
     const deleteBtn = screen.getByRole('button', { name: /eliminar tarea a borrar/i });
     await user.click(deleteBtn);
 
-    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining('Tarea a borrar'));
+    expect(confirmSpy).toHaveBeenCalledWith(conMensaje('Tarea a borrar'));
     expect(screen.queryByText('Tarea a borrar')).not.toBeInTheDocument();
     expect(successSpy).toHaveBeenCalledWith({ title: 'Tarea eliminada' });
     expect(StorageService.getTodos(profileId)).toEqual([]);
@@ -101,7 +102,7 @@ describe('TodoView', () => {
   });
 
   it('no borra la tarea si se cancela la confirmación', async () => {
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    simularConfirmacion(false);
     const user = userEvent.setup();
     StorageService.saveTodo({ id: 't-keep', profileId, title: 'Se queda', areaId: StorageService.getAreas(profileId)[0].id, priority: 'baja', status: 'pendiente', createdAt: '2026-10-09' });
     render(<TodoView profileId={profileId} />);
@@ -150,7 +151,7 @@ describe('TodoView', () => {
     });
 
     it('borrar un área pasa sus tareas a General', async () => {
-      vi.spyOn(window, 'confirm').mockReturnValue(true);
+      simularConfirmacion(true);
       const user = userEvent.setup();
       StorageService.saveTodo({ id: 't-area', profileId, title: 'Leer paper', areaId: area('Estudios').id, priority: 'media', status: 'pendiente', createdAt: '2026-10-09' });
       render(<TodoView profileId={profileId} />);

@@ -13,6 +13,7 @@ import './agenda/fullcalendar-palette.css';
 import { Pencil, Repeat, Trash2, BookOpen, Download, Sun, Moon, CalendarMinus } from 'lucide-react';
 import { DISPOSITIONS, ENERGY_LEVELS, dispositionLabel, energyLabel } from '../utils/energyLevels';
 import { sileo } from 'sileo';
+import { confirmar } from '../utils/confirmar';
 import type { AgendaEvent, Disposition, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { IcsService } from '../services/icsService';
@@ -164,14 +165,16 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   };
 
   const handleRemoveOccurrence = (ev: AgendaEvent) => {
-    if (!window.confirm(`¿Quitar el ${selectedDate} de la serie "${ev.title}"? Las demás repeticiones se mantienen.`)) return;
-    if (!quitarDiaDeSerie(ev, selectedDate)) {
+    const date = selectedDate;
+    confirmar(`¿Quitar el ${date} de la serie "${ev.title}"? Las demás repeticiones se mantienen.`, () => {
+      if (!quitarDiaDeSerie(ev, date)) {
+        reload();
+        return;
+      }
+      sileo.success({ title: 'Día quitado de la serie' });
+      setForm(f => (f.editingId === ev.id ? emptyEventForm(date) : f));
       reload();
-      return;
-    }
-    sileo.success({ title: 'Día quitado de la serie' });
-    if (form.editingId === ev.id) resetForm(selectedDate);
-    reload();
+    }, 'Quitar');
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -207,14 +210,15 @@ const AgendaBoard: React.FC<AgendaViewProps> = ({ profileId }) => {
   };
 
   const handleDelete = (ev: AgendaEvent) => {
+    const borrar = () => {
+      if (!safeDeleteEvent(activeProfileId, ev.id)) return;
+      sileo.success({ title: 'Evento eliminado' });
+      setForm(f => (f.editingId === ev.id ? emptyEventForm(selectedDate) : f));
+      reload();
+    };
     // Borrar una serie elimina todas sus repeticiones, pasadas incluidas: se confirma antes.
-    if (ev.recurrence && !window.confirm(`Se eliminará la serie "${ev.title}" con todas sus repeticiones. ¿Continuar?`)) {
-      return;
-    }
-    if (!safeDeleteEvent(activeProfileId, ev.id)) return;
-    sileo.success({ title: 'Evento eliminado' });
-    if (form.editingId === ev.id) resetForm(selectedDate);
-    reload();
+    if (ev.recurrence) confirmar(`Se eliminará la serie "${ev.title}" con todas sus repeticiones.`, borrar);
+    else borrar();
   };
 
   // Exporta lo que el filtro deja ver: el mismo .ics que Integraciones, sin salir de la Agenda.

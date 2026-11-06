@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FoldersView } from '../components/FoldersView';
 import { StorageService } from '../services/storage';
+import { simularConfirmacion } from './confirmacion';
 
 const crearCarpeta = (profileId: string, id: string, name: string) =>
   StorageService.saveFolder({ id, profileId, name, createdAt: new Date().toISOString() });
@@ -239,7 +240,7 @@ describe('FoldersView', () => {
   // En Carpetas una nota se creaba y editaba, pero solo se podía borrar desde Notas.
   it('borra una nota desde la tabla de su carpeta tras confirmar', async () => {
     const user = userEvent.setup();
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    simularConfirmacion(true);
     StorageService.saveFolder({ id: 'f-notas', profileId: 'p-borrar-nota', name: 'Apuntes', createdAt: '2026-11-01' });
     StorageService.saveNote({ id: 'n-1', profileId: 'p-borrar-nota', folderId: 'f-notas', title: 'Resumen', content: 'x', createdAt: '2026-11-01', updatedAt: '2026-11-01' });
     render(<FoldersView profileId="p-borrar-nota" />);

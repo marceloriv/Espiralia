@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useHoy } from '../utils/useHoy';
 import { Plus, BookOpen, FileText, Lightbulb, Activity, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../utils/confirmar';
 import type { Note, Folder, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { NoteModal } from './notes/NoteModal';
@@ -172,7 +173,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   };
 
   const handleDeleteNote = (note: Note) => {
-    if (window.confirm(`¿Seguro que deseas eliminar "${note.title}"?`)) {
+    confirmar(`¿Seguro que deseas eliminar "${note.title}"?`, () => {
       StorageService.deleteNote(profileId, note.id);
       if (activeNoteId === note.id) {
         setActiveNoteId(null);
@@ -184,7 +185,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         // Ignorar
       }
       loadData();
-    }
+    });
   };
 
   const currentTomoConfig = useMemo(() => {
