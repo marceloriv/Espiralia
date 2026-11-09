@@ -23,7 +23,7 @@
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.5",
     "sileo": "^0.1.6",
-    "temporal-polyfill": "1.0.6"
+    "temporal-polyfill": "1.0.8"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
