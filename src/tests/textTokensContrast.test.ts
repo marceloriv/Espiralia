@@ -245,14 +245,17 @@ describe('Tema oscuro (DESIGN.md §7.4)', () => {
     return m[1];
   };
 
+  // Los porcentajes de mezcla salen del propio CSS oscuro: así la prueba mide la superficie que se pinta y no la del tema claro.
+  const esquina = Number(manual.match(/--papel-intensidad-esquina:\s*(\d+)%/)![1]);
+  const mezclaClara = Number(manual.match(/--superficie-pizarra:[^;]*?var\(--papel-pizarra\) (\d+)%/)![1]);
   const superficies = (): Record<string, string> => {
     const out: Record<string, string> = {};
     for (const n of ['color-canvas', 'bg-card', 'color-surface-soft', 'color-surface-card', 'color-surface-warm', 'color-surface-cream-strong']) out[n] = oscuro(n);
     for (const t of TINTES) {
       const tinte = oscuro(`papel-${t}`);
       out[`papel-${t}`] = tinte;
-      out[`papel-${t} al 72 %`] = mixHex(tinte, 72, oscuro('bg-card'));
-      out[`esquina de papel-${t}`] = mixHex(oscuro(`papel-${t}-fuerte`), 58, tinte);
+      out[`papel-${t} al ${mezclaClara} %`] = mixHex(tinte, mezclaClara, oscuro('bg-card'));
+      out[`esquina de papel-${t}`] = mixHex(oscuro(`papel-${t}-fuerte`), esquina, tinte);
     }
     return out;
   };
@@ -280,7 +283,7 @@ describe('Tema oscuro (DESIGN.md §7.4)', () => {
     name => {
       for (const t of TINTES) {
         const tinte = oscuro(`papel-${t}`);
-        for (const bg of [tinte, mixHex(oscuro(`papel-${t}-fuerte`), 58, tinte)]) {
+        for (const bg of [tinte, mixHex(oscuro(`papel-${t}-fuerte`), esquina, tinte)]) {
           expect(ratio(oscuro(name), bg), `--${name} (${oscuro(name)}) sobre papel-${t} (${bg})`).toBeGreaterThanOrEqual(4.5);
         }
       }
@@ -297,6 +300,39 @@ describe('Tema oscuro (DESIGN.md §7.4)', () => {
   it('el relleno magenta de los botones no cambia y su texto blanco sigue en 4.5:1 o más', () => {
     expect(manual).not.toMatch(/--color-primary:/);
     expect(ratio(token('color-on-primary'), token('color-primary'))).toBeGreaterThanOrEqual(4.5);
+  });
+
+  // Paleta aprobada del modo oscuro (DESIGN.md §7.4): cada módulo conserva su matiz y no se desliza al marrón o gris.
+  const PALETA_OSCURA: Record<string, string> = {
+    arena: '#403528', pizarra: '#263F69', salvia: '#214934', terracota: '#5B3029', ambar: '#594314', rosa: '#57304F', turquesa: '#164E52',
+  };
+  it.each(Object.entries(PALETA_OSCURA))('papel-%s oscuro es %s', (t, hex) => {
+    expect(oscuro(`papel-${t}`).toUpperCase()).toBe(hex);
+  });
+
+  const hsl = (hex: string) => {
+    const [r, g, b] = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255);
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min;
+    const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+    const h = d === 0 ? 0 : (max === r ? ((g - b) / d + 6) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4) * 60;
+    return { h, s, l };
+  };
+  it.each(['pizarra', 'salvia', 'terracota', 'ambar', 'rosa', 'turquesa'])(
+    'la superficie oscura de %s conserva el cromatismo del módulo (saturación HSL de 25 % o más y su matiz)',
+    t => {
+      const matiz = hsl(oscuro(`papel-${t}`)).h;
+      const mezclaFinal = Number(manual.match(new RegExp(String.raw`--superficie-${t}:[^;]*?var\(--papel-${t}\) \d+%[^;]*?var\(--papel-${t}\) (\d+)%`))![1]);
+      for (const [pct, minimo] of [[mezclaClara, 0.25], [mezclaFinal, 0.18]]) {
+        const c = hsl(mixHex(oscuro(`papel-${t}`), pct, oscuro('bg-card')));
+        expect(c.s, `${t} al ${pct} %`).toBeGreaterThanOrEqual(minimo);
+        expect(Math.abs(c.h - matiz), `${t} al ${pct} %: matiz`).toBeLessThanOrEqual(20);
+      }
+    },
+  );
+  it('el esquema de superficies oscuras de Arena no es gris: conserva matiz cálido', () => {
+    const c = hsl(mixHex(oscuro('papel-arena'), mezclaClara, oscuro('bg-card')));
+    expect(c.h).toBeGreaterThanOrEqual(25);
+    expect(c.h).toBeLessThanOrEqual(50);
   });
 
   it('los siete tintes oscuros siguen distinguiéndose entre sí (distancia RGB de 15 o más)', () => {

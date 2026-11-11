@@ -479,14 +479,14 @@ Valores vigentes (contraste medido con la fórmula WCAG; `textTokensContrast.tes
 | `--color-surface-card` | `#FFFFFF` | `#252320` | 1.13:1 con el canvas (separa por borde y sombra, no por contraste) |
 | `--color-ink` | `#1A1917` | `#F2EEE8` | 15.3:1 sobre canvas |
 | `--color-body` | `#3D3D3A` | `#D4D0C8` | 11.5:1 sobre canvas |
-| `--color-muted` | `#57554F` | `#BCB8B0` | 7.8:1 sobre canvas; 4.7:1 o más sobre los tintes oscuros |
+| `--color-muted` | `#57554F` | `#CABDC1` | 7.8:1 sobre canvas; 4.7:1 o más sobre los tintes oscuros |
 | `--color-hairline` | `#E8E2D8` | `#3A3732` | 1.5:1; solo para divisores decorativos |
-| `--color-border-control` (claro vigente desde 2026-10-30) | `#76716A` | `#9C978C` | 3.5:1 o más sobre toda superficie, esquina oscura de los tintes incluida |
+| `--color-border-control` (claro vigente desde 2026-10-30) | `#76716A` | `#A19C91` | 3.0:1 o más sobre toda superficie, esquina oscura de los tintes incluida |
 | `--color-primary` (relleno de botón) | `#8E1EA2` | `#8E1EA2` | texto blanco 7.4:1 |
 | **`--color-text-primary`** (nuevo: enlaces y texto magenta) | `#8E1EA2` | `#E3A6F0` | 9.3:1 sobre canvas, 8.2:1 sobre tarjeta |
 | **`--color-focus`** (nuevo) | `#8E1EA2` | `#E3A6F0` | 8.2:1 sobre tarjeta |
 | `--color-text-success` | `#316F3F` | `#7FD08F` | 8.5:1 sobre tarjeta |
-| `--color-text-error` | `#B13636` | `#F6A0A0` | 5.1:1 o más sobre toda superficie y tinte oscuro |
+| `--color-text-error` | `#B13636` | `#F8AAAB` | 5.1:1 o más sobre toda superficie y tinte oscuro |
 | `--color-text-teal` | `#2F6B60` | `#7FD3C2` | 9.0:1 sobre tarjeta |
 | `--color-text-amber` | `#8E5414` | `#F0BE7A` | 9.2:1 sobre tarjeta |
 | **`--color-scrim`** (nuevo) | `rgba(20, 20, 19, 0.45)` | `rgba(0, 0, 0, 0.6)` | n/a |
@@ -498,6 +498,21 @@ Reglas propias del oscuro:
 - **El borde de un campo o control no puede ser el `--color-hairline` oscuro** (1.5:1): un control debe distinguirse con 3:1 o más (WCAG 1.4.11), así que los campos usan `--color-border-control`.
 - **Sombras:** sobre fondo oscuro una sombra negra casi no se ve. La elevación se expresa con superficie más clara (`--color-surface-card`) y un borde de `--color-hairline`; la sombra `--shadow-paper` se reduce a opacidad `0.35` sobre negro puro. Nada de `box-shadow` con color claro ni brillos.
 - **El Papel conserva su lógica.** Los siete tintes (§0.4) tienen versión oscura: mismo matiz, luminosidad baja, saturación suficiente para que sigan distinguiéndose entre sí (mismo criterio que el de §0.4: distancia mínima entre tintes). Ejemplos de partida: arena `#3A3228`, pizarra `#2B3541`; con texto `--color-ink` rinden 10.9:1 y 10.8:1. El degradado de esquina (§0.12) oscurece hacia `--papel-<tinte>-fuerte` en su versión oscura. El grano de papel baja a `1.5 %`.
+
+- **Paleta cromática del Papel en oscuro (2026-11-11).** Los siete tintes oscuros ya no son marrones desaturados: cada uno es el mismo matiz de su tinte claro a luminosidad baja. Valores definitivos (`--papel-*`) y variante fuerte (`--papel-*-fuerte`, mismo matiz y saturación, luminosidad HSL +4 puntos):
+
+  | Módulo | Tinte claro (§0.4) | Oscuro | Fuerte oscuro |
+  | --- | --- | --- | --- |
+  | Dashboard | Arena `#ECE0CB` | `#403528` | `#4D3F30` |
+  | Agenda | Pizarra `#CCDAEA` | `#263F69` | `#2B4878` |
+  | Planner | Salvia `#D0E6CC` | `#214934` | `#27573E` |
+  | To-Do | Terracota `#F1CFC5` | `#5B3029` | `#69372F` |
+  | Notas | Ámbar `#FAE1BD` | `#594314` | `#6A5018` |
+  | Carpetas | Rosa `#F8CEE8` | `#57304F` | `#64375B` |
+  | Integraciones | Turquesa `#C7EFE7` | `#164E52` | `#1A5D62` |
+
+  Causa de la pérdida de color anterior: los tintes oscuros eran de croma casi nulo (arena `#3A3228`, salvia `#2C3B2E`) y las superficies los mezclaban al 44 % y 20 % con `--bg-card` (neutro), así que el resultado era gris con un matiz imperceptible. Mezclas vigentes: `--superficie-*` **85 % a 55 %** del tinte sobre `--bg-card`, `--contenedor-rosa` y `--contenedor-turquesa` **65 % a 30 %**, `--papel-intensidad-tarjeta` **100 %**, `--papel-intensidad-esquina` **35 %**, `--lateral-mezcla` **60 %** y el degradado del héroe del Dashboard arranca con arena al **75 %**. Para sostener 4.5:1 con estos tintes más vivos subieron `--color-muted` (`#CABDC1`), `--color-text-error` (`#F8AAAB`) y `--color-border-control` (`#A19C91`, 3:1 sobre la esquina del ámbar); los HEX base no se tocaron.
+  Reglas para no desaturar de nuevo: (1) un tinte oscuro no baja de 25 % de saturación HSL tras mezclarse con `--bg-card` en el extremo claro del degradado ni de 18 % en el final (lo vigila `textTokensContrast.test.ts`, que además fija los siete HEX y exige que Arena siga entre 25° y 50° de matiz); (2) los porcentajes de mezcla del oscuro se declaran en `src/index.css`, no en los `.module.css`, y la prueba de contraste los lee de ahí; (3) si un texto no alcanza 4.5:1, se corrige el texto, la intensidad o la variante fuerte antes que el HEX base.
 - **Imágenes, íconos y SVG** usan `currentColor` o tokens; ninguno lleva color fijo. Prohibido `filter: invert()` para "generar" el tema oscuro.
 - **Datos de usuario no se tocan.** El color de un área o de una carpeta que la persona eligió se guarda como dato y **no cambia con el tema**; lo que cambia es el color del texto que se pone encima (se elige por contraste, no por tema). Los gráficos usan esos colores de área con contorno `--color-ink` para sostener 3:1.
 - **`forced-colors: active` y `prefers-contrast: more`** mandan sobre ambos temas: borde visible en todo control, sin sombras desplazadas, sin `clip-path` en los papeles (§0.10.6).
