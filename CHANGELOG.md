@@ -4,6 +4,42 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.8.0] - 2026-11-11
+
+### Added
+
+- **Modo oscuro** con conmutador (`ThemeToggle`) y transición circular con efecto blur que parte desde el ícono. El tema elegido se persiste en `localStorage` como `espiralia_theme`. La landing se fuerza siempre a claro con `data-force-light`.
+- **Ventana de carga animada**: origami que se pliega al terminar de cargar la app, en lugar del flash de contenido previo.
+- **Esqueleto de carga**: estados de espera con placeholders animados en lugar de pantalla en blanco.
+- **Transición de tema circular con máscara y blur** (View Transitions API, sin dependencia), con movimiento reducido que cae a un fade limpio.
+
+### Changed
+
+- **Tokens de modo oscuro**: todos los tokens de `index.css` tienen ahora dos bloques identicos — `[data-theme="dark"]` y `prefers-color-scheme: dark` — para que el sistema y la elección manual coincidan. Valores finales: `--color-muted #BCB8B0`, `--color-border-control #9C978C`, `--color-text-error #F6A0A0`; textos sobre post-its con `--on-papel-*`. Documentados en DESIGN.md §7.4.
+- **Colores de componentes convertidos a tokens de tema**: botones, barra lateral, hero, sombra del editor de Notas, tarjetas de Papel, contornos de foco de la 404 y divisores ya no usan hex fijo, leen los tokens del tema activo.
+- **Tarjetas de Papel** leen la intensidad del tema; superficies de papel y barra lateral suavizadas en modo oscuro.
+- **Barra lateral**: hoja lateral simplificada a solo la mascota Nautilus (DESIGN.md §0.12); se eliminan molinillo, flor y animaciones.
+- **Peso de la carga inicial**: el tope sube de 184 KB a 189 KB. La medida de esta versión es 186,57 KB gzip.
+- **Accesibilidad y SEO (PR #85)**: atrapa foco en diálogos, restaura foco al cerrar, enlace «saltar al contenido» y mejoras de metadatos SEO.
+- **Dependencias**: `@tanstack/charts` 1.5.0, `lucide-react` 1.70.0, `temporal-polyfill` 1.0.8, `vite` 8.3.6, `@vitejs/plugin-react` 6.2.1, `jsdom` 31.0.0, `globals` 17.14.0, `oxlint` actualizado, grupo de testing actualizado. `pnpm audit --prod` sin vulnerabilidades activas.
+
+### Fixed
+
+- **Barra del navegador, texto magenta y tokens sin definir** en modo oscuro.
+- **Hover de botones rellenos** con fondo oscuro y texto correcto en modo oscuro.
+- **Contraste del texto sobre colores de carpeta y categoría** en modo oscuro.
+- **Bordes de pastillas y botones de agregar** usan `--color-border-control` (3:1 WCAG 1.4.11).
+- **Divisores y trama de papel** sin hex claro fijo en oscuro.
+- **Con movimiento reducido**, el cambio de tema se anima con fade en lugar de la transición circular.
+- **Máscara de la transición de tema** activa durante todo el recorte circular, no solo al inicio.
+- **Subrayado tenue** en el título de la 404.
+- **Cromatismo de los siete tintes** recuperado en modo oscuro.
+
+### Operations
+
+- **Pruebas**: test del almanaque de Agenda fija la fecha del reloj; suite `origamiHoja.test.tsx` cubre la conformidad con DESIGN.md §0.12; `antislopMotion.test.ts` actualizado; contraste del tema oscuro y bloques cubiertos. Total de tests: 1 049.
+- **`public/theme-init.js`**: script externo que aplica el tema antes del primer paint; evita el FOUC sin necesitar scripts en línea (compatible con el CSP del proyecto).
+
 ## [0.7.0] - 2026-11-05
 
 ### Added
