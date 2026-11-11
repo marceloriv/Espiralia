@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { currentTheme, setThemeColor } from '../utils/theme';
 import {
   Feather,
   Lock,
@@ -38,6 +39,16 @@ export const LandingView: React.FC<LandingViewProps> = ({
   onNavigateDashboard,
   hasActiveProfile = false,
 }) => {
+  // La landing es una pieza de papelería con colores propios (DESIGN.md §7.4): siempre se ve en claro, sin importar el tema de la app.
+  useEffect(() => {
+    document.documentElement.setAttribute('data-force-light', '');
+    setThemeColor('light');
+    return () => {
+      document.documentElement.removeAttribute('data-force-light');
+      setThemeColor(currentTheme());
+    };
+  }, []);
+
   // Al volver desde la app la pestaña conservaba el nombre de la última vista.
   useEffect(() => {
     document.title = LANDING_TITLE;

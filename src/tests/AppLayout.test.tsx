@@ -96,6 +96,7 @@ describe('AppLayout', () => {
       'Bóveda Offline',
       'Buscar en Espiralia... Ctrl+K',
       '+ Nueva Nota',
+      'Cambiar a tema oscuro',
       'Cambiar perfil (Francisca)',
     ]);
   });

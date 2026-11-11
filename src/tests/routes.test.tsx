@@ -42,8 +42,8 @@ describe('AppRoutes con rutas protegidas', () => {
       </MemoryRouter>
     );
 
-    // El Dashboard es diferido: primero se ve el fallback de Suspense.
-    expect(screen.getByRole('status')).toHaveTextContent(/cargando espacio/i);
+    // El Dashboard es diferido: primero se ve el fallback de Suspense (la ventana de carga en el primer arranque).
+    expect(screen.getByRole('status')).toHaveTextContent(/abriendo espiralia|cargando espacio/i);
     expect(await screen.findByText(/carolina./i, {}, { timeout: 10000 })).toBeInTheDocument();
   });
 

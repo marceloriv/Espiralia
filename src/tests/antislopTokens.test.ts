@@ -33,8 +33,8 @@ describe('Antislop UI design tokens contract', () => {
     }
   });
 
-  it('RouteLoadingFallback.module.css respeta prefers-reduced-motion', () => {
-    const cssPath = path.resolve(__dirname, '../components/RouteLoadingFallback.module.css');
+  it('Esqueleto.module.css respeta prefers-reduced-motion', () => {
+    const cssPath = path.resolve(__dirname, '../components/common/Esqueleto.module.css');
     const content = fs.readFileSync(cssPath, 'utf-8');
     expect(content).toContain('prefers-reduced-motion');
   });

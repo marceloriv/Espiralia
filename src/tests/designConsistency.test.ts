@@ -73,10 +73,12 @@ describe('Primitivos de diálogo (DESIGN.md §7.2)', () => {
     for (const file of allModules) for (const m of readFileSync(file, 'utf8').matchAll(/(--[\w-]+)\s*:/g)) definidos.add(m[1]);
     const tsx = (dir: string): string[] =>
       readdirSync(dir, { withFileTypes: true }).flatMap(e => (e.isDirectory() ? tsx(path.join(dir, e.name)) : /\.tsx?$/.test(e.name) ? [path.join(dir, e.name)] : []));
-    for (const file of tsx(componentsDir)) for (const m of readFileSync(file, 'utf8').matchAll(/['"`](--[\w-]+)['"`]\s*:/g)) definidos.add(m[1]);
+    const tsxFiles = tsx(componentsDir);
+    for (const file of tsxFiles) for (const m of readFileSync(file, 'utf8').matchAll(/['"`](--[\w-]+)['"`]\s*:/g)) definidos.add(m[1]);
 
     const indefinidos: string[] = [];
-    for (const file of allModules) {
+    // También los estilos en línea de los .tsx: un var() sin definir se descarta en silencio y el elemento hereda el color del tema claro.
+    for (const file of [...allModules, ...tsxFiles]) {
       for (const m of readFileSync(file, 'utf8').matchAll(/var\((--[\w-]+)/g)) {
         if (!definidos.has(m[1])) indefinidos.push(`${path.relative(componentsDir, file)} ${m[1]}`);
       }
@@ -84,11 +86,40 @@ describe('Primitivos de diálogo (DESIGN.md §7.2)', () => {
     expect([...new Set(indefinidos)]).toEqual([]);
   });
 
+  it('el texto no usa el relleno de marca: color: var(--color-primary|accent) solo en la landing, que siempre es clara', () => {
+    // --color-primary es #8E1EA2 en los dos temas (relleno); sobre el canvas oscuro da 2,4:1. El texto magenta es --color-text-primary.
+    const offenders = allModules
+      .filter(f => !f.includes('Landing'))
+      .filter(f => /^\s*color:\s*var\(--color-(primary|accent)\)/m.test(readFileSync(f, 'utf8')))
+      .map(f => path.relative(componentsDir, f));
+    expect(offenders).toEqual([]);
+  });
+
   it('un rol, un token: ningún módulo usa los alias --color-ink-muted ni --font-headline', () => {
     const offenders = allModules
       .filter(f => /var\(--(color-ink-muted|font-headline)\b/.test(readFileSync(f, 'utf8')))
       .map(f => path.relative(componentsDir, f));
     expect(offenders).toEqual([]);
+  });
+
+  // `--color-primary-active` (#C654C3) es un acento claro: con texto blanco da 3,85:1. El relleno de un botón en :hover usa
+  // `--color-primary-hover`, más oscuro que el reposo, y el texto blanco conserva AA en ambos temas (el primario no cambia con el tema).
+  it('un botón relleno no aclara su fondo en :hover con --color-primary-active', () => {
+    const offenders = allModules.filter(f =>
+      /:hover[^{]*\{[^}]*background(-color)?:\s*var\(--color-primary-active\)/.test(readFileSync(f, 'utf8')),
+    );
+    expect(offenders.map(f => path.relative(componentsDir, f))).toEqual([]);
+  });
+
+  it('--color-primary-hover con texto blanco cumple AA (4,5:1)', () => {
+    const hex = tokensCss.match(/--color-primary-hover:\s*(#[0-9a-fA-F]{6})/)?.[1] ?? '';
+    const lum = (h: string) =>
+      [1, 3, 5]
+        .map(i => parseInt(h.slice(i, i + 2), 16) / 255)
+        .map(v => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+        .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i], 0);
+    expect(hex).not.toBe('');
+    expect(1.05 / (lum(hex) + 0.05)).toBeGreaterThanOrEqual(4.5);
   });
 
   it('los tokens nuevos de §7.4 existen en src/index.css', () => {

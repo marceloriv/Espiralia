@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   /* Espiralia primary colors */
   --color-primary: #8E1EA2;
   --color-primary-active: #C654C3;
@@ -216,6 +217,11 @@
   --superficie-ambar: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-ambar) 40%, var(--bg-card)));
   --superficie-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 40%, var(--bg-card)));
   --superficie-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 72%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 40%, var(--bg-card)));
+  --lateral-mezcla: 56%;
+  --papel-intensidad-tarjeta: 100%;
+  --papel-intensidad-esquina: 58%;
+  --dashboard-hero-bg: linear-gradient(115deg, var(--papel-arena) 0%, var(--bg-card) 58%);
+  --shadow-bujo-canvas: inset 1px 1px 0 rgba(255, 255, 255, 0.8), inset -1px -1px 0 rgba(0, 0, 0, 0.02), 0 2px 8px rgba(26, 25, 23, 0.04);
   /* Contenedor que solo agrupa tarjetas (Áreas, Métricas): un nivel más suave, para que las tarjetas
      resalten sobre él y la superficie más grande del Dashboard no le quite el foco al saludo. */
   --contenedor-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 45%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 20%, var(--bg-card)));
@@ -228,6 +234,10 @@
   --papel-texto-ambar: #7d4a12;
   --papel-texto-magenta: #8c2f89;
   --papel-texto-error: #9c3030;
+  /* Texto sobre papeles que no cambian con el tema (post-its amarillos): el papel es claro en los dos temas, así que el texto también. */
+  --on-papel-ink: #2a2520;
+  --on-papel-ambar: #7d4a12;
+  --on-papel-magenta: #8c2f89;
 
   /* Tokens de compatibilidad y alias historicos */
   --color-surface: var(--color-surface-soft);
@@ -237,7 +247,7 @@
   --color-tertiary: var(--color-accent-teal);
   --color-danger: var(--color-error);
   --color-bg-postit: var(--bg-postit);
-  --color-primary-hover: var(--color-primary-active);
+  --color-primary-hover: #741787;
   --color-error-container: rgba(198, 69, 69, 0.12);
   --color-accent-red: var(--color-error);
   --font-mono: var(--font-family-3);
@@ -256,6 +266,209 @@
   color: var(--color-body);
   background-color: var(--color-canvas);
   box-sizing: border-box;
+}
+
+/*
+ * Modo oscuro (DESIGN.md §7.4). Se activa con data-theme="dark" (elección de la persona) o, sin elección, con la preferencia del
+ * sistema. data-force-light lo desactiva en las pantallas que no se tematizan (la landing). Los dos bloques declaran lo mismo:
+ * designConsistency.test.ts lo comprueba.
+ */
+:root[data-theme="dark"]:not([data-force-light]) {
+  color-scheme: dark;
+
+  /* Superficies: canvas casi negro cálido; la cartulina y el papel suben un escalón de luminosidad. */
+  --color-canvas: #19191B;
+  --color-canvas-paper: #222124;
+  --bg-canvas: #19191B;
+  --bg-card: #29272A;
+  --bg-manila: #3a3228;
+  --bg-slate-paper: #232a31;
+  --bg-surface-soft: #242226;
+  --color-surface-soft: #242226;
+  --color-surface-card: #29272A;
+  --color-surface-warm: #2a2824;
+  --color-surface-cream-strong: #33302b;
+  --color-surface-slate: #232a31;
+  --color-surface-bright: #343137;
+
+  /* Texto y bordes (contrastes medidos en DESIGN.md §7.4). */
+  --color-ink: #F3ECE8;
+  --color-body: #DFD4D0;
+  --color-body-strong: #F3ECE8;
+  --color-muted: #CABDC1;
+  --color-muted-soft: #A99DA2;
+  --color-hairline: #49434A;
+  --color-hairline-soft: #373239;
+  --color-border-control: #A19C91;
+  --border-hairline: #373239;
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --color-grid-bujo: #3B353C;
+
+  /* Magenta: el relleno de botón se queda en #8E1EA2 (texto blanco 7.4:1); el texto y el foco necesitan una variante clara. */
+  --color-primary-soft: #593458;
+  --color-primary-light: #30232F;
+  --color-primary-disabled: #4a2c52;
+  --color-text-primary: #E4A8DF;
+  --color-text-primary-active: #E4A8DF;
+  --color-focus: #E4A8DF;
+  --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-focus);
+
+  /* Textos de estado. */
+  --color-text-success: #7fd08f;
+  --color-text-teal: #7fd3c2;
+  --color-text-amber: #f0be7a;
+  --color-text-error: #F8AAAB;
+  --color-error-container: rgba(240, 138, 138, 0.16);
+
+  /* Velo y sombras: sobre fondo oscuro una sombra clara no se ve, la elevación la marcan la superficie y el borde. */
+  --color-scrim: rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-paper: 0 1px 3px rgba(0, 0, 0, 0.45), 0 6px 18px -2px rgba(0, 0, 0, 0.4);
+  --shadow-folder-tab: 0 4px 14px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.35);
+  --shadow-postit: 0 6px 16px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-sheet: 0 1px 2px rgba(0, 0, 0, 0.5), 0 10px 24px -4px rgba(0, 0, 0, 0.45);
+  --shadow-card-stack: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 0 -1px #2e2b27, 0 5px 2px -1px rgba(0, 0, 0, 0.4), 0 14px 28px -6px rgba(0, 0, 0, 0.5);
+  --shadow-recessed: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.06);
+  --elevation-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+
+  /* Tintes de Papel: mismo matiz que en claro, luminosidad baja; siguen codificando el mismo módulo. */
+  --papel-arena: #403528;
+  --papel-arena-fuerte: #4D3F30;
+  --papel-pizarra: #263F69;
+  --papel-pizarra-fuerte: #2B4878;
+  --papel-salvia: #214934;
+  --papel-salvia-fuerte: #27573E;
+  --papel-terracota: #5B3029;
+  --papel-terracota-fuerte: #69372F;
+  --papel-ambar: #594314;
+  --papel-ambar-fuerte: #6A5018;
+  --papel-rosa: #57304F;
+  --papel-rosa-fuerte: #64375B;
+  --papel-turquesa: #164E52;
+  --papel-turquesa-fuerte: #1A5D62;
+  --papel-texto-suave: #c4bfb5;
+  --papel-texto-exito: #8fd69c;
+  --papel-texto-turquesa: #86d9c8;
+  --papel-texto-ambar: #f0c283;
+  --papel-texto-magenta: #e6a9e1;
+  --papel-texto-error: #f8aaab;
+
+  /* Superficies de Papel: en oscuro el tinte baja para que el carbón neutro domine y el color solo diferencie el módulo. */
+  --superficie-pizarra: linear-gradient(145deg, color-mix(in srgb, var(--papel-pizarra) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-pizarra) 55%, var(--bg-card)));
+  --superficie-salvia: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-salvia) 55%, var(--bg-card)));
+  --superficie-terracota: linear-gradient(145deg, color-mix(in srgb, var(--papel-terracota) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-terracota) 55%, var(--bg-card)));
+  --superficie-ambar: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-ambar) 55%, var(--bg-card)));
+  --superficie-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 55%, var(--bg-card)));
+  --superficie-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 55%, var(--bg-card)));
+  --contenedor-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 65%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 30%, var(--bg-card)));
+  --contenedor-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 65%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 30%, var(--bg-card)));
+  --lateral-mezcla: 60%;
+  --papel-intensidad-tarjeta: 100%;
+  --papel-intensidad-esquina: 35%;
+  --dashboard-hero-bg: linear-gradient(115deg, color-mix(in srgb, var(--papel-arena) 75%, var(--bg-card)) 0%, var(--bg-card) 58%);
+  --shadow-bujo-canvas: inset 1px 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-force-light]) {
+    color-scheme: dark;
+
+    /* Superficies: canvas casi negro cálido; la cartulina y el papel suben un escalón de luminosidad. */
+    --color-canvas: #19191B;
+    --color-canvas-paper: #222124;
+    --bg-canvas: #19191B;
+    --bg-card: #29272A;
+    --bg-manila: #3a3228;
+    --bg-slate-paper: #232a31;
+    --bg-surface-soft: #242226;
+    --color-surface-soft: #242226;
+    --color-surface-card: #29272A;
+    --color-surface-warm: #2a2824;
+    --color-surface-cream-strong: #33302b;
+    --color-surface-slate: #232a31;
+    --color-surface-bright: #343137;
+
+    /* Texto y bordes (contrastes medidos en DESIGN.md §7.4). */
+    --color-ink: #F3ECE8;
+    --color-body: #DFD4D0;
+    --color-body-strong: #F3ECE8;
+    --color-muted: #CABDC1;
+    --color-muted-soft: #A99DA2;
+    --color-hairline: #49434A;
+    --color-hairline-soft: #373239;
+    --color-border-control: #A19C91;
+    --border-hairline: #373239;
+    --border-subtle: rgba(255, 255, 255, 0.12);
+    --color-grid-bujo: #3B353C;
+
+    /* Magenta: el relleno de botón se queda en #8E1EA2 (texto blanco 7.4:1); el texto y el foco necesitan una variante clara. */
+    --color-primary-soft: #593458;
+    --color-primary-light: #30232F;
+    --color-primary-disabled: #4a2c52;
+    --color-text-primary: #E4A8DF;
+    --color-text-primary-active: #E4A8DF;
+    --color-focus: #E4A8DF;
+    --focus-ring: 0 0 0 2px var(--color-canvas), 0 0 0 4px var(--color-focus);
+
+    /* Textos de estado. */
+    --color-text-success: #7fd08f;
+    --color-text-teal: #7fd3c2;
+    --color-text-amber: #f0be7a;
+    --color-text-error: #F8AAAB;
+    --color-error-container: rgba(240, 138, 138, 0.16);
+
+    /* Velo y sombras: sobre fondo oscuro una sombra clara no se ve, la elevación la marcan la superficie y el borde. */
+    --color-scrim: rgba(0, 0, 0, 0.6);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+    --shadow-paper: 0 1px 3px rgba(0, 0, 0, 0.45), 0 6px 18px -2px rgba(0, 0, 0, 0.4);
+    --shadow-folder-tab: 0 4px 14px rgba(0, 0, 0, 0.4), 0 12px 28px rgba(0, 0, 0, 0.35);
+    --shadow-postit: 0 6px 16px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-sheet: 0 1px 2px rgba(0, 0, 0, 0.5), 0 10px 24px -4px rgba(0, 0, 0, 0.45);
+    --shadow-card-stack: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 0 -1px #2e2b27, 0 5px 2px -1px rgba(0, 0, 0, 0.4), 0 14px 28px -6px rgba(0, 0, 0, 0.5);
+    --shadow-recessed: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 255, 255, 0.06);
+    --elevation-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+
+    /* Tintes de Papel: mismo matiz que en claro, luminosidad baja; siguen codificando el mismo módulo. */
+    --papel-arena: #403528;
+    --papel-arena-fuerte: #4D3F30;
+    --papel-pizarra: #263F69;
+    --papel-pizarra-fuerte: #2B4878;
+    --papel-salvia: #214934;
+    --papel-salvia-fuerte: #27573E;
+    --papel-terracota: #5B3029;
+    --papel-terracota-fuerte: #69372F;
+    --papel-ambar: #594314;
+    --papel-ambar-fuerte: #6A5018;
+    --papel-rosa: #57304F;
+    --papel-rosa-fuerte: #64375B;
+    --papel-turquesa: #164E52;
+    --papel-turquesa-fuerte: #1A5D62;
+    --papel-texto-suave: #c4bfb5;
+    --papel-texto-exito: #8fd69c;
+    --papel-texto-turquesa: #86d9c8;
+    --papel-texto-ambar: #f0c283;
+    --papel-texto-magenta: #e6a9e1;
+    --papel-texto-error: #f8aaab;
+
+    /* Superficies de Papel: en oscuro el tinte baja para que el carbón neutro domine y el color solo diferencie el módulo. */
+    --superficie-pizarra: linear-gradient(145deg, color-mix(in srgb, var(--papel-pizarra) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-pizarra) 55%, var(--bg-card)));
+    --superficie-salvia: linear-gradient(145deg, color-mix(in srgb, var(--papel-salvia) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-salvia) 55%, var(--bg-card)));
+    --superficie-terracota: linear-gradient(145deg, color-mix(in srgb, var(--papel-terracota) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-terracota) 55%, var(--bg-card)));
+    --superficie-ambar: linear-gradient(145deg, color-mix(in srgb, var(--papel-ambar) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-ambar) 55%, var(--bg-card)));
+    --superficie-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 55%, var(--bg-card)));
+    --superficie-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 85%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 55%, var(--bg-card)));
+    --contenedor-rosa: linear-gradient(145deg, color-mix(in srgb, var(--papel-rosa) 65%, var(--bg-card)), color-mix(in srgb, var(--papel-rosa) 30%, var(--bg-card)));
+    --contenedor-turquesa: linear-gradient(145deg, color-mix(in srgb, var(--papel-turquesa) 65%, var(--bg-card)), color-mix(in srgb, var(--papel-turquesa) 30%, var(--bg-card)));
+    --lateral-mezcla: 60%;
+    --papel-intensidad-tarjeta: 100%;
+    --papel-intensidad-esquina: 35%;
+    --dashboard-hero-bg: linear-gradient(115deg, color-mix(in srgb, var(--papel-arena) 75%, var(--bg-card)) 0%, var(--bg-card) 58%);
+    --shadow-bujo-canvas: inset 1px 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
 }
 
 *, *::before, *::after {
@@ -325,6 +538,26 @@ h1[class] {
   }
 }
 
+/* Cambio de tema (src/utils/theme.ts, efecto de theme-toggle.rdsx.dev): el tema nuevo se revela con un círculo sobre el viejo.
+   Hace falta anular la mezcla plus-lighter del navegador y el nombre `pagina`, para que el contenido se revele con el resto. */
+html[data-theme-switching] ::view-transition-old(root),
+html[data-theme-switching] ::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+html[data-theme-switching] ::view-transition-old(root) {
+  z-index: 1;
+}
+
+html[data-theme-switching] ::view-transition-new(root) {
+  z-index: 2;
+}
+
+html[data-theme-switching] :not(html) {
+  view-transition-name: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),
@@ -335,7 +568,7 @@ h1[class] {
 
 /* Accessibility: Focus visible indicator (WCAG 2.4.7 / 1.4.11) */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 

@@ -51,7 +51,7 @@
 }
 
 .searchInput:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
@@ -80,7 +80,7 @@
 }
 
 .clearButton:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 
@@ -109,7 +109,7 @@
 }
 
 .groupHeader svg {
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .resultList {
@@ -144,7 +144,7 @@
 }
 
 .resultItem:focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
   background-color: var(--color-surface-card);
 }
@@ -187,7 +187,7 @@
   padding: 2px 8px;
   border-radius: var(--radius-pill);
   background-color: var(--color-surface-soft);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-size: 11px;
   font-weight: 600;
   border: 1px solid var(--color-hairline);

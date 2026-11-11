@@ -74,3 +74,17 @@ describe('LandingView: accesibilidad y SEO', () => {
     expect(document.title).toMatch(/agenda, planner y tareas/i);
   });
 });
+
+describe('LandingView: tema forzado a claro', () => {
+  it('con tema oscuro elegido pinta la barra del navegador clara y la restaura al salir', () => {
+    document.head.innerHTML = '<meta name="theme-color" content="#19191B" />';
+    document.documentElement.setAttribute('data-theme', 'dark');
+    const { unmount } = render(<LandingView onNavigateLogin={() => {}} />);
+    expect(document.documentElement.hasAttribute('data-force-light')).toBe(true);
+    expect(document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.content).toBe('#faf9f5');
+    unmount();
+    expect(document.documentElement.hasAttribute('data-force-light')).toBe(false);
+    expect(document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.content).toBe('#19191B');
+    document.documentElement.removeAttribute('data-theme');
+  });
+});
