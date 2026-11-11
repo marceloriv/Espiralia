@@ -3,6 +3,7 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sileo } from 'sileo';
 import { AppLayout } from '../components/AppLayout';
+import { StorageService } from '../services/storage';
 import type { Profile, ViewType } from '../types';
 
 const freeProfile: Profile = { id: 'p-1', name: 'Francisca', avatar: 'F', createdAt: '2026-10-09' };
@@ -32,7 +33,8 @@ describe('AppLayout', () => {
     const user = userEvent.setup();
     const { onViewChange } = renderLayout();
 
-    expect(screen.getByRole('heading', { name: 'Espiralia', level: 1 })).toBeInTheDocument();
+    expect(screen.getByText('Espiralia')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Espiralia', level: 1 })).not.toBeInTheDocument();
     expect(screen.getByText('Francisca')).toBeInTheDocument();
     expect(screen.getByText('Contenido Principal')).toBeInTheDocument();
 
@@ -263,11 +265,52 @@ describe('AppLayout', () => {
     });
   });
 
+  // La vista abierta lee el almacenamiento al montarse: sin remontarla, lo creado desde la barra no aparecía.
+  describe('refresco tras crear desde la barra', () => {
+    beforeEach(() => localStorage.clear());
+
+    it('vuelve a montar la vista al crear una tarea con Acción Rápida', async () => {
+      const user = userEvent.setup();
+      const TareasGuardadas = () => <p>{StorageService.getTodos(freeProfile.id).length} tareas guardadas</p>;
+      renderLayout(freeProfile, 'todo', <TareasGuardadas />);
+      expect(screen.getByText('0 tareas guardadas')).toBeInTheDocument();
+
+      await user.click(screen.getByRole('button', { name: /\+ acción rápida/i }));
+      await user.type(screen.getByLabelText('Título de la tarea'), 'Comprar tinta');
+      await user.click(screen.getByRole('button', { name: 'Crear Tarea' }));
+
+      expect(screen.getByText('1 tareas guardadas')).toBeInTheDocument();
+    });
+
+    it('vuelve a montar la vista al guardar una nota desde la cabecera', async () => {
+      const user = userEvent.setup();
+      const NotasGuardadas = () => <p>{StorageService.getNotes(freeProfile.id).length} notas guardadas</p>;
+      renderLayout(freeProfile, 'notes', <NotasGuardadas />);
+
+      await user.click(screen.getByRole('button', { name: /\+ nueva nota/i }));
+      await user.type(screen.getByLabelText('Título'), 'Idea suelta');
+      await user.click(screen.getByRole('button', { name: 'Guardar Nota' }));
+
+      expect(screen.getByText('1 notas guardadas')).toBeInTheDocument();
+    });
+  });
+
+  // WCAG 2.4.2: cada vista da nombre a la pestaña; antes todas decían "Espiralia".
+  it.each([
+    ['dashboard', 'Dashboard · Espiralia'],
+    ['todo', 'To-Do · Espiralia'],
+    ['integrations', 'Integraciones · Espiralia'],
+  ] as const)('titula la pestaña de la vista %s como "%s"', (view, title) => {
+    renderLayout(freeProfile, view);
+    expect(document.title).toBe(title);
+  });
+
   it('renderiza la barra lateral editorial con monograma Es, boton de entrada y ficha Local DB', () => {
     renderLayout();
 
-    expect(screen.getByText('Es')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Espiralia', level: 1 })).toBeInTheDocument();
+    expect(document.querySelector('img[src$="01-monograma-Es.svg"]')).not.toBeNull();
+    expect(screen.getByText('Espiralia')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Espiralia', level: 1 })).not.toBeInTheDocument();
     expect(screen.getByText('Taller de Escritorio')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /\+ acción rápida/i })).toBeInTheDocument();
     expect(screen.getByText(/guardado en este navegador/i)).toBeInTheDocument();

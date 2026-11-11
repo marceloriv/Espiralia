@@ -1,9 +1,15 @@
-import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem, HabitTrackerItem, MoodEntry } from '../types';
+import type { Profile, AgendaEvent, PlannerBlock, TodoItem, Area, TaskStatus, Priority, Goal, Note, Folder, LinkItem, HabitTrackerItem, MoodEntry, Disposition } from '../types';
+import { isoWeekKey } from '../utils/localDate';
 
 const PROFILES_KEY = 'espiralia_profiles';
 const ACTIVE_PROFILE_KEY = 'espiralia_active_profile_id';
 
 const getScopedKey = (profileId: string, domain: string) => `espiralia_${profileId}_${domain}`;
+
+/** Semana de un bloque del Planner. Los guardados antes de que existiera `weekKey` cuentan como de la semana en curso. */
+export const blockWeekKey = (block: PlannerBlock): string => block.weekKey ?? isoWeekKey(new Date());
+
+const SEMANA_SIN_MARCAS = (): boolean[] => Array(7).fill(false);
 
 export const STORAGE_ERROR_EVENT = 'espiralia:storage-error';
 
@@ -77,7 +83,7 @@ export const StorageService = {
     deleteScopedItem<Profile>(PROFILES_KEY, id);
 
     // Cascade delete profile data
-    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links', 'habits', 'moods', 'distractions', 'daily_energy'];
+    const domains = ['events', 'planner', 'goals', 'todos', 'areas', 'notes', 'folders', 'links', 'habits', 'moods', 'distractions', 'daily_energy', 'daily_focus'];
     for (const d of domains) {
       localStorage.removeItem(getScopedKey(id, d));
     }
@@ -137,11 +143,11 @@ export const StorageService = {
   deletePlanner(profileId: string, blockId: string): void {
     deleteScopedItem<PlannerBlock>(getScopedKey(profileId, 'planner'), blockId);
   },
-  /** Borra los bloques semanales del perfil y devuelve cuántos borró; los de otros periodos se conservan. */
-  clearWeeklyPlanner(profileId: string): number {
+  /** Borra los bloques semanales de una semana ISO y devuelve cuántos borró; las demás semanas y periodos se conservan. */
+  clearWeeklyPlanner(profileId: string, weekKey: string = isoWeekKey(new Date())): number {
     const key = getScopedKey(profileId, 'planner');
     const list = getScopedList<PlannerBlock>(key);
-    const kept = list.filter(b => b.period !== 'semanal');
+    const kept = list.filter(b => b.period !== 'semanal' || blockWeekKey(b) !== weekKey);
     writeItem(key, JSON.stringify(kept));
     return list.length - kept.length;
   },
@@ -202,6 +208,14 @@ export const StorageService = {
       }
       if (changed) {
         writeItem(getScopedKey(profileId, 'todos'), JSON.stringify(todos));
+      }
+    }
+
+    // Notas y vínculos no necesitan área: quedan sin ella en vez de apuntar a una que ya no existe.
+    for (const domain of ['notes', 'links']) {
+      const items = getScopedList<{ areaId?: string }>(getScopedKey(profileId, domain));
+      if (items.some(i => i.areaId === areaId)) {
+        writeItem(getScopedKey(profileId, domain), JSON.stringify(items.map(i => (i.areaId === areaId ? { ...i, areaId: undefined } : i))));
       }
     }
   },
@@ -314,6 +328,13 @@ export const StorageService = {
 
   deleteFolder(profileId: string, folderId: string): void {
     deleteScopedItem<Folder>(getScopedKey(profileId, 'folders'), folderId);
+    // Sus notas y vínculos quedan sin carpeta, como avisa la confirmación; los tomos de Notas ('tomo-0X') no se tocan.
+    for (const domain of ['notes', 'links']) {
+      const items = getScopedList<{ folderId?: string }>(getScopedKey(profileId, domain));
+      if (items.some(i => i.folderId === folderId)) {
+        writeItem(getScopedKey(profileId, domain), JSON.stringify(items.map(i => (i.folderId === folderId ? { ...i, folderId: undefined } : i))));
+      }
+    }
   },
 
   // Links
@@ -330,8 +351,14 @@ export const StorageService = {
   },
 
   // Habits
-  getHabits(profileId: string): HabitTrackerItem[] {
-    return getScopedList<HabitTrackerItem>(getScopedKey(profileId, 'habits'));
+  /**
+   * Hábitos con las marcas de la semana pedida (por defecto, la actual). Las marcas guardadas son de una sola semana:
+   * si son de otra, el hábito llega sin marcar. Sin `weekKey` (versiones anteriores) cuentan como de la semana pedida.
+   */
+  getHabits(profileId: string, weekKey: string = isoWeekKey(new Date())): HabitTrackerItem[] {
+    return getScopedList<HabitTrackerItem>(getScopedKey(profileId, 'habits')).map(h =>
+      h.weekKey && h.weekKey !== weekKey ? { ...h, daysCompleted: SEMANA_SIN_MARCAS(), weekKey } : h,
+    );
   },
 
   saveHabit(habit: HabitTrackerItem): void {
@@ -342,17 +369,17 @@ export const StorageService = {
     deleteScopedItem<HabitTrackerItem>(getScopedKey(profileId, 'habits'), habitId);
   },
 
-  toggleHabitDay(profileId: string, habitId: string, dayIndex: number): void {
-    const habits = this.getHabits(profileId);
+  toggleHabitDay(profileId: string, habitId: string, dayIndex: number, weekKey: string = isoWeekKey(new Date())): void {
+    const habits = this.getHabits(profileId, weekKey);
     const habit = habits.find(h => h.id === habitId);
     if (!habit) return;
 
-    const days = [...(habit.daysCompleted ?? [false, false, false, false, false, false, false])];
+    const days = [...(habit.daysCompleted ?? SEMANA_SIN_MARCAS())];
     while (days.length < 7) {
       days.push(false);
     }
     days[dayIndex] = !days[dayIndex];
-    this.saveHabit({ ...habit, daysCompleted: days });
+    this.saveHabit({ ...habit, daysCompleted: days, weekKey });
   },
 
   // Distractions
@@ -383,6 +410,38 @@ export const StorageService = {
     const data = getScopedData<Record<string, string>>(key, {});
     data[dateStr] = energy;
     writeItem(key, JSON.stringify(data));
+  },
+
+  getTodayDisposition(profileId: string, dateStr: string): Disposition | undefined {
+    return this.getMoods(profileId).find(m => m.date === dateStr)?.disposition;
+  },
+
+  setTodayDisposition(profileId: string, dateStr: string, disposition: Disposition): void {
+    const existing = this.getMoods(profileId).find(m => m.date === dateStr);
+    this.saveMood({ ...(existing ?? { id: `mood-${dateStr}`, profileId, date: dateStr }), disposition });
+  },
+
+  /** Foco fijado del Dashboard: fecha local -> id de la tarea. */
+  getTodayFocus(profileId: string, dateStr: string): string | undefined {
+    return getScopedData<Record<string, string>>(getScopedKey(profileId, 'daily_focus'), {})[dateStr];
+  },
+
+  setTodayFocus(profileId: string, dateStr: string, todoId: string | null): void {
+    const key = getScopedKey(profileId, 'daily_focus');
+    const data = getScopedData<Record<string, string>>(key, {});
+    if (todoId) data[dateStr] = todoId;
+    else delete data[dateStr];
+    writeItem(key, JSON.stringify(data));
+  },
+
+  /** Un dominio del perfil tal como está guardado, sin normalizar (respaldos). */
+  getDomain<T>(profileId: string, domain: string, fallback: T): T {
+    return getScopedData<T>(getScopedKey(profileId, domain), fallback);
+  },
+
+  /** Reemplaza un dominio completo del perfil (restauración de respaldos). */
+  replaceDomain(profileId: string, domain: string, value: unknown): void {
+    writeItem(getScopedKey(profileId, domain), JSON.stringify(value));
   },
 
   seedInitialProfileData(profileId: string): void {

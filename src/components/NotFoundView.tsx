@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { OrigamiNautilus } from './common/OrigamiNautilus';
+import { Marca } from './common/Marca';
 import { focusOnMount } from '../utils/useDialogFocus';
 import styles from './NotFoundView.module.css';
 
@@ -36,7 +36,7 @@ export const NotFoundView: React.FC<NotFoundViewProps> = ({ hasActiveProfile, on
         <div className={styles.sello} aria-hidden="true">404</div>
 
         <div className={styles.hoja}>
-          <OrigamiNautilus />
+          <Marca variante="mascota" className={styles.mascota} />
         </div>
 
         <p className={styles.etiqueta}>Extraviada</p>

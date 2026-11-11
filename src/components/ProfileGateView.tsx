@@ -11,6 +11,7 @@ import { Papel } from './common/Papel';
 import { VentanaCarga } from './common/VentanaCarga';
 import { downloadFile } from '../utils/downloadFile';
 import { useEscapeKey } from '../utils/useEscapeKey';
+import { Marca } from './common/Marca';
 import styles from './ProfileGateView.module.css';
 
 interface ProfileGateViewProps {
@@ -36,6 +37,10 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
   const [pinError, setPinError] = useState(false);
   const [createPinError, setCreatePinError] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Acceso · Espiralia';
+  }, []);
 
   // Migra PIN en texto plano a hash apenas se abre la pantalla (§10 A04).
   useEffect(() => {
@@ -142,12 +147,10 @@ export const ProfileGateView: React.FC<ProfileGateViewProps> = ({
 
       <header className={styles.header}>
         <div className={styles.brandRow}>
-          <span className={styles.brandIcon} aria-hidden="true">Es</span>
-          <span className={styles.brandName}>Espiralia</span>
+          <Marca variante="logotipo" alt="Espiralia" className={styles.brandLogotipo} />
         </div>
         <p className={styles.tagline}>TALLER DE ESCRITORIO • CUADERNO PERSONAL</p>
         <div className={styles.secBadge}>
-          <span className={styles.secDot} aria-hidden="true" />
           <span>Datos en este navegador • PIN con hash PBKDF2</span>
         </div>
       </header>

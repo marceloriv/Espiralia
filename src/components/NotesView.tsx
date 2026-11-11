@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useHoy } from '../utils/useHoy';
 import { Plus, BookOpen, FileText, Lightbulb, Activity, ShieldCheck } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../utils/confirmar';
 import type { Note, Folder, Profile, ViewType } from '../types';
 import { StorageService } from '../services/storage';
 import { NoteModal } from './notes/NoteModal';
@@ -10,7 +11,7 @@ import { BujoBlocksView, PliegoMeta } from './notes/PliegoParts';
 import { Pliego } from './common/Pliego';
 import { parseBujoContent, countWords, getCategoryRibbonColor, wordsWrittenLabel } from '../utils/bujoFormatter';
 import { toLocalDateStr } from '../utils/localDate';
-import { ENERGY_LEVELS, DEFAULT_ENERGY_VALUE } from '../utils/energyLevels';
+import { ENERGY_LEVELS } from '../utils/energyLevels';
 import styles from './NotesView.module.css';
 
 interface NotesViewProps {
@@ -69,6 +70,9 @@ const TOMOS_CONFIG: TomoConfig[] = [
   },
 ];
 
+/** Ids con los que Notas guarda sus tomos en `folderId` (versiones anteriores usaban '02' y '03' a secas). */
+const esTomo = (folderId: string): boolean => /^(tomo-)?0[1-3]$/.test(folderId);
+
 function getNoteTomo(note: Note): string {
   if (note.folderId === 'tomo-02' || note.folderId === '02') return '02';
   if (note.folderId === 'tomo-03' || note.folderId === '03') return '03';
@@ -86,7 +90,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const todayStr = toLocalDateStr(hoy);
-  const [basalEnergy, setBasalEnergy] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) || DEFAULT_ENERGY_VALUE);
+  const [basalEnergy, setBasalEnergy] = useState<string>(() => StorageService.getTodayMood(profileId, todayStr) ?? '');
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [isEditingPliego, setIsEditingPliego] = useState(false);
   const [pliegoDraftTitle, setPliegoDraftTitle] = useState('');
@@ -169,7 +173,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
   };
 
   const handleDeleteNote = (note: Note) => {
-    if (window.confirm(`¿Seguro que deseas eliminar "${note.title}"?`)) {
+    confirmar(`¿Seguro que deseas eliminar "${note.title}"?`, () => {
       StorageService.deleteNote(profileId, note.id);
       if (activeNoteId === note.id) {
         setActiveNoteId(null);
@@ -181,7 +185,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         // Ignorar
       }
       loadData();
-    }
+    });
   };
 
   const currentTomoConfig = useMemo(() => {
@@ -267,7 +271,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       };
       StorageService.saveNote(updatedNote);
       try {
-        sileo.success({ title: 'Pliego Guardado', description: 'Manuscrito preservado en almacenamiento seguro.' });
+        sileo.success({ title: 'Pliego Guardado', description: 'Se guardó en este navegador.' });
       } catch {
         // Ignorar
       }
@@ -287,7 +291,7 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
       StorageService.saveNote(newNote);
       setActiveNoteId(newNote.id);
       try {
-        sileo.success({ title: 'Pliego Guardado', description: 'Manuscrito preservado en almacenamiento seguro.' });
+        sileo.success({ title: 'Pliego Guardado', description: 'Se guardó en este navegador.' });
       } catch {
         // Ignorar
       }
@@ -636,7 +640,9 @@ export const NotesView: React.FC<NotesViewProps> = ({ profileId: propProfileId, 
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveNote}
         initialNote={editingNote}
-        folders={folders}
+        // folderId guarda el tomo ('tomo-0X') o una carpeta real y no se puede renombrar (hay datos guardados):
+        // solo una nota que ya vive en una carpeta puede cambiar de carpeta desde aquí.
+        folders={editingNote?.folderId && !esTomo(editingNote.folderId) ? folders : []}
       />
     </div>
   );

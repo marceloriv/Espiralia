@@ -531,20 +531,6 @@
   overflow: hidden;
 }
 
-.progressBarFillPrimary {
-  height: 100%;
-  width: 75%;
-  background-color: var(--color-primary);
-  border-radius: 9999px;
-}
-
-.progressBarFillTeal {
-  height: 100%;
-  width: 90%;
-  background-color: var(--color-accent-teal);
-  border-radius: 9999px;
-}
-
 .progressBarFillAmber {
   height: 100%;
   width: 75%;

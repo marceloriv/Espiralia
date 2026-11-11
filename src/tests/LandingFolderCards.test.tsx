@@ -33,7 +33,8 @@ describe('LandingFolderCards', () => {
   it('despliega las métricas en recuadros estilo ficha técnica de imprenta', () => {
     render(<LandingFolderCards />);
     expect(screen.getByText(/tareas y bloques por área/i)).toBeInTheDocument();
-    expect(screen.getByText(/sin límites de caracteres • privacidad total/i)).toBeInTheDocument();
+    // Antes prometía "Sin límites de caracteres • Privacidad total": localStorage tiene cuota y no está cifrado.
+    expect(screen.getByText(/escritura libre • se queda en este navegador/i)).toBeInTheDocument();
     expect(screen.getByText(/expediente de postulación y plazos/i)).toBeInTheDocument();
   });
 });

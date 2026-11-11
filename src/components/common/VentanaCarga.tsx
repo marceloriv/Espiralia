@@ -1,8 +1,6 @@
-import React, { Suspense, lazy } from 'react';
+import React from 'react';
+import { Marca } from './Marca';
 import styles from './VentanaCarga.module.css';
-
-// El Nautilus pesa en CSS y solo entra en escena al 64 % de la secuencia: se difiere para no sumarlo a la carga inicial (§17.1).
-const OrigamiNautilus = lazy(() => import('./OrigamiNautilus').then(m => ({ default: m.OrigamiNautilus })));
 
 interface VentanaCargaProps {
   /** Qué se está cargando, en palabras de quien usa la app ("Abriendo tu cuaderno…"). Se ve y se anuncia. */
@@ -31,9 +29,7 @@ export const VentanaCarga: React.FC<VentanaCargaProps> = ({ etiqueta }) => (
         <Hoja clase={styles.movil} />
       </div>
       <div className={styles.nautilo}>
-        <Suspense fallback={null}>
-          <OrigamiNautilus />
-        </Suspense>
+        <Marca variante="mascota" className={styles.mascota} />
       </div>
     </div>
     <p className={styles.etiqueta}>{etiqueta}</p>

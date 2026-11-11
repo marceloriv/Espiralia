@@ -8,6 +8,28 @@
   flex-direction: column;
 }
 
+/* Enlace de salto: invisible hasta recibir foco por teclado (WCAG 2.4.1) */
+.skipLink {
+  position: absolute;
+  top: -9999px;
+  left: 16px;
+  z-index: 1000;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-button);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+}
+
+.skipLink:focus-visible {
+  top: 16px;
+  outline: 2px solid var(--color-canvas);
+  outline-offset: 2px;
+}
+
 /* Scroll margin para navegación ancla (WCAG 2.4.11 Focus Not Obscured) */
 .anchorSection {
   scroll-margin-top: calc(5rem + 1.5rem);
@@ -54,19 +76,8 @@
 }
 
 .logoMonogram {
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-md, 8px);
-  background: linear-gradient(135deg, #8E1EA2 0%, var(--color-primary) 100%);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-primary, serif);
-  font-size: 1.15rem;
-  font-weight: 600;
-  box-shadow: 1px 2px 4px rgba(60, 10, 70, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(110, 0, 129, 0.6);
+  width: 38px;
+  height: auto;
   transition: transform 0.2s ease;
 }
 
@@ -223,16 +234,16 @@
   }
 }
 
-/* 2. Hero Section con Retícula Japonesa y Guía de Margen */
+/* 2. Hero: hoja cuadriculada del cuaderno (DESIGN.md §0.12), la única cuadrícula sobre el lienzo marfil. */
 .heroSection {
   max-width: 1280px;
   width: 100%;
   margin: 0 auto;
   padding: var(--spacing-xxl) var(--spacing-lg) var(--spacing-xl);
   position: relative;
-  background-image: 
-    linear-gradient(to right, rgba(221, 214, 203, 0.3) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(221, 214, 203, 0.3) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-grid-bujo) 30%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-grid-bujo) 30%, transparent) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 

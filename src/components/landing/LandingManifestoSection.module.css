@@ -149,23 +149,24 @@
   gap: 1.5rem;
 }
 
-@media (min-width: 860px) {
-  .certGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
+/* Tres garantías leídas de corrido, como filas de un certificado: la landing ya tenía otras tres secciones de tres
+   tarjetas iguales (R-05, RHYTHM 2 de DESIGN.md). Desde 860px el ícono va a la izquierda de su texto. */
 .certPillar {
-  background-color: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(230, 223, 216, 0.08);
-  border-radius: var(--radius-md, 8px);
-  padding: 1.5rem;
-  transition: all 150ms ease;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgba(230, 223, 216, 0.12);
 }
 
-.certPillar:hover {
-  background-color: rgba(255, 255, 255, 0.04);
-  border-color: rgba(230, 223, 216, 0.18);
+.certPillar:last-child {
+  border-bottom: none;
+}
+
+@media (min-width: 860px) {
+  .certPillar {
+    display: grid;
+    grid-template-columns: auto 14rem 1fr;
+    align-items: baseline;
+    column-gap: 1.25rem;
+  }
 }
 
 .pillarIcon {

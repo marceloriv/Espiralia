@@ -58,6 +58,23 @@ describe('LandingView', () => {
   });
 });
 
+describe('LandingView: accesibilidad y SEO', () => {
+  it('ofrece un enlace para saltar al contenido principal que enfoca el main con el teclado', async () => {
+    const user = userEvent.setup();
+    render(<LandingView onNavigateLogin={() => {}} />);
+    await user.tab();
+    const salto = screen.getByRole('link', { name: /saltar al contenido principal/i });
+    expect(salto).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(screen.getByRole('main')).toHaveFocus();
+  });
+
+  it('titula la pestaña con una descripción', () => {
+    render(<LandingView onNavigateLogin={() => {}} />);
+    expect(document.title).toMatch(/agenda, planner y tareas/i);
+  });
+});
+
 describe('LandingView: tema forzado a claro', () => {
   it('con tema oscuro elegido pinta la barra del navegador clara y la restaura al salir', () => {
     document.head.innerHTML = '<meta name="theme-color" content="#19191B" />';

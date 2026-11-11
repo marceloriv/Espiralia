@@ -695,13 +695,6 @@
   color: var(--color-muted);
 }
 
-.greenDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #3f7a4e;
-}
-
 /* Degradado por tinte (mock aprobado el 2026-10-25): el aviso de privacidad lleva el turquesa de Integraciones. */
 .privacyBanner {
   background-image: var(--superficie-turquesa);

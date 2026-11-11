@@ -10,10 +10,13 @@ interface EventFormPanelProps {
   update: (patch: Partial<EventFormState>) => void;
   onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
+  /** Día elegido en el calendario: el que se cambia con "Cambiar solo el …" al editar una serie. */
+  selectedDate?: string;
 }
 
 /** Formulario para crear o editar un evento de Agenda. Separado de AgendaBoard, que solo orquesta estado y calendario. */
-export const EventFormPanel: React.FC<EventFormPanelProps> = ({ form, update, onSubmit, onCancel }) => {
+export const EventFormPanel: React.FC<EventFormPanelProps> = ({ form, update, onSubmit, onCancel, selectedDate }) => {
+  const editandoSerie = Boolean(form.editingId && form.repeatWeekly);
   const toggleDay = (day: number) =>
     update({
       daysOfWeek: form.daysOfWeek.includes(day) ? form.daysOfWeek.filter(d => d !== day) : [...form.daysOfWeek, day],
@@ -28,7 +31,17 @@ export const EventFormPanel: React.FC<EventFormPanelProps> = ({ form, update, on
       <h3 className={styles.panelTitle}>
         {form.editingId ? 'Editar evento' : `Nuevo evento para ${form.date}`}
       </h3>
-      {form.editingId && form.repeatWeekly && (
+      {editandoSerie && selectedDate && (
+        <label className={styles.checkRow}>
+          <input
+            type="checkbox"
+            checked={Boolean(form.soloDia)}
+            onChange={e => update({ soloDia: e.target.checked ? selectedDate : undefined })}
+          />
+          Cambiar solo el {selectedDate}
+        </label>
+      )}
+      {editandoSerie && !form.soloDia && (
         <p className={styles.hint}>Los cambios se aplican a todas las repeticiones.</p>
       )}
 
@@ -56,8 +69,9 @@ export const EventFormPanel: React.FC<EventFormPanelProps> = ({ form, update, on
           id="agenda-date"
           type="date"
           className={styles.inputField}
-          value={form.date}
+          value={form.soloDia ?? form.date}
           onChange={e => update({ date: e.target.value })}
+          disabled={Boolean(form.soloDia)}
           required
         />
       </div>
@@ -114,16 +128,18 @@ export const EventFormPanel: React.FC<EventFormPanelProps> = ({ form, update, on
         </select>
       </div>
 
-      <label className={styles.checkRow}>
-        <input
-          type="checkbox"
-          checked={form.repeatWeekly}
-          onChange={e => update({ repeatWeekly: e.target.checked })}
-        />
-        Repetir semanalmente
-      </label>
+      {!form.soloDia && (
+        <label className={styles.checkRow}>
+          <input
+            type="checkbox"
+            checked={form.repeatWeekly}
+            onChange={e => update({ repeatWeekly: e.target.checked })}
+          />
+          Repetir semanalmente
+        </label>
+      )}
 
-      {form.repeatWeekly && (
+      {form.repeatWeekly && !form.soloDia && (
         <fieldset className={styles.repeatFieldset}>
           <legend className={styles.fieldLabel}>Días de repetición</legend>
           <div className={styles.daysRow}>

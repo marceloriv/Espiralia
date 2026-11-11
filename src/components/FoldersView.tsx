@@ -12,12 +12,16 @@ import {
   FileUp,
 } from 'lucide-react';
 import { sileo } from 'sileo';
+import { confirmar } from '../utils/confirmar';
 import type { Folder, LinkItem, Note, Profile, StoredFile, ViewType } from '../types';
 import { StorageService, LOCALSTORAGE_QUOTA_BYTES } from '../services/storage';
 import { addFile, deleteFile, deleteFolderFiles, getFileBlob, listFiles } from '../services/fileStore';
 import { formatBytes } from '../utils/formatBytes';
 import { folderTabColors } from '../utils/folderTabColors';
 import { Esqueleto } from './common/Esqueleto';
+import { downloadFile } from '../utils/downloadFile';
+import { textOnColor } from '../utils/textOnColor';
+import { VaultService } from '../services/vaultService';
 import { FolderModal } from './folders/FolderModal';
 import { LinkModal } from './folders/LinkModal';
 import { NoteModal } from './notes/NoteModal';
@@ -250,14 +254,15 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     });
 
   const handleDeleteFile = async (file: StoredFile) => {
-    if (!window.confirm(`¿Eliminar el PDF "${file.name}"? No se puede deshacer.`)) return;
-    try {
-      await deleteFile(profileId, file.id);
-      sileo.success({ title: 'PDF eliminado' });
-    } catch (err) {
-      sileo.error({ title: 'No se pudo eliminar el PDF', description: (err as Error).message });
-    }
-    await loadFiles();
+    confirmar(`¿Eliminar el PDF "${file.name}"? No se puede deshacer.`, async () => {
+      try {
+        await deleteFile(profileId, file.id);
+        sileo.success({ title: 'PDF eliminado' });
+      } catch (err) {
+        sileo.error({ title: 'No se pudo eliminar el PDF', description: (err as Error).message });
+      }
+      await loadFiles();
+    });
   };
 
   const handleOpenNewNote = () => {
@@ -360,7 +365,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     // Los vínculos y notas siguen visibles en sus propias vistas; un PDF sin carpeta no tendría dónde verse, así que se borra con ella.
     const pdfCount = files.filter((f) => f.folderId === folder.id).length;
     const pdfWarning = pdfCount > 0 ? ` ${pdfCount === 1 ? 'Su PDF sí se borrará.' : `Sus ${pdfCount} PDF sí se borrarán.`}` : '';
-    if (window.confirm(`¿Seguro que deseas eliminar la carpeta "${folder.name}"? Los vínculos y notas no se borrarán pero quedarán sin carpeta.${pdfWarning}`)) {
+    confirmar(`¿Seguro que deseas eliminar la carpeta "${folder.name}"? Los vínculos y notas no se borrarán pero quedarán sin carpeta.${pdfWarning}`, () => {
       StorageService.deleteFolder(profileId, folder.id);
       if (pdfCount > 0) void deleteFolderFiles(profileId, folder.id).catch(() => {}).then(loadFiles);
       try {
@@ -369,7 +374,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         // Ignorar
       }
       loadData();
-    }
+    });
   };
 
   // Handlers para vínculos
@@ -416,7 +421,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
   };
 
   const handleDeleteLink = (link: LinkItem) => {
-    if (window.confirm(`¿Deseas eliminar el vínculo "${link.title}"?`)) {
+    confirmar(`¿Deseas eliminar el vínculo "${link.title}"?`, () => {
       StorageService.deleteLink(profileId, link.id);
       try {
         sileo.info({ title: 'Vínculo eliminado', description: 'Enlace borrado correctamente.' });
@@ -424,7 +429,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
         // Ignorar
       }
       loadData();
-    }
+    });
   };
 
   const handleQuickCapture = (e: React.FormEvent) => {
@@ -454,21 +459,19 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
     }
   };
 
-  const handleExportJson = () => {
-    const dataToExport = {
-      profileId,
-      exportDate: new Date().toISOString(),
-      folders: StorageService.getFolders(profileId),
-      links: StorageService.getLinks(profileId),
-      notes: StorageService.getNotes(profileId),
-    };
-    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `espiralia-carpetas-${profileId}-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleDeleteNote = (note: Note) => {
+    confirmar(`¿Eliminar la nota "${note.title}"? No se puede deshacer.`, () => {
+      StorageService.deleteNote(profileId, note.id);
+      sileo.info({ title: 'Nota eliminada', description: `Se eliminó la nota ${note.title}.` });
+      loadData();
+    });
+  };
+
+  // Antes generaba un JSON propio que nada podía importar; ahora es el mismo respaldo que restaura la Bóveda.
+  const handleExportJson = async () => {
+    const backup = await VaultService.exportProfileWithFiles(profileId).catch(() => VaultService.exportProfile(profileId));
+    downloadFile(JSON.stringify(backup, null, 2), VaultService.backupFilename(backup.profile.name, 'json'), 'application/json');
+    sileo.success({ title: 'Copia completa descargada', description: 'Restáurala desde Bóveda Offline.' });
   };
 
   return (
@@ -539,7 +542,8 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
             <div className={styles.flatFoldersRow} role="tablist" aria-label="Solapas de carpetas">
               {displayFolders.map((df) => {
                 const isActive = df.id === selectedFolderId;
-                const { fill, ink } = folderTabColors(df.color || '#E5B23E');
+                const { fill } = folderTabColors(df.color || '#E5B23E');
+                const ink = textOnColor(fill);
 
                 return (
                   <button
@@ -549,7 +553,7 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                     aria-selected={isActive}
                     className={`${styles.flatFolderTab} ${isActive ? styles.flatFolderActive : ''}`}
                     onClick={() => setUserSelectedFolderId(df.id)}
-                    style={{ '--folder-color': fill, '--folder-ink': ink } as React.CSSProperties}
+                    style={{ '--folder-color': fill, '--folder-ink': ink, color: ink } as React.CSSProperties}
                   >
                     <div className={styles.flatBackFlap} aria-hidden="true" />
                     <div className={styles.flatSheets} data-testid="folder-flat-sheets" aria-hidden="true">
@@ -721,17 +725,20 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
                                     Eliminar
                                   </button>
                                 </div>
+                              ) : item.type === 'note' ? (
+                                <div className={styles.fileActions}>
+                                  <button type="button" className={styles.btnActionTable} onClick={() => handleOpenViewNote(item.note)} aria-label={`Ver ficha ${item.title}`}>
+                                    Ver Ficha
+                                  </button>
+                                  <button type="button" className={styles.btnActionTable} onClick={() => handleDeleteNote(item.note)} aria-label={`Eliminar nota ${item.title}`}>
+                                    Eliminar
+                                  </button>
+                                </div>
                               ) : (
                                 <button
                                   type="button"
                                   className={styles.btnActionTable}
-                                  onClick={() => {
-                                    if (item.type === 'note') {
-                                      handleOpenViewNote(item.note);
-                                    } else {
-                                      handleOpenViewLink(item.link);
-                                    }
-                                  }}
+                                  onClick={() => handleOpenViewLink(item.link)}
                                   aria-label={`Ver ficha ${item.title}`}
                                 >
                                   Ver Ficha
@@ -899,9 +906,9 @@ export const FoldersView: React.FC<FoldersViewProps> = ({ profileId: propProfile
               <button
                 type="button"
                 className={styles.btnBackupLink}
-                onClick={handleExportJson}
+                onClick={() => void handleExportJson()}
               >
-                Hacer Respaldo .JSON
+                Descargar copia completa (.json)
               </button>
             </div>
           </div>

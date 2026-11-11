@@ -4,6 +4,7 @@ import { DashboardView } from '../../src/components/DashboardView';
 import type { Profile } from '../../src/types';
 import fs from 'fs';
 import path from 'path';
+import { simularConfirmacion, conMensaje } from './confirmacion';
 
 const mockProfile: Profile = {
   id: 'p-test',
@@ -174,9 +175,12 @@ describe('DashboardView critical CSS & Hero Content', () => {
       expect(screen.getByText('Poner teléfono en modo avión')).toBeInTheDocument();
       expect(StorageService.getDistractions(mockProfile.id)).toContain('Poner teléfono en modo avión');
 
-      // Eliminar el primer compromiso
+      // Eliminar el primer compromiso: pide confirmación
+      const confirmSpy = simularConfirmacion(true);
       const delBtn = screen.getByRole('button', { name: /eliminar compromiso: no revisar whatsapp hasta el almuerzo/i });
       await user.click(delBtn);
+      expect(confirmSpy).toHaveBeenCalledWith(conMensaje('No revisar WhatsApp hasta el almuerzo'));
+      confirmSpy.mockRestore();
 
       expect(screen.queryByText('No revisar WhatsApp hasta el almuerzo')).not.toBeInTheDocument();
       expect(StorageService.getDistractions(mockProfile.id)).not.toContain('No revisar WhatsApp hasta el almuerzo');

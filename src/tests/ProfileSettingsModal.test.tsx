@@ -257,6 +257,20 @@ describe('ProfileSettingsModal', () => {
       expect(screen.queryByLabelText(/pin actual para eliminar/i)).not.toBeInTheDocument();
     });
   });
+  it('renombra el perfil y avisa al layout', async () => {
+    const onProfileUpdated = vi.fn();
+    const user = userEvent.setup();
+    StorageService.saveProfile(baseProfile);
+    render(<ProfileSettingsModal isOpen onClose={vi.fn()} profile={baseProfile} onProfileUpdated={onProfileUpdated} />);
+
+    const campo = screen.getByLabelText('Nombre');
+    await user.clear(campo);
+    await user.type(campo, 'Valeria');
+    await user.click(screen.getByRole('button', { name: /guardar nombre/i }));
+
+    expect(onProfileUpdated).toHaveBeenCalledWith(expect.objectContaining({ id: 'p-settings', name: 'Valeria', avatar: 'V' }));
+    expect(StorageService.getProfiles()[0].name).toBe('Valeria');
+  });
 });
 
 

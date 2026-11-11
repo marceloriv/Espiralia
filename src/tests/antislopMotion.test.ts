@@ -31,7 +31,6 @@ describe('Movimiento, desenfoque y franjas decorativas', () => {
       // El esqueleto de carga (DESIGN.md §7.6) pulsa la opacidad mientras algo carga y se apaga con prefers-reduced-motion.
       .filter(r => !(r.file === path.join('common', 'Esqueleto.module.css') && /respirar 1\.8s/.test(r.body)))
       .filter(r => !(r.file === path.join('common', 'OrigamiHoja.module.css') && /aspas 24s/.test(r.body)))
-      .filter(r => !(r.file === path.join('common', 'OrigamiNautilus.module.css') && /flotar 8s|ondular 5s/.test(r.body)))
       .map(r => `${r.file} ${r.selector}`);
 
     expect(offenders).toEqual([]);

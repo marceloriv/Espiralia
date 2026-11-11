@@ -11,6 +11,7 @@ import { LandingHeroCard } from './landing/LandingHeroCard';
 import { LandingFolderCards } from './landing/LandingFolderCards';
 import { LandingRitmosSection } from './landing/LandingRitmosSection';
 import { LandingManifestoSection } from './landing/LandingManifestoSection';
+import { Marca } from './common/Marca';
 import styles from './LandingView.module.css';
 
 export interface LandingViewProps {
@@ -23,6 +24,14 @@ export interface LandingViewProps {
 const scrollToSection = (id: string): void => {
   const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
   document.getElementById(id)?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+};
+
+// Mismo texto que el <title> de index.html.
+const LANDING_TITLE = 'Espiralia · Agenda, planner y tareas en tu navegador';
+
+const skipToMain = (e: React.MouseEvent<HTMLAnchorElement>): void => {
+  e.preventDefault();
+  document.getElementById('contenido-principal')?.focus();
 };
 
 export const LandingView: React.FC<LandingViewProps> = ({
@@ -40,6 +49,11 @@ export const LandingView: React.FC<LandingViewProps> = ({
     };
   }, []);
 
+  // Al volver desde la app la pestaña conservaba el nombre de la última vista.
+  useEffect(() => {
+    document.title = LANDING_TITLE;
+  }, []);
+
   const handlePrimaryCta = () => {
     if (hasActiveProfile && onNavigateDashboard) {
       onNavigateDashboard();
@@ -50,10 +64,14 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
   return (
     <div className={styles.landingWrapper}>
+      {/* WCAG 2.4.1. Un <a href="#id"> cambiaría la ruta del HashRouter: el href es neutro y el foco va al <main> por script. */}
+      <a href="./" className={styles.skipLink} onClick={skipToMain}>
+        Saltar al contenido principal
+      </a>
       {/* 1. Top App Bar */}
       <header className={styles.topBar}>
         <div className={styles.brandGroup}>
-          <div className={styles.logoMonogram} aria-hidden="true">Es</div>
+          <Marca variante="monograma" className={styles.logoMonogram} />
           <button
             type="button"
             className={styles.logoTitle}
@@ -90,7 +108,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
       </header>
 
-      <main>
+      <main id="contenido-principal" tabIndex={-1}>
         {/* 2. Hero Section */}
         <section className={styles.heroSection} aria-labelledby="hero-title">
           <div className={styles.heroGrid}>
@@ -147,7 +165,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         <section id="pilares" className={`${styles.pilaresSection} ${styles.anchorSection}`} aria-labelledby="pilares-heading">
           <div className={styles.sectionHeader}>
             <h2 id="pilares-heading" className={styles.sectionTitle}>
-              Tres pilares de enfoque soberano
+              Tres cuadernos para tu semana
             </h2>
             <p className={styles.sectionSubtitle}>
               Estructurado como los tres cuadernos esenciales de una vida reflexiva y dirigida con propósito.

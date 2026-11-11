@@ -44,6 +44,30 @@ describe('IntegrationsView (Stitch screen)', () => {
     expect(downloadBtn).toBeInTheDocument();
   });
 
+  // El filtro mezclaba áreas de tareas con categorías de evento: "Estudios" nunca coincidía con "estudio".
+  it('filtra la exportación por categoría de evento y cuenta lo que se exporta', async () => {
+    const user = userEvent.setup();
+    StorageService.saveEvent({ id: 'ev-est', profileId: profile.id, title: 'Repaso', date: '2026-11-10', category: 'estudio' });
+    StorageService.saveEvent({ id: 'ev-tra', profileId: profile.id, title: 'Reunión', date: '2026-11-11', category: 'trabajo' });
+    const textos: string[] = [];
+    vi.spyOn(URL, 'createObjectURL').mockImplementation(blob => {
+      void (blob as Blob).text().then(t => textos.push(t));
+      return 'blob:prueba';
+    });
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {});
+    render(<IntegrationsView profile={profile} />);
+
+    const filtro = screen.getByLabelText(/filtro por categoría/i);
+    expect([...(filtro as HTMLSelectElement).options].map(o => o.text)).not.toContain('General');
+    await user.selectOptions(filtro, 'estudio');
+    expect(screen.getByText(/1 evento listo/i)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /descargar archivo \.ics/i }));
+
+    await vi.waitFor(() => expect(textos).toHaveLength(1));
+    expect(textos[0]).toContain('SUMMARY:Repaso');
+    expect(textos[0]).not.toContain('SUMMARY:Reunión');
+  });
+
   it('despliega atajos directos a Google Calendar Web con action=TEMPLATE seguros', () => {
     StorageService.saveEvent({ id: 'e-atajo', profileId: profile.id, title: 'Evento de prueba', date: '2099-01-01', startTime: '10:00' });
     render(<IntegrationsView profile={profile} />);

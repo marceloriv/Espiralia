@@ -59,3 +59,18 @@ describe('useDialogFocus', () => {
     expect(screen.getByRole('button', { name: 'Cerrar' })).not.toHaveFocus();
   });
 });
+
+describe('useDialogFocus: trampa de foco', () => {
+  it('Tab desde el último control vuelve al primero y Mayús+Tab desde el primero va al último', async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    await user.click(screen.getByRole('button', { name: 'Abrir' }));
+    const cerrar = screen.getByRole('button', { name: 'Cerrar' });
+    const nombre = screen.getByLabelText('Nombre');
+    nombre.focus();
+    await user.tab();
+    expect(cerrar).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(nombre).toHaveFocus();
+  });
+});

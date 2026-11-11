@@ -6,15 +6,16 @@ import { LandingDeskPreview } from '../components/landing/LandingDeskPreview';
 describe('LandingDeskPreview', () => {
   it('despliega la cabecera de la mesa de trabajo con badge y titular editorial', () => {
     render(<LandingDeskPreview />);
-    expect(screen.getByRole('heading', { level: 2, name: /la mesa de trabajo: tu centro de control silencioso/i })).toBeInTheDocument();
-    expect(screen.getByText(/mesa de trabajo en vivo/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /la mesa de trabajo de un día/i })).toBeInTheDocument();
+    // La insignia dice qué es la sección (un ejemplo), no repite el titular ni promete datos "en vivo".
+    expect(screen.getByText(/ejemplo interactivo/i)).toBeInTheDocument();
   });
 
   it('despliega el pliego diario A4 con pila de hojas superpuestas y broche archivador metálico', () => {
     const { container } = render(<LandingDeskPreview />);
     expect(screen.getByText(/plan de foco • hoy/i)).toBeInTheDocument();
     expect(screen.getByText(/repaso de estudio: 40 preguntas/i)).toBeInTheDocument();
-    expect(screen.getByText(/papel libre de ácido • 120 gsm/i)).toBeInTheDocument();
+    expect(screen.getByText(/marca las tareas del ejemplo/i)).toBeInTheDocument();
 
     const paperStack = container.querySelector('[data-papercraft="paper-stack"]');
     const binderClip = container.querySelector('[data-papercraft="binder-clip"]');
@@ -48,19 +49,19 @@ describe('LandingDeskPreview', () => {
     expect(completedText).toBeInTheDocument();
   });
 
-  it('recalcula la tasa de serenidad y actualiza el contador de módulos al alternar tareas', async () => {
+  // La "serenidad" era un porcentaje inventado (60 + avance); el ejemplo muestra solo el avance real de sus tareas.
+  it('recalcula el avance del ejemplo y el contador de tareas al alternarlas', async () => {
     const user = userEvent.setup();
     render(<LandingDeskPreview />);
 
-    // Inicialmente 1 tarea de 3 completada (73% Serenidad)
-    expect(screen.getByText(/73% serenidad/i)).toBeInTheDocument();
+    expect(screen.getByText(/33% completado/i)).toBeInTheDocument();
+    expect(screen.queryByText(/\d+% serenidad/i)).not.toBeInTheDocument();
     expect(screen.getByText(/1 de 3/i)).toBeInTheDocument();
 
     const secondTask = screen.getByRole('checkbox', { name: /postulación universitaria 2026/i });
     await user.click(secondTask);
 
-    // Con 2 de 3 completadas -> 87% Serenidad
-    expect(screen.getByText(/87% serenidad/i)).toBeInTheDocument();
+    expect(screen.getByText(/67% completado/i)).toBeInTheDocument();
     expect(screen.getByText(/2 de 3/i)).toBeInTheDocument();
 
     const statusBadge = screen.getByRole('status');

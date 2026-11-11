@@ -22,7 +22,7 @@
 
 | # | Decisión | Alternativa descartada |
 |---|---|---|
-| D1 | Bloques del Planner con semana ISO (`weekKey`, `2026-W45`). Los guardados sin semana pasan a la semana en curso la primera vez que se leen. "Limpiar semana" borra solo la semana visible. | Quitar la navegación entre semanas. |
+| D1 | Bloques del Planner con semana ISO (`weekKey`, `2026-W45`). Los guardados sin semana cuentan como de la semana en curso y no se reescriben al leerlos (hay personas usando la app: nota de projectmem del 2026-10-22); reciben semana cuando se editan o se marcan. "Limpiar semana" borra solo la semana visible. | Quitar la navegación entre semanas. |
 | D2 | Hábitos con `weekKey`: una semana nueva empieza sin marcas. Un hábito sin `weekKey` cuenta como de la semana en curso. Fuera de la semana en curso los círculos se muestran y no se pueden marcar. | Historial por semana. |
 | D3 | Ánimo del día (Plena, En calma, Neutra, Cansada) en `moods` con el campo nuevo `disposition`; lo comparten Dashboard y Agenda. La energía de Agenda usa `daily_energy`, como To-Do, Planner y Notas. | Quitar los selectores. |
 | D4 | Foco fijado del Dashboard en el dominio nuevo `daily_focus` (fecha: id de tarea). | Guardarlo en el perfil. |
@@ -110,7 +110,7 @@
 
 ### Task 12: Notas y carpetas (#0022)
 **Files:** `src/types/index.ts`, `src/components/NotesView.tsx`, `src/components/FoldersView.tsx`, `src/services/storage.ts:315`, tests `NotesViewTomos.test.tsx`, `FoldersView.test.tsx`, `notesStorage.test.ts`
-- [ ] Tests: una nota de Notas guarda `tomo` y no `folderId`; una nota antigua con `folderId: 'tomo-02'` sigue en el tomo 02; borrar una carpeta deja sus notas y vínculos sin carpeta; una nota se borra desde Carpetas; el respaldo de Carpetas es el respaldo completo.
+- [ ] Tests: una nota de un tomo no ofrece moverse a una carpeta (el `folderId: 'tomo-0X'` no se reescribe: restricción de datos guardados); borrar una carpeta deja sus notas y vínculos sin carpeta; una nota se borra desde Carpetas; el respaldo de Carpetas es el respaldo completo.
 - [ ] Commit `:bug: fix(storage): tomos separados de carpetas y borrado de notas en Carpetas`.
 
 ### Task 13: Acción Rápida valida eventos

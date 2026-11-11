@@ -35,6 +35,29 @@ const BANNED_EVERYWHERE: RegExp[] = [
   /Biorritmo/,
   /0 bytes transmitidos/,
   /LOCAL ENCRIPTADO/,
+  // Auditoría 002 (2026-11-03): localStorage no es "seguro" ni ilimitado, no hay respaldo automático ni service worker.
+  /almacenamiento seguro/i,
+  /Privacidad total/i,
+  /Sin límites de caracteres/i,
+  /Respaldado en memoria/i,
+  /Sin conexión requerida/i,
+  /Sincronización local instantánea/i,
+  /Aprobado en Bóveda/i,
+  /120 gsm/i,
+  /CLASIFICADO/,
+  /ARCHIVADOR CONFIDENCIAL/i,
+  /Serenidad Mental/i,
+  /lista en Bóveda/i,
+  // Revisión de entrega de la auditoría 002 (2026-11-04): el respaldo se cifra solo si se elige,
+  // y no existen un número de expediente ni una "Bóveda Documental".
+  /respaldo exportable se cifra/i,
+  /EXP\. 2026/,
+  /Bóveda Documental/i,
+  // Hallazgo 21: la tarjeta de notas del Dashboard decía "Guardado automáticamente" aun sin notas; la nota se guarda con su botón.
+  /Guardado automáticamente/i,
+  // Hallazgo 22: la firma de la cita del manifiesto sumaba rótulos inflados al nombre del cuaderno.
+  /Principios Fundacionales/i,
+  /Serenidad Cotidiana/i,
   // Firma personal y ejemplos de otro dominio (conducción) que no pertenecen a un producto público.
   /r\.v\. notas de taller/,
   /Conducción real/,

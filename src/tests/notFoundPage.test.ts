@@ -3,23 +3,6 @@ import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 
 const html404 = readFileSync('public/404.html', 'utf8');
-const nautilusCss = readFileSync('src/components/common/OrigamiNautilus.module.css', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-const nautilusTsx = readFileSync('src/components/common/OrigamiNautilus.tsx', 'utf8');
-
-/** Quita del CSS cada bloque `@media` que empieza con `inicio`, contando llaves. */
-const sinBloques = (css: string, inicio: RegExp): string => {
-  let resto = css;
-  for (let m = inicio.exec(resto); m; m = inicio.exec(resto)) {
-    let profundidad = 0;
-    let fin = resto.indexOf('{', m.index);
-    for (; fin < resto.length; fin++) {
-      if (resto[fin] === '{') profundidad++;
-      else if (resto[fin] === '}' && --profundidad === 0) break;
-    }
-    resto = resto.slice(0, m.index) + resto.slice(fin + 1);
-  }
-  return resto;
-};
 
 describe('public/404.html (GitHub Pages, fuera del hash)', () => {
   it('es una página en español que los buscadores no indexan', () => {
@@ -52,25 +35,5 @@ describe('public/404.html (GitHub Pages, fuera del hash)', () => {
 
   it('en la raíz (desarrollo o dominio propio) también lleva la dirección al hash, incluida /404.html', () => {
     expect(html404).toMatch(/indexOf\(SITIO\) === 0 \? SITIO : '\/'/);
-  });
-});
-
-describe('OrigamiNautilus', () => {
-  it('es decorativo: va fuera del árbol de accesibilidad', () => {
-    expect(nautilusTsx).toMatch(/aria-hidden="true"/);
-  });
-
-  it('no usa drop-shadow, para no sumar al presupuesto de sombras (DESIGN.md §0.10.7)', () => {
-    expect(nautilusCss).not.toMatch(/drop-shadow/);
-  });
-
-  it('toda animación vive dentro de prefers-reduced-motion: no-preference', () => {
-    expect(nautilusCss).toMatch(/prefers-reduced-motion:\s*no-preference/);
-    const fuera = sinBloques(nautilusCss, /@media \(prefers-reduced-motion:\s*no-preference\)/);
-    expect(fuera).not.toMatch(/animation(-name)?\s*:/);
-  });
-
-  it('se oculta con colores forzados, donde ya no se lee como figura', () => {
-    expect(nautilusCss).toMatch(/forced-colors:\s*active/);
   });
 });

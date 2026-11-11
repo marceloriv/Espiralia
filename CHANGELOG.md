@@ -4,6 +4,53 @@ Todas las modificaciones notables de este proyecto se documentan en este archivo
 
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.7.0] - 2026-11-05
+
+### Added
+
+- **Editar lo que antes solo se creaba o se borraba**:
+  - **Tareas**: "Editar" abre un diálogo con título, área, prioridad y vencimiento.
+  - **Áreas**: con un área elegida, "Editar área" cambia nombre y color, o la elimina. Sus tareas pasan a General o a la primera área, y sus notas y vínculos quedan sin área. La última área no se puede eliminar.
+  - **Bloques y metas del Planner**: cada uno tiene "Editar". El bloque conserva su id, su semana y su estado. La meta conserva las sub-tareas ya marcadas, permite agregar o quitar otras y gana el período semanal o mensual. El panel pasa a llamarse "Metas".
+  - **Nombre del perfil**: Ajustes suma "Nombre del perfil", y el avatar vuelve a ser la inicial del nombre nuevo. Antes un error de tipeo obligaba a exportar e importar un respaldo.
+- **Quitar o cambiar un solo día de una serie** en Agenda. "Quitar este día" deja las demás repeticiones. "Cambiar solo el …", al editar una serie, guarda ese día como un evento suelto con los cambios.
+- **Gráficos del Dashboard con TanStack Charts**: Progreso de Tareas es un donut activo por área y Distribución por Categoría es un pastel con tooltip y teclado. Racha Serena y Almacenamiento ganan un indicador propio.
+- **Identidad visual**: monograma en la barra lateral, en la landing y como favicon; logotipo en la selección de perfil y mascota en la página 404. Los SVG viven en `public/`, así que no suman peso a la carga inicial.
+- **Confirmación de borrado con aviso de sileo**: los 15 borrados que usaban el diálogo del navegador (tareas, áreas, eventos, bloques, metas, hábitos, notas, carpetas, vínculos, PDF y compromisos) piden ahora confirmación con un aviso de la propia app.
+  - El aviso se abre desplegado y lleva el foco a su botón: con teclado basta Enter. Queda sobre los modales.
+  - Si nadie pulsa el botón, se cierra solo a los 10 segundos y no se borra nada. Un segundo clic no repite el borrado.
+  - El título y el botón van en rojo `#b13636`, porque el azul de acción de sileo no llegaba a 4.5:1 sobre el aviso blanco.
+  - Borrar un hábito o un compromiso ahora muestra un aviso de éxito.
+
+### Changed
+
+- **Contraste AA en más textos**: borde de control y texto secundario, separadores de metadatos, sellos del hero, marca del hábito, día de la Agenda asociada, chip de críticos y estados `hover` con el texto rojo AA, y tinta negra o blanca en las solapas de Carpetas.
+- **Textos honestos**: la landing, Notas y el Dashboard dejan de prometer lo que la app no hace. Por ejemplo, el cifrado se describe como opcional y la landing ya no muestra un expediente inventado.
+- **Diálogos con una sola base**: todos los modales comparten primitivos de diálogo y un único velo.
+- **Colores sin respaldos**: se quitan los respaldos de color dentro de `var()` y se unifican los alias de tokens. Nuevos tests vigilan que los tokens estén definidos.
+- **Peso de la carga inicial**: el tope sube de 182 KB a 184 KB. La medida de esta versión es 183.7 KB.
+- **Agenda, Notas y Dashboard divididos en piezas más pequeñas** para bajar su complejidad. No cambia el comportamiento.
+- **Dependencias**: `react-router-dom` 7.18.5, `lucide-react` 1.66.0, `eslint` 10.14.0, `typescript-eslint` 8.72.1, `oxlint` 1.90.0, `oxc-transform-react` 0.156.0 y `@types/node` 26.6.6. `pnpm audit --prod` no reporta vulnerabilidades.
+
+### Fixed
+
+- **Respaldo incompleto**: la Bóveda, Integraciones y el acceso no exportaban hábitos, compromisos ni la energía diaria, así que restaurar los perdía. Ahora también incluyen el ánimo y el foco del día. Los campos nuevos son opcionales, por lo que un respaldo anterior se restaura igual. Cada colección del respaldo reemplaza a la del perfil, áreas incluidas.
+- **Exportar .ics**: solo mostraba un aviso y no descargaba nada. Ahora descarga los eventos que deja ver el filtro. El archivo escribe `RRULE` para las series y un `UID` por evento, y las horas con sufijo `Z` se convierten a la hora local al importar. Reimportar el mismo archivo reemplaza los eventos en vez de duplicarlos.
+- **Exportación filtrada vacía**: Integraciones comparaba el nombre del área de tareas con la categoría del evento y casi siempre descargaba un archivo vacío.
+- **Energía y ánimo**: eran estado local y se perdían al cambiar de vista. La energía usa el mismo registro diario que To-Do, Planner y Notas, y el ánimo se guarda en `moods`. To-Do ya no muestra una energía registrada sin que se haya elegido.
+- **Fase lunar**: la tarjeta mostraba siempre "Luna Creciente". Ahora la fase se calcula de la fecha. El foco fijado también se guarda.
+- **Notas de una carpeta borrada**: seguían apuntando a ella. Ahora quedan sin carpeta, y la tabla de Carpetas suma "Eliminar" con confirmación. "Hacer respaldo .JSON" descarga la copia completa que restaura la Bóveda, en lugar de un formato que nada podía importar.
+- **Semana ISO** en bloques y hábitos del Planner.
+- **Acción Rápida**: valida el evento antes de guardarlo y refresca la vista, con el título de cada pestaña actualizado.
+- **Eventos de categoría desconocida** ya no rompen la Agenda.
+- **Móvil**: la fila de tomos de Notas se lee bien y el botón "Nueva Nota" siempre está visible.
+
+### Operations
+
+- **Carga inicial**: Acción Rápida guarda con `StorageService.saveEvent` en vez de importar la persistencia de la Agenda, que había subido el arranque a 185.6 KB.
+- **Pruebas**: el test del almanaque de Agenda fija la fecha, porque desde noviembre dejó de pasar. Un test de respaldo lee el formato del archivo realmente descargado.
+- **Advertencia conocida en el build**: `pnpm build` muestra "A PostCSS plugin did not pass the `from` option to `postcss.parse`". Viene de Vite y salta por los `composes … from` de los modales hacia `Dialogo.module.css`. No afecta al resultado: ese archivo no usa `url()`. Se registra como excepción en AGENTS §17.1, con vencimiento el 2026-12-05 o al subir Vite.
+
 ## [0.6.1] - 2026-10-29
 
 ### Fixed
