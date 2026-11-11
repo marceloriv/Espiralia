@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Folder } from '../../types';
+import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './FolderModal.module.css';
 
 const DEFAULT_COLORS = ['#7b8c9e', '#5a826d', '#8e1ea2', '#e8a55a', '#9c4a3b', '#8e8b82'];
@@ -19,6 +20,7 @@ const FolderModalContent: React.FC<FolderModalProps> = ({
   const [name, setName] = useState(() => initialFolder?.name || '');
   const [color, setColor] = useState(() => initialFolder?.color || DEFAULT_COLORS[0]);
 
+  const dialogRef = useDialogFocus();
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -47,6 +49,7 @@ const FolderModalContent: React.FC<FolderModalProps> = ({
   return (
     <div className={styles.modalOverlay} onClick={onClose} role="presentation">
       <div
+        ref={dialogRef}
         className={styles.modalBox}
         onClick={(e) => e.stopPropagation()}
         role="dialog"

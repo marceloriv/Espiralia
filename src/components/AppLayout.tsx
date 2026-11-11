@@ -146,7 +146,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           <div className={styles.brandHeader}>
             <Marca variante="monograma" className={styles.monogram} />
             <div className={styles.brandText}>
-              <h1 className={styles.brandLogo}>Espiralia</h1>
+              <p className={styles.brandLogo}>Espiralia</p>
               <p className={styles.brandCaption}>Taller de Escritorio</p>
             </div>
           </div>
