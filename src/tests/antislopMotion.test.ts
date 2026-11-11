@@ -22,14 +22,13 @@ const rules = walk(COMPONENTS_DIR).flatMap(file => {
 });
 
 describe('Movimiento, desenfoque y franjas decorativas', () => {
-  it('no hay animaciones infinitas salvo el spinner de carga, el molinillo y el Nautilus de origami', () => {
-    // La persona dueña aprobó el giro lento del molinillo en el mock del 2026-10-25 (R-19 se mantiene por decisión suya):
-    // 24s por vuelta y solo con prefers-reduced-motion: no-preference. El 2026-10-26 pidió el Nautilus de la página 404
-    // animado: flota 8s y sus tentáculos ondulan 5s, con la misma condición.
+  it('no hay animaciones infinitas salvo el esqueleto de carga y el Nautilus de origami', () => {
+    // El 2026-10-26 la persona dueña pidió el Nautilus de la página 404 animado: flota 8s y sus tentáculos ondulan 5s, solo con
+    // prefers-reduced-motion: no-preference. El molinillo de la barra lateral, que giraba 24s, se quitó el 2026-11-11.
     const offenders = rules
       .filter(r => /animation(-iteration-count)?:[^;]*\binfinite\b/.test(r.body))
-      .filter(r => !(r.file === 'RouteLoadingFallback.module.css' && /spin/.test(r.body)))
-      .filter(r => !(r.file === path.join('common', 'OrigamiHoja.module.css') && /aspas 24s/.test(r.body)))
+      // El esqueleto de carga (DESIGN.md §7.6) pulsa la opacidad mientras algo carga y se apaga con prefers-reduced-motion.
+      .filter(r => !(r.file === path.join('common', 'Esqueleto.module.css') && /respirar 1\.8s/.test(r.body)))
       .map(r => `${r.file} ${r.selector}`);
 
     expect(offenders).toEqual([]);

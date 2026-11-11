@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { currentTheme, setThemeColor } from '../utils/theme';
 import {
   Feather,
   Lock,
@@ -25,14 +26,32 @@ const scrollToSection = (id: string): void => {
   document.getElementById(id)?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
 };
 
+// Mismo texto que el <title> de index.html.
+const LANDING_TITLE = 'Espiralia · Agenda, planner y tareas en tu navegador';
+
+const skipToMain = (e: React.MouseEvent<HTMLAnchorElement>): void => {
+  e.preventDefault();
+  document.getElementById('contenido-principal')?.focus();
+};
+
 export const LandingView: React.FC<LandingViewProps> = ({
   onNavigateLogin,
   onNavigateDashboard,
   hasActiveProfile = false,
 }) => {
+  // La landing es una pieza de papelería con colores propios (DESIGN.md §7.4): siempre se ve en claro, sin importar el tema de la app.
+  useEffect(() => {
+    document.documentElement.setAttribute('data-force-light', '');
+    setThemeColor('light');
+    return () => {
+      document.documentElement.removeAttribute('data-force-light');
+      setThemeColor(currentTheme());
+    };
+  }, []);
+
   // Al volver desde la app la pestaña conservaba el nombre de la última vista.
   useEffect(() => {
-    document.title = 'Espiralia';
+    document.title = LANDING_TITLE;
   }, []);
 
   const handlePrimaryCta = () => {
@@ -45,6 +64,10 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
   return (
     <div className={styles.landingWrapper}>
+      {/* WCAG 2.4.1. Un <a href="#id"> cambiaría la ruta del HashRouter: el href es neutro y el foco va al <main> por script. */}
+      <a href="./" className={styles.skipLink} onClick={skipToMain}>
+        Saltar al contenido principal
+      </a>
       {/* 1. Top App Bar */}
       <header className={styles.topBar}>
         <div className={styles.brandGroup}>
@@ -85,7 +108,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
       </header>
 
-      <main>
+      <main id="contenido-principal" tabIndex={-1}>
         {/* 2. Hero Section */}
         <section className={styles.heroSection} aria-labelledby="hero-title">
           <div className={styles.heroGrid}>

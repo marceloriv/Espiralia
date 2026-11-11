@@ -7,7 +7,8 @@ export const focusOnMount = (node: HTMLElement | null) => node?.focus();
 
 /**
  * Foco de un diálogo (WCAG 2.4.3): al abrirse lleva el foco a su primer control, salvo que el diálogo ya lo
- * haya enfocado, y al cerrarse lo devuelve al elemento que lo tenía. Hay que llamarlo antes de los efectos
+ * haya enfocado, mantiene Tab y Mayús+Tab dentro de él (coherente con `aria-modal`) y al cerrarse lo devuelve
+ * al elemento que lo tenía. Hay que llamarlo antes de los efectos
  * del diálogo para que un foco propio (por ejemplo, un campo de texto) se imponga. `active` sirve a los
  * diálogos que siguen montados mientras están cerrados.
  */
@@ -22,7 +23,24 @@ export const useDialogFocus = (active = true) => {
     const focusedInside = !!node?.contains(document.activeElement);
     const previous = (focusedInside ? opener : document.activeElement) as HTMLElement | null;
     if (node && !focusedInside) (node.querySelector<HTMLElement>(FOCUSABLE) ?? node).focus();
+
+    const trapTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !node) return;
+      const items = [...node.querySelectorAll<HTMLElement>(FOCUSABLE)];
+      const first = items[0] ?? node;
+      const last = items[items.length - 1] ?? node;
+      const current = document.activeElement;
+      if (e.shiftKey && (current === first || !node.contains(current))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (current === last || !node.contains(current))) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener('keydown', trapTab);
     return () => {
+      window.removeEventListener('keydown', trapTab);
       if (previous?.isConnected) previous.focus();
     };
   }, [active, opener]);

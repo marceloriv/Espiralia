@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ThemeToggle } from './common/ThemeToggle';
 import { LayoutDashboard, Calendar, Compass, CheckSquare, Lock, LogOut, Plus, Settings, BookOpen, Folder, Shield, Search, Share2, MoreHorizontal } from 'lucide-react';
 import { useEscapeKey } from '../utils/useEscapeKey';
 import { sileo } from 'sileo';
@@ -146,7 +147,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
           <div className={styles.brandHeader}>
             <Marca variante="monograma" className={styles.monogram} />
             <div className={styles.brandText}>
-              <h1 className={styles.brandLogo}>Espiralia</h1>
+              <p className={styles.brandLogo}>Espiralia</p>
               <p className={styles.brandCaption}>Taller de Escritorio</p>
             </div>
           </div>
@@ -278,6 +279,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
               <Plus size={16} aria-hidden="true" />
               <span className={styles.newNoteLabel}>Nueva Nota</span>
             </button>
+            <ThemeToggle />
             <button
               type="button"
               className={styles.lockButton}

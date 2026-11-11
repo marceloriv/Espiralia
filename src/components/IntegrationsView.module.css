@@ -72,7 +72,7 @@
   font-size: var(--text-micro);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--color-text-amber);
+  color: var(--on-papel-ambar);
   margin-bottom: 0.25rem;
 }
 
@@ -89,7 +89,7 @@
   font-family: var(--font-family-2);
   font-style: italic;
   font-size: 0.8125rem;
-  color: var(--color-text-amber);
+  color: var(--on-papel-ambar);
   margin-top: 0.35rem;
   text-align: right;
 }
@@ -99,7 +99,7 @@
   position: relative;
   margin-bottom: 2rem;
   padding-bottom: 1.75rem;
-  border-bottom: 1px solid #E3DCCE;
+  border-bottom: 1px solid var(--color-hairline);
   max-width: 860px;
 }
 
@@ -123,7 +123,7 @@
   font-size: var(--text-display-md);
   line-height: 1.15;
   font-weight: 600;
-  color: #273444;
+  color: var(--color-ink);
   letter-spacing: -0.015em;
 }
 
@@ -134,7 +134,7 @@
   font-style: italic;
   font-size: 1.05rem;
   line-height: 1.6;
-  color: #5d6770;
+  color: var(--color-muted);
   max-width: 780px;
 }
 
@@ -164,7 +164,7 @@
 /* Strict Privacy Banner */
 .privacyBanner {
   position: relative;
-  background: #FAF5EC;
+  background: var(--bg-card);
   border-radius: 0.75rem;
   padding: 1.25rem;
   border: 1px solid #DDD4C4;
@@ -192,12 +192,12 @@
   width: 44px;
   height: 44px;
   border-radius: 0.5rem;
-  background: #ffffff;
+  background: var(--color-surface-bright);
   border: 1px solid #DDD5C5;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #3f7a4e;
+  color: var(--color-text-success);
   flex-shrink: 0;
 }
 
@@ -250,7 +250,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #EAE3D6;
+  border-bottom: 1px solid var(--color-hairline);
   margin-top: 0.25rem;
 }
 
@@ -263,9 +263,9 @@
 .cardIconWrapper {
   padding: 0.55rem;
   border-radius: 0.5rem;
-  background: #FAF7F2;
-  border: 1px solid #DDD5C6;
-  color: var(--color-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-hairline);
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -289,8 +289,8 @@
 .tagNoOAuth {
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
-  background: #F7F3EC;
-  border: 1px solid #DDD5C6;
+  background: var(--color-surface-warm);
+  border: 1px solid var(--border-hairline);
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
   color: var(--color-muted);
@@ -361,8 +361,8 @@
 
 .selectInput {
   width: 100%;
-  background: #FAF7F2;
-  border: 1px solid #DDD5C6;
+  background: var(--bg-card);
+  border: 1px solid var(--color-border-control);
   border-radius: 0.5rem;
   padding: 0.5rem 0.75rem;
   font-size: 0.75rem;
@@ -384,7 +384,7 @@
 
 .btnPrimary {
   background: #8E1EA2;
-  color: #ffffff;
+  color: var(--color-on-primary);
   padding: 0.6rem 1.25rem;
   border-radius: 0.5rem;
   border: none;
@@ -399,7 +399,7 @@
 }
 
 .btnPrimary:hover {
-  background: var(--color-primary-active);
+  background: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -410,14 +410,14 @@
 }
 
 .divider {
-  border-top: 1px solid #EAE3D6;
+  border-top: 1px solid var(--color-hairline);
   margin: 0.5rem 0;
 }
 
 /* Dropzone B */
 .dropzone {
-  border: 2px dashed #DDD5C6;
-  background: #FAF8F5;
+  border: 2px dashed var(--border-hairline);
+  background: var(--bg-card);
   border-radius: 0.75rem;
   padding: 1.25rem;
   text-align: center;
@@ -437,8 +437,8 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #ffffff;
-  border: 1px solid #DDD5C6;
+  background: var(--color-surface-bright);
+  border: 1px solid var(--border-hairline);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -456,11 +456,11 @@
 .codeBadge {
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
-  background: #ffffff;
-  border: 1px solid #DDD5C6;
+  background: var(--color-surface-bright);
+  border: 1px solid var(--border-hairline);
   padding: 0.1rem 0.4rem;
   border-radius: 0.25rem;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
 }
 
 .dropzoneHint {
@@ -479,9 +479,9 @@
 
 .quickLinkCard {
   padding: 0.75rem;
-  background: #FAF7F2;
+  background: var(--bg-card);
   border-radius: 0.5rem;
-  border: 1px solid #DDD5C6;
+  border: 1px solid var(--color-border-control);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -511,8 +511,8 @@
 
 .btnSecondaryAction {
   padding: 0.35rem 0.75rem;
-  background: #ffffff;
-  border: 1px solid #DDD5C6;
+  background: var(--color-surface-bright);
+  border: 1px solid var(--color-border-control);
   border-radius: 0.25rem;
   font-size: 0.75rem;
   font-weight: 500;
@@ -526,8 +526,8 @@
 }
 
 .btnSecondaryAction:hover {
-  background: #F2ECE1;
-  color: var(--color-primary);
+  background: var(--color-surface-warm);
+  color: var(--color-text-primary);
 }
 
 /* Right Column: Gmail & Auditoría (5 Cols) */
@@ -546,8 +546,8 @@
 
 .securityCallout {
   padding: 0.75rem;
-  background: #FAF8F5;
-  border: 1px solid #E5DECF;
+  background: var(--bg-card);
+  border: 1px solid var(--color-hairline);
   border-radius: 0.75rem;
 }
 
@@ -555,7 +555,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   font-weight: 600;
   font-size: 0.75rem;
   margin-bottom: 0.25rem;
@@ -569,10 +569,10 @@
 }
 
 .templateCard {
-  border: 1px solid #DDD5C6;
+  border: 1px solid var(--border-hairline);
   border-radius: 0.75rem;
   padding: 1rem;
-  background: #FAF7F2;
+  background: var(--bg-card);
   box-shadow: 0 1px 2px rgba(20, 20, 19, 0.04);
 }
 
@@ -589,14 +589,14 @@
   font-family: var(--font-code, monospace);
   font-size: 0.6875rem;
   background: rgba(237, 150, 215, 0.25);
-  color: var(--color-primary);
+  color: var(--color-text-primary);
   border: 1px solid rgba(110, 0, 129, 0.2);
   font-weight: 500;
 }
 
 .templateTagPersonal {
   background: rgba(232, 165, 90, 0.25);
-  color: #7a4812;
+  color: var(--color-text-amber);
   border-color: rgba(232, 165, 90, 0.35);
 }
 
@@ -622,8 +622,8 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  background: #ffffff;
-  border: 1px solid #DDD5C6;
+  background: var(--color-surface-bright);
+  border: 1px solid var(--color-border-control);
   border-radius: 0.5rem;
   font-size: 0.75rem;
   font-weight: 500;
@@ -634,14 +634,14 @@
 }
 
 .btnFullWidth:hover {
-  background: #F2ECE0;
+  background: var(--color-surface-warm);
 }
 
 .btnDownloadFullVault {
   width: 100%;
   padding: 0.65rem 1rem;
-  background: #FAF7F2;
-  border: 1px solid #DDD5C6;
+  background: var(--bg-card);
+  border: 1px solid var(--color-border-control);
   border-radius: 0.5rem;
   font-size: 0.75rem;
   color: var(--color-ink);
@@ -656,7 +656,7 @@
 }
 
 .btnDownloadFullVault:hover {
-  background: #F2EBE0;
+  background: var(--color-surface-warm);
 }
 
 .vaultSubhint {
@@ -671,7 +671,7 @@
 .sheetBottomMantra {
   margin-top: 2.5rem;
   padding-top: 1.5rem;
-  border-top: 2px solid #E7DFD1;
+  border-top: 2px solid var(--color-hairline);
   display: flex;
   flex-direction: column;
   align-items: center;
