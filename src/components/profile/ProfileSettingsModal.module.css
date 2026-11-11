@@ -155,7 +155,7 @@
   height: 40px;
   border-radius: 50%;
   background-color: var(--color-primary-soft);
-  color: var(--color-text-primary);
+  color: var(--color-ink);
   font-family: var(--font-primary);
   font-weight: 700;
   font-size: var(--text-body-md);

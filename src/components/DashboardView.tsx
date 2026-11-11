@@ -1046,7 +1046,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className={styles.paperGridContainer}>
           {latestNote ? (
             <div>
-              <strong style={{ display: 'block', marginBottom: '0.35rem', fontFamily: 'var(--font-heading)', color: 'var(--color-ink-primary)' }}>
+              <strong style={{ display: 'block', marginBottom: '0.35rem' }}>
                 {latestNote.title}
               </strong>
               <p className={styles.notesHandwriting}>

@@ -5,6 +5,9 @@ try {
   var guardado = localStorage.getItem('espiralia_theme');
   if (guardado === 'dark' || guardado === 'light') {
     document.documentElement.setAttribute('data-theme', guardado);
+    // Los <meta theme-color> eligen por la preferencia del sistema; con una elección distinta la barra salía del otro tema hasta el primer cambio.
+    var barra = guardado === 'dark' ? '#19191B' : '#faf9f5';
+    document.querySelectorAll('meta[name="theme-color"]').forEach(function (meta) { meta.content = barra; });
   }
 } catch {
   // localStorage bloqueado: se queda con la preferencia del sistema.

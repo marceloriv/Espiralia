@@ -41,7 +41,7 @@ describe('Tema claro y oscuro (DESIGN.md §7.4)', () => {
     applyTheme('dark');
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
     expect(localStorage.getItem(THEME_KEY)).toBe('dark');
-    expect(document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.content).toBe('#1a1817');
+    expect(document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.content).toBe('#19191B');
   });
 
   it('applyTheme cambia el tema aunque localStorage falle', () => {

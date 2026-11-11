@@ -22,7 +22,12 @@ export const applyTheme = (theme: Theme): void => {
   } catch {
     // localStorage lleno o bloqueado: el tema cambia igual, solo que no se recuerda.
   }
-  const bar = theme === 'dark' ? '#1a1817' : '#faf9f5';
+  setThemeColor(theme);
+};
+
+/** Color de la barra del navegador (theme-color) para un tema; el oscuro es el canvas de index.css. */
+export const setThemeColor = (theme: Theme): void => {
+  const bar = theme === 'dark' ? '#19191B' : '#faf9f5';
   document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach(meta => {
     meta.content = bar;
   });

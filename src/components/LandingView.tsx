@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { currentTheme, setThemeColor } from '../utils/theme';
 import {
   Feather,
   Lock,
@@ -32,7 +33,11 @@ export const LandingView: React.FC<LandingViewProps> = ({
   // La landing es una pieza de papelería con colores propios (DESIGN.md §7.4): siempre se ve en claro, sin importar el tema de la app.
   useEffect(() => {
     document.documentElement.setAttribute('data-force-light', '');
-    return () => document.documentElement.removeAttribute('data-force-light');
+    setThemeColor('light');
+    return () => {
+      document.documentElement.removeAttribute('data-force-light');
+      setThemeColor(currentTheme());
+    };
   }, []);
 
   const handlePrimaryCta = () => {

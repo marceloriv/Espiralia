@@ -73,15 +73,26 @@ describe('Primitivos de diálogo (DESIGN.md §7.2)', () => {
     for (const file of allModules) for (const m of readFileSync(file, 'utf8').matchAll(/(--[\w-]+)\s*:/g)) definidos.add(m[1]);
     const tsx = (dir: string): string[] =>
       readdirSync(dir, { withFileTypes: true }).flatMap(e => (e.isDirectory() ? tsx(path.join(dir, e.name)) : /\.tsx?$/.test(e.name) ? [path.join(dir, e.name)] : []));
-    for (const file of tsx(componentsDir)) for (const m of readFileSync(file, 'utf8').matchAll(/['"`](--[\w-]+)['"`]\s*:/g)) definidos.add(m[1]);
+    const tsxFiles = tsx(componentsDir);
+    for (const file of tsxFiles) for (const m of readFileSync(file, 'utf8').matchAll(/['"`](--[\w-]+)['"`]\s*:/g)) definidos.add(m[1]);
 
     const indefinidos: string[] = [];
-    for (const file of allModules) {
+    // También los estilos en línea de los .tsx: un var() sin definir se descarta en silencio y el elemento hereda el color del tema claro.
+    for (const file of [...allModules, ...tsxFiles]) {
       for (const m of readFileSync(file, 'utf8').matchAll(/var\((--[\w-]+)/g)) {
         if (!definidos.has(m[1])) indefinidos.push(`${path.relative(componentsDir, file)} ${m[1]}`);
       }
     }
     expect([...new Set(indefinidos)]).toEqual([]);
+  });
+
+  it('el texto no usa el relleno de marca: color: var(--color-primary|accent) solo en la landing, que siempre es clara', () => {
+    // --color-primary es #8E1EA2 en los dos temas (relleno); sobre el canvas oscuro da 2,4:1. El texto magenta es --color-text-primary.
+    const offenders = allModules
+      .filter(f => !f.includes('Landing'))
+      .filter(f => /^\s*color:\s*var\(--color-(primary|accent)\)/m.test(readFileSync(f, 'utf8')))
+      .map(f => path.relative(componentsDir, f));
+    expect(offenders).toEqual([]);
   });
 
   it('un rol, un token: ningún módulo usa los alias --color-ink-muted ni --font-headline', () => {
