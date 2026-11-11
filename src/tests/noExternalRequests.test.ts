@@ -15,7 +15,8 @@ const walk = (dir: string): string[] =>
 
 describe('Sin peticiones externas al cargar', () => {
   it('index.html no enlaza hojas de estilo ni fuentes de otros dominios', () => {
-    expect(html).not.toMatch(/(?:href|src)=["']https?:\/\//i);
+    // La URL canónica es metadato SEO, no una petición.
+    expect(html.replace(/<link rel="canonical"[^>]*>/, '')).not.toMatch(/(?:href|src)=["']https?:\/\//i);
     expect(html).not.toMatch(/googleapis|gstatic/i);
   });
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { DayOfWeek, TimeSlot, Priority, PlannerBlock } from '../../types';
+import { useDialogFocus } from '../../utils/useDialogFocus';
 import styles from './PlannerBlockModal.module.css';
 
 interface PlannerBlockModalProps {
@@ -34,6 +35,7 @@ const PlannerBlockModalContent: React.FC<PlannerBlockModalProps> = ({
   const [time, setTime] = useState(initialBlock?.time ?? '');
   const [notes, setNotes] = useState(initialBlock?.notes ?? '');
 
+  const dialogRef = useDialogFocus();
   const onCloseRef = useRef(onClose);
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -66,7 +68,7 @@ const PlannerBlockModalContent: React.FC<PlannerBlockModalProps> = ({
   };
 
   return (
-    <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="modal-block-title">
+    <div ref={dialogRef} className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="modal-block-title">
       <div className={styles.modalBox}>
         <h3 id="modal-block-title" className={styles.modalTitle}>
           {initialBlock ? 'Editar Bloque de Enfoque' : 'Nuevo Bloque de Enfoque'}

@@ -57,3 +57,20 @@ describe('LandingView', () => {
     expect(wrapper).toBeInTheDocument();
   });
 });
+
+describe('LandingView: accesibilidad y SEO', () => {
+  it('ofrece un enlace para saltar al contenido principal que enfoca el main con el teclado', async () => {
+    const user = userEvent.setup();
+    render(<LandingView onNavigateLogin={() => {}} />);
+    await user.tab();
+    const salto = screen.getByRole('link', { name: /saltar al contenido principal/i });
+    expect(salto).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(screen.getByRole('main')).toHaveFocus();
+  });
+
+  it('titula la pestaña con una descripción', () => {
+    render(<LandingView onNavigateLogin={() => {}} />);
+    expect(document.title).toMatch(/agenda, planner y tareas/i);
+  });
+});

@@ -33,7 +33,8 @@ describe('AppLayout', () => {
     const user = userEvent.setup();
     const { onViewChange } = renderLayout();
 
-    expect(screen.getByRole('heading', { name: 'Espiralia', level: 1 })).toBeInTheDocument();
+    expect(screen.getByText('Espiralia')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Espiralia', level: 1 })).not.toBeInTheDocument();
     expect(screen.getByText('Francisca')).toBeInTheDocument();
     expect(screen.getByText('Contenido Principal')).toBeInTheDocument();
 
@@ -307,7 +308,8 @@ describe('AppLayout', () => {
     renderLayout();
 
     expect(document.querySelector('img[src$="01-monograma-Es.svg"]')).not.toBeNull();
-    expect(screen.getByRole('heading', { name: 'Espiralia', level: 1 })).toBeInTheDocument();
+    expect(screen.getByText('Espiralia')).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Espiralia', level: 1 })).not.toBeInTheDocument();
     expect(screen.getByText('Taller de Escritorio')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /\+ acción rápida/i })).toBeInTheDocument();
     expect(screen.getByText(/guardado en este navegador/i)).toBeInTheDocument();

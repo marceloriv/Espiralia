@@ -8,6 +8,28 @@
   flex-direction: column;
 }
 
+/* Enlace de salto: invisible hasta recibir foco por teclado (WCAG 2.4.1) */
+.skipLink {
+  position: absolute;
+  top: -9999px;
+  left: 16px;
+  z-index: 1000;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-button);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+}
+
+.skipLink:focus-visible {
+  top: 16px;
+  outline: 2px solid var(--color-canvas);
+  outline-offset: 2px;
+}
+
 /* Scroll margin para navegación ancla (WCAG 2.4.11 Focus Not Obscured) */
 .anchorSection {
   scroll-margin-top: calc(5rem + 1.5rem);
