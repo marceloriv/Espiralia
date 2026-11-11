@@ -39,7 +39,7 @@
   height: 100dvh;
   padding: 24px 16px;
   background-color: var(--bg-surface-soft);
-  /* El degradado sigue el molinillo pizarra, la concha arena y la rosa de la hoja de origami. */
+  /* Degradado pizarra, arena y rosa: la hoja de origami del pie repite los mismos tintes. */
   background-image: linear-gradient(160deg,
     color-mix(in srgb, var(--papel-pizarra) var(--lateral-mezcla), var(--bg-surface-soft)) 0%,
     color-mix(in srgb, var(--papel-arena) var(--lateral-mezcla), var(--bg-surface-soft)) 49%,
