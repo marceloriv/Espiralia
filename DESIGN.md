@@ -4,13 +4,28 @@
 
 **Theme:** warm-editorial-stationery (Lienzo cálido de imprenta artesanal, libre de blancos clínicos a nivel global, con acentos orquídea/magenta de identidad y tonos orgánicos de cuaderno de autor).
 
-**Dial:** ENERGY 2 / RHYTHM 2 / MOTION 1 (antislop, núcleo Parte 3). ENERGY 2: presencia editorial sin estridencia. RHYTHM 2: las secciones alternan composición (un elemento a ancho completo, listas, pares) en vez de repetir tres tarjetas. MOTION 1: solo estados de interacción (hover, foco, transiciones breves); sin animaciones en bucle.
+**Dial:** ENERGY 2 / RHYTHM 2 / MOTION 1 (antislop, núcleo Parte 3). ENERGY 2: presencia editorial sin estridencia. RHYTHM 2: las secciones alternan composición (un elemento a ancho completo, listas, pares) en vez de repetir tres tarjetas. MOTION 1: solo estados de interacción (hover, foco, transiciones breves); sin animaciones en bucle. Las excepciones aprobadas por la persona dueña, con su fecha y su alcance, están registradas en §0.13; los únicos bucles son el pulso del esqueleto de carga y el Nautilus de la página 404.
+
+**Mapa del documento** (qué responde cada sección y cuánto se puede confiar en ella):
+
+| Sección | Qué responde | Estado |
+| :--- | :--- | :--- |
+| §0.1 a §0.11 | Tesis, tres materiales, tintes por módulo, fecha, tipografía nueva, plan v2 y criterios de aceptación | Plan ejecutado; vigente en lo que describe. Los valores de §0.4 los vigila un test |
+| §0.12 | Decisiones de la persona dueña desde 2026-10-25: degradados, origami, página 404, entrada del Dashboard | Vigente, con historia de cambios dentro de cada viñeta |
+| §0.13 | Registro de excepciones de movimiento | Vigente |
+| §1 | Filosofía y principios visuales | Vigente |
+| §2 | Tokens de color | Vigente; los valores claros los vigila un test |
+| §3 | Familias tipográficas y escala | Vigente; las medidas salen de `src/index.css` |
+| §4 | Espaciado, radios y sombras | Vigente; las sombras las vigila un test |
+| §5 | Componentes y papelería | Vigente; el borde y el foco de los controles siguen a §7.2 y §7.3 |
+| §6 | Reglas de oro | Vigente |
+| §7 | Consistencia entre componentes, modo oscuro, esqueleto y ventana de carga | Vigente; las tablas de §7.4 las vigila un test. §7.5 es un inventario fechado (2026-10-30) y su avance está en la misma sección |
 
 ---
 
 ## 0. Dirección de Impacto Visual: el cuaderno de espiral (plan v2)
 
-> Estado: **plan en ejecución, pasos 0 a 6 hechos** (§0.8). Implementado: fuentes autoalojadas (`9bcc46a`), `Pliego` (`ef8acfd`), acceso por PIN en un solo diálogo (`0dc8f1a`), respaldo del acceso alineado con la bóveda (`9dd66a5`), primitivo `Papel` y tokens `--papel-*` (`c6647af`) y el Dashboard con Papel por módulo y fecha como hoja (`b6791eb`). Lo demás de esta sección es *por implementar*. El resto del documento (§1 a §6) describe lo vigente en el código. Restricción dura: nada de esto cambia claves, formas ni valores guardados en `localStorage`; es solo presentación.
+> Estado (revisado el 2026-11-16): **plan ejecutado, pasos 0 a 6 hechos** (§0.8); quedan pendientes los puntos de revisión con la persona dueña de los pasos 2 a 4. Implementado: fuentes autoalojadas (`9bcc46a`), `Pliego` (`ef8acfd`), acceso por PIN en un solo diálogo (`0dc8f1a`), respaldo del acceso alineado con la bóveda (`9dd66a5`), primitivo `Papel` y tokens `--papel-*` (`c6647af`) y el Dashboard con Papel por módulo y fecha como hoja (`b6791eb`). Esta sección conserva el plan y lo que cambió en cada paso; lo vigente está en §0.3 a §0.7, en §0.12 y en el resto del documento (§1 a §7). `src/tests/designDocsSync.test.ts` compara con `src/index.css` las tablas de valores de §0.4, §2, §4 y §7.4. Restricción dura: nada de esto cambia claves, formas ni valores guardados en `localStorage`; es solo presentación.
 
 ### 0.1 Tesis
 
@@ -41,7 +56,7 @@ El marfil cálido con serif de alto contraste y acento magenta es lo que cualqui
 ```
 
 - **Pliego** (vigente, `src/components/common/Pliego.tsx`): contiene la tarea principal de la vista. Anillas laterales en escritorio y superiores en móvil. Un solo pliego por vista.
-- **Papel** (por implementar, `src/components/common/Papel.tsx`): superficie de lectura. Se extrae del `bentoCardTorn` actual: bordes superior e inferior rasgados, cuadrícula de puntos (`--color-grid-bujo`) y un tinte claro. Recibe el tinte (`TINTE_DE_MODULO` lo asigna por módulo) y tiene dos formas: `tarjeta` (cuadrícula bujo, bordes superior e inferior rasgados) y `pieza` (etiqueta, pestaña u hoja pequeña, rasgada en los lados). `HabitModal` conserva su propio recorte, casi igual a la forma `tarjeta` (2px de diferencia), y la tira de la landing conserva una forma más suave: no están rotos y no se tocan.
+- **Papel** (vigente desde `c6647af`, `src/components/common/Papel.tsx`): superficie de lectura. Se extrajo del `bentoCardTorn` original: bordes superior e inferior rasgados, cuadrícula de puntos (`--color-grid-bujo`) y un tinte claro. Recibe el tinte (`TINTE_DE_MODULO` lo asigna por módulo) y tiene dos formas: `tarjeta` (cuadrícula bujo, bordes superior e inferior rasgados) y `pieza` (etiqueta, pestaña u hoja pequeña, rasgada en los lados). `HabitModal` conserva su propio recorte, casi igual a la forma `tarjeta` (2px de diferencia), y la tira de la landing conserva una forma más suave: no están rotos y no se tocan.
 - **Cartulina**: el contenedor liso de hoy (`.card`). Se reserva para lo que la persona edita o decide: foco principal, formularios, modales. Así se distingue de lo que solo se lee.
 - **Pestañas, etiquetas y la hoja de la fecha** son piezas pequeñas de Papel (`forma="pieza"`, sin cuadrícula). **Presupuesto por vista: 4 tarjetas y 3 piezas**, medido por `src/tests/papelBudget.test.ts` (cuenta los `<Papel` de cada archivo de vista; las listas de tarjetas repetidas, como las notas, usan sus propios componentes y no cuentan).
 - Clips de latón, cintas washi y notas adhesivas dejan de ser una capa por tarjeta. Queda como máximo **un** clip por pantalla.
@@ -120,6 +135,7 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 | To-Do, Carpetas, Integraciones | No | Tarjetas de cada módulo con su tinte | Formularios | No |
 
 Decisiones tomadas por la persona dueña (2026-10-22):
+
 1. **Aforismo en español.** "discipline today, peace tomorrow" pasa a «Disciplina hoy, paz mañana.» en los cuatro sitios donde aparece: post-it del Dashboard (`DashboardView.tsx`), nota del Planner (`PlannerView.tsx`), post-it de To-Do (`TodoView.tsx`) y panel del Acceso (`ProfileGateView.tsx`). Los tests que hoy buscan el texto en inglés (`PlannerView.test.tsx`, `ProfileGateView.test.tsx`) se actualizan en el mismo commit. Se hace en el paso 2 (Dashboard), el paso 3 (Acceso) y el paso 4 (Planner y To-Do).
 2. **Se mantienen 4 piezas de Papel por pantalla.** El presupuesto de §0.3 y el test de §0.10 no cambian.
 3. **El texto del respaldo se verificó contra el código** (resultado abajo) y se corrige antes de usarlo.
@@ -134,11 +150,13 @@ Decisiones tomadas por la persona dueña (2026-10-22):
 | "Para restablecer tu PIN, exporta y restaura tu bóveda local." | **Falsa.** No existe recuperación de PIN: la restauración conserva el hash y la sal del perfil, y el modal de respaldo solo se alcanza con el perfil desbloqueado. | `restoreProfile` copia `backup.profile` completo; `VaultModal` se monta en `AppLayout`. |
 
 Consecuencias para el plan (paso 3, Acceso), con revisión de la persona dueña antes de implementar:
+
 - **Texto del papel salvia:** «Respalda desde dentro del cuaderno, con cifrado opcional, y restaura en otro equipo.»
 - **Aviso de PIN olvidado:** reemplazar el texto falso por «Espiralia no puede restablecer un PIN: solo guarda su hash en este navegador.» Es un cambio de texto; no cambia ningún dato.
 - **Botón "Exportar bóveda local" del Acceso:** quitarlo del Acceso (propuesta) o alinear su formato con el de `VaultModal`. Decisión pendiente: quitarlo deja sin copia a quien no pueda entrar; alinearlo implica un cambio de comportamiento y un test de ida y vuelta.
 
 **Decisión tomada tras el paso 2: orden del Dashboard en móvil (opción B, aplicada).** El criterio de §0.10.4 no se cumple porque, antes de las prioridades, el Dashboard muestra el encabezado completo, el aforismo, el lema del día, los cuatro accesos rápidos y las tres tarjetas de serenidad (pliego a 2436px en móvil). Opciones:
+
 - **A. Solo reordenar:** en móvil, las tres tarjetas de serenidad pasan después de las prioridades (CSS `order`, sin tocar el contenido). Mejora, pero el encabezado sigue siendo largo y no alcanza los 600px.
 - **B. Reordenar y compactar (recomendada):** en móvil el encabezado queda en fecha, saludo y contadores; el aforismo, el lema, los accesos rápidos y las tarjetas de serenidad van después de Foco y Prioridades. Cumple el criterio y no cambia el contenido ni el orden en escritorio.
 - **C. Relajar el criterio:** en el Dashboard se acepta que las prioridades queden más abajo, a cambio de conservar el encabezado completo.
@@ -187,7 +205,22 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 - **Movimiento del Nautilus (segunda excepción a R-19):** el caparazón se pliega una vez al entrar y después el animal flota 8 s por ciclo, con los tentáculos ondulando 5 s. Todo bajo `prefers-reduced-motion: no-preference`; sin movimiento queda quieto y completo.
 - **`public/404.html`:** GitHub Pages lo sirve para cualquier URL inexistente. Lleva `/Espiralia/<ruta>` a `/Espiralia/#/<ruta>` para que la app decida si la ruta existe y, si no, muestre su 404; sin JavaScript queda como página mínima con enlace de regreso.
 - **Movimiento del donut de Progreso de Tareas (tercera excepción a MOTION 1, decisión de la persona dueña, 2026-10-30):** al elegir otra área, la porción, el anillo exterior y el texto del centro se mueven con el resorte del ejemplo oficial de TanStack Charts (`motion()`, rigidez 190, amortiguación 21). Es respuesta a una acción, no un bucle: sin animación de entrada (`initial: false`) y sin movimiento propio. `motion()` respeta `prefers-reduced-motion`; con movimiento reducido el cambio es inmediato. El pastel de Distribución por Categoría no se anima.
+- **Entrada del Dashboard: arrancar la hoja del día (séptima excepción a MOTION 1, decisión de la persona dueña, 2026-11-16):** al abrir la vista, la hoja de fecha cae como un taco arrancado (900ms, 46px y 7 grados) y los papeles de métricas, trío y columnas se asientan después con 90ms de desfase y 2 grados de giro que se endereza. Una sola vez por carga de la vista, sin bucles (`iteration-count` 1), con `animation-fill-mode: backwards` para no dejar `transform` fijado y no pisar el hover. Solo CSS y solo bajo `prefers-reduced-motion: no-preference`; sin esa preferencia el Dashboard aparece de inmediato. Las áreas, notas, reflexión y métricas inferiores no se animan. Elegida sobre las alternativas "scroll" y "datos que se mueven" con el mockup temporal de `public/mockups/impacto.html`.
 - **Presupuesto de sombras (§0.10.7):** la hoja de origami no usa `filter: drop-shadow`, para no sumar a las cuatro de las tarjetas de Papel.
+
+### 0.13 Registro de excepciones de movimiento (revisado el 2026-11-16)
+
+El dial MOTION 1 admite solo estados de interacción. Cada excepción la aprobó la persona dueña, vale para un caso concreto y respeta `prefers-reduced-motion`. Esta es la única lista: una excepción nueva se agrega aquí con la ordinal siguiente, y `src/tests/designDocsSync.test.ts` falla si dos usan la misma.
+
+| Ordinal | Fecha | Qué se mueve | Duración y repetición | Detalle |
+| :--- | :--- | :--- | :--- | :--- |
+| 3 | 2026-10-30 | Donut de Progreso de Tareas | resorte al elegir otra área; sin bucle | §0.12 |
+| 4 | 2026-10-30 | Conmutador de tema | 2000ms por acción; sin bucle | §7.4 |
+| 5 | 2026-10-31 | Esqueleto de carga | pulso en bucle mientras algo carga; quieto con movimiento reducido | §7.7 |
+| 6 | 2026-10-31 | Ventana de carga con origami | una vez, desde los 300ms | §7.8 |
+| 7 | 2026-11-16 | Entrada del Dashboard (hoja del día) | una vez por carga de la vista: 900ms la hoja y 700ms los papeles | §0.12 |
+
+Sin ordinal propia en el texto original: pasar la página al cambiar de vista (§0.7, 240ms, una vez por cambio) y el Nautilus de la página 404 (§0.12, entra una vez y luego flota en bucle; el texto lo llama segunda excepción a R-19). El texto original numera de la tercera a la sexta, y las dos primeras no quedaron identificadas por escrito. Los dos únicos bucles que registra este documento son el pulso del esqueleto (§7.7) y el Nautilus de la 404 (§0.12).
 
 ---
 
@@ -197,15 +230,15 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
    - Cada contenedor, tarjeta o módulo interactivo evoca elementos de un escritorio físico de papelería: pliegos de papel marfil de alto gramaje, hojas con textura de borde rasgado, fichas con solapas superiores de archivador de biblioteca (*folder tabs*), tramas milimetradas de *bullet journal* y notas adhesivas (*post-its*) sujetas con clips metálicos dorados o franjas de *washi tape* semitransparente.
    - Rompe deliberadamente la frialdad utilitaria de las interfaces de software corporativo convencional, ofreciendo una experiencia sosegada, íntima y de baja carga cognitiva.
 
-2. **Tipografía Tríadica de Autor**:
-   - **Display / Titulares**: Serif de alto contraste (*Newsreader, Copernicus, Tiempos Headline, Playfair Display, Georgia*) para títulos de impacto, lemas inspiradores, aforismos matutinos y manifiestos.
-   - **Cuerpo & Control**: Sans geométrica-humanista (*Inter, StyreneB, Plus Jakarta Sans, system-ui*) para máxima legibilidad en listas de tareas, tablas de tiempo, modales y controles de formulario.
-   - **Acento Manuscrito Emocional**: Script caligráfico (*Caveat, Reenie Beanie, Playfair Italic, cursive*) para aforismos, lemas en notas adhesivas (*"discipline today, peace tomorrow ♡"*, *"small steps every day lead to big results"*) y escritura libre en diarios reflexivos.
-   - **Monospace Técnico**: Monospace humanista (*JetBrains Mono, ui-monospace*) para metadatos, tags de código, timestamps y registros de boveda local.
+2. **Tipografía de Autor** (cinco familias; medidas y pesos en §0.6 y §3):
+   - **Display / Titulares**: Serif de alto contraste (*Fraunces*; *Playball* para todo `h1`) para la fecha, títulos de impacto, aforismos matutinos y manifiestos.
+   - **Cuerpo & Control**: Sans de lectura accesible (*Atkinson Hyperlegible Next*, con `system-ui` de respaldo) para máxima legibilidad en listas de tareas, tablas de tiempo, modales y controles de formulario.
+   - **Acento Manuscrito Emocional**: Script caligráfico (*Reenie Beanie*, a 22px o más) para aforismos, lemas en notas adhesivas (*«Disciplina hoy, paz mañana.»*) y escritura libre en diarios reflexivos.
+   - **Monospace Técnico**: Monospace (*Spline Sans Mono*) para metadatos, semana ISO, horas y registros de bóveda local.
 
 3. **Colorimetría Sensorial y Papel Marfil**:
-   - Fondo general (*canvas*) en tono marfil cálido (`#FCF9F6` / `#FAF9F5`), eliminando los fondos blancos clínicos puros (`#FFFFFF`), los cuales quedan confinados exclusivamente a fichas y cartulinas superpuestas.
-   - Identidad de marca Espiralia en **Magenta Orquídea** (`#8E1EA2`, `#C654C3`), complementada con matices de papelería clásica: azul pizarra suave (`#7B8C9E`), terracota cálido (`#9C4A3B`), verde salvia botánico (`#5A826D`), crema tostado (`#EFE9DE` / `#F6F2EC`) y carbón nocturno (`#1A1817`).
+   - Fondo general (*canvas*) en tono marfil cálido (`#FAF9F5`), sin fondos blancos clínicos puros (`#FFFFFF`): las cartulinas usan `#EFE9DE` y el papel claro de los degradados, `#FCF9F6`.
+   - Identidad de marca Espiralia en **Magenta Orquídea** (`#8E1EA2`, `#C654C3`), complementada con matices de papelería clásica: azul pizarra suave (`#7B8C9E`), terracota cálido (`#9C4A3B`), verde salvia botánico (`#5A826D`), crema tostado (`#EFE9DE` / `#F6F2EC`) y carbón nocturno (`#181715`).
 
 4. **Soberanía y Serenidad Local**:
    - Representación visual de la arquitectura *100% Client-Side* (sin registro en la nube, datos en el `localStorage` del navegador, cero telemetría externa) con textos que dicen lo que la app hace, sin certificaciones ni cifrado que no existan. Los timbres de imprenta quedan como recurso decorativo y nunca afirman seguridad.
@@ -222,19 +255,20 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 | **`primary-soft`** | `#ED96D7` | `--color-primary-soft` | Fondos de insignias suaves, píldoras y barras de avance sutiles. |
 | **`primary-light`** | `#FDF4FA` | `--color-primary-light` | Tinte sutil para fondos de selección activa o tarjetas destacadas. |
 | **`primary-disabled`** | `#FFC0DE` | `--color-primary-disabled` | Estados deshabilitados o tintes de fondo ultra suaves. |
-| **`canvas-paper`** | `#FCF9F6` (`#FAF9F5`) | `--color-canvas` | Fondo base unificador; simula pliego de papel bond / lino marfil cálido de alto gramaje. |
-| **`surface-card`** | `#FFFFFF` | `--color-surface-card` | Fichas de cartulina superpuesta, hojas de notas y campos de entrada. |
-| **`surface-warm`** | `#F6F2EC` (`#EFE9DE`) | `--color-surface-warm` | Solapas de ficheros, contenedores secundarios y fondos de cuadrícula. |
+| **`canvas-paper`** | `#FAF9F5` | `--color-canvas` | Fondo base unificador; simula pliego de papel bond / lino marfil cálido de alto gramaje. `--color-canvas-paper` vale lo mismo en claro. |
+| **`surface-card`** | `#EFE9DE` | `--color-surface-card` | Cartulina: fichas superpuestas y hojas de notas. Los campos de entrada usan `--color-canvas` (§7.2). |
+| **`bg-card`** | `#FCF9F6` | `--bg-card` | Papel claro donde terminan los degradados de los tintes (§0.12). |
+| **`surface-warm`** | `#F6F2EC` | `--color-surface-warm` | Solapas de ficheros, contenedores secundarios y fondos de cuadrícula. |
 | **`surface-cream-strong`** | `#E8E0D2` | `--color-surface-cream-strong` | Cartulina envejecida para acentos de libreta física. |
 | **`surface-slate`** | `#E8EDF2` | `--color-surface-slate` | Bloque con efecto papel rasgado para *Focus Schedule* y rutinas horarias. |
 | **`surface-tape-primary`** | `rgba(142, 30, 162, 0.15)` | `--color-washi-primary` | Franja decorativa de cinta adhesiva washi tape magenta. |
 | **`surface-tape-slate`** | `rgba(123, 140, 158, 0.25)` | `--color-washi-slate` | Franja decorativa de cinta adhesiva washi tape azul pizarra. |
-| **`ink`** | `#1A1917` (`#141413`) | `--color-ink` | Tinta de pluma estilográfica; titulares principales de máximo contraste. |
+| **`ink`** | `#141413` | `--color-ink` | Tinta de pluma estilográfica; titulares principales de máximo contraste. |
 | **`body`** | `#3D3D3A` | `--color-body` | Color de texto para lectura corrida, tareas e instrucciones. |
 | **`body-strong`** | `#252523` | `--color-body-strong` | Texto de peso medio para énfasis y etiquetas destacadas. |
 | **`muted`** | `#57554F` | `--color-muted` | Metadatos, horas, subtítulos, etiquetas y números monumentales de agua. Oscurecido en 2026-10-22 (de `#8E8B82`) y otra vez el 2026-10-30 (de `#64625C`): a 11px el texto quedaba en 4.6:1 sobre los tintes y con poco brillo se leía mal. Ahora 5.5:1 o más sobre las superficies y 4.5:1 sobre los tintes. |
 | **`muted-soft`** | `#8E8B82` | `--color-muted-soft` | Elementos terciarios de baja jerarquía visual. |
-| **`hairline`** | `#E8E2D8` (`#E6DFD8`) | `--color-hairline` | Renglones de cuaderno, divisores finos y bordes sutiles de papel. |
+| **`hairline`** | `#E6DFD8` | `--color-hairline` | Renglones de cuaderno, divisores finos y bordes sutiles de papel. |
 | **`hairline-soft`** | `#EBE6DF` | `--color-hairline-soft` | Divisores interiores ultra tenues. |
 | **`border-control`** | `#76716A` | `--color-border-control` | Borde de botones, campos y selectores (desde 2026-10-30). 3:1 o más (WCAG 1.4.11) sobre toda superficie, incluida la esquina oscura de la tarjeta de Papel; 4.6:1 sobre el marfil. El `--color-hairline` (1.2:1) solo se usa en divisores y contenedores, nunca como borde de un control. |
 | **`grid-bujo`** | `#DFD8CC` | `--color-grid-bujo` | Trama de puntos y cuadrícula milimetrada (*bullet journal* / *brain dump*). |
@@ -247,13 +281,17 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 | **`text-teal`** | `#2F6B60` | `--color-text-teal` | Variante de texto de `accent-teal`. |
 | **`text-amber`** | `#8E5414` | `--color-text-amber` | Variante de texto de `accent-amber`. |
 | **`text-primary-active`** | `#9E359B` | `--color-text-primary-active` | Variante de texto de `primary-active`. |
+| **`text-primary`** | `#8E1EA2` | `--color-text-primary` | Texto y enlaces en magenta; en oscuro cambia a una variante clara (§7.4). |
+| **`text-error`** | `#B13636` | `--color-text-error` | Texto de error, siempre con ícono o mensaje (§7.3). |
+| **`focus`** | `#8E1EA2` | `--color-focus` | Contorno de foco de todo control (§7.3). |
+| **`scrim`** | `rgba(20, 20, 19, 0.45)` | `--color-scrim` | Velo detrás de modales y cajones (§7.2). |
 | **`warning`** | `#D4A017` | `--color-warning` | Notificación preventiva de plazos o advertencias de bóveda. |
 | **`error`** | `#C64545` | `--color-error` | Errores de validación o alertas críticas. |
-| **`surface-dark`** | `#1A1817` (`#181715`) | `--color-surface-dark` | Bloque nocturno del manifiesto y modo de concentración profunda. |
-| **`surface-dark-elevated`**| `#252320` | `--color-surface-dark-elevated` | Tarjetas y botones sobre fondo oscuro. |
+| **`surface-dark`** | `#181715` | `--color-surface-dark` | Bloque nocturno del manifiesto y modo de concentración profunda. |
+| **`surface-dark-elevated`** | `#252320` | `--color-surface-dark-elevated` | Tarjetas y botones sobre fondo oscuro. |
 | **`surface-dark-soft`** | `#1F1E1B` | `--color-surface-dark-soft` | Fondos intermedios en superficies oscuras. |
 | **`on-primary`** | `#FFFFFF` | `--color-on-primary` | Texto sobre botones y chips primarios. |
-| **`on-dark`** | `#FCF9F6` (`#FAF9F5`) | `--color-on-dark` | Texto principal sobre superficies oscuras. |
+| **`on-dark`** | `#FAF9F5` | `--color-on-dark` | Texto principal sobre superficies oscuras. |
 | **`on-dark-soft`** | `#A09D96` | `--color-on-dark-soft` | Texto secundario y créditos sobre superficies oscuras. |
 
 ---
@@ -263,37 +301,39 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 ### Familias Tipográficas
 
 1. **Display & Serif Editorial (`--font-display`, `--font-primary`)**:
-   - `Newsreader`, `Copernicus`, `Tiempos Headline`, `Georgia`, serif.
+   - `Fraunces`, `Georgia`, `Times New Roman`, serif. Todo `h1` usa `--font-title`: `Playball`, con `Fraunces` de respaldo.
    - Uso: Titulares monumentales, cabeceras de página (*"focus plan."*, *"daily planner"*), aforismos y manifiestos.
 2. **Cuerpo & Control Sans (`--font-body`, `--font-sans`, `--font-family-2`)**:
-   - `Inter`, `StyreneB`, `Plus Jakarta Sans`, system-ui, sans-serif.
+   - `Atkinson Hyperlegible Next`, system-ui, -apple-system, `Segoe UI`, Roboto, sans-serif.
    - Uso: Tareas, tablas horarias, campos de texto, botones, insignias y navegación.
 3. **Acento Caligráfico / Manuscrito (`--font-script`, `--font-handwriting`)**:
-   - `Caveat`, `Reenie Beanie`, `Playfair Italic`, cursive.
+   - `Reenie Beanie`, cursive.
    - Uso: Frases motivacionales, notas adhesivas (*post-its*), recordatorios amables y reflexiones terapéuticas libres.
 4. **Monospace Técnico (`--font-code`, `--font-family-3`)**:
-   - `JetBrains Mono`, `ui-monospace`, monospace.
+   - `Spline Sans Mono`, `ui-monospace`, `Cascadia Mono`, Consolas, monospace. También `--font-mono`.
    - Uso: Tiempos de ejecución, contadores, etiquetas de sistema, hashes de IndexedDB y metadatos técnicos.
 
 ### Escala Tipográfica (Type Scale)
 
 | Rol | Tamaño | Altura de Línea | Espaciado (Tracking) | Peso | Familia / Token |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **display-xl** | 48px – 64px | 1.05 – 1.10 | -0.02em (-1.5px) | Serif 400 | `--text-display-xl` |
-| **display-lg** | 36px – 48px | 1.10 – 1.15 | -0.015em (-1px) | Serif 400 | `--text-display-lg` |
-| **display-md** | 28px – 36px | 1.15 – 1.20 | -0.01em (-0.5px) | Serif 400 | `--text-display-md` |
-| **display-sm** | 24px – 28px | 1.20 – 1.25 | -0.3px | Serif 400 | `--text-display-sm` |
-| **title-lg** | 22px – 24px | 1.25 – 1.30 | 0 | Serif 500 / Sans 600 | `--text-title-lg` |
-| **title-md** | 18px – 20px | 1.35 – 1.40 | 0 | Serif / Sans 600 | `--text-title-md` |
+| **display-xl** | 48px – 96px (fluido, `clamp(3rem, 1.5rem + 6vw, 6rem)`) | 1.05 | -1.5px | Serif 400 | `--text-display-xl` |
+| **display-lg** | 36px – 64px (fluido) | 1.10 | -1px | Serif 400 | `--text-display-lg` |
+| **display-md** | 28px – 40px (fluido) | 1.15 | -0.5px | Serif 400 | `--text-display-md` |
+| **display-sm** | 28px | 1.20 | -0.3px | Serif 400 | `--text-display-sm` |
+| **title-lg** | 22px | 1.30 | 0 | Serif 500 / Sans 600 | `--text-title-lg` |
+| **title-md** | 18px | 1.40 | 0 | Serif / Sans 600 | `--text-title-md` |
 | **title-sm** | 16px | 1.40 | 0 | Sans 600 | `--text-title-sm` |
-| **body-md** | 15px – 16px | 1.55 | 0 | Sans 400 | `--text-body-md` |
-| **body-sm** | 13px – 14px | 1.50 – 1.55 | 0 | Sans 400/500 | `--text-body-sm` |
-| **script-quote** | 17px – 21px | 1.40 | 0.01em | Script 400 | `--text-script-quote` |
+| **body-md** | 16px | 1.55 | 0 | Sans 400 | `--text-body-md` |
+| **body-sm** | 14px | 1.55 | 0 | Sans 400/500 | `--text-body-sm` |
+| **script-quote** | 18px | 1.40 | 0.01em | Script 400 | `--text-script-quote` |
 | **caption** | 11px – 13px | 1.40 | 0 | Sans 500/600 | `--text-caption` (13px) y `--text-micro` (11px, mínimo absoluto de la interfaz) |
-| **caption-uppercase** | 11px – 12px | 1.40 | 1.5px (0.08em) | Sans 600 Uppercase | `--text-caption-uppercase` |
+| **caption-uppercase** | 12px | 1.40 | 1.5px | Sans 600 Uppercase | `--text-caption-uppercase` |
 | **button** | 14px | 1.00 | 0 | Sans 500/600 | `--text-button` |
 | **nav-link** | 14px | 1.40 | 0 | Sans 500 | `--text-nav-link` |
-| **code / timestamp** | 12px – 14px | 1.50 – 1.60 | 0 | Monospace 400 | `--text-code` |
+| **code / timestamp** | 14px | 1.60 | 0 | Monospace 400 | `--text-code` |
+
+Cada rol de la tabla tiene además `--leading-<rol>` y `--tracking-<rol>` en `src/index.css`. Las medidas de arriba son las de esos tokens (revisadas el 2026-11-16); las de la tabla anterior eran rangos de la plantilla original.
 
 ---
 
@@ -327,10 +367,13 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 
 ### Sombras Táctiles de Papel (*Elevation & Paper Shadows*)
 
-- **Papel plano sobre escritorio**: `0 1px 3px rgba(26, 25, 23, 0.04), 0 4px 12px rgba(26, 25, 23, 0.02)`
-- **Ficha superpuesta (*Folder Tab Card*)**: `0 4px 14px rgba(26, 25, 23, 0.03), 0 12px 28px rgba(26, 25, 23, 0.02)`
-- **Nota adhesiva en ángulo (*Post-it*)**: `0 6px 16px rgba(26, 25, 23, 0.06), 0 1px 2px rgba(26, 25, 23, 0.08)`
-- **Bloque elevado nocturno**: `0 8px 30px rgba(0, 0, 0, 0.12)`
+Cada sombra sale de su token (§7.1, regla 2). Estos son los valores en claro; los de oscuro están en §7.4.
+
+- **Papel plano sobre escritorio** (`--shadow-paper`): `0 1px 3px rgba(26, 25, 23, 0.07), 0 6px 18px -2px rgba(26, 25, 23, 0.06)`
+- **Ficha superpuesta (*Folder Tab Card*)** (`--shadow-folder-tab`): `0 4px 14px rgba(26, 25, 23, 0.05), 0 12px 28px rgba(26, 25, 23, 0.04)`
+- **Nota adhesiva en ángulo (*Post-it*)** (`--shadow-postit`): `0 6px 16px rgba(26, 25, 23, 0.08), 0 1px 2px rgba(26, 25, 23, 0.08)`
+- **Bloque elevado nocturno** (`--shadow-dark-elevated`): `0 8px 30px rgba(0, 0, 0, 0.12)`
+- **Modal y cajón** (`--shadow-lg`): `0 12px 32px rgba(20, 20, 19, 0.14)`
 
 ---
 
@@ -339,20 +382,20 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 ### A. Botones & Acciones Interactivas
 
 1. **Button Primary (`--btn-primary`)**:
-   - `bg: var(--color-primary)` (`#8E1EA2`), `color: #FFFFFF`, `border-radius: var(--radius-md)` (8px), `padding: 12px 20px`, `min-height: 44px`, `font: var(--text-button)`. Hover: `bg: var(--color-primary-hover)` (`#741787`), escala sutil `active:scale-[0.98]`.
+   - `bg: var(--color-primary)` (`#8E1EA2`), `color: var(--color-on-primary)`, `border-radius: var(--radius-md)` (8px), `padding: 12px 20px`, `min-height: 44px`, `font: var(--text-button)`. Hover: `bg: var(--color-primary-hover)` (`#741787`), escala sutil `active:scale-[0.98]`.
 2. **Button Secondary (`--btn-secondary`)**:
-   - `bg: var(--color-canvas)`, `border: 1px solid var(--color-hairline)`, `color: var(--color-ink)`, `border-radius: var(--radius-md)`, `padding: 12px 20px`.
+   - `bg: transparent`, `border: 1px solid var(--color-border-control)`, `color: var(--color-ink)`, `border-radius: var(--radius-md)`, `padding: 12px 20px`. Hover: `bg: var(--color-surface-warm)` (§7.3).
 3. **Button Secondary on Dark (`--btn-secondary-dark`)**:
    - `bg: var(--color-surface-dark-elevated)` (`#252320`), `color: var(--color-on-dark)`, `border: 1px solid rgba(255,255,255,0.1)`.
 4. **Button Icon Circular**:
-   - `size: 44px`, `border-radius: full`, `bg: var(--color-canvas)`, `border: 1px solid var(--color-hairline)`.
+   - `size: 44px`, `border-radius: full`, `bg: var(--color-canvas)`, `border: 1px solid var(--color-border-control)`.
 5. **Text Link**:
    - `color: var(--color-primary)`, `hover:underline`, `font: var(--text-body-md)`.
 
 ### B. Elementos de Formulario & Captura
 
 1. **Text Input & Focused**:
-   - `bg: var(--color-canvas-paper)`, `border: 1px solid var(--color-hairline)`, `border-radius: var(--radius-md)`, `padding: 10px 14px`, `min-height: 44px`, `font: var(--text-body-md)`. En foco: `border-color: var(--color-primary)`, sombra de anillo `box-shadow: 0 0 0 3px rgba(142, 30, 162, 0.12)`.
+   - `bg: var(--color-canvas)`, `border: 1px solid var(--color-border-control)`, `border-radius: var(--radius-md)`, `padding: 10px 14px`, `min-height: 44px`, `font: var(--text-body-md)`. En foco: `outline: 2px solid var(--color-focus)` con `outline-offset: 2px` y `border-color: var(--color-focus)` (§7.3).
 2. **Category Tabs & Active State**:
    - Tab inactivo: `color: var(--color-muted)`, `hover:color: var(--color-ink)`.
    - Tab activo: `bg: var(--color-surface-warm)`, `border-bottom: 2px solid var(--color-primary)`, `color: var(--color-primary)`.
@@ -374,11 +417,11 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
    - *Water Tracker*: 8 vasos ilustrados con trazo editorial que se rellenan gradualmente.
    - *Habit Tracker Semanal*: Matriz minimalista `L M X J V S D` con círculos de cumplimiento en verde salvia (`--color-accent-sage` mezclado al 85 % con `--color-ink`: sobre el salvia puro, el ✓ blanco quedaba en 4.33:1).
 5. **Notas Adhesivas Flotantes & Washi Tape (*Post-its & Paper Clips*)**:
-   - Tarjetas amarillas o lavanda suaves con micro-rotación (`transform: rotate(-1.5deg)` o `rotate(1.2deg)`), clip metálico dorado en la parte superior y lemas motivacionales manuscritos (*"discipline today, peace tomorrow ♡"*).
+   - Tarjetas amarillas o lavanda suaves con micro-rotación (`transform: rotate(-1.5deg)` o `rotate(1.2deg)`), clip metálico dorado en la parte superior y lemas motivacionales manuscritos (*«Disciplina hoy, paz mañana ♡»*).
 6. **Widget "Brújula Interior Inmediata"**:
    - Selector interactivo de estado de saturación que despliega una tarjeta de respiración guiada en 3 pasos: *01. Pausa, 02. Descarga, 03. Un solo paso*.
 7. **Bloque Manifiesto en Pliego Nocturno**:
-   - Contenedor en `--color-surface-dark` (`#1A1817`), tipografía serif clara de imprenta (*Newsreader*) y llamada a la acción local-first sin registro ni telemetría.
+   - Contenedor en `--color-surface-dark` (`#1A1817`), tipografía serif clara de imprenta (*Fraunces*) y llamada a la acción local-first sin registro ni telemetría.
 
 ### D. Layouts & Módulos Shell
 
@@ -391,16 +434,18 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 ## 6. Reglas de Oro del Sistema (Do's and Don'ts)
 
 ### Hacer (Do)
-- **Mantener el pliego marfil cálido (`#FCF9F6`)**: El lienzo unificador de toda la plataforma debe sentirse como papel bond/lino artesanal.
+
+- **Mantener el pliego marfil cálido (`#FAF9F5`)**: El lienzo unificador de toda la plataforma debe sentirse como papel bond/lino artesanal.
 - **Armonizar control operativo y serenidad emocional**: Acompañar siempre las listas de tareas y tablas de tiempo con lemas inspiradores, aforismos diarios y sellos de racha.
-- **Respetar la jerarquía tríadica**: Serif para cabeceras y citas, sans para lectura y control operativo, script para notas afectivas, mono para metadatos y bóveda.
+- **Respetar la jerarquía de familias** (§0.6): serif (Fraunces) para cabeceras y citas, Playball para `h1`, sans para lectura y control operativo, script para notas afectivas, mono para metadatos y bóveda.
 - **Soporte de exportación e impresión** *(por implementar: hoy solo existe la exportación de la agenda a `.ics` y el respaldo de la bóveda; no hay hoja de estilos de impresión)*: diagramación limpia con `@media print` para quienes combinan soporte digital y físico.
 - **Un solo logo**: el monograma "Es" (serif, sobre el cuadrado magenta `--color-primary`) en la barra superior de la landing, la barra lateral y la pantalla de acceso. No usar otros glifos ni iconos como marca.
 - **Objetivo táctil mínimo de 44x44px**: botones, inputs, selects, tabs y enlaces con clase usan `--tap-min` (regla global en `src/index.css`). Decisión del dueño, 2026-10-22: sube el 40px anterior.
 - **Preservar los tokens exactos**: Usar siempre las variables documentadas (`--color-primary`, `--color-canvas`, etc.) para consistencia absoluta en todo el proyecto.
 
 ### No Hacer (Don't)
-- **No utilizar fondos blancos clínicos (`#FFFFFF` puro) como fondo general de página**: El blanco queda restringido exclusivamente a cartulinas y notas superpuestas.
+
+- **No utilizar fondos blancos clínicos (`#FFFFFF` puro) en ninguna superficie**: las cartulinas y notas usan `--color-surface-card` (`#EFE9DE`) y el papel claro `--bg-card` (`#FCF9F6`).
 - **No emplear sombras oscuras, duras o plásticas**: Emplear siempre sombras multicapa difusas que simulen hojas de papel reposando sobre un escritorio.
 - **No omitir las frases y aforismos motivacionales**: Son parte nuclear de la experiencia de calma y bienestar solicitada por el usuario.
 - **No usar colores neón estridentes ni esquemas corporativos fríos**: Preservar siempre la atmósfera íntima de cuaderno personal y papelería física de autor.
@@ -410,7 +455,7 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 
 ## 7. Consistencia entre componentes y modo oscuro (regla de diseño, 2026-10-30)
 
-> Decisión de la persona dueña: **un mismo componente se ve y se comporta igual en todas las vistas**, y toda regla de diseño se documenta aquí, en `DESIGN.md`. Una decisión visual que solo vive en un `.module.css` o en la cabeza de quien la tomó no cuenta como regla. Estado: la regla rige desde hoy para todo cambio nuevo; la migración de lo existente y los tests que la vigilan están *por implementar* (§7.5).
+> Decisión de la persona dueña: **un mismo componente se ve y se comporta igual en todas las vistas**, y toda regla de diseño se documenta aquí, en `DESIGN.md`. Una decisión visual que solo vive en un `.module.css` o en la cabeza de quien la tomó no cuenta como regla. Estado (revisado el 2026-11-16): la regla rige para todo cambio nuevo; la migración de lo existente y los tests que la vigilan están en curso, con el avance en §7.5 y §7.6.
 
 ### 7.1 La regla
 
@@ -422,7 +467,7 @@ La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reem
 
 ### 7.2 Contrato por familia de componente
 
-Valores objetivo. Todos son tokens existentes salvo los marcados como nuevos en §7.4 y §7.5; la columna "Primitivo" es el archivo donde debe vivir el estilo único.
+Valores objetivo. Todos son tokens existentes (los marcados como nuevos en §7.4 ya viven en `src/index.css`); la columna "Primitivo" es el archivo donde debe vivir el estilo único. Hoy existe `common/Dialogo.module.css` (botones, campos y cajas de los modales); `Button.tsx`, `Field.tsx` y `Modal.tsx` siguen pendientes (§7.5).
 
 | Familia | Forma y medida | Color y borde | Sombra | Primitivo |
 | :--- | :--- | :--- | :--- | :--- |
@@ -458,10 +503,11 @@ Valores objetivo. Todos son tokens existentes salvo los marcados como nuevos en 
 **Estado vigente (2026-10-30): el modo oscuro existe** y se activa con el conmutador de la cabecera (`ThemeToggle`) o, sin elección guardada, con la preferencia del sistema. Las superficies `--color-surface-dark*` del manifiesto, el pie de página y el "bloque nocturno" siguen siendo **superficies oscuras fijas**, presentes en cualquier tema; no son el modo oscuro.
 
 Cómo está hecho (todo en `src/index.css`, `src/utils/theme.ts`, `src/components/common/ThemeToggle.tsx` y `public/theme-init.js`):
+
 - **Dos bloques idénticos**: `:root[data-theme="dark"]:not([data-force-light])` (elección manual) y `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]):not([data-force-light]) }` (sistema). `textTokensContrast.test.ts` comprueba que declaran exactamente lo mismo.
 - **`color-scheme: light`** en `:root` y `dark` en los bloques oscuros: controles nativos y barras de scroll siguen el tema.
 - **Elección guardada** en `localStorage.espiralia_theme` (`light` o `dark`; sin valor manda el sistema), fuera de los datos de los perfiles. `public/theme-init.js` la aplica antes del primer pintado (va como archivo porque el CSP de `index.html` no admite scripts en línea).
-- **Efecto del conmutador**: el de https://theme-toggle.rdsx.dev (View Transitions API, variante `circle-with-blur`: máscara SVG con un círculo y `feGaussianBlur stdDeviation=2`, no un recorte duro, que crece desde el botón; el viewBox de la máscara es de 60 y no de 40 como en la referencia, porque con 40 la caja corta la cola del blur y deja una línea recta), sin dependencia nueva. Con `prefers-reduced-motion` no hay círculo (es movimiento) pero sí un fundido de 600ms del tema nuevo sobre el viejo, porque un cambio instantáneo de todo el color de la pantalla se siente como un golpe; sin la API el cambio es inmediato. Es la cuarta excepción a MOTION 1: responde a una acción, dura 2000ms con arranque y llegada suaves y casi simétricos (`cubic-bezier(0.37, 0, 0.63, 1)`: una curva más asimétrica concentra el avance en la primera mitad y el círculo parece más rápido de lo que dura) y no se repite. Mientras dura, `data-theme-switching` anula el nombre `pagina` y la mezcla `plus-lighter` del navegador (`mix-blend-mode: normal`, el único valor permitido).
+- **Efecto del conmutador**: el de <https://theme-toggle.rdsx.dev> (View Transitions API, variante `circle-with-blur`: máscara SVG con un círculo y `feGaussianBlur stdDeviation=2`, no un recorte duro, que crece desde el botón; el viewBox de la máscara es de 60 y no de 40 como en la referencia, porque con 40 la caja corta la cola del blur y deja una línea recta), sin dependencia nueva. Con `prefers-reduced-motion` no hay círculo (es movimiento) pero sí un fundido de 600ms del tema nuevo sobre el viejo, porque un cambio instantáneo de todo el color de la pantalla se siente como un golpe; sin la API el cambio es inmediato. Es la cuarta excepción a MOTION 1: responde a una acción, dura 2000ms con arranque y llegada suaves y casi simétricos (`cubic-bezier(0.37, 0, 0.63, 1)`: una curva más asimétrica concentra el avance en la primera mitad y el círculo parece más rápido de lo que dura) y no se repite. Mientras dura, `data-theme-switching` anula el nombre `pagina` y la mezcla `plus-lighter` del navegador (`mix-blend-mode: normal`, el único valor permitido).
 - **La landing no se tematiza**: es una pieza de papelería con colores propios, así que `LandingView` pone `data-force-light` en `<html>` y siempre se ve en claro. Tampoco cambian los papeles fijos (post-its amarillos, latón, etiqueta del lomo, 404): llevan sus textos en `--on-papel-*`.
 - **Divisores y puntos de papel sin hex**: los bordes y divisores de superficies usan `--color-hairline` y la trama punteada de los papeles `--color-grid-bujo`; un hex claro fijo en oscuro se ve como una línea o un punto casi blanco que cruza el texto (pasó en el modal de nota). Las superficies que sí son papel fijo (post-its, latón) conservan sus colores.
 - **Texto sobre un color que no controlamos**: cuando la persona elige el color (solapa de carpeta), el texto no puede ser siempre blanco. `utils/folderTabColors.ts` elige la tinta (blanca u oscura) con más contraste y, si ninguna llega a 4,5:1, oscurece el relleno hasta que llegue; la misma función tiene un test por partición de colores. Un acento como color de texto (día de un evento, categoría) usa su token `--color-text-*` y el acento queda para el borde o el relleno.
@@ -473,38 +519,38 @@ Reglas del mecanismo, sin excepciones locales:
 
 1. **Mecanismo.** Un solo conjunto de tokens redefinidos, en `src/index.css`:
    - `:root:not([data-theme="light"])` dentro de `@media (prefers-color-scheme: dark)`, y `:root[data-theme="dark"]` para la elección manual.
-   - `color-scheme: light dark` en `:root` para que controles nativos, barras de scroll y autocompletado sigan el tema.
+   - `color-scheme: light` en `:root` y `dark` en los dos bloques oscuros, para que controles nativos, barras de scroll y autocompletado sigan el tema.
    - Una preferencia explícita de la persona (claro, oscuro, sistema) se guarda en `localStorage` con una clave propia (`espiralia_theme`), fuera de los datos de los perfiles, y se lee **antes** del primer pintado para no parpadear.
 2. **Ningún componente conoce el tema.** Un `.module.css` no contiene `@media (prefers-color-scheme)` ni `[data-theme]`: solo consume tokens. Si un componente "necesita" una regla de oscuro, falta un token.
 3. **Tokens semánticos, no de tinte.** Se redefinen los semánticos; los tintes de módulo (`--papel-*`) tienen su propia versión oscura y siguen codificando el mismo módulo.
 
-Valores vigentes (contraste medido con la fórmula WCAG; `textTokensContrast.test.ts` los recorre sobre las superficies oscuras, sus tintes y la esquina de la tarjeta de Papel). Lo que cambió respecto de la propuesta inicial, tras medir: `--color-muted` pasa de `#A09D96` a **`#BCB8B0`** (sobre los tintes oscuros daba 3.5:1 a 4.3:1), `--color-border-control` de `#8A857A` a **`#9C978C`** y `--color-text-error` de `#F08A8A` a **`#F6A0A0`** (la esquina del tinte pizarra daba 2.9:1 y 4.4:1); los tintes `terracota`, `ambar`, `pizarra` y `turquesa` se separaron para mantener los 15 de distancia entre tintes, y los textos del Papel (`--papel-texto-*`) se aclararon.
+Valores vigentes (contraste medido con la fórmula WCAG; `textTokensContrast.test.ts` los recorre sobre las superficies oscuras, sus tintes y la esquina de la tarjeta de Papel). Lo que cambió respecto de la propuesta inicial, tras medir: `--color-muted` pasa de `#A09D96` a **`#BCB8B0`** (sobre los tintes oscuros daba 3.5:1 a 4.3:1), `--color-border-control` de `#8A857A` a **`#9C978C`** y `--color-text-error` de `#F08A8A` a **`#F6A0A0`** (la esquina del tinte pizarra daba 2.9:1 y 4.4:1); los tintes `terracota`, `ambar`, `pizarra` y `turquesa` se separaron para mantener los 15 de distancia entre tintes, y los textos del Papel (`--papel-texto-*`) se aclararon. Esos tres valores se subieron otra vez el 2026-11-11 (`--color-muted` `#CABDC1`, `--color-border-control` `#A19C91`, `--color-text-error` `#F8AAAB`): los vigentes son los de la tabla.
 
 | Token | Claro (vigente) | Oscuro (vigente) | Contraste oscuro |
 | :--- | :--- | :--- | :--- |
-| `--color-canvas` | `#FCF9F6` | `#1A1817` | base |
-| `--color-surface-card` | `#FFFFFF` | `#252320` | 1.13:1 con el canvas (separa por borde y sombra, no por contraste) |
-| `--color-ink` | `#1A1917` | `#F2EEE8` | 15.3:1 sobre canvas |
-| `--color-body` | `#3D3D3A` | `#D4D0C8` | 11.5:1 sobre canvas |
-| `--color-muted` | `#57554F` | `#CABDC1` | 7.8:1 sobre canvas; 4.7:1 o más sobre los tintes oscuros |
-| `--color-hairline` | `#E8E2D8` | `#3A3732` | 1.5:1; solo para divisores decorativos |
+| `--color-canvas` | `#FAF9F5` | `#19191B` | base |
+| `--color-surface-card` | `#EFE9DE` | `#29272A` | 1.19:1 con el canvas (separa por borde y sombra, no por contraste) |
+| `--color-ink` | `#141413` | `#F3ECE8` | 15.0:1 sobre canvas |
+| `--color-body` | `#3D3D3A` | `#DFD4D0` | 12.1:1 sobre canvas |
+| `--color-muted` | `#57554F` | `#CABDC1` | 9.7:1 sobre canvas; 4.7:1 o más sobre los tintes oscuros |
+| `--color-hairline` | `#E6DFD8` | `#49434A` | 1.8:1; solo para divisores decorativos |
 | `--color-border-control` (claro vigente desde 2026-10-30) | `#76716A` | `#A19C91` | 3.0:1 o más sobre toda superficie, esquina oscura de los tintes incluida |
 | `--color-primary` (relleno de botón) | `#8E1EA2` | `#8E1EA2` | texto blanco 7.4:1 |
-| **`--color-text-primary`** (nuevo: enlaces y texto magenta) | `#8E1EA2` | `#E3A6F0` | 9.3:1 sobre canvas, 8.2:1 sobre tarjeta |
-| **`--color-focus`** (nuevo) | `#8E1EA2` | `#E3A6F0` | 8.2:1 sobre tarjeta |
-| `--color-text-success` | `#316F3F` | `#7FD08F` | 8.5:1 sobre tarjeta |
+| **`--color-text-primary`** (nuevo: enlaces y texto magenta) | `#8E1EA2` | `#E4A8DF` | 9.2:1 sobre canvas, 7.7:1 sobre tarjeta |
+| **`--color-focus`** (nuevo) | `#8E1EA2` | `#E4A8DF` | 7.7:1 sobre tarjeta |
+| `--color-text-success` | `#316F3F` | `#7FD08F` | 8.0:1 sobre tarjeta |
 | `--color-text-error` | `#B13636` | `#F8AAAB` | 5.1:1 o más sobre toda superficie y tinte oscuro |
-| `--color-text-teal` | `#2F6B60` | `#7FD3C2` | 9.0:1 sobre tarjeta |
-| `--color-text-amber` | `#8E5414` | `#F0BE7A` | 9.2:1 sobre tarjeta |
+| `--color-text-teal` | `#2F6B60` | `#7FD3C2` | 8.5:1 sobre tarjeta |
+| `--color-text-amber` | `#8E5414` | `#F0BE7A` | 8.7:1 sobre tarjeta |
 | **`--color-scrim`** (nuevo) | `rgba(20, 20, 19, 0.45)` | `rgba(0, 0, 0, 0.6)` | n/a |
 
 Reglas propias del oscuro:
 
 - **El magenta `#8E1EA2` no se usa como texto, ícono ni borde sobre fondo oscuro** (2.4:1 contra el canvas). Como relleno de botón con texto blanco sí (7.4:1). Para texto y foco se usa `--color-text-primary` y `--color-focus`. Lo vigila `designConsistency.test.ts`: ningún módulo fuera de la landing declara `color: var(--color-primary)` ni `var(--color-accent)`.
 - **La barra del navegador (`theme-color`) es el canvas del tema visible**: `#faf9f5` en claro y `#19191B` en oscuro (el valor de `--color-canvas`). `public/theme-init.js` la fija al cargar con una elección guardada, `applyTheme` al cambiar y la landing la fuerza a clara mientras está abierta. Sin esto, con el sistema en claro y el oscuro guardado la barra salía clara hasta el primer cambio.
-- **El borde de un campo o control no puede ser el `--color-hairline` oscuro** (1.5:1): un control debe distinguirse con 3:1 o más (WCAG 1.4.11), así que los campos usan `--color-border-control`.
-- **Sombras:** sobre fondo oscuro una sombra negra casi no se ve. La elevación se expresa con superficie más clara (`--color-surface-card`) y un borde de `--color-hairline`; la sombra `--shadow-paper` se reduce a opacidad `0.35` sobre negro puro. Nada de `box-shadow` con color claro ni brillos.
-- **El Papel conserva su lógica.** Los siete tintes (§0.4) tienen versión oscura: mismo matiz, luminosidad baja, saturación suficiente para que sigan distinguiéndose entre sí (mismo criterio que el de §0.4: distancia mínima entre tintes). Ejemplos de partida: arena `#3A3228`, pizarra `#2B3541`; con texto `--color-ink` rinden 10.9:1 y 10.8:1. El degradado de esquina (§0.12) oscurece hacia `--papel-<tinte>-fuerte` en su versión oscura. El grano de papel baja a `1.5 %`.
+- **El borde de un campo o control no puede ser el `--color-hairline` oscuro** (1.8:1): un control debe distinguirse con 3:1 o más (WCAG 1.4.11), así que los campos usan `--color-border-control`.
+- **Sombras:** sobre fondo oscuro una sombra negra casi no se ve. La elevación se expresa con superficie más clara (`--color-surface-card`) y un borde de `--color-hairline`; la sombra `--shadow-paper` pasa a `0 1px 3px rgba(0, 0, 0, 0.45), 0 6px 18px -2px rgba(0, 0, 0, 0.4)`, sobre negro puro. Nada de `box-shadow` con color claro ni brillos.
+- **El Papel conserva su lógica.** Los siete tintes (§0.4) tienen versión oscura: mismo matiz, luminosidad baja, saturación suficiente para que sigan distinguiéndose entre sí (mismo criterio que el de §0.4: distancia mínima entre tintes). Los valores vigentes están en la tabla de paleta de abajo; con texto `--color-ink`, arena `#403528` rinde 10.2:1 y pizarra `#263F69`, 9.0:1. El degradado de esquina (§0.12) oscurece hacia `--papel-<tinte>-fuerte` en su versión oscura. El grano de papel baja a `1.5 %`.
 
 - **Paleta cromática del Papel en oscuro (2026-11-11).** Los siete tintes oscuros ya no son marrones desaturados: cada uno es el mismo matiz de su tinte claro a luminosidad baja. Valores definitivos (`--papel-*`) y variante fuerte (`--papel-*-fuerte`, mismo matiz y saturación, luminosidad HSL +4 puntos):
 
@@ -537,6 +583,7 @@ Inventario: hay **101 definiciones de clases de botón, campo, modal y tarjeta r
 | Respaldos de hex en `var()` y alias | muchos `var(--x, #e6dfd8)`: el respaldo en hex congela el color claro y no cambiaría con el tema oscuro. Además conviven alias distintos para el mismo rol (`--color-surface`, `--color-surface-card`, `--bg-card`, `--color-canvas` para el fondo de una caja; `--color-ink-muted` y `--color-muted` para el texto secundario; `--font-headline` y `--font-primary` para titulares). Todos existen en `src/index.css`, pero cada vista elige uno distinto. |
 
 **Avance (2026-10-30):**
+
 - **Paso 1, hecho:** `--color-scrim`, `--color-focus`, `--color-text-primary` y `--duration-fast` existen en `src/index.css` con su valor claro (`--color-border-control` y `--color-text-error` ya estaban).
 - **Pasos 2 y 3, hechos en CSS:** los primitivos viven en `src/components/common/Dialogo.module.css` (`velo`, `caja`, `titulo`, `campo`, `etiqueta`, `control`, `acciones`, `btnPrimario`, `btnSecundario`, `btnPeligro`) y cada modal los toma con `composes`. Migrados: carpetas, bloque del Planner, metas, nota, ajustes de perfil, acción rápida, hábitos y bóveda (72 reglas, 34 reglas de hover y foco repetidas eliminadas). Todos miden igual: controles de 44px con radio `--radius-md` y borde `--color-border-control`, botones con radio `--radius-md` y relleno `12px 20px`, un solo velo. `HabitModal`, `VaultModal`, `NoteModal` y `ProfileSettingsModal` conservan su caja de ritual (papel y recorte); `QuickActionModal` conserva su caja con encabezado. Fuera de esta pasada: la búsqueda global (solo toma el velo) y el modal de foco del Dashboard (solo el velo).
 - **Paso 4, hecho (2026-10-30):** se quitaron 354 respaldos de color de `var(--token, #hex)` en 27 `.module.css` (el token siempre existía en `src/index.css`, así que el respaldo no se usaba y congelaría el color claro) y se unificaron los alias que valían lo mismo: `--color-ink-muted` pasa a `--color-muted` y `--font-headline` a `--font-primary`. **No se unificaron** `--color-surface`, `--color-surface-card` ni `--bg-card`, porque son tres colores distintos (`#EFE9DE` es la cartulina y `#FCF9F6` el papel); decidir cuál va en cada caja es una decisión de diseño, no una limpieza.
@@ -555,7 +602,7 @@ Orden de migración propuesto (cada paso se entrega y revierte por separado, con
 
 ### 7.6 Cómo se vigila (parcial: ya vigilado en `src/tests/textTokensContrast.test.ts`; el resto por implementar en `src/tests/designConsistency.test.ts`)
 
-La regla no es solo texto: se vuelve test, igual que el presupuesto de Papel (§0.10). **Ya vigilado (2026-10-30):** `--color-border-control` con 3:1 o más sobre toda superficie y esquina de Papel; `--color-muted` con 5.5:1 sobre las superficies y 4.5:1 sobre los tintes; y que ningún botón, campo ni selector (fuera de la landing) use `--color-hairline` como borde. Lo que sigue en la lista es lo que falta. **Desde el 2026-10-30 también vigila `src/tests/designConsistency.test.ts`:** los 8 modales toman sus controles de `common/Dialogo.module.css` y ninguno redefine el radio de sus botones; el velo sale de `--color-scrim` y no de un `rgba()` propio; `Dialogo.module.css` no tiene colores sueltos ni `transition: all`; y cada `var(--token)` que usa existe en `src/index.css`. Del paso 4 vigila además que ningún módulo use `var(--token, color)` con un token definido en `src/index.css`, que cada `var(--token)` de un módulo esté definido en `src/index.css`, en otro módulo o en un estilo en línea, y que no se usen los alias `--color-ink-muted` ni `--font-headline`.
+La regla no es solo texto: se vuelve test, igual que el presupuesto de Papel (§0.10). **Ya vigilado (2026-10-30):** `--color-border-control` con 3:1 o más sobre toda superficie y esquina de Papel; `--color-muted` con 5.5:1 sobre las superficies y 4.5:1 sobre los tintes; y que ningún botón, campo ni selector (fuera de la landing) use `--color-hairline` como borde. Lo que sigue en la lista es lo que falta. **Desde el 2026-10-30 también vigila `src/tests/designConsistency.test.ts`:** los 8 modales toman sus controles de `common/Dialogo.module.css` y ninguno redefine el radio de sus botones; el velo sale de `--color-scrim` y no de un `rgba()` propio; `Dialogo.module.css` no tiene colores sueltos ni `transition: all`; y cada `var(--token)` que usa existe en `src/index.css`. Del paso 4 vigila además que ningún módulo use `var(--token, color)` con un token definido en `src/index.css`, que cada `var(--token)` de un módulo esté definido en `src/index.css`, en otro módulo o en un estilo en línea, y que no se usen los alias `--color-ink-muted` ni `--font-headline`. **Desde el 2026-11-16 también vigila `src/tests/designDocsSync.test.ts`** que este documento no se desvíe del CSS: los valores de las tablas de §0.4, §2, §4 y §7.4 (claro y oscuro) coinciden con `src/index.css`, cada `--token` citado existe y ninguna ordinal de «excepción a MOTION 1» se repite.
 
 - **Tokens inexistentes:** cada `var(--nombre)` de un `.module.css` debe existir en `src/index.css`; un `var(--x, #hex)` cuyo `--x` no existe falla.
 - **Sin color suelto:** ningún `.module.css` de componente contiene un `#hex` ni un `rgb()` o `rgba()` fuera de `src/index.css` y de los archivos de ilustración (`Origami*`), que quedan en una lista cerrada.
@@ -588,4 +635,4 @@ Mientras el test no exista, la revisión de PR aplica esta lista a mano: un camb
 - **Movimiento reducido:** sin pliegue; tras los 300ms se ve el Nautilus ya formado.
 - **Tokens, no hex:** fondo `--color-canvas`, papel `--papel-arena` y `--papel-arena-fuerte`, texto `--color-muted`; funciona en ambos temas sin código propio. Capa `z-index: 60`, por encima del velo de los modales (50).
 - **Es la sexta excepción a MOTION 1** y no suma bucles: `ventanaCarga.test.tsx` vigila el retraso de 300ms, que no haya `infinite`, el modo sin movimiento y que no haya colores sueltos.
-- **Peso (medido el 2026-10-31):** el Nautilus se carga diferido dentro de la ventana, pero la ventana y el esqueleto suman 1,2 KB a la carga inicial: 183,9 KB sin ellos y **185,1 KB con ellos**, contra el tope anterior de 184 KB. **Decidido por la persona dueña el 2026-10-31:** el tope sube a 186 KB (`PRESUPUESTO_KB` en `.github/workflows/ci.yml` y `AGENTS.md` §17.1), lo que deja 0,9 KB de margen.
+- **Peso (medido el 2026-10-31):** el Nautilus se carga diferido dentro de la ventana, pero la ventana y el esqueleto suman 1,2 KB a la carga inicial: 183,9 KB sin ellos y **185,1 KB con ellos**, contra el tope anterior de 184 KB. **Decidido por la persona dueña el 2026-10-31:** el tope sube a 186 KB (`PRESUPUESTO_KB` en `.github/workflows/ci.yml` y `AGENTS.md` §17.1), lo que deja 0,9 KB de margen. Vigente (2026-11-16): el tope actual es de 189 KB (AGENTS.md §17.1); la cifra de 186 KB es la de esta decisión, que después subió.
