@@ -45,7 +45,7 @@ src/
 └── index.css     # Tokens de diseño
 ```
 
-La dirección visual (papeles por módulo, tipografía, degradados por tinte) está en `DESIGN.md`. Las reglas del repositorio, de commits y de ramas están en `AGENTS.md`.
+El propósito, el público y los límites del producto están en `PRODUCT.md`. La dirección visual (papeles por módulo, tipografía, degradados por tinte) está en `DESIGN.md`. Las reglas del repositorio, de commits y de ramas están en `AGENTS.md`.
 
 ## Despliegue
 
