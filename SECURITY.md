@@ -19,6 +19,7 @@ Actualmente se entregan parches de seguridad para las siguientes versiones activ
 ## Modelo de Amenazas y Arquitectura de Seguridad
 
 Espiralia es una **Single Page Application (SPA) 100% estática en cliente**:
+
 - **Cero backend remoto**: No existen servidores API propios, microservicios remotos ni bases de datos en la nube que gestionen datos de usuario.
 - **Aislamiento local**: Los datos se almacenan exclusivamente en el navegador del usuario (`localStorage`) particionados de forma estricta por `profileId`.
 - **Criptografía estándar**:
