@@ -10,7 +10,7 @@
 
 | Sección | Qué responde | Estado |
 | :--- | :--- | :--- |
-| §0.1 a §0.11 | Tesis, tres materiales, tintes por módulo, fecha, tipografía nueva, plan v2 y criterios de aceptación | Plan ejecutado; vigente en lo que describe. Los valores de §0.4 los vigila un test |
+| §0.1 a §0.11 | Tesis, tres materiales, tintes por módulo, fecha, tipografía nueva, plan v2 y criterios de aceptación | Plan ejecutado salvo la nueva dirección de textura de §0.3, pendiente en CSS. Los valores de §0.4 los vigila un test |
 | §0.12 | Decisiones de la persona dueña desde 2026-10-25: degradados, origami, página 404, entrada del Dashboard | Vigente, con historia de cambios dentro de cada viñeta |
 | §0.13 | Registro de excepciones de movimiento | Vigente |
 | §1 | Filosofía y principios visuales | Vigente |
@@ -46,10 +46,14 @@ El marfil cálido con serif de alto contraste y acento magenta es lo que cualqui
 
 ### 0.3 Los tres materiales
 
+**Dirección de superficies (decisión de la persona dueña, 2026-11-16):** la textura del papel debe percibirse, no ser apenas un grano ambiental. Pliego, Papel y Cartulina son materiales de papercraft: sus superficies, incluidos paneles, formularios y cuerpos de modal, deben mostrar fibra visible tanto en claro como en oscuro. El recorte, el espesor aparente y la superposición distinguen cada material sin multiplicar clips, cintas ni sombras. La textura no debe tapar el texto ni reducir el contraste de controles y estados.
+
+**Estado de implementación:** `Papel.module.css` ya dibuja fibra sobre sus tarjetas y piezas; el grano al 3 % del `body` es solo el fondo del lienzo. `Pliego.module.css` y la Cartulina todavía usan superficies lisas. La tabla siguiente expresa la dirección aprobada; extender la textura a esas superficies y verificarla en ambos temas queda pendiente en CSS. No presentar el grano ambiental como cumplimiento de esta regla.
+
 ```
  PLIEGO              PAPEL (rasgado + tinte)           CARTULINA
- anillas, sombra     bordes arriba/abajo irregulares   borde recto, sin textura
- de apilado          cuadrícula bujo, tinte de módulo  sombra de papel simple
+ anillas, fibra y    bordes arriba/abajo irregulares   borde recto, fibra visible
+ sombra de apilado   fibra, cuadrícula y tinte         sombra de papel simple
  la tarea            lo que se lee de un vistazo       lo que se edita o se decide
  principal de hoy    (resúmenes, vacíos, métricas)     (foco, formularios, modales)
  máx. 1 por vista    máx. 4 tarjetas y 3 piezas               sin límite
@@ -57,7 +61,7 @@ El marfil cálido con serif de alto contraste y acento magenta es lo que cualqui
 
 - **Pliego** (vigente, `src/components/common/Pliego.tsx`): contiene la tarea principal de la vista. Anillas laterales en escritorio y superiores en móvil. Un solo pliego por vista.
 - **Papel** (vigente desde `c6647af`, `src/components/common/Papel.tsx`): superficie de lectura. Se extrajo del `bentoCardTorn` original: bordes superior e inferior rasgados, cuadrícula de puntos (`--color-grid-bujo`) y un tinte claro. Recibe el tinte (`TINTE_DE_MODULO` lo asigna por módulo) y tiene dos formas: `tarjeta` (cuadrícula bujo, bordes superior e inferior rasgados) y `pieza` (etiqueta, pestaña u hoja pequeña, rasgada en los lados). `HabitModal` conserva su propio recorte, casi igual a la forma `tarjeta` (2px de diferencia), y la tira de la landing conserva una forma más suave: no están rotos y no se tocan.
-- **Cartulina**: el contenedor liso de hoy (`.card`). Se reserva para lo que la persona edita o decide: foco principal, formularios, modales. Así se distingue de lo que solo se lee.
+- **Cartulina**: el contenedor de borde liso de hoy (`.card`). Se reserva para lo que la persona edita o decide: foco principal, formularios, modales. El borde recto la distingue del Papel rasgado; la fibra visible debe conservar su carácter material.
 - **Pestañas, etiquetas y la hoja de la fecha** son piezas pequeñas de Papel (`forma="pieza"`, sin cuadrícula). **Presupuesto por vista: 4 tarjetas y 3 piezas**, medido por `src/tests/papelBudget.test.ts` (cuenta los `<Papel` de cada archivo de vista; las listas de tarjetas repetidas, como las notas, usan sus propios componentes y no cuentan).
 - Clips de latón, cintas washi y notas adhesivas dejan de ser una capa por tarjeta. Queda como máximo **un** clip por pantalla.
 
@@ -108,7 +112,7 @@ Solo en el **Dashboard** y en el **hero de la landing**. El numeral del día va 
 ### 0.7 Movimiento y grano
 
 - **Una sola escena: pasar la página** al cambiar de vista (240ms, desplazamiento de 8px), con la View Transitions API como mejora progresiva. Sin soporte o con `prefers-reduced-motion`, no hay transición. Es el último paso del plan.
-- **Grano de papel** al 3 %: una textura SVG como `background-image` del `body` (no una capa fija a pantalla completa, para no repintar al hacer scroll). Sin brillos, sin desenfoque, sin `mix-blend-mode`. Los degradados por tinte sí están permitidos desde el 2026-10-25 (§0.12).
+- **Grano ambiental vigente** al 3 %: una textura SVG como `background-image` del `body` (no una capa fija a pantalla completa, para no repintar al hacer scroll). No sustituye la fibra visible de cada superficie exigida en §0.3. Sin brillos, sin desenfoque, sin `mix-blend-mode`. Los degradados por tinte sí están permitidos desde el 2026-10-25 (§0.12).
 
 ### 0.8 Orden de ejecución (cada paso se puede entregar y revertir por separado)
 
@@ -187,7 +191,7 @@ Aplicada la B: hasta 960px el encabezado esencial (fecha, saludo, subtítulo y c
 
 La persona dueña aprobó el mock del Dashboard (capa `propuesta.css`), que reemplaza dos reglas anteriores: "sin degradados" (§0.7) y "el color solo en el Papel" (§0.4). Se llevó a `src/` y se extendió a las demás vistas.
 
-- **Regla:** una superficie con función lleva un degradado de su tinte de módulo hacia el papel claro (`--bg-card`), nunca un velo sobre toda la pantalla. El lienzo de la app es marfil liso, sin cuadrícula de puntos.
+- **Regla:** una superficie con función lleva un degradado de su tinte de módulo hacia el papel claro (`--bg-card`), nunca un velo sobre toda la pantalla. El lienzo de la app es marfil sin cuadrícula de puntos; la textura visible pertenece a los materiales de §0.3.
 - **Tarjeta de Papel** (`Papel.module.css`): la esquina inferior derecha se oscurece hacia `--papel-<tinte>-fuerte` (155°, desde 54 %, mezclado al 58 %). Vale para toda tarjeta, en cualquier vista.
 - **Superficies planas:** cada vista aplica el tinte de su módulo (§0.4) en el encabezado, los formularios y los vacíos; energía y hábitos llevan salvia, y las lecturas de métricas, turquesa. Los datos y el texto no se tiñen.
 - **Superficies planas sin blanco (feedback de usuarios, 2026-10-26):** el degradado que terminaba en `--bg-card` dejaba casi toda la superficie blanca, y una persona reportó que tenía que forzar la vista en Agenda, Notas, "Notas y vaciado mental", "Reflexión del día" y "Ritmo & Estado de Ánimo". Ahora cada superficie plana usa `var(--superficie-<tinte>)` (`src/index.css`): del tinte al 72 % al tinte al 40 %, sin llegar a blanco. El almanaque de Agenda lleva pizarra en el marco y una pizarra más clara (35 %) en la grilla de días (`--fc-forma-background`), y el cuaderno de Notas lleva ámbar bajo su trama. En los tres valores el texto global pasa 4.5:1 (`textTokensContrast.test.ts`). To-Do, que la persona tomó como referencia ("ni tan fuerte ni tan suave"), usa la misma superficie, para no quedar más pálido que el resto.
@@ -228,6 +232,7 @@ Sin ordinal propia en el texto original: pasar la página al cambiar de vista (�
 
 1. **Metáfora del Escritorio Analógico (*Papercraft UI*)**:
    - Cada contenedor, tarjeta o módulo interactivo evoca elementos de un escritorio físico de papelería: pliegos de papel marfil de alto gramaje, hojas con textura de borde rasgado, fichas con solapas superiores de archivador de biblioteca (*folder tabs*), tramas milimetradas de *bullet journal* y notas adhesivas (*post-its*) sujetas con clips metálicos dorados o franjas de *washi tape* semitransparente.
+   - La fibra debe verse en las superficies de los tres materiales (§0.3), no limitarse al fondo del lienzo o al contorno rasgado. En formularios y modales también debe sentirse el papel sin competir con etiquetas, datos ni foco.
    - Rompe deliberadamente la frialdad utilitaria de las interfaces de software corporativo convencional, ofreciendo una experiencia sosegada, íntima y de baja carga cognitiva.
 
 2. **Tipografía de Autor** (cinco familias; medidas y pesos en §0.6 y §3):
@@ -436,6 +441,7 @@ Cada sombra sale de su token (§7.1, regla 2). Estos son los valores en claro; l
 ### Hacer (Do)
 
 - **Mantener el pliego marfil cálido (`#FAF9F5`)**: El lienzo unificador de toda la plataforma debe sentirse como papel bond/lino artesanal.
+- **Hacer visible el papercraft en las superficies** (§0.3): Pliego, Papel y Cartulina necesitan fibra perceptible y una forma material propia en los dos temas. El grano ambiental no cuenta como textura de una tarjeta, un panel, un formulario o un modal.
 - **Armonizar control operativo y serenidad emocional**: Acompañar siempre las listas de tareas y tablas de tiempo con lemas inspiradores, aforismos diarios y sellos de racha.
 - **Respetar la jerarquía de familias** (§0.6): serif (Fraunces) para cabeceras y citas, Playball para `h1`, sans para lectura y control operativo, script para notas afectivas, mono para metadatos y bóveda.
 - **Soporte de exportación e impresión** *(por implementar: hoy solo existe la exportación de la agenda a `.ics` y el respaldo de la bóveda; no hay hoja de estilos de impresión)*: diagramación limpia con `@media print` para quienes combinan soporte digital y físico.
