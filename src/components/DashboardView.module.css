@@ -2451,3 +2451,56 @@
 .metricsSection {
   background-image: var(--contenedor-turquesa);
 }
+
+/* =========================================================================
+   11. ARRANCAR LA HOJA DEL DÍA (entrada única, DESIGN.md §0.5)
+   La hoja de fecha cae como un taco arrancado y los papeles se asientan tras ella. Una sola vez
+   por carga de la vista, sin bucles. `backwards` y no `both`: al terminar no deja `transform`
+   fijado, así que no pisa el hover ni otros estados de las tarjetas.
+   ========================================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes caerHoja {
+    from { transform: translateY(-46px) rotate(-7deg); opacity: 0; }
+    60% { opacity: 1; }
+    to { transform: none; opacity: 1; }
+  }
+
+  @keyframes asentarPapel {
+    from { transform: translateY(26px) rotate(var(--giro, 2deg)); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+
+  .fechaHoja {
+    animation: caerHoja 900ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+
+  /* Orden de aparición: métricas, trío, columnas. `--base` desplaza cada grupo detrás del anterior. */
+  .kpiStrip { --base: 0; }
+  .bentoTrio { --base: 3; }
+  .mainLeftCol,
+  .mainRightCol { --base: 5; }
+
+  .kpiStrip > *,
+  .bentoTrio > *,
+  .mainLeftCol > *,
+  .mainRightCol > * {
+    animation: asentarPapel 700ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(260ms + (var(--base, 0) + var(--orden, 0)) * 90ms);
+  }
+
+  .kpiStrip > :nth-child(even),
+  .bentoTrio > :nth-child(even),
+  .mainLeftCol > :nth-child(even),
+  .mainRightCol > :nth-child(even) { --giro: -2deg; }
+
+  .kpiStrip > :nth-child(2),
+  .bentoTrio > :nth-child(2),
+  .mainLeftCol > :nth-child(2),
+  .mainRightCol > :nth-child(2) { --orden: 1; }
+
+  .kpiStrip > :nth-child(3),
+  .mainLeftCol > :nth-child(3),
+  .mainRightCol > :nth-child(3) { --orden: 2; }
+
+  .kpiStrip > :nth-child(4) { --orden: 3; }
+}
